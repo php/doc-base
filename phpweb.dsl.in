@@ -2,6 +2,7 @@
 <!ENTITY docbook.dsl SYSTEM "@DOCBOOK_HTML@" CDATA DSSSL>
 <!ENTITY html-common.dsl SYSTEM "html-common.dsl">
 <!ENTITY common.dsl SYSTEM "common.dsl">
+<!ENTITY version.dsl SYSTEM "version.dsl">
 ]>
 
 <!--
@@ -12,15 +13,16 @@
 
 -->
 
+<style-sheet>
 <style-specification id="docbook-php-website" use="docbook">
 <style-specification-body>
 
 (declare-flow-object-class processing-instruction
   "UNREGISTERED::James Clark//Flow Object Class::processing-instruction")
 
-(define %html-ext% ".php3")
+(define %html-ext% ".php")
 (define %html-manifest% "PHPWEB.manifest")
-(define %output-dir% "php3/")
+(define %output-dir% "php")
 
 ;; XXX hackish workaround.  I'm not sure what side effects setting
 ;; the element number to 0 would have?
@@ -31,7 +33,7 @@
   (string-replace str "'" "\\'"))
 
 (define (phpweb-header #!optional (nd (current-node)))
-    (php3-code
+    (php-code
      (string-append
       newline
       "require('shared-manual.inc'); " newline
@@ -39,30 +41,30 @@
       "manualHeader('" (phpweb-quote (phpweb-node-title nd)) "');" newline)))
 
 (define (phpweb-footer #!optional (nd (current-node)))
-  (php3-code
+  (php-code
    (string-append
     "manualFooter('" (phpweb-quote (phpweb-node-title nd)) "');")))
 
-(define (phpweb-node-title #!optional (nd (current-node)) (title-elem "TITLE"))
+(define (phpweb-node-title #!optional (nd (current-node)) (title-elem "title"))
   (let* ((preferred-title-node
-	  (cond ((equal? (gi nd) "REFENTRY")
+	  (cond ((equal? (gi nd) "refentry")
 		 (node-list-first
 		  (select-elements
 		   (children
-		    (select-elements (children nd) "REFNAMEDIV"))
-		   "REFNAME")))
+		    (select-elements (children nd) "refnamediv"))
+		   "refname")))
 		(else
 		 (node-list-first
 		  (select-elements (children nd) title-elem)))))
 	 (title-node
 	  (if (node-list-empty? preferred-title-node)
-	      (select-elements (children nd) "TITLE") ;; fallback
+	      (select-elements (children nd) "title") ;; fallback
 	      preferred-title-node)))
     (data title-node)))
 	       
 (define (phpweb-header-nav-array nd)
   (let ((href (href-to nd))
-	(title (phpweb-quote (phpweb-node-title nd "TITLEABBREV"))))
+	(title (phpweb-quote (phpweb-node-title nd "titleabbrev"))))
     (string-append
      "array('" href "', '" title "')")))
    
@@ -106,17 +108,19 @@
 	     body-sosofo)))
     (if (chunk?)
 	(make entity
-	      system-id: (html-file)
+	      system-id: (html-entity-file (html-file))
 	      doc-sosofo)
 	doc-sosofo)))
 
 &html-common.dsl;
 &common.dsl;
+&version.dsl;
 
 </style-specification-body>
 </style-specification>
-
 <external-specification id="docbook" document="docbook.dsl">
+</style-sheet>
+
 <!--
 Local Variables:
 mode: scheme

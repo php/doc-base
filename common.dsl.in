@@ -20,7 +20,12 @@
 (define %footnotes-at-end% #t)
 (define %force-chapter-toc% #t)
 (define newline "\U-000D")
+(define %number-programlisting-lines% #f)
+(define %linenumber-mod% 1)
+(define %shade-verbatim% #t)
+(define %prefers-ordinal-label-name-format% @NUMBER_FIRST@)
+(define ($generate-book-lot-list$) (list))
 
-(define (php3-code code)
+(define (php-code code)
   (make processing-instruction
     data: (string-append "php " code "?")))

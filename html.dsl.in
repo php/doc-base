@@ -1,7 +1,9 @@
 <!DOCTYPE style-sheet PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" [
 <!ENTITY docbook.dsl SYSTEM "@DOCBOOK_HTML@" CDATA DSSSL>
 <!ENTITY html-common.dsl SYSTEM "html-common.dsl">
+<!ENTITY html-locale.dsl SYSTEM "html-locale.dsl">
 <!ENTITY common.dsl SYSTEM "common.dsl">
+<!ENTITY version.dsl SYSTEM "version.dsl">
 ]>
 
 <!--
@@ -12,16 +14,21 @@
 
 -->
 
+<style-sheet>
 <style-specification id="docbook-php-html" use="docbook">
 <style-specification-body>
 
 (define %html-ext% ".html")
-(define %output-dir% "html/")
+(define %output-dir% "html")
 
 &html-common.dsl;
+&html-locale.dsl;
 &common.dsl;
+&version.dsl;
 
 </style-specification-body>
 </style-specification>
 
 <external-specification id="docbook" document="docbook.dsl">
+
+</style-sheet>

@@ -115,12 +115,16 @@
 					    (list (normalize "bookbiblio") 
 						  (normalize "bibliomisc")
 						  (normalize "biblioset")))))
+
+         (partintro     (select-elements (children (current-node)) 
+					 (normalize "partintro")))
 	 (parent-titles (select-elements (children (current-node)) (normalize "title")))
 	 (info-titles   (select-elements exp-children (normalize "title")))
 	 (titles        (if (node-list-empty? parent-titles)
 			    info-titles
 			    parent-titles))
 	 (subtitles     (select-elements exp-children (normalize "subtitle"))))
+
     (make sequence
       (make paragraph
 	font-family-name: %title-font-family%
@@ -136,7 +140,9 @@
 
 	(if (string=? (element-label) "")
 	    (empty-sosofo)
-	    (literal (gentext-element-name-space (current-node))
+	    (literal ;; (gentext-element-name-space (current-node))
+	     (if (equal? (gi) (normalize "reference")) ""
+	             (gentext-element-name-space (current-node)))
 		     (element-label)
 		     (gentext-label-title-sep (gi))))
 
@@ -161,7 +167,12 @@
 
 	(with-mode sub-component-title-mode
 	  (make sequence
-	    (process-node-list subtitles)))))))
+	    (process-node-list subtitles)))
+
+	(make sequence
+	  ($process-partintro$ partintro #t)
+	  (empty-sosofo))))))
+
 
 (mode sub-component-title-mode
   (element title
@@ -170,6 +181,87 @@
   (element subtitle
     (process-children))
 )
+
+(define ($component-title$)
+  (let* ((info (cond
+;; 		((equal? (gi) (normalize "appendix"))
+;; 		 (select-elements (children (current-node)) (normalize "docinfo")))
+ 		((equal? (gi) (normalize "article"))
+ 		 (select-elements (children (current-node)) (normalize "artheader")))
+ 		((equal? (gi) (normalize "bibliography"))
+ 		 (select-elements (children (current-node)) (normalize "docinfo")))
+;; 		((equal? (gi) (normalize "chapter"))
+;; 		 (select-elements (children (current-node)) (normalize "docinfo")))
+ 		((equal? (gi) (normalize "dedication")) 
+ 		 (empty-node-list))
+ 		((equal? (gi) (normalize "glossary"))
+ 		 (select-elements (children (current-node)) (normalize "docinfo")))
+ 		((equal? (gi) (normalize "index"))
+ 		 (select-elements (children (current-node)) (normalize "docinfo")))
+ 		((equal? (gi) (normalize "part"))
+ 		 (select-elements (children (current-node)) (normalize "docinfo")))
+ 		((equal? (gi) (normalize "preface"))
+ 		 (select-elements (children (current-node)) (normalize "docinfo")))
+;; 		((equal? (gi) (normalize "reference"))
+;; 		 (select-elements (children (current-node)) (normalize "docinfo")))
+		((equal? (gi) (normalize "setindex"))
+		 (select-elements (children (current-node)) (normalize "docinfo")))
+		(else
+		 (empty-node-list))))
+	 (exp-children (if (node-list-empty? info)
+			   (empty-node-list)
+			   (expand-children (children info) 
+					    (list (normalize "bookbiblio") 
+						  (normalize "bibliomisc")
+						  (normalize "biblioset")))))
+	 (parent-titles (select-elements (children (current-node)) (normalize "title")))
+	 (info-titles   (select-elements exp-children (normalize "title")))
+	 (titles        (if (node-list-empty? parent-titles)
+			    info-titles
+			    parent-titles))
+	 (subtitles     (select-elements exp-children (normalize "subtitle"))))
+    (make sequence
+      (make paragraph
+	font-family-name: %title-font-family%
+	font-weight: 'bold
+	font-size: (* (HSIZE 4) 1.25)
+	line-spacing: (* (HSIZE 4) %line-spacing-factor%)
+	space-before: (* (HSIZE 4) %head-before-factor%)
+	start-indent: 0pt
+	first-line-start-indent: 0pt
+	quadding: %component-title-quadding%
+	heading-level: (if %generate-heading-level% 1 0)
+	keep-with-next?: #f
+
+	(if (string=? (element-label) "")
+	    (empty-sosofo)
+	    (literal (gentext-element-name-space (current-node))
+		     (element-label)
+		     (gentext-label-title-sep (gi))))
+
+	(if (node-list-empty? titles)
+	    (element-title-sosofo) ;; get a default!
+	    (with-mode component-title-mode
+	      (make sequence
+		(process-node-list titles)))))
+
+      (make paragraph
+	font-family-name: %title-font-family%
+	font-weight: 'bold
+	font-posture: 'italic
+	font-size: (HSIZE 3)
+	line-spacing: (* (HSIZE 3) %line-spacing-factor%)
+	space-before: (* 0.5 (* (HSIZE 3) %head-before-factor%))
+	space-after: (* (HSIZE 4) %head-after-factor%)
+	start-indent: 0pt
+	first-line-start-indent: 0pt
+	quadding: %component-subtitle-quadding%
+	keep-with-next?: #f
+
+	(with-mode component-title-mode
+	  (make sequence
+	    (process-node-list subtitles)))))))
+
 
 ;; own code
 
@@ -185,3 +277,7 @@
 (element appendix ($sub-component$))
 (element (appendix title) (empty-sosofo))
 
+(define %generate-part-titlepage% #t)
+(define %generate-chapter-titlepage% #t)
+(define %generate-reference-titlepage% #t)
+(define %generate-partintro-on-titlepage% #t)
