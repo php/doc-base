@@ -1,9 +1,11 @@
-<!-- iso-amsb.ent produced by Norman Walsh for the XML version of DocBook -->
+<!-- iso-amsb.ent (initially distributed with DocBook XML DTD V4.1.1beta1) -->
 
 <!-- Derived from the corresponding ISO 8879 standard entity set
-     and the Unicode character mappings provided by Sebastian Rahtz -->
+     and the Unicode character mappings provided by Sebastian Rahtz.
+     With additional derivations from
+     ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MISC/SGML.TXT -->
 
-<!ENTITY amalg	"&#xE251;"> <!--  -->
+<!ENTITY amalg	"&#x2210;"> <!-- N-ARY COPRODUCT -->
 <!ENTITY Barwed	"&#x2306;"> <!-- PERSPECTIVE -->
 <!ENTITY barwed	"&#x22BC;"> <!-- NAND -->
 <!ENTITY Cap	"&#x22D2;"> <!-- DOUBLE INTERSECTION -->
@@ -33,7 +35,7 @@
 <!ENTITY setmn	"&#x2216;"> <!-- SET MINUS -->
 <!ENTITY sqcap	"&#x2293;"> <!-- SQUARE CAP -->
 <!ENTITY sqcup	"&#x2294;"> <!-- SQUARE CUP -->
-<!ENTITY ssetmn	"&#xE844;"> <!--  -->
+<!ENTITY ssetmn	"&#x2216;"> <!-- SET MINUS -->
 <!ENTITY sstarf	"&#x22C6;"> <!-- STAR OPERATOR -->
 <!ENTITY timesb	"&#x22A0;"> <!-- SQUARED TIMES -->
 <!ENTITY top	"&#x22A4;"> <!-- DOWN TACK -->

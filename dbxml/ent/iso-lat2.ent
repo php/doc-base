@@ -1,4 +1,4 @@
-<!-- iso-lat2.ent produced by Norman Walsh for the XML version of DocBook -->
+<!-- iso-lat2.ent (initially distributed with DocBook XML DTD V4.1.1beta1) -->
 
 <!-- Derived from the corresponding ISO 8879 standard entity set
      and the Unicode character mappings provided by Sebastian Rahtz -->
@@ -15,7 +15,7 @@
 <!ENTITY Ccaron	"&#x010C;"> <!-- LATIN CAPITAL LETTER C WITH CARON -->
 <!ENTITY ccirc	"&#x0109;"> <!-- LATIN SMALL LETTER C WITH CIRCUMFLEX -->
 <!ENTITY Ccirc	"&#x0108;"> <!-- LATIN CAPITAL LETTER C WITH CIRCUMFLEX -->
-<!ENTITY cdot	"&#x22C5;"> <!-- DOT OPERATOR -->
+<!ENTITY cdot	"&#x010B;"> <!-- DOT OPERATOR -->
 <!ENTITY Cdot	"&#x010A;"> <!-- LATIN CAPITAL LETTER C WITH DOT ABOVE -->
 <!ENTITY dcaron	"&#x010F;"> <!-- LATIN SMALL LETTER D WITH CARON -->
 <!ENTITY Dcaron	"&#x010E;"> <!-- LATIN CAPITAL LETTER D WITH CARON -->

@@ -1,4 +1,4 @@
-<!-- iso-lat1.ent produced by Norman Walsh for the XML version of DocBook -->
+<!-- iso-lat1.ent (initially distributed with DocBook XML DTD V4.1.1beta1) -->
 
 <!-- Derived from the corresponding ISO 8879 standard entity set
      and the Unicode character mappings provided by Sebastian Rahtz -->
@@ -19,8 +19,8 @@
 <!ENTITY AElig	"&#x00C6;"> <!-- LATIN CAPITAL LETTER AE -->
 <!ENTITY ccedil	"&#x00E7;"> <!-- LATIN SMALL LETTER C WITH CEDILLA -->
 <!ENTITY Ccedil	"&#x00C7;"> <!-- LATIN CAPITAL LETTER C WITH CEDILLA -->
-<!ENTITY eth	"&#x00D0;"> <!-- LATIN SMALL LETTER ETH -->
-<!ENTITY ETH	"&#x00F0;"> <!-- LATIN CAPITAL LETTER ETH -->
+<!ENTITY eth	"&#x00F0;"> <!-- LATIN SMALL LETTER ETH -->
+<!ENTITY ETH	"&#x00D0;"> <!-- LATIN CAPITAL LETTER ETH -->
 <!ENTITY eacute	"&#x00E9;"> <!-- LATIN SMALL LETTER E WITH ACUTE -->
 <!ENTITY Eacute	"&#x00C9;"> <!-- LATIN CAPITAL LETTER E WITH ACUTE -->
 <!ENTITY ecirc	"&#x00EA;"> <!-- LATIN SMALL LETTER E WITH CIRCUMFLEX -->
@@ -45,7 +45,7 @@
 <!ENTITY Ocirc	"&#x00D4;"> <!-- LATIN CAPITAL LETTER O WITH CIRCUMFLEX -->
 <!ENTITY ograve	"&#x00F2;"> <!-- LATIN SMALL LETTER O WITH GRAVE -->
 <!ENTITY Ograve	"&#x00D2;"> <!-- LATIN CAPITAL LETTER O WITH GRAVE -->
-<!ENTITY oslash	"&#x2298;"> <!-- CIRCLED DIVISION SLASH -->
+<!ENTITY oslash	"&#x00F8;"> <!-- CIRCLED DIVISION SLASH -->
 <!ENTITY Oslash	"&#x00D8;"> <!-- LATIN CAPITAL LETTER O WITH STROKE -->
 <!ENTITY otilde	"&#x00F5;"> <!-- LATIN SMALL LETTER O WITH TILDE -->
 <!ENTITY Otilde	"&#x00D5;"> <!-- LATIN CAPITAL LETTER O WITH TILDE -->
@@ -56,8 +56,8 @@
 <!ENTITY THORN	"&#x00DE;"> <!-- LATIN CAPITAL LETTER THORN -->
 <!ENTITY uacute	"&#x00FA;"> <!-- LATIN SMALL LETTER U WITH ACUTE -->
 <!ENTITY Uacute	"&#x00DA;"> <!-- LATIN CAPITAL LETTER U WITH ACUTE -->
-<!ENTITY ucirc	"&#x00DB;"> <!-- LATIN SMALL LETTER U WITH CIRCUMFLEX -->
-<!ENTITY Ucirc	"&#x00FB;"> <!-- LATIN CAPITAL LETTER U WITH CIRCUMFLEX -->
+<!ENTITY ucirc	"&#x00FB;"> <!-- LATIN SMALL LETTER U WITH CIRCUMFLEX -->
+<!ENTITY Ucirc	"&#x00DB;"> <!-- LATIN CAPITAL LETTER U WITH CIRCUMFLEX -->
 <!ENTITY ugrave	"&#x00F9;"> <!-- LATIN SMALL LETTER U WITH GRAVE -->
 <!ENTITY Ugrave	"&#x00D9;"> <!-- LATIN CAPITAL LETTER U WITH GRAVE -->
 <!ENTITY uuml	"&#x00FC;"> <!-- LATIN SMALL LETTER U WITH DIAERESIS -->

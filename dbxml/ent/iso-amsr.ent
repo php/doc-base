@@ -1,12 +1,14 @@
-<!-- iso-amsr.ent produced by Norman Walsh for the XML version of DocBook -->
+<!-- iso-amsr.ent (initially distributed with DocBook XML DTD V4.1.1beta1) -->
 
 <!-- Derived from the corresponding ISO 8879 standard entity set
-     and the Unicode character mappings provided by Sebastian Rahtz -->
+     and the Unicode character mappings provided by Sebastian Rahtz.
+     With additional derivations from
+     ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MISC/SGML.TXT -->
 
 <!ENTITY ape	"&#x224A;"> <!--  -->
 <!ENTITY asymp	"&#x224D;"> <!-- EQUIVALENT TO -->
 <!ENTITY bcong	"&#x224C;"> <!-- ALL EQUAL TO -->
-<!ENTITY bepsi	"&#xE420;"> <!--  -->
+<!ENTITY bepsi	"&#x220D;"> <!-- SMALL CONTAINS AS MEMBER -->
 <!ENTITY bowtie	"&#x22C8;"> <!--  -->
 <!ENTITY bsim	"&#x223D;"> <!--  -->
 <!ENTITY bsime	"&#x22CD;"> <!--  -->
@@ -33,7 +35,7 @@
 <!ENTITY gE	"&#x2267;"> <!--  -->
 <!ENTITY gel	"&#x22DB;"> <!--  -->
 <!ENTITY gEl	"&#x22DB;"> <!--  -->
-<!ENTITY ges	"&#xE421;"> <!--  -->
+<!ENTITY ges	"&#x2265;"> <!-- GREATER-THAN OR EQUAL TO -->
 <!ENTITY Gg	"&#x22D9;"> <!-- VERY MUCH GREATER-THAN -->
 <!ENTITY gl	"&#x2277;"> <!--  -->
 <!ENTITY gsim	"&#x2273;"> <!-- GREATER-THAN OR EQUIVALENT TO -->
@@ -43,7 +45,7 @@
 <!ENTITY lE	"&#x2266;"> <!--  -->
 <!ENTITY lEg	"&#x22DA;"> <!--  -->
 <!ENTITY leg	"&#x22DA;"> <!--  -->
-<!ENTITY les	"&#xE425;"> <!--  -->
+<!ENTITY les	"&#x2264;"> <!-- LESS-THAN OR EQUAL TO -->
 <!ENTITY lg	"&#x2276;"> <!-- LESS-THAN OR GREATER-THAN -->
 <!ENTITY Ll	"&#x22D8;"> <!--  -->
 <!ENTITY lsim	"&#x2272;"> <!-- LESS-THAN OR EQUIVALENT TO -->
@@ -56,27 +58,27 @@
 <!ENTITY pre	"&#x227C;"> <!--  -->
 <!ENTITY prsim	"&#x227E;"> <!--  -->
 <!ENTITY rtrie	"&#x22B5;"> <!--  -->
-<!--     samalg	Unknown unicode character -->
+<!ENTITY samalg	"&#x2210;"> <!--  -->
 <!ENTITY sc	"&#x227B;"> <!--  -->
 <!ENTITY scap	"&#x227F;"> <!--  -->
 <!ENTITY sccue	"&#x227D;"> <!--  -->
 <!ENTITY sce	"&#x227D;"> <!--  -->
 <!ENTITY scsim	"&#x227F;"> <!--  -->
-<!ENTITY sfrown	"&#xE426;"> <!--  -->
+<!ENTITY sfrown	"&#x2322;"> <!-- FROWN -->
 <!ENTITY smid	"&#xE301;"> <!--  -->
 <!ENTITY smile	"&#x2323;"> <!--  -->
-<!ENTITY spar	"&#xE302;"> <!--  -->
+<!ENTITY spar	"&#x2225;"> <!-- PARALLEL TO -->
 <!ENTITY sqsub	"&#x228F;"> <!--  -->
 <!ENTITY sqsube	"&#x2291;"> <!--  -->
 <!ENTITY sqsup	"&#x2290;"> <!--  -->
 <!ENTITY sqsupe	"&#x2292;"> <!--  -->
-<!ENTITY ssmile	"&#xE303;"> <!--  -->
+<!ENTITY ssmile	"&#x2323;"> <!-- SMILE -->
 <!ENTITY Sub	"&#x22D0;"> <!--  -->
 <!ENTITY subE	"&#x2286;"> <!--  -->
 <!ENTITY Sup	"&#x22D1;"> <!--  -->
 <!ENTITY supE	"&#x2287;"> <!--  -->
-<!ENTITY thkap	"&#xE306;"> <!--  -->
-<!ENTITY thksim	"&#xE429;"> <!--  -->
+<!ENTITY thkap	"&#x2248;"> <!-- ALMOST EQUAL TO -->
+<!ENTITY thksim	"&#x223C;"> <!-- TILDE OPERATOR -->
 <!ENTITY trie	"&#x225C;"> <!--  -->
 <!ENTITY twixt	"&#x226C;"> <!-- BETWEEN -->
 <!ENTITY vdash	"&#x22A2;"> <!--  -->

@@ -1,7 +1,9 @@
-<!-- iso-amsa.ent produced by Norman Walsh for the XML version of DocBook -->
+<!-- iso-amsa.ent (initially distributed with DocBook XML DTD V4.1.1beta1) -->
 
 <!-- Derived from the corresponding ISO 8879 standard entity set
-     and the Unicode character mappings provided by Sebastian Rahtz -->
+     and the Unicode character mappings provided by Sebastian Rahtz
+     With additional derivations from
+     ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MISC/SGML.TXT -->
 
 <!ENTITY cularr	"&#x21B6;"> <!-- ANTICLOCKWISE TOP SEMICIRCLE ARROW -->
 <!ENTITY curarr	"&#x21B7;"> <!-- CLOCKWISE TOP SEMICIRCLE ARROW -->
@@ -55,7 +57,7 @@
 <!ENTITY varr	"&#x2195;"> <!-- UP DOWN ARROW -->
 <!ENTITY uharl	"&#x21BF;"> <!-- UPWARDS HARPOON WITH BARB LEFTWARDS -->
 <!ENTITY uharr	"&#x21BE;"> <!-- UPWARDS HARPOON WITH BARB RIGHTWARDS -->
-<!ENTITY xlArr	"&#xE200;"> <!--  -->
-<!ENTITY xhArr	"&#xE202;"> <!--  -->
-<!ENTITY xharr	"&#xE203;"> <!--  -->
-<!ENTITY xrArr	"&#xE204;"> <!--  -->
+<!ENTITY xlArr	"&#x21D0;"> <!-- LEFTWARDS DOUBLE ARROW -->
+<!ENTITY xhArr	"&#x2194;"> <!-- LEFT RIGHT ARROW -->
+<!ENTITY xharr	"&#x2194;"> <!-- LEFT RIGHT ARROW -->
+<!ENTITY xrArr	"&#x21D2;"> <!-- RIGHTWARDS DOUBLE ARROW -->

@@ -145,7 +145,8 @@
 
 <!ENTITY % yesorno 'NMTOKEN'> <!-- no if zero(s), yes if any other value -->
 <!ENTITY % titles  'title?'>
-<!ENTITY % paracon '#PCDATA'> <!-- default for use in entry content -->
+<!ENTITY % pcd "#PCDATA">
+<!ENTITY % paracon '%pcd;'> <!-- default for use in entry content -->
 
 <!--
 The parameter entities as defined below change and simplify the CALS table

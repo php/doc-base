@@ -1,7 +1,9 @@
-<!-- iso-tech.ent produced by Norman Walsh for the XML version of DocBook -->
+<!-- iso-tech.ent (initially distributed with DocBook XML DTD V4.1.1beta1) -->
 
 <!-- Derived from the corresponding ISO 8879 standard entity set
-     and the Unicode character mappings provided by Sebastian Rahtz -->
+     and the Unicode character mappings provided by Sebastian Rahtz.
+     With additional derivations from
+     ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MISC/SGML.TXT -->
 
 <!ENTITY aleph	"&#x2135;"> <!-- ALEF SYMBOL -->
 <!ENTITY and	"&#x2227;"> <!--  -->
@@ -19,7 +21,7 @@
 <!ENTITY forall	"&#x2200;"> <!--  -->
 <!ENTITY fnof	"&#x0192;"> <!-- LATIN SMALL LETTER F WITH HOOK -->
 <!ENTITY ge	"&#x2265;"> <!-- GREATER-THAN OR EQUAL TO -->
-<!ENTITY iff	"&#xE365;"> <!--  -->
+<!ENTITY iff	"&#x21D4;"> <!-- LEFT RIGHT DOUBLE ARROW -->
 <!ENTITY infin	"&#x221E;"> <!--  -->
 <!ENTITY int	"&#x222B;"> <!--  -->
 <!ENTITY isin	"&#x220A;"> <!--  -->
@@ -54,7 +56,7 @@
 <!ENTITY angst	"&#x212B;"> <!-- ANGSTROM SIGN -->
 <!ENTITY bernou	"&#x212C;"> <!-- SCRIPT CAPITAL B -->
 <!ENTITY compfn	"&#x2218;"> <!-- RING OPERATOR -->
-<!ENTITY Dot	"&#x0308;"> <!--  -->
+<!ENTITY Dot	"&#x00A8;"> <!--  -->
 <!ENTITY DotDot	"&#x20DC;"> <!-- COMBINING FOUR DOTS ABOVE -->
 <!ENTITY hamilt	"&#x210B;"> <!-- SCRIPT CAPITAL H -->
 <!ENTITY lagran	"&#x2112;"> <!-- SCRIPT CAPITAL L -->

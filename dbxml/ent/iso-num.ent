@@ -1,4 +1,4 @@
-<!-- iso-num.ent produced by Norman Walsh for the XML version of DocBook -->
+<!-- iso-num.ent (initially distributed with DocBook XML DTD V4.1.1beta1) -->
 
 <!-- Derived from the corresponding ISO 8879 standard entity set
      and the Unicode character mappings provided by Sebastian Rahtz -->
@@ -16,7 +16,7 @@
 <!ENTITY sup3	"&#x00B3;"> <!-- SUPERSCRIPT THREE -->
 <!ENTITY plus	"&#x002B;"> <!-- PLUS SIGN -->
 <!ENTITY plusmn	"&#x00B1;"> <!-- PLUS-MINUS SIGN -->
-<!-- predeclared in XML <!ENTITY lt	"&#x003C;"--> <!-- LESS-THAN SIGN -->
+<!ENTITY lt	"&#38;#60;"> <!-- LESS-THAN SIGN -->
 <!ENTITY equals	"&#x003D;"> <!-- EQUALS SIGN -->
 <!ENTITY gt	"&#x003E;"> <!-- GREATER-THAN SIGN -->
 <!ENTITY divide	"&#x00F7;"> <!-- DIVISION SIGN -->
@@ -28,8 +28,8 @@
 <!ENTITY yen	"&#x00A5;"> <!-- YEN SIGN -->
 <!ENTITY num	"&#x0023;"> <!-- NUMBER SIGN -->
 <!ENTITY percnt	"&#x0025;"> <!-- PERCENT SIGN -->
-<!-- predeclared in XML <!ENTITY amp	"&#x0026;"--> <!-- AMPERSAND -->
-<!ENTITY ast	"&#x2217;"> <!-- ASTERISK OPERATOR -->
+<!ENTITY amp	"&#38;#38;"> <!-- AMPERSAND -->
+<!ENTITY ast	"&#x002A;"> <!-- ASTERISK OPERATOR -->
 <!ENTITY commat	"&#x0040;"> <!-- COMMERCIAL AT -->
 <!ENTITY lsqb	"&#x005B;"> <!-- LEFT SQUARE BRACKET -->
 <!ENTITY bsol	"&#x005C;"> <!-- REVERSE SOLIDUS -->
@@ -51,7 +51,7 @@
 <!ENTITY uarr	"&#x2191;"> <!-- UPWARDS ARROW -->
 <!ENTITY darr	"&#x2193;"> <!-- DOWNWARDS ARROW -->
 <!ENTITY copy	"&#x00A9;"> <!-- COPYRIGHT SIGN -->
-<!ENTITY reg	"&#x00AF;"> <!-- MACRON -->
+<!ENTITY reg	"&#x00AE;"> <!-- REG TRADE MARK SIGN -->
 <!ENTITY trade	"&#x2122;"> <!-- TRADE MARK SIGN -->
 <!ENTITY brvbar	"&#x00A6;"> <!-- BROKEN BAR -->
 <!ENTITY not	"&#x00AC;"> <!-- NOT SIGN -->
@@ -64,7 +64,7 @@
 <!ENTITY rpar	"&#x0029;"> <!-- RIGHT PARENTHESIS -->
 <!ENTITY comma	"&#x002C;"> <!-- COMMA -->
 <!ENTITY lowbar	"&#x005F;"> <!-- LOW LINE -->
-<!ENTITY hyphen	"&#xE4F8;"> <!--  -->
+<!ENTITY hyphen	"&#x002D;"> <!-- HYPHEN-MINUS -->
 <!ENTITY period	"&#x002E;"> <!-- FULL STOP -->
 <!ENTITY sol	"&#x002F;"> <!-- SOLIDUS -->
 <!ENTITY colon	"&#x003A;"> <!-- COLON -->
