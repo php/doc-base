@@ -35,7 +35,7 @@ dnl else
 dnl    DOCBOOK_DOCTYPE="-//Davenport//DTD DocBook V3.0//EN"
 dnl    AC_MSG_RESULT(defaulting to $DOCBOOK_DOCTYPE)
 dnl fi 
-DOCBOOK_DOCTYPE="-//Norman Walsh//DTD DocBk XML V1.4//EN"
+DOCBOOK_DOCTYPE="-//OASIS//DTD DocBook XML V4.1.2//EN"
 AC_SUBST(DOCBOOK_DOCTYPE)
 
 AC_MSG_CHECKING(for docbook.dsl)
