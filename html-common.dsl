@@ -389,4 +389,58 @@
   content
   (para-check 'restart)))))
 
+
+
+(element methodsynopsis 
+	(make sequence (process-children) (literal ")"))
+)
+
+(element (methodsynopsis type)
+	(make sequence 
+		(process-children-trim)
+		(literal " ")
+		)
+)
+
+(element (methodsynopsis methodname)
+	(make sequence
+		($bold-seq$
+		 (process-children-trim)
+		 )
+		(literal " (")
+		)
+	)
+
+(element (methodsynopsis methodparam)
+	(make sequence 
+		(if  (equal? (attribute-string (normalize "choice")) "opt")
+				 (literal "[")
+				 (empty-sosofo)
+				 )
+		(process-children-trim)
+		(if  (equal? (attribute-string (normalize "choice")) "opt")
+				 (literal "]")
+				 (empty-sosofo)
+				 )
+    (if (equal? (gi (ifollow (current-node))) (normalize "methodparam"))    
+				(literal ", ")
+        (empty-sosofo)
+				)
+		)
+	)
+
+(element (methodparam type)
+	(make sequence 
+		(process-children-trim)
+		(literal " ")
+		)
+	)
+
+(element (methodparam parameter)
+	(make sequence
+		(process-children-trim)
+		)
+	)
+
+
 ;; vim: ts=2 sw=2 et
