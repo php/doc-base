@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
-<!DOCTYPE BOOK PUBLIC "-//Norman Walsh//DTD DocBk XML V1.4//EN"
-          "http://docbook.org/docbook/xml/1.4/db3xml.dtd" [
+<!DOCTYPE book PUBLIC "-//Norman Walsh//DTD DocBk XML V1.7//EN"
+          "dbxml/docbookx.dtd" [
 
 <!ENTITY % lang-en "IGNORE">
 <!ENTITY % lang-de "IGNORE">

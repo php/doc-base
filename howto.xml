@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
-<!DOCTYPE BOOK PUBLIC "-//Norman Walsh//DTD DocBk XML V1.4//EN"
+<!DOCTYPE book PUBLIC "-//Norman Walsh//DTD DocBk XML V1.4//EN"
           "http://docbook.org/docbook/xml/1.4/db3xml.dtd" [
 <!ENTITY % global.entities SYSTEM "global.ent">
 %global.entities;
