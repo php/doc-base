@@ -133,7 +133,7 @@ FUNCREF= \
 FILES=$(PREFACE) $(APPENDICES) $(CHAPTERS) $(FUNCREF) global.ent chapters.ent
 DIST_FILES=manual.zip manual.tar.gz manual.rtf.gz bigmanual.html.gz \
 	manual.prc manual.txt.gz
-MIRROR_TARGETS=php3/manual.php3 $(DIST_FILES) html/manual.html
+MIRROR_TARGETS=php/manual.php $(DIST_FILES) html/manual.html
 
 html.dsl: html.dsl.in ./config.status
 	CONFIG_FILES=$@ CONFIG_HEADERS= ./config.status
@@ -144,14 +144,14 @@ print.dsl: print.dsl.in ./config.status
 phpweb.dsl: phpweb.dsl.in ./config.status
 	CONFIG_FILES=$@ CONFIG_HEADERS= ./config.status
 
-php.dsl: php.dsl.in ./config.status
+manual.xml: manual.xml.in .manual.xml
 	CONFIG_FILES=$@ CONFIG_HEADERS= ./config.status
 
 .manual.xml: $(FILES)
 	touch .manual.xml
 
 html: html/manual.html
-phpweb: php3/manual.php3
+phpweb: php/manual.php
 php: php/index.php
 rtf: manual.rtf
 dvi: manual.dvi
@@ -176,7 +176,7 @@ checkdoc: $(srcdir)/checkdoc.in ./config.status
 mirror-files: $(MIRROR_TARGETS)
 
 sync: mirror-files
-	-(cd php3; rsync --rsync-path=/usr/local/bin/rsync -azvc . www.php.net:/local/Web/sites/phpweb/manual/.)
+	-(cd php; rsync --rsync-path=/usr/local/bin/rsync -azvc . www.php.net:/local/Web/sites/phpweb/manual/.)
 	-(cd html; rsync --rsync-path=/usr/local/bin/rsync -azvc . www.php.net:/local/Web/sites/phpweb/manual/html/.)
 	-rsync --rsync-path=/usr/local/bin/rsync -azvc $(DIST_FILES) www.php.net:/local/Web/sites/phpweb/distributions/.
 
@@ -214,8 +214,8 @@ php/index.php: $(srcdir)/manual.xml $(PHPWEB_STYLESHEET)
 	@test -d php || mkdir php
 	-jade $(CATALOG) -i lang-$(LANG) -d $(PHP_STYLESHEET) -V use-output-dir -t sgml $(srcdir)/phpdocxml.dcl $(srcdir)/manual.xml
 
-php3/manual.php3: $(srcdir)/manual.xml $(PHPWEB_STYLESHEET)
-	@test -d php3 || mkdir php3
+php/manual.php: $(srcdir)/manual.xml $(PHPWEB_STYLESHEET)
+	@test -d php || mkdir php
 	-jade $(CATALOG) -i lang-$(LANG) -d $(PHPWEB_STYLESHEET) -V use-output-dir -t sgml $(srcdir)/phpdocxml.dcl $(srcdir)/manual.xml
 
 manual.txt: bigmanual.html
@@ -267,7 +267,7 @@ test: manual.xml
 clean:
 	( \
 	cd $(srcdir); \
-	rm -rf html php3; \
+	rm -rf html php; \
 	rm -f manual.txt [a-z]*.html manual.rtf manual.info \
 	rm -f manual.zip manual.tar.gz sync-no commit-no .manual.xml \
 	rm -f manual.prc makedoc *.manifest \

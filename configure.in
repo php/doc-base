@@ -114,5 +114,11 @@ AC_ARG_WITH(lang,
 ])
 AC_SUBST(LANG)
 
-AC_OUTPUT(Makefile version.ent checkdoc common.dsl howto.dsl html.dsl print.dsl phpweb.dsl php.dsl)
+case "$LANG" in
+  jp) ENCODING="UTF-8";;
+  *) ENCODING="ISO-8859-1";;
+esac
+AC_SUBST(ENCODING)
+
+AC_OUTPUT(Makefile version.ent checkdoc common.dsl howto.dsl html.dsl print.dsl phpweb.dsl manual.xml)
 chmod +x checkdoc

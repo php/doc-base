@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='ISO-8859-1' ?>
+<?xml version='1.0' encoding='@ENCODING@' ?>
 <!DOCTYPE book PUBLIC "-//Norman Walsh//DTD DocBk XML V1.7//EN"
           "dbxml/docbookx.dtd" [
 
