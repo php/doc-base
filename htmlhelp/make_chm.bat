@@ -1,1 +1,0 @@
-@php -f make_chm.php
