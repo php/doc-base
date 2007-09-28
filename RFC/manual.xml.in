@@ -246,7 +246,7 @@
    &reference.simplexml.reference;
    &reference.wddx.reference;
    &reference.xml.reference;
-   &reference.xmlreader.reference;
+   &reference.xmlreader.part;
    &reference.xmlwriter.reference;
    &reference.xsl.reference;
    &reference.xslt.reference;
@@ -341,7 +341,7 @@
    &reference.ftp.reference;
    &reference.net-gopher.reference;
    &reference.hw.reference;
-   &reference.http.reference;
+   <!--&reference.http.reference;-->
    &reference.hwapi.reference;
    &reference.ircg.reference;
    &reference.java.reference;

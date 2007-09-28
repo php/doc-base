@@ -23,6 +23,7 @@
 
 <!ENTITY % db.common.linking.attributes "
 	linkend	IDREF	#IMPLIED
+	xmlns:xi    CDATA   #FIXED  'http://www.w3.org/2001/XInclude'
 	xmlns:xlink	CDATA	#FIXED	'http://www.w3.org/1999/xlink'	
 	xlink:href	CDATA	#IMPLIED
 	xlink:type	CDATA	#IMPLIED

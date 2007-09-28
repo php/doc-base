@@ -239,7 +239,7 @@ function file_entities($work_dir, $trans_dir, $orig_dir, &$entities, $prefix=fal
     if (preg_match("!/functions$!", $work_dir) || preg_match("!/macros$!", $work_dir)) {
         // Start new functions file with empty entity set
         $function_entities = array();
-        $functions_file = "$work_dir.xml";
+        $functions_file = "$work_dir.entities.xml";
 
         // Get relative file path to original directory, and form an entity
         $functions_file_entity = str_replace("$orig_dir/", "", $work_dir);
