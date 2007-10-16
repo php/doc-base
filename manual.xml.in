@@ -341,7 +341,7 @@
    &reference.ftp.reference;
    &reference.net-gopher.reference;
    &reference.hw.reference;
-   <!--&reference.http.reference;-->
+   &reference.http.reference;
    &reference.hwapi.reference;
    &reference.ircg.reference;
    &reference.java.reference;
