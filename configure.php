@@ -876,6 +876,7 @@ passthru('"' .$ac['PHP'] . '" ' . ' -c ' . $ac['INIPATH'] . ' -q ./scripts/missi
 
 $dom = new DOMDocument();
 $dom->load("manual.xml", LIBXML_NOENT);
+$dom->xinclude();
 if ($dom->validate()) {
   echo "All good.\n";
   $dom->save(".manual.xml");
