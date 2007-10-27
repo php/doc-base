@@ -160,13 +160,13 @@
    &reference.runkit.reference;
   </set>
   
-  <book xml:id="refs.basic.session">
+  <set xml:id="refs.basic.session">
    <title>Session Extensions</title>
    &reference.msession.reference; 
    &reference.muscat.reference;
    &reference.session.reference;
    &reference.session-pgsql.reference;
-  </book>
+  </set>
   
   <book xml:id="refs.basic.other">
    <title>Other Basic Extensions</title>
