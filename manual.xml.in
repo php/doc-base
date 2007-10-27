@@ -148,7 +148,7 @@
    &reference.bbcode.reference;
   </set>
   
-  <book xml:id="refs.basic.php">
+  <set xml:id="refs.basic.php">
    <title>Affecting PHP's Behaviour</title>
    &reference.apc.reference;
    &reference.apd.reference;
@@ -158,7 +158,7 @@
    &reference.info.reference;
    &reference.outcontrol.reference;
    &reference.runkit.reference;
-  </book>
+  </set>
   
   <book xml:id="refs.basic.session">
    <title>Session Extensions</title>
