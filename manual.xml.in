@@ -128,7 +128,7 @@
  <set xml:id="funcref">
   <title>&FunctionReference;</title>
   
-  <book xml:id="refs.basic.vartype">
+  <set xml:id="refs.basic.vartype">
    <title>Variable and Type Related Extensions</title>
    &reference.array.reference;
    &reference.classobj.reference;
@@ -138,7 +138,7 @@
    &reference.funchand.reference;
    &reference.objaggregation.reference;
    &reference.var.reference;
-  </book>
+  </set>
   
   <set xml:id="refs.basic.text">
    <title>Text Processing</title>
