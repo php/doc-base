@@ -140,13 +140,13 @@
    &reference.var.reference;
   </book>
   
-  <book xml:id="refs.basic.text">
+  <set xml:id="refs.basic.text">
    <title>Text Processing</title>
    &reference.strings.reference;
    &reference.regex.reference;
    &reference.pcre.reference;
    &reference.bbcode.reference;
-  </book>
+  </set>
   
   <book xml:id="refs.basic.php">
    <title>Affecting PHP's Behaviour</title>
