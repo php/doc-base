@@ -168,19 +168,23 @@
    &reference.session-pgsql.reference;
   </set>
   
-  <book xml:id="refs.basic.other">
+  <set xml:id="refs.basic.other">
    <title>Other Basic Extensions</title>
    &reference.geoip.reference;
    &reference.json.reference;
    &reference.misc.reference;
    &reference.url.reference;
    &reference.parsekit.reference;
+   <!--
    &reference.spl.reference;
    &reference.reflection.part;
+   -->
    &reference.stream.reference;
+   <!--
    &reference.tidy.reference;
+   -->
    &reference.tokenizer.reference;
-  </book>
+  </set>
   
   <set xml:id="refs.database">
    <title>Database Extensions</title>
