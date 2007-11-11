@@ -114,10 +114,12 @@ $ac['PALMDOCTITLE'] = '';
 $ac['HTMLHELP_ENCODING'] = '';
 $ac['SP_OPTIONS'] = 'SP_ENCODING=XML SP_CHARSET_FIXED=YES';
 $ac['FORCE_DOM_SAVE'] = false;
+$ac['PARTIAL'] = false;
 
 $allowed_opts = array(
     'help',
     'force-dom-save',
+    'partial',
     'with-php=',
     'with-jade=',
     'with-nsgmls=',
@@ -202,6 +204,10 @@ foreach ($_SERVER['argv'] as $opt) {
             break;
         case '--with-treesaving':
             $ac['TREESAVING'] = '#t';
+            break;
+        case '--partial':
+        case '-p':
+            $ac['PARTIAL'] = $v;
             break;
         case '--force-dom-save':
             $ac['FORCE_DOM_SAVE'] = true;
@@ -893,6 +899,38 @@ passthru('"' .$ac['PHP'] . '" ' . ' -c ' . $ac['INIPATH'] . ' -q ./scripts/missi
 $dom = new DOMDocument();
 $dom->load("manual.xml", LIBXML_NOENT);
 $dom->xinclude();
+
+if ($ac['PARTIAL']) {
+    $node = $dom->getElementById($ac['PARTIAL']);
+    if (!$node) exit("Failed to find partial ID in source XML");
+    if ($node->tagName !== 'book' && $node->tagName !== 'set') {
+        // this node is not normally allowed here, attempt to wrap it
+        // in something else
+        $parents = array();
+        switch ($node->tagName) {
+            case 'refentry':
+                $parents[] = 'reference';
+            case 'part':
+                $parents[] = 'book';
+                break;
+        }
+        foreach ($parents as $name) {
+            $newNode = $dom->createElement($name);
+            $newNode->appendChild($node);
+            $node = $newNode;
+        }
+    }
+    $set = $dom->documentElement;
+    $set->nodeValue = '';
+    $set->appendChild($dom->createElement('title', 'PHP Manual (Partial)')); // prevent validate from complaining unnecessarily
+    $set->appendChild($node);
+    $dom->validate(); // we don't care if the validation works or not
+    $filename = '.manual.' . $ac['PARTIAL'] . '.xml';
+    $dom->save($filename);
+    echo "Partial manual saved to $filename, run php build.php on this file\n";
+    exit(0);
+}
+
 if ($dom->validate()) {
   echo "All good.\n";
   $dom->save(".manual.xml");
@@ -904,4 +942,4 @@ if ($dom->validate()) {
     $dom->save(".manual.xml");
   exit(1); // Tell the shell that this script finished with an error.
 }
-  
+
