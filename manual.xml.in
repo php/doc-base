@@ -175,10 +175,8 @@
    &reference.misc.reference;
    &reference.url.reference;
    &reference.parsekit.reference;
-   <!--
-   &reference.spl.reference;
-   &reference.reflection.part;
-   -->
+   &reference.spl.book;
+   <!--&reference.reflection.part;-->
    &reference.stream.reference;
    <!--
    &reference.tidy.reference;
