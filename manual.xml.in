@@ -131,7 +131,7 @@
   <set xml:id="refs.basic.vartype">
    <title>Variable and Type Related Extensions</title>
    &reference.array.reference;
-   &reference.classobj.reference;
+   &reference.classobj.book;
    &reference.classkit.reference;
    &reference.ctype.book;
    &reference.filter.book;
@@ -157,14 +157,14 @@
    &reference.errorfunc.reference;
    &reference.info.reference;
    &reference.outcontrol.reference;
-   &reference.runkit.reference;
+   &reference.runkit.book;
   </set>
   
   <set xml:id="refs.basic.session">
    <title>Session Extensions</title>
    &reference.msession.book;
-   &reference.muscat.reference;
-   &reference.session.reference;
+   &reference.muscat.book;
+   &reference.session.book;
    &reference.session-pgsql.book;
   </set>
   
@@ -174,7 +174,7 @@
    &reference.json.book;
    &reference.misc.reference;
    &reference.url.reference;
-   &reference.parsekit.reference;
+   &reference.parsekit.book;
    &reference.spl.book;
    <!--&reference.reflection.part;-->
    &reference.stream.reference;
