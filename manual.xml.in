@@ -260,14 +260,14 @@
    &reference.xmlrpc.reference;
   </book>
   
-  <book xml:id="refs.creditcard">
+  <set xml:id="refs.creditcard">
    <title>Credit Card Processing</title>
-   &reference.ccvs.reference;
-   &reference.cybercash.reference;
-   &reference.cybermut.reference;
-   &reference.pfpro.reference;
-   &reference.mcve.reference;
-  </book>
+   &reference.ccvs.book;
+   &reference.cybercash.book;
+   &reference.cybermut.book;
+   &reference.pfpro.book;
+   &reference.mcve.book;
+  </set>
   
   <book xml:id="refs.mathcrypto.math">
    <title>Mathematical Extensions</title>
