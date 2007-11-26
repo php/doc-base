@@ -178,9 +178,7 @@
    &reference.spl.book;
    <!--&reference.reflection.part;-->
    &reference.stream.book;
-   <!--
-   &reference.tidy.reference;
-   -->
+   &reference.tidy.book;
    &reference.tokenizer.book;
   </set>
   
