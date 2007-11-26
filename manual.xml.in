@@ -133,19 +133,19 @@
    &reference.array.reference;
    &reference.classobj.reference;
    &reference.classkit.reference;
-   &reference.ctype.reference;
-   &reference.filter.reference;
+   &reference.ctype.book;
+   &reference.filter.book;
    &reference.funchand.reference;
    &reference.objaggregation.reference;
-   &reference.var.reference;
+   &reference.var.book;
   </set>
   
   <set xml:id="refs.basic.text">
    <title>Text Processing</title>
-   &reference.strings.reference;
-   &reference.regex.reference;
+   &reference.strings.book;
+   &reference.regex.book;
    &reference.pcre.reference;
-   &reference.bbcode.reference;
+   &reference.bbcode.book;
   </set>
   
   <set xml:id="refs.basic.php">
@@ -153,7 +153,7 @@
    &reference.apc.reference;
    &reference.apd.reference;
    &reference.bcompiler.reference;
-   &reference.overload.reference;
+   &reference.overload.book;
    &reference.errorfunc.reference;
    &reference.info.reference;
    &reference.outcontrol.reference;
@@ -162,16 +162,16 @@
   
   <set xml:id="refs.basic.session">
    <title>Session Extensions</title>
-   &reference.msession.reference; 
+   &reference.msession.book;
    &reference.muscat.reference;
    &reference.session.reference;
-   &reference.session-pgsql.reference;
+   &reference.session-pgsql.book;
   </set>
   
   <set xml:id="refs.basic.other">
    <title>Other Basic Extensions</title>
    &reference.geoip.reference;
-   &reference.json.reference;
+   &reference.json.book;
    &reference.misc.reference;
    &reference.url.reference;
    &reference.parsekit.reference;
@@ -181,7 +181,7 @@
    <!--
    &reference.tidy.reference;
    -->
-   &reference.tokenizer.reference;
+   &reference.tokenizer.book;
   </set>
   
   <set xml:id="refs.database">
