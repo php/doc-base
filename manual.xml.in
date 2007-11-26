@@ -135,7 +135,7 @@
    &reference.classkit.reference;
    &reference.ctype.book;
    &reference.filter.book;
-   &reference.funchand.reference;
+   &reference.funchand.book;
    &reference.objaggregation.reference;
    &reference.var.book;
   </set>
@@ -152,7 +152,7 @@
    <title>Affecting PHP's Behaviour</title>
    &reference.apc.reference;
    &reference.apd.reference;
-   &reference.bcompiler.reference;
+   &reference.bcompiler.book;
    &reference.overload.book;
    &reference.errorfunc.reference;
    &reference.info.reference;
@@ -170,14 +170,14 @@
   
   <set xml:id="refs.basic.other">
    <title>Other Basic Extensions</title>
-   &reference.geoip.reference;
+   &reference.geoip.book;
    &reference.json.book;
    &reference.misc.reference;
    &reference.url.reference;
    &reference.parsekit.book;
    &reference.spl.book;
    <!--&reference.reflection.part;-->
-   &reference.stream.reference;
+   &reference.stream.book;
    <!--
    &reference.tidy.reference;
    -->
