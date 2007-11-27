@@ -267,13 +267,13 @@
    &reference.mcve.book;
   </set>
   
-  <book xml:id="refs.mathcrypto.math">
+  <set xml:id="refs.mathcrypto.math">
    <title>Mathematical Extensions</title>
-   &reference.bc.reference;
-   &reference.gmp.reference;
-   &reference.math.reference;
-   &reference.stats.reference;
-  </book>
+   &reference.bc.book;
+   &reference.gmp.book;
+   &reference.math.book;
+   &reference.stats.book;
+  </set>
   
   <book xml:id="refs.mathcrypto.crypto">
    <title>Cryptography Extensions</title>
