@@ -284,19 +284,19 @@
    &reference.openssl.book;
   </set>
   
-  <book xml:id="refs.international">
+  <set xml:id="refs.international">
    <title>Human Language and Character Encoding Support</title>
-   &reference.enchant.reference;
-   &reference.fribidi.reference;
-   &reference.gettext.reference;
-   &reference.i18n.reference;
-   &reference.mbstring.reference;
-   &reference.recode.reference;
-   &reference.iconv.reference;
-   &reference.aspell.reference;
-   &reference.pspell.reference;
-   &reference.unicode.reference;
-  </book>
+   &reference.enchant.book;
+   &reference.fribidi.book;
+   &reference.gettext.book;
+   &reference.i18n.book;
+   &reference.mbstring.book;
+   &reference.recode.book;
+   &reference.iconv.book;
+   &reference.aspell.book;
+   &reference.pspell.book;
+   &reference.unicode.book;
+  </set>
   
   <book xml:id="refs.fileprocess.file">
    <title>File System Related Extensions</title>
