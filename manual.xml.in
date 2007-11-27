@@ -275,14 +275,14 @@
    &reference.stats.book;
   </set>
   
-  <book xml:id="refs.mathcrypto.crypto">
+  <set xml:id="refs.mathcrypto.crypto">
    <title>Cryptography Extensions</title>
-   &reference.crack.reference;
-   &reference.hash.reference;
-   &reference.mcrypt.reference;
-   &reference.mhash.reference;
-   &reference.openssl.reference;
-  </book>
+   &reference.crack.book;
+   &reference.hash.book;
+   &reference.mcrypt.book;
+   &reference.mhash.book;
+   &reference.openssl.book;
+  </set>
   
   <book xml:id="refs.international">
    <title>Human Language and Character Encoding Support</title>
