@@ -429,10 +429,11 @@
    &reference.iisfunc.reference;
   </book>
  
-  <book xml:id="refs.utilspec.misc">
+  <set xml:id="refs.utilspec.misc">
    <title>Misc Extensions</title>
-   &reference.satellite.reference;
-  </book>
+   &reference.satellite.book;
+  </set>
+
  </set>
 
  @INTERNALS_EXCL_BEGIN@
