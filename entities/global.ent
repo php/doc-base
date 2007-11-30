@@ -513,3 +513,24 @@
 <!ENTITY link.stig     '<link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="mailto:&email.stig;">Stig S&aelig;ther Bakken</link>'>
 <!ENTITY url.php.books "http://www.php.net/books.php">
 
+<!ENTITY url.cldr.locale "http://www.unicode.org/cldr/">
+<!ENTITY url.iana.locale.subtags "http://www.iana.org/assignments/language-subtag-registry">
+<!ENTITY url.icu.home "http://www.icu-project.org/">
+<!ENTITY url.icu.docs "http://www.icu-project.org/docs/">
+<!ENTITY url.icu.userguide "http://www.icu-project.org/userguide/">
+<!ENTITY url.icu.uca "http://www.unicode.org/reports/tr10/">
+<!ENTITY url.icu.demo "http://demo.icu-project.org/icu-bin/locexp/">
+<!ENTITY url.icu.locale.guide "http://www.icu-project.org/userguide/locale.html">
+<!ENTITY url.icu.locale.api "http://www.icu-project.org/apiref/icu4c/uloc_8h.html#_details">
+<!ENTITY url.icu.formatparse "http://icu-project.org/userguide/formatParse.html">
+<!ENTITY url.icu.formatnumbers "http://icu-project.org/userguide/formatNumbers.html">
+<!ENTITY url.icu.decimalformat "http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details">
+<!ENTITY url.icu.ruleformat "http://www.icu-project.org/apiref/icu4c/classRuleBasedNumberFormat.html#_details">
+<!ENTITY url.icu.formatmsg "http://icu-project.org/userguide/formatMessages.html">
+<!ENTITY url.icu.choiceformat "http://icu-project.org/apiref/icu4c/classChoiceFormat.html#_details">
+<!ENTITY url.icu.msgformat "http://icu-project.org/apiref/icu4c/classMessageFormat.html#_details">
+<!ENTITY url.icu.msgformat "http://icu-project.org/userguide/formatMessages.html">
+<!ENTITY url.icu.normalization.guide "http://www.icu-project.org/userguide/normalization.html">
+<!ENTITY url.icu.normalization.api "http://www.icu-project.org/apiref/icu4c/unorm_8h.html">
+<!ENTITY url.unicode.normalization "http://unicode.org/reports/tr15/">
+<!ENTITY url.unicode.normalization.faq "http://unicode.org/faq/normalization.html">
