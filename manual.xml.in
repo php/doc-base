@@ -298,16 +298,16 @@
    &reference.unicode.book;
   </set>
   
-  <book xml:id="refs.fileprocess.file">
+  <set xml:id="refs.fileprocess.file">
    <title>File System Related Extensions</title>
-   &reference.dio.reference;
-   &reference.dir.reference;
-   &reference.fileinfo.reference;
-   &reference.filesystem.reference;
-   &reference.mime-magic.reference;
-   &reference.xattr.reference;
-   &reference.xdiff.reference;
-  </book>
+   &reference.dio.book;
+   &reference.dir.book;
+   &reference.fileinfo.book;
+   &reference.filesystem.book;
+   &reference.mime-magic.book;
+   &reference.xattr.book;
+   &reference.xdiff.book;
+  </set>
   
   <book xml:id="refs.fileprocess.process">
    <title>Process Control Extensions</title>
