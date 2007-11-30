@@ -371,12 +371,12 @@
    &reference.zlib.book;
   </set>
   
-  <book xml:id="refs.calendar">
+  <set xml:id="refs.calendar">
    <title>Calendar and Event Related Extensions</title>
-   &reference.calendar.reference;
-   &reference.datetime.reference;
-   &reference.mcal.reference;
-  </book>
+   &reference.calendar.book;
+   &reference.datetime.book;
+   &reference.mcal.book;
+  </set>
   
   <book xml:id="refs.utilspec.nontext">
    <title>Non-Text MIME Output</title>
