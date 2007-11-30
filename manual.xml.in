@@ -319,14 +319,14 @@
    &reference.shmop.reference;
   </book>
   
-  <book xml:id="refs.remote.mail">
+  <set xml:id="refs.remote.mail">
    <title>Mail Related Extensions</title>
-   &reference.cyrus.reference;  
-   &reference.mail.reference;
-   &reference.mailparse.reference;
-   &reference.imap.reference;
-   &reference.vpopmail.reference;
-  </book>
+   &reference.cyrus.book;  
+   &reference.mail.book;
+   &reference.mailparse.book;
+   &reference.imap.book;
+   &reference.vpopmail.book;
+  </set>
 
   <book xml:id="refs.remote.auth">
    <title>Authentication Services</title>
@@ -360,15 +360,15 @@
    &reference.snmp.reference;
   </book>
   
-  <book xml:id="refs.compression">
+  <set xml:id="refs.compression">
    <title>Compression Extensions</title>
-   &reference.bzip2.reference;
-   &reference.lzf.reference;
-   &reference.phar.reference;
-   &reference.rar.reference;
-   &reference.zip.reference;
-   &reference.zlib.reference;
-  </book>
+   &reference.bzip2.book;
+   &reference.lzf.book;
+   &reference.phar.book;
+   &reference.rar.book;
+   &reference.zip.book;
+   &reference.zlib.book;
+  </set>
   
   <book xml:id="refs.calendar">
    <title>Calendar and Event Related Extensions</title>
@@ -422,12 +422,12 @@
    &reference.printer.reference;
   </book>
   
-  <book xml:id="refs.utilspec.server">
+  <set xml:id="refs.utilspec.server">
    <title>Server Specific Extensions</title>
-   &reference.apache.reference;
-   &reference.nsapi.reference;
-   &reference.iisfunc.reference;
-  </book>
+   &reference.apache.book;
+   &reference.nsapi.book;
+   &reference.iisfunc.book;
+  </set>
  
   <set xml:id="refs.utilspec.misc">
    <title>Misc Extensions</title>
