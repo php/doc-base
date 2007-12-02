@@ -378,19 +378,19 @@
    &reference.mcal.book;
   </set>
   
-  <book xml:id="refs.utilspec.nontext">
+  <set xml:id="refs.utilspec.nontext">
    <title>Non-Text MIME Output</title>
-   &reference.cpdf.reference;
-   &reference.fdf.reference;
-   &reference.gnupg.reference;
-   &reference.haru.reference;
-   &reference.pdf.reference;
-   &reference.ming.reference;
-   &reference.ps.reference;
-   &reference.rpmreader.reference;
-   &reference.swf.reference;
-   &reference.swish.reference;
-  </book>
+   &reference.cpdf.book;
+   &reference.fdf.book;
+   &reference.gnupg.book;
+   &reference.haru.book;
+   &reference.pdf.book;
+   &reference.ming.book;
+   &reference.ps.book;
+   &reference.rpmreader.book;
+   &reference.swf.book;
+   &reference.swish.book;
+  </set>
   
   <book xml:id="refs.utilspec.image">
    <title>Image Processing and Generation</title>
