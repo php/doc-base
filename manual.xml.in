@@ -399,12 +399,12 @@
    &reference.imagick.reference;
   </book>
 
-  <book xml:id="refs.utilspec.audio">
+  <set xml:id="refs.utilspec.audio">
    <title>Audio Formats Manipulation</title>
-   &reference.id3.reference;
-   &reference.oggvorbis.reference;
-   &reference.openal.reference;
-  </book>
+   &reference.id3.book;
+   &reference.oggvorbis.book;
+   &reference.openal.book;
+  </set>
 
   <book xml:id="refs.utilspec.cmdline">
    <title>Command Line Specific Extensions</title>
