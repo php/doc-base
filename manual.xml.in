@@ -406,12 +406,12 @@
    &reference.openal.book;
   </set>
 
-  <book xml:id="refs.utilspec.cmdline">
+  <set xml:id="refs.utilspec.cmdline">
    <title>Command Line Specific Extensions</title>
-   &reference.newt.reference;
-   &reference.ncurses.reference;
-   &reference.readline.reference;
-  </book>
+   &reference.newt.book;
+   &reference.ncurses.book;
+   &reference.readline.book;
+  </set>
   
   <book xml:id="refs.utilspec.windows">
    <title>Windows Only Extensions</title>
