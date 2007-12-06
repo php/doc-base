@@ -310,15 +310,15 @@
    &reference.xdiff.book;
   </set>
   
-  <book xml:id="refs.fileprocess.process">
+  <set xml:id="refs.fileprocess.process">
    <title>Process Control Extensions</title>
-   &reference.expect.reference;
-   &reference.posix.reference;
-   &reference.pcntl.reference;
-   &reference.exec.reference;
-   &reference.sem.reference;
-   &reference.shmop.reference;
-  </book>
+   &reference.expect.book;
+   &reference.posix.book;
+   &reference.pcntl.book;
+   &reference.exec.book;
+   &reference.sem.book;
+   &reference.shmop.book;
+  </set>
   
   <set xml:id="refs.remote.mail">
    <title>Mail Related Extensions</title>
