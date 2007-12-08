@@ -240,11 +240,11 @@
    &reference.xslt.reference;
   </book>
   
-  <book xml:id="refs.webservice">
+  <set xml:id="refs.webservice">
    <title>Web Services</title>
-   &reference.soap.reference;
-   &reference.xmlrpc.reference;
-  </book>
+   &reference.soap.book;
+   &reference.xmlrpc.book;
+  </set>
   
   <set xml:id="refs.creditcard">
    <title>Credit Card Processing</title>
