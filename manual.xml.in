@@ -223,22 +223,22 @@
    </set>
   </set>
   
-  <book xml:id="refs.xml">
+  <set xml:id="refs.xml">
    <title>XML Manipulation</title>
-   &reference.dom.reference;
-   &reference.domxml.reference;
-   &reference.libxml.reference;
-   &reference.qtdom.reference;
-   &reference.sca.reference;
-   &reference.sdo-das-xml.reference;
-   &reference.simplexml.reference;
-   &reference.wddx.reference;
-   &reference.xml.reference;
-   &reference.xmlreader.part;
-   &reference.xmlwriter.reference;
-   &reference.xsl.reference;
-   &reference.xslt.reference;
-  </book>
+   &reference.dom.book;
+   &reference.domxml.book;
+   &reference.libxml.book;
+   &reference.qtdom.book;
+   &reference.sca.book;
+   &reference.sdo-das-xml.book;
+   &reference.simplexml.book;
+   &reference.wddx.book;
+   &reference.xml.book;
+   &reference.xmlreader.book;
+   &reference.xmlwriter.book;
+   &reference.xsl.book;
+   &reference.xslt.book;
+  </set>
   
   <set xml:id="refs.webservice">
    <title>Web Services</title>
