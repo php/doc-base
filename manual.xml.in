@@ -400,15 +400,17 @@
    &reference.readline.book;
   </set>
   
-  <book xml:id="refs.utilspec.windows">
+  <set xml:id="refs.utilspec.windows">
    <title>Windows Only Extensions</title>
-   &reference.dotnet.reference;
-   &reference.com.reference;
-   &reference.w32api.reference;
-   &reference.win32ps.reference;
-   &reference.win32service.reference;
-   &reference.printer.reference;
-  </book>
+   <!--
+   &reference.dotnet.book;
+   &reference.com.book;
+   -->
+   &reference.w32api.book;
+   &reference.win32ps.book;
+   &reference.win32service.book;
+   &reference.printer.book;
+  </set>
   
   <set xml:id="refs.utilspec.server">
    <title>Server Specific Extensions</title>
