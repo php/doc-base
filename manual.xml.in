@@ -379,12 +379,12 @@
    &reference.swish.book;
   </set>
   
-  <book xml:id="refs.utilspec.image">
+  <set xml:id="refs.utilspec.image">
    <title>Image Processing and Generation</title>
-   &reference.exif.reference;
-   &reference.image.reference;
-   &reference.imagick.reference;
-  </book>
+   &reference.exif.book;
+   &reference.image.book;
+   &reference.imagick.book;
+  </set>
 
   <set xml:id="refs.utilspec.audio">
    <title>Audio Formats Manipulation</title>
