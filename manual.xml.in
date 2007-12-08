@@ -402,10 +402,8 @@
   
   <set xml:id="refs.utilspec.windows">
    <title>Windows Only Extensions</title>
-   <!--
    &reference.dotnet.book;
    &reference.com.book;
-   -->
    &reference.w32api.book;
    &reference.win32ps.book;
    &reference.win32service.book;
