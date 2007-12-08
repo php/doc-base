@@ -316,11 +316,11 @@
    &reference.vpopmail.book;
   </set>
 
-  <book xml:id="refs.remote.auth">
+  <set xml:id="refs.remote.auth">
    <title>Authentication Services</title>
-   &reference.radius.reference;
-   &reference.kadm5.reference;
-  </book>
+   &reference.radius.book;
+   &reference.kadm5.book;
+  </set>
 
   <set xml:id="refs.remote.other">
    <title>Other Services</title>
