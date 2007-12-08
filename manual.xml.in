@@ -196,31 +196,31 @@
     &reference.pdo.book;
    </set>
   
-   <book xml:id="refs.database.vendors">
+   <set xml:id="refs.database.vendors">
     <title>Vendor Specific Database Extensions</title>
-    &reference.dbase.reference;
-    &reference.dbm.reference;
-    &reference.dbplus.reference;
-    &reference.fbsql.reference;
-    &reference.filepro.reference;
-    &reference.ifx.reference;
-    &reference.ibase.reference;
-    &reference.ibm-db2.reference;
-    &reference.ingres-ii.reference;
-    &reference.maxdb.reference;
-    &reference.mssql.reference;
-    &reference.msql.reference;
-    &reference.mysql.reference;
-    &reference.mysqli.reference;
-    &reference.oci8.reference;
-    &reference.oracle.reference;
-    &reference.ovrimos.reference;
-    &reference.paradox.reference;
-    &reference.pgsql.reference;
-    &reference.sesam.reference;
-    &reference.sqlite.reference;
-    &reference.sybase.reference;
-   </book>
+    &reference.dbase.book;
+    &reference.dbm.book;
+    &reference.dbplus.book;
+    &reference.fbsql.book;
+    &reference.filepro.book;
+    &reference.ifx.book;
+    &reference.ibase.book;
+    &reference.ibm-db2.book;
+    &reference.ingres-ii.book;
+    &reference.maxdb.book;
+    &reference.mssql.book;
+    &reference.msql.book;
+    &reference.mysql.book;
+    &reference.mysqli.book;
+    &reference.oci8.book;
+    &reference.oracle.book;
+    &reference.ovrimos.book;
+    &reference.paradox.book;
+    &reference.pgsql.book;
+    &reference.sesam.book;
+    &reference.sqlite.book;
+    &reference.sybase.book;
+   </set>
   </set>
   
   <book xml:id="refs.xml">
