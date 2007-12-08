@@ -193,21 +193,8 @@
     &reference.sdo.book;
     &reference.sdodasrel.book;
     &reference.uodbc.book;
+    &reference.pdo.book;
    </set>
-
-   <book xml:id="book.pdo">
-    <title>PDO</title>
-    &reference.pdo.reference;
-    &reference.pdo-dblib.reference;
-    &reference.pdo-firebird.reference;
-    &reference.pdo-ibm.reference;
-    &reference.pdo-informix.reference;
-    &reference.pdo-mysql.reference;
-    &reference.pdo-oci.reference;
-    &reference.pdo-odbc.reference;
-    &reference.pdo-pgsql.reference;
-    &reference.pdo-sqlite.reference;
-   </book>
   
    <book xml:id="refs.database.vendors">
     <title>Vendor Specific Database Extensions</title>
