@@ -93,6 +93,7 @@
   &language.oop5;
   &language.exceptions;
   &language.references;
+  &language.namespaces;
  </book>
 
  <book xml:id="security">
