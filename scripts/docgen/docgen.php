@@ -834,21 +834,48 @@ function gen_docs($name, $type) {	/* {{{ */
 			write_doc($extension, DOC_EXTENSION);
 
 			if($OPTION['gtk']) {
-				$classes = array();
 				$dirsep = DIRECTORY_SEPARATOR;
-				$defs = glob("{$OPTION['gtk']}{$dirsep}ext{$dirsep}*{$dirsep}*.defs");
-				foreach($defs as &$defsfile) $defsfile = file($defsfile);
-				$data = call_user_func_array("array_merge", $defs);
-				foreach ($data as $line) {
-					preg_match("/(?:of-object \")(\w*)(?:\")/", $line, $matches);
-					if($matches) $classes[] =  $matches[1];
-				}
-				$classes = array_unique($classes);
+				$initialOutput = $OPTION["output"];
+				$exts = glob("{$OPTION['gtk']}{$dirsep}ext{$dirsep}*", GLOB_ONLYDIR);
+				foreach($exts as $ext) {
+					echo "Generating ".basename($ext)." PHP-GTK sub-extension.".PHP_EOL;
+					$classes = array();
+					$OPTION["output"] = $OPTION["output"].$dirsep.basename($ext);
+					mkdir($OPTION["output"]);
+					
+					$defs = glob("{$ext}{$dirsep}*.defs");
+					if(empty($defs)) continue;
+					foreach($defs as &$defsfile) {
+						echo "Reading objects from {$defsfile}.".PHP_EOL;
+						$defsfile = file($defsfile);
+					}
+					$data = call_user_func_array("array_merge", $defs);
+					foreach ($data as $line) {
+						preg_match("/(?:of-object \")(\w*)(?:\")/", $line, $matches);
+						if($matches) $classes[] =  $matches[1];
+					}
+					$classes = array_unique($classes);
+					
+					echo "Classes: ".implode(", ", $classes).PHP_EOL;
 
-				foreach ($classes as $classtmp) {
-					if(!class_exists($classtmp)) continue;
-					$class = new ReflectionClass($classtmp);
-					gen_docs($class->name, DOC_CLASS);
+					foreach ($classes as $classtmp) {
+						if(!class_exists($classtmp)) continue;
+						$class = new ReflectionClass($classtmp);
+						
+						if(basename($ext) == "gtk+") {
+							$classLevelOutput = $OPTION["output"];
+							
+							if(is_int(stripos($classtmp, "Gtk"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}gtk";
+							elseif(is_int(stripos($classtmp, "Atk"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}atk";
+							elseif(is_int(stripos($classtmp, "Gdk"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}gdk";
+							elseif(is_int(stripos($classtmp, "Pango"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}pango";
+							
+							if(!is_dir($OPTION["output"])) mkdir($OPTION["output"]);
+						}
+						gen_docs($class->name, DOC_CLASS);
+						if(basename($ext) == "gtk+") $OPTION["output"] = $classLevelOutput;
+					}
+					$OPTION["output"] = $initialOutput;
 				}
 			} else {
 				foreach ($extension->getClasses() as $class) {
