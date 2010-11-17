@@ -70,6 +70,7 @@ Options:
 	-c,--class 	-- class name
 	-e,--extension	-- extension name
 	-f,--function	-- function name
+	-g,--gtk	-- specify the PHP-GTK source directory
 	-h,--help	-- show this help
 	-i,--include	-- includes a PHP file 
 	(shortcut for: php -dauto_prepend_file=streams.php docgen.php)
@@ -832,8 +833,35 @@ function gen_docs($name, $type) {	/* {{{ */
 
 			write_doc($extension, DOC_EXTENSION);
 
-			foreach ($extension->getClasses() as $class) {
-				gen_docs($class->name, DOC_CLASS);
+			if($OPTION['gtk']) {
+				$classes = array();
+				$dirsep = DIRECTORY_SEPARATOR;
+				$data = array_merge(
+					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}gtk+{$dirsep}atk.defs"),
+					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}gtk+{$dirsep}gdk.defs"),
+					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}gtk+{$dirsep}gtk.defs"),
+					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}extra{$dirsep}gtkextra.defs"),
+					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}html{$dirsep}html.defs"),
+					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}libglade{$dirsep}libglade.defs"),
+					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}libsexy{$dirsep}sexy.defs"),
+					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}mozembed{$dirsep}mozembed.defs"),
+					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}sourceview{$dirsep}sourceview.defs")
+				);
+				foreach ($data as $line) {
+					preg_match("/(?:of-object \")(\w*)(?:\")/", $line, $matches);
+					if($matches) $classes[] =  $matches[1];
+				}
+				$classes = array_unique($classes);
+
+				foreach ($classes as $classtmp) {
+					if(!class_exists($classtmp)) continue;
+					$class = new ReflectionClass($classtmp);
+					gen_docs($class->name, DOC_CLASS);
+				}
+			} else {
+				foreach ($extension->getClasses() as $class) {
+					gen_docs($class->name, DOC_CLASS);
+				}
 			}
 
 			foreach ($extension->getFunctions() as $function) {
@@ -1005,6 +1033,7 @@ $OPTION['extension'] = NULL;
 $OPTION['method']	 = NULL;
 $OPTION['class']	 = NULL;
 $OPTION['function']  = NULL;
+$OPTION['gtk']		 = NULL;
 $OPTION['output']	 = getcwd() . '/output';
 $OPTION['verbose']   = true;
 $OPTION['quiet']	 = false;
@@ -1033,6 +1062,7 @@ $arropts = array(
 	'class:'  		=> 'c:', /* classname */
 	'extension:' 	=> 'e:', /* extension */
 	'function:' 	=> 'f:', /* function */
+	'gtk:'			=> 'g:',  /* gtk */
 	'method:' 		=> 'm:'  /* method */
 );
 
@@ -1064,6 +1094,10 @@ foreach ($options as $opt => $value) {
 		case 'f':
 		case 'function':
 			$OPTION['function'] = $value;
+			break;
+		case 'g':
+		case 'gtk':
+			$OPTION['gtk'] = $value;
 			break;
 		case 'm':
 		case 'method':
