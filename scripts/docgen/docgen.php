@@ -836,17 +836,9 @@ function gen_docs($name, $type) {	/* {{{ */
 			if($OPTION['gtk']) {
 				$classes = array();
 				$dirsep = DIRECTORY_SEPARATOR;
-				$data = array_merge(
-					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}gtk+{$dirsep}atk.defs"),
-					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}gtk+{$dirsep}gdk.defs"),
-					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}gtk+{$dirsep}gtk.defs"),
-					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}extra{$dirsep}gtkextra.defs"),
-					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}html{$dirsep}html.defs"),
-					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}libglade{$dirsep}libglade.defs"),
-					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}libsexy{$dirsep}sexy.defs"),
-					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}mozembed{$dirsep}mozembed.defs"),
-					file("{$OPTION['gtk']}{$dirsep}ext{$dirsep}sourceview{$dirsep}sourceview.defs")
-				);
+				$defs = glob("{$OPTION['gtk']}{$dirsep}ext{$dirsep}*{$dirsep}*.defs");
+				foreach($defs as &$defsfile) $defsfile = file($defsfile);
+				$data = call_user_func_array("array_merge", $defs);
 				foreach ($data as $line) {
 					preg_match("/(?:of-object \")(\w*)(?:\")/", $line, $matches);
 					if($matches) $classes[] =  $matches[1];
