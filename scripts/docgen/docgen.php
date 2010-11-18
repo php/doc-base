@@ -352,6 +352,60 @@ function gen_method_markup(ReflectionMethod $method, $content) { /* {{{ */
 }
 /* }}} */
 
+function gen_signal_markup(array $signal, $content) { /* {{{ */
+	/* {CLASS_NAME_ID} */
+	$content = preg_replace('/\{CLASS_NAME_ID\}/', format_id($signal[2]->name), $content);
+
+	/* {SIGNAL_NAME_ID} */
+	$content = preg_replace('/\{SIGNAL_NAME_ID\}/', format_id($signal[1]), $content);
+	
+	/* {SIGNAL_NAME} */
+	$content = preg_replace('/\{SIGNAL_NAME\}/', $signal[1], $content);
+
+	if(!empty($signal[5])) {
+		$ident = get_ident_size($param_name, $content);
+		
+		/* {SIGNAL_PARAMETERS} */
+		$count = 1;
+		$markup = "";
+		foreach($signal[5] as $param) {
+			$type = $param->name;
+			$markup .= sprintf("%s<methodparam><type>%s</type><parameter>%s</parameter></methodparam>\n",
+				($markup ? str_repeat(' ', $ident) : ''),
+				$type,
+				'param'. $count);
+			$count++;
+		}
+		$content = preg_replace('/\{SIGNAL_PARAMETERS\}/', rtrim($markup, "\n"), $content);
+
+		/* {PARAMETERS_DESCRIPTION} */
+		if ($ident = get_ident_size('PARAMETERS_DESCRIPTION', $content)) {
+			$count = 1;
+
+			$markup = "<variablelist>\n";
+			foreach ($signal[5] as $param) {
+				$markup .= str_repeat(' ', $ident + 1) ."<varlistentry>\n";
+				$markup .= str_repeat(' ', $ident + 2) .'<term><parameter>param'. $count ."</parameter></term>\n";
+				$markup .= str_repeat(' ', $ident + 2) ."<listitem>\n";
+				$markup .= str_repeat(' ', $ident + 3) ."<para>\n";
+				$markup .= str_repeat(' ', $ident + 4) ."\n";
+				$markup .= str_repeat(' ', $ident + 3) ."</para>\n";
+				$markup .= str_repeat(' ', $ident + 2) ."</listitem>\n";
+				$markup .= str_repeat(' ', $ident + 1) ."</varlistentry>\n";
+
+				$count++;
+			}
+			$markup .= str_repeat(' ', $ident) ."</variablelist>";
+
+			$content = preg_replace('/\{PARAMETERS_DESCRIPTION\}/', $markup, $content, 1);
+		}
+	} else {
+		$content = preg_replace('/\{SIGNAL\}/', '<void />', $content, 1);
+		$content = preg_replace('/\{PARAMETERS_DESCRIPTION\}/', '&no.function.parameters;', $content, 1);
+	}
+}
+/* }}} */
+
 function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $function, $content) { /* {{{ */
 	if ($method->getNumberOfParameters() || $function->getNumberOfParameters()) {
 		/* {PARAMETERS_DESCRIPTION} */
@@ -414,6 +468,8 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
 /* }}} */
 
 function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
+	global $OPTION;
+
 	$id = format_id($class->getName());
 
 	/* {CLASS_NAME} */
@@ -455,6 +511,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 
 	/* {CONSTANTS_LIST} */
 	if ($constants = $class->getConstants()) {
+		if($OPTION["gtk"]) $constants = array("gtype"=>$constants["gtype"]);
 		$ident = get_ident_size('CONSTANTS_LIST', $content);
 		$markup = "<classsynopsisinfo role=\"comment\">Constants</classsynopsisinfo>\n";
 
@@ -553,7 +610,62 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
     	$content = preg_replace('/\{PROPERTIES\}/', $markup, $content, 1);
 	} else {
 		$content = preg_replace('/^\s*\{PROPERTIES\}.*?\n/m', '', $content, 1);
-    }
+   	}
+   	
+   	if($OPTION["gtk"]) {
+   		/* {FIELDS_LIST} */
+   		if(($class->isInstantiable() || $class->isInterface) && is_int($class->getConstant("gtype")) && $gtkfields = @GObject::list_properties($class->getConstant("gtype")) && !empty($gtkfields)) {
+   			$ident = get_ident_size('FIELDS_LIST', $content);
+   			
+   			$markup = "<classsynopsisinfo role=\"comment\">Fields</classsynopsisinfo>\n";
+			foreach ($gtkfields as $field) {
+				$markup .= str_repeat(' ', $ident) ."<fieldsynopsis>\n";
+				$markup .= str_repeat(' ', $ident + 1) .'<modifier>'. $field->value_type->name ."</modifier>\n";
+				$markup .= str_repeat(' ', $ident + 1) .'<varname linkend="'. $id .'.fields.'. format_id($field->name) .'">'. $field->name ."</varname>\n";
+				$markup .= str_repeat(' ', $ident) ."</fieldsynopsis>\n";
+			}
+
+			$content = preg_replace('/\{FIELDS_LIST\}/', $markup, $content, 1);
+		} else {
+			$content = preg_replace('/^\s*\{FIELDS_LIST\}.*?\n/m', '', $content, 1);
+		}
+
+		/* {FIELDS} */
+		if ($gtkfields) {
+			$ident = get_ident_size('FIELDS', $content);
+
+			$markup  = "\n<!-- {{{ ". $class->getName() ." fields -->\n";
+			$markup .= str_repeat(' ', $ident) ."<section xml:id=\"". $id .".fields\">\n";
+			$markup .= str_repeat(' ', $ident + 1) ."&reftitle.fields;\n";
+			$markup .= str_repeat(' ', $ident + 1) ."<variablelist>\n";
+
+			foreach ($gtkfields as $field) {
+				$markup .= str_repeat(' ', $ident + 2) .'<varlistentry xml:id="'. $id .'.fields.'. format_id($field->name) ."\">\n";
+				$markup .= str_repeat(' ', $ident + 3) .'<term><varname>'. $field->name ."</varname></term>\n";
+	     		$markup .= str_repeat(' ', $ident + 3) ."<listitem>\n";
+	      		$markup .= str_repeat(' ', $ident + 4) ."<para></para>\n";
+	     		$markup .= str_repeat(' ', $ident + 3) ."</listitem>\n";
+	    		$markup .= str_repeat(' ', $ident + 2) ."</varlistentry>\n";
+			}
+
+			$markup .= str_repeat(' ', $ident + 1) ."</variablelist>\n";
+	  		$markup .= str_repeat(' ', $ident) ."</section>\n";
+	  		$markup .= "<!-- }}} -->\n";
+
+	    		$content = preg_replace('/\{FIELDS\}/', $markup, $content, 1);
+		} else {
+			$content = preg_replace('/^\s*\{FIELDS\}.*?\n/m', '', $content, 1);
+	   	}
+	   	
+	   	/* {SIGNALS_LIST} 
+	   	if($gtksignals = GObject::signal_list_ids($class->getConstant("gtype"))) {
+	   		foreach($gtksignals as &$signal) $signal = GObject::signal_query($signal, $class->getConstant("gtype"));
+	   		
+	   		$ident = get_ident_size('SIGNALS_LIST', $content);
+	   		
+	   		$markup = "\n";
+	   	} */
+   	}
 
 	/* {PROPERTY_XINCLUDE} */
 	$content = preg_replace('/\{PROPERTY_XINCLUDE\}/',
@@ -730,7 +842,7 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 }
 /* }}} */
 
-function write_doc(Reflector $obj, $type) { /* {{{ */
+function write_doc($obj, $type) { /* {{{ */
 	global $OPTION, $INFO, $TEMPLATE, $DOC_EXT;
 
 	switch ($type) {
@@ -818,6 +930,25 @@ function write_doc(Reflector $obj, $type) { /* {{{ */
 			$content = str_replace('{DEFAULT_SEEALSO}', get_default_role('seealso', $obj->getName(), $OPTION['seealso']), $content);
 			save_file($filename, global_check($content));
 		break;
+		
+		case DOC_SIGNAL:
+			$path = $OPTION['output'] .'/'. strtolower($obj[2]->name) .'/signals';
+			$filename = $path .'/'. format_filename($obj[1]) .'.xml';
+
+			create_dir($path);
+			
+			echo "Generating signal {$obj[1]}: {$filename}".PHP_EOL;
+
+			$INFO['actual_file'] = $filename;
+			
+			$content = file_get_contents(dirname(__FILE__) .'/'. $TEMPLATE[$type]);
+			$content = gen_signal_markup($obj, $content);
+			$content = str_replace('{DEFAULT_EXAMPLE}', get_default_role('example', "{$obj[2]->name}::{$obj[1]}", $OPTION['example']), $content);
+			
+			$content = str_replace('{DEFAULT_SEEALSO}', get_default_role('seealso', "{$obj[2]->name}::{$obj[1]}", $OPTION['seealso']), $content);
+			
+			save_file($filename, global_check($content));
+		break;
 	}
 }
 /* }}} */
@@ -841,7 +972,7 @@ function gen_docs($name, $type) {	/* {{{ */
 					echo "Generating ".basename($ext)." PHP-GTK sub-extension.".PHP_EOL;
 					$classes = array();
 					$OPTION["output"] = $OPTION["output"].$dirsep.basename($ext);
-					mkdir($OPTION["output"]);
+					create_dir($OPTION["output"]);
 					
 					$defs = glob("{$ext}{$dirsep}*.defs");
 					if(empty($defs)) continue;
@@ -870,9 +1001,16 @@ function gen_docs($name, $type) {	/* {{{ */
 							elseif(is_int(stripos($classtmp, "Gdk"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}gdk";
 							elseif(is_int(stripos($classtmp, "Pango"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}pango";
 							
-							if(!is_dir($OPTION["output"])) mkdir($OPTION["output"]);
+							create_dir($OPTION["output"]);
 						}
 						gen_docs($class->name, DOC_CLASS);
+						
+						if(($class->isInstantiable() || $class->isInterface()) && $signals = @GObject::signal_list_ids($class->getConstant("gtype")) && !empty($signals)) foreach($signals as $signal) {
+							$signal = GObject::signal_query($signal, $class->getConstant("gtype"));
+							
+							write_doc($signal, DOC_SIGNAL);
+						}
+						
 						if(basename($ext) == "gtk+") $OPTION["output"] = $classLevelOutput;
 					}
 					$OPTION["output"] = $initialOutput;
@@ -1202,6 +1340,12 @@ if (!empty($OPTION['extension'])) {
 
 if (!empty($OPTION['function'])) {
 	gen_docs($OPTION['function'], DOC_FUNCTION);
+}
+
+if (!empty($OPTION['gtk'])) {
+	define('DOC_SIGNAL', 1<<5);
+	$TEMPLATE[DOC_CLASS] = 'gtk/class.tpl';
+	$TEMPLATE[DOC_SIGNAL] = 'gtk/signal.tpl';
 }
 
 if (!empty($OPTION['method'])) {
