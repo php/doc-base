@@ -614,7 +614,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
    	
    	if($OPTION["gtk"]) {
    		/* {FIELDS_LIST} */
-   		if(($class->isInstantiable() || $class->isInterface) && is_int($class->getConstant("gtype")) && $gtkfields = @GObject::list_properties($class->getConstant("gtype")) && !empty($gtkfields)) {
+   		if(($class->isInstantiable() || $class->isInterface) && is_int($class->getConstant("gtype")) && $gtkfields = GObject::list_properties($class->getConstant("gtype")) && !empty($gtkfields)) {
    			$ident = get_ident_size('FIELDS_LIST', $content);
    			
    			$markup = "<classsynopsisinfo role=\"comment\">Fields</classsynopsisinfo>\n";
@@ -1005,7 +1005,7 @@ function gen_docs($name, $type) {	/* {{{ */
 						}
 						gen_docs($class->name, DOC_CLASS);
 						
-						if(($class->isInstantiable() || $class->isInterface()) && $signals = @GObject::signal_list_ids($class->getConstant("gtype")) && !empty($signals)) foreach($signals as $signal) {
+						if(($class->isInstantiable() || $class->isInterface()) && $signals = GObject::signal_list_ids($class->getConstant("gtype"))) foreach($signals as $signal) {
 							$signal = GObject::signal_query($signal, $class->getConstant("gtype"));
 							
 							write_doc($signal, DOC_SIGNAL);
