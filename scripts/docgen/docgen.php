@@ -1005,12 +1005,6 @@ function gen_docs($name, $type) {	/* {{{ */
 						}
 						gen_docs($class->name, DOC_CLASS);
 						
-						if(($class->isInstantiable() || $class->isInterface()) && $signals = GObject::signal_list_ids($class->getConstant("gtype"))) foreach($signals as $signal) {
-							$signal = GObject::signal_query($signal, $class->getConstant("gtype"));
-							
-							write_doc($signal, DOC_SIGNAL);
-						}
-						
 						if(basename($ext) == "gtk+") $OPTION["output"] = $classLevelOutput;
 					}
 					$OPTION["output"] = $initialOutput;
@@ -1084,6 +1078,14 @@ function gen_docs($name, $type) {	/* {{{ */
 				if ($method->getDeclaringClass()->name == $class->name) {
 					write_doc($method, DOC_METHOD);
 				}
+			}
+			
+			if(	$OPTION['gtk'] &&
+				($class->isInstantiable() || $class->isInterface()) &&
+				$signals = GObject::signal_list_ids($class->getConstant("gtype"))
+			) foreach($signals as $signal) {
+				$signal = GObject::signal_query($signal, $class->getConstant("gtype"));
+				write_doc($signal, DOC_SIGNAL);
 			}
 		} catch (Exception $e) {
 			die('Error: '. $e->getMessage() ."\n");
