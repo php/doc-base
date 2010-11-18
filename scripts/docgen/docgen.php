@@ -156,6 +156,7 @@ function create_markup_to_modifiers(ReflectionMethod $method) { /* {{{ */
 /* }}} */
 
 function format_id($name) { /* {{{ */
+	$name = preg_replace('/\+/', 'plus', $name);
 	return preg_replace(array('/[^[:alnum:]]/', '/^-+/'), array('-', ''), strtolower($name));
 }
 /* }}} */
@@ -403,9 +404,10 @@ function gen_signal_markup(array $signal, $content) { /* {{{ */
 			$content = preg_replace('/\{PARAMETERS_DESCRIPTION\}/', $markup, $content, 1);
 		}
 	} else {
-		$content = preg_replace('/\{SIGNAL\}/', '<void />', $content, 1);
+		$content = preg_replace('/\{SIGNAL_PARAMETERS\}/', '<void />', $content, 1);
 		$content = preg_replace('/\{PARAMETERS_DESCRIPTION\}/', '&no.function.parameters;', $content, 1);
 	}
+	return $content;
 }
 /* }}} */
 
@@ -942,7 +944,7 @@ function write_doc($obj, $type) { /* {{{ */
 			
 			create_dir($path);
 			
-			$path = $OPTION['output'] . '/signals';
+			$path = $path . '/signals';
 			$filename = $path .'/'. format_filename($obj[1]) .'.xml';
 
 			create_dir($path);
@@ -979,9 +981,10 @@ function gen_docs($name, $type) {	/* {{{ */
 				$initialOutput = $OPTION["output"];
 				$exts = glob("{$OPTION['gtk']}{$dirsep}ext{$dirsep}*", GLOB_ONLYDIR);
 				foreach($exts as $ext) {
-					if ($OPTION['verbose']) echo "Generating ".basename($ext)." PHP-GTK sub-extension.".PHP_EOL;
+					$extname = format_id(basename($ext));
+					if ($OPTION['verbose']) echo "Generating ".$extname." PHP-GTK sub-extension.".PHP_EOL;
 					$classes = array();
-					$OPTION["output"] = $OPTION["output"].$dirsep.basename($ext);
+					$OPTION["output"] = $OPTION["output"].$dirsep.$extname;
 					create_dir($OPTION["output"]);
 					
 					$defs = glob("{$ext}{$dirsep}*.defs");
@@ -1003,7 +1006,7 @@ function gen_docs($name, $type) {	/* {{{ */
 						if(!class_exists($classtmp)) continue;
 						$class = new ReflectionClass($classtmp);
 						
-						if(basename($ext) == "gtk+") {
+						if($extname == "gtkplus") {
 							$classLevelOutput = $OPTION["output"];
 							
 							if(is_int(stripos($classtmp, "Gtk"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}gtk";
@@ -1015,7 +1018,7 @@ function gen_docs($name, $type) {	/* {{{ */
 						}
 						gen_docs($class->name, DOC_CLASS);
 						
-						if(basename($ext) == "gtk+") $OPTION["output"] = $classLevelOutput;
+						if($extname == "gtkplus") $OPTION["output"] = $classLevelOutput;
 					}
 					$OPTION["output"] = $initialOutput;
 				}
@@ -1096,7 +1099,8 @@ function gen_docs($name, $type) {	/* {{{ */
 				$signals = GObject::signal_list_ids($class->getConstant("gtype"))
 			) foreach($signals as $signal) {
 				$signal = GObject::signal_query($signal, $class->getConstant("gtype"));
-				write_doc($signal, DOC_SIGNAL);
+				if(is_array($signal)) write_doc($signal, DOC_SIGNAL);
+				else add_warning("Could not query signal #{$signal}");
 			}
 		} catch (Exception $e) {
 			die('Error: '. $e->getMessage() ."\n");
@@ -1329,6 +1333,12 @@ foreach ($options as $opt => $value) {
 	}
 }
 
+if (!empty($OPTION['gtk'])) {
+	define('DOC_SIGNAL', 1<<5);
+	$TEMPLATE[DOC_CLASS] = 'gtk/class.tpl';
+	$TEMPLATE[DOC_SIGNAL] = 'gtk/signal.tpl';
+}
+
 if (!empty($OPTION['example'])) {
 	$DOC_EXT['examples.xml'] = 'examples.tpl';
 }
@@ -1353,12 +1363,6 @@ if (!empty($OPTION['extension'])) {
 
 if (!empty($OPTION['function'])) {
 	gen_docs($OPTION['function'], DOC_FUNCTION);
-}
-
-if (!empty($OPTION['gtk'])) {
-	define('DOC_SIGNAL', 1<<5);
-	$TEMPLATE[DOC_CLASS] = 'gtk/class.tpl';
-	$TEMPLATE[DOC_SIGNAL] = 'gtk/signal.tpl';
 }
 
 if (!empty($OPTION['method'])) {
