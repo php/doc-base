@@ -220,6 +220,8 @@ function create_dir($path) { /* {{{ */
 /* }}} */
 
 function create_markup_to_params(array $params, $ident) { /* {{{ */
+	global $OPTION;
+
 	$count = 1;
 	$markup = "";
 	foreach ($params as $param) {
@@ -232,7 +234,8 @@ function create_markup_to_params(array $params, $ident) { /* {{{ */
 			if (!$param->getName()) {
 				add_warning(sprintf("Parameter name not found, param%d used", $count));
 			}
-			add_warning(sprintf("Type hint for parameter `%s' not found, 'string' used", ($param->getName() ? $param->getName() : $count)));
+			/* Type hinting is completely borked in PHP-GTK, so let's ignore that fact for now. */
+			if(!$OPTION['gtk']) add_warning(sprintf("Type hint for parameter `%s' not found, 'string' used", ($param->getName() ? $param->getName() : $count)));
 		}
 
 		$markup .= sprintf("%s<methodparam%s><type>%s</type><parameter%s>%s</parameter></methodparam>\n",
@@ -614,7 +617,10 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
    	
    	if($OPTION["gtk"]) {
    		/* {FIELDS_LIST} */
-   		if(($class->isInstantiable() || $class->isInterface) && is_int($class->getConstant("gtype")) && $gtkfields = GObject::list_properties($class->getConstant("gtype")) && !empty($gtkfields)) {
+   		if(	$class->isSubclassOf("GObject") && 
+   			($class->isInstantiable() || $class->isInterface) &&
+   			$gtkfields = GObject::list_properties($class->getConstant("gtype"))
+   		) {
    			$ident = get_ident_size('FIELDS_LIST', $content);
    			
    			$markup = "<classsynopsisinfo role=\"comment\">Fields</classsynopsisinfo>\n";
@@ -932,12 +938,16 @@ function write_doc($obj, $type) { /* {{{ */
 		break;
 		
 		case DOC_SIGNAL:
-			$path = $OPTION['output'] .'/'. strtolower($obj[2]->name) .'/signals';
+			$path = $OPTION['output'] .'/'. strtolower($obj[2]->name);
+			
+			create_dir($path);
+			
+			$path = $OPTION['output'] . '/signals';
 			$filename = $path .'/'. format_filename($obj[1]) .'.xml';
 
 			create_dir($path);
 			
-			echo "Generating signal {$obj[1]}: {$filename}".PHP_EOL;
+			if ($OPTION['verbose']) echo "Generating signal {$obj[1]}: {$filename}".PHP_EOL;
 
 			$INFO['actual_file'] = $filename;
 			
@@ -969,7 +979,7 @@ function gen_docs($name, $type) {	/* {{{ */
 				$initialOutput = $OPTION["output"];
 				$exts = glob("{$OPTION['gtk']}{$dirsep}ext{$dirsep}*", GLOB_ONLYDIR);
 				foreach($exts as $ext) {
-					echo "Generating ".basename($ext)." PHP-GTK sub-extension.".PHP_EOL;
+					if ($OPTION['verbose']) echo "Generating ".basename($ext)." PHP-GTK sub-extension.".PHP_EOL;
 					$classes = array();
 					$OPTION["output"] = $OPTION["output"].$dirsep.basename($ext);
 					create_dir($OPTION["output"]);
@@ -977,7 +987,7 @@ function gen_docs($name, $type) {	/* {{{ */
 					$defs = glob("{$ext}{$dirsep}*.defs");
 					if(empty($defs)) continue;
 					foreach($defs as &$defsfile) {
-						echo "Reading objects from {$defsfile}.".PHP_EOL;
+						if ($OPTION['verbose']) echo "Reading objects from {$defsfile}.".PHP_EOL;
 						$defsfile = file($defsfile);
 					}
 					$data = call_user_func_array("array_merge", $defs);
@@ -987,7 +997,7 @@ function gen_docs($name, $type) {	/* {{{ */
 					}
 					$classes = array_unique($classes);
 					
-					echo "Classes: ".implode(", ", $classes).PHP_EOL;
+					if ($OPTION['verbose']) echo "Classes: ".implode(", ", $classes).PHP_EOL;
 
 					foreach ($classes as $classtmp) {
 						if(!class_exists($classtmp)) continue;
@@ -1081,6 +1091,7 @@ function gen_docs($name, $type) {	/* {{{ */
 			}
 			
 			if(	$OPTION['gtk'] &&
+				$class->isSubclassOf("GObject") &&
 				($class->isInstantiable() || $class->isInterface()) &&
 				$signals = GObject::signal_list_ids($class->getConstant("gtype"))
 			) foreach($signals as $signal) {
