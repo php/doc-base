@@ -49,9 +49,9 @@
 
  </partintro>
 
- &reference.{EXT_NAME_ID}.entities.{CLASS_NAME_ID};
+ &reference.{EXT_NAME_ID}{SUB_EXT_NAME_ID}.entities.{CLASS_NAME_ID};
  
- &reference.{EXT_NAME_ID}.entities.signals.{CLASS_NAME_ID};
+ &reference.{EXT_NAME_ID}{SUB_EXT_NAME_ID}.{CLASS_NAME_ID}.signals;
 
 </phpdoc:classref>
 

@@ -268,6 +268,13 @@ function global_check($content) { /* {{{ */
 	
 	/* {EMPTY_REVISION_KEYWORD} */
 	$content = str_replace('{EMPTY_REVISION_KEYWORD}', '<!-- '. chr(36) .'Revision$ -->', $content);
+	
+	if($OPTION['gtk']) {
+		if(!$INFO['subextension']) $INFO['subextension'] = '';
+		
+		/* {SUB_EXT_NAME_ID} */
+		$content = preg_replace('/\{SUB_EXT_NAME_ID\}/', '.'.$INFO['subextension'], $content);	
+	}
 
 	return $content;
 }
@@ -985,6 +992,7 @@ function gen_docs($name, $type) {	/* {{{ */
 					if ($OPTION['verbose']) echo "Generating ".$extname." PHP-GTK sub-extension.".PHP_EOL;
 					$classes = array();
 					$OPTION["output"] = $OPTION["output"].$dirsep.$extname;
+					$INFO['subextension'] = $extname;
 					create_dir($OPTION["output"]);
 					
 					$defs = glob("{$ext}{$dirsep}*.defs");
@@ -1009,10 +1017,19 @@ function gen_docs($name, $type) {	/* {{{ */
 						if($extname == "gtkplus") {
 							$classLevelOutput = $OPTION["output"];
 							
-							if(is_int(stripos($classtmp, "Gtk"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}gtk";
-							elseif(is_int(stripos($classtmp, "Atk"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}atk";
-							elseif(is_int(stripos($classtmp, "Gdk"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}gdk";
-							elseif(is_int(stripos($classtmp, "Pango"))) $OPTION["output"] = $OPTION["output"]."{$dirsep}pango";
+							if(is_int(stripos($classtmp, "Gtk"))) {
+								$OPTION["output"] = $OPTION["output"]."{$dirsep}gtk";
+								$INFO['subextension'] = "$extname.gtk";
+							} elseif(is_int(stripos($classtmp, "Atk"))) {
+								$OPTION["output"] = $OPTION["output"]."{$dirsep}atk";
+								$INFO['subextension'] = "$extname.atk";
+							} elseif(is_int(stripos($classtmp, "Gdk"))) {
+								$OPTION["output"] = $OPTION["output"]."{$dirsep}gdk";
+								$INFO['subextension'] = "$extname.gdk";
+							} elseif(is_int(stripos($classtmp, "Pango"))) {
+								$OPTION["output"] = $OPTION["output"]."{$dirsep}pango";
+								$INFO['subextension'] = "$extname.pango";
+							}
 							
 							create_dir($OPTION["output"]);
 						}
@@ -1335,6 +1352,7 @@ foreach ($options as $opt => $value) {
 
 if (!empty($OPTION['gtk'])) {
 	define('DOC_SIGNAL', 1<<5);
+	$DOC_EXT['book.xml'] = 'gtk/book.tpl';
 	$TEMPLATE[DOC_CLASS] = 'gtk/class.tpl';
 	$TEMPLATE[DOC_SIGNAL] = 'gtk/signal.tpl';
 }
