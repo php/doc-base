@@ -61,6 +61,7 @@ Example options:
 	-e dom                                (an entire extension)
 	-f preg_replace                       (a single function)
 	-c simplexmlelement -m xpath -m asxml (a couple class methods)
+	-g /path/to/php-gtk/sources/ext/      (PHP-GTK sources extensions directory)
 
 Notes:
 	Long options are supported with PHP 5.3.0+, and you use $v
@@ -70,7 +71,7 @@ Options:
 	-c,--class 	-- class name
 	-e,--extension	-- extension name
 	-f,--function	-- function name
-	-g,--gtk	-- specify the PHP-GTK source directory
+	-g,--gtk	-- enable PHP-GTK source reading, optionally specify extension sources
 	-h,--help	-- show this help
 	-i,--include	-- includes a PHP file 
 	(shortcut for: php -dauto_prepend_file=streams.php docgen.php)
@@ -988,7 +989,7 @@ function gen_docs($name, $type) {	/* {{{ */
 			if($OPTION['gtk']) {
 				$dirsep = DIRECTORY_SEPARATOR;
 				$initialOutput = $OPTION["output"];
-				$exts = glob("{$OPTION['gtk']}{$dirsep}ext{$dirsep}*", GLOB_ONLYDIR);
+				$exts = glob("{$OPTION['gtk']}{$dirsep}*", GLOB_ONLYDIR);
 				foreach($exts as $ext) {
 					$extname = format_id(basename($ext));
 					if ($OPTION['verbose']) echo "Generating ".$extname." PHP-GTK sub-extension.".PHP_EOL;
@@ -1255,7 +1256,7 @@ $arropts = array(
 	'class:'  		=> 'c:', /* classname */
 	'extension:' 	=> 'e:', /* extension */
 	'function:' 	=> 'f:', /* function */
-	'gtk:'			=> 'g:',  /* gtk */
+	'gtk::'			=> 'g::',  /* gtk */
 	'method:' 		=> 'm:'  /* method */
 );
 
@@ -1290,7 +1291,7 @@ foreach ($options as $opt => $value) {
 			break;
 		case 'g':
 		case 'gtk':
-			$OPTION['gtk'] = $value;
+			$OPTION['gtk'] = is_dir($value)?$value:'gtk-ext';
 			break;
 		case 'm':
 		case 'method':
