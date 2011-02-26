@@ -271,10 +271,9 @@ function global_check($content) { /* {{{ */
 	$content = str_replace('{EMPTY_REVISION_KEYWORD}', '<!-- '. chr(36) .'Revision$ -->', $content);
 	
 	if($OPTION['gtk']) {
-		if(!$INFO['subextension']) $INFO['subextension'] = '';
-		
 		/* {SUB_EXT_NAME_ID} */
-		$content = preg_replace('/\{SUB_EXT_NAME_ID\}/', '.'.$INFO['subextension'], $content);	
+		if(!empty($INFO['subextension'])) foreach($INFO['subextension'] as $extname => $subext) if($subext['current'] === TRUE)
+		$content = preg_replace('/\{SUB_EXT_NAME_ID\}/', '.'.$extname, $content);
 	}
 
 	return $content;
@@ -874,6 +873,18 @@ function write_doc($obj, $type) { /* {{{ */
 					save_file($filename, global_check($content));
 				}
 			}
+		break;
+		
+		case DOC_PART:
+			$path = $OPTION['output'] .'/../';
+			$filename = $path .'part.'. format_filename($obj) .'.xml';
+			
+			$content = file_get_contents(dirname(__FILE__) .'/'. $TEMPLATE[$type]);
+			
+			$content = preg_replace('/\{PART_NAME_ID\}/', format_id($obj), $content);
+			$content = preg_replace('/\{PART_NAME\}/', $obj, $content);
+			
+			save_file($filename, $content);
 			break;
 
 		/* Methods */
@@ -990,13 +1001,15 @@ function gen_docs($name, $type) {	/* {{{ */
 				$dirsep = DIRECTORY_SEPARATOR;
 				$initialOutput = $OPTION["output"];
 				$exts = glob("{$OPTION['gtk']}{$dirsep}*", GLOB_ONLYDIR);
+				$INFO['subextension'] = array();
 				foreach($exts as $ext) {
 					$extname = format_id(basename($ext));
 					if ($OPTION['verbose']) echo "Generating ".$extname." PHP-GTK sub-extension.".PHP_EOL;
 					$classes = array();
 					$OPTION["output"] = $OPTION["output"].$dirsep.$extname;
-					$INFO['subextension'] = $extname;
 					create_dir($OPTION["output"]);
+					
+					write_doc($extname, DOC_PART);
 					
 					$defs = glob("{$ext}{$dirsep}*.defs");
 					if(empty($defs)) continue;
@@ -1019,22 +1032,33 @@ function gen_docs($name, $type) {	/* {{{ */
 						
 						if($extname == "gtkplus") {
 							$classLevelOutput = $OPTION["output"];
+							$INFO['subextension'][$extname] = array('current'=>FALSE, 'classes'=>array());
 							
 							if(is_int(stripos($classtmp, "Gtk"))) {
 								$OPTION["output"] = $OPTION["output"]."{$dirsep}gtk";
-								$INFO['subextension'] = "$extname.gtk";
+								$INFO['subextension'][$extname]['classes'][] = $classtmp;
+								create_dir($OPTION["output"]);
+								
+								write_doc("GTK", DOC_PART);
 							} elseif(is_int(stripos($classtmp, "Atk"))) {
 								$OPTION["output"] = $OPTION["output"]."{$dirsep}atk";
-								$INFO['subextension'] = "$extname.atk";
+								$INFO['subextension'][$extname][] = $classtmp;
+								create_dir($OPTION["output"]);
+								
+								write_doc("ATK", DOC_PART);
 							} elseif(is_int(stripos($classtmp, "Gdk"))) {
 								$OPTION["output"] = $OPTION["output"]."{$dirsep}gdk";
-								$INFO['subextension'] = "$extname.gdk";
+								$INFO['subextension'][$extname][] = $classtmp;
+								create_dir($OPTION["output"]);
+								
+								write_doc("GDK", DOC_PART);
 							} elseif(is_int(stripos($classtmp, "Pango"))) {
 								$OPTION["output"] = $OPTION["output"]."{$dirsep}pango";
-								$INFO['subextension'] = "$extname.pango";
+								$INFO['subextension'][$extname][] = $classtmp;
+								create_dir($OPTION["output"]);
+								
+								write_doc("Pango", DOC_PART);
 							}
-							
-							create_dir($OPTION["output"]);
 						}
 						gen_docs($class->name, DOC_CLASS);
 						
@@ -1355,7 +1379,9 @@ foreach ($options as $opt => $value) {
 
 if (!empty($OPTION['gtk'])) {
 	define('DOC_SIGNAL', 1<<5);
+	define('DOC_PART', 1<<6);
 	$DOC_EXT['book.xml'] = 'gtk/book.tpl';
+	$TEMPLATE[DOC_PART] = 'gtk/part.tpl';
 	$TEMPLATE[DOC_CLASS] = 'gtk/class.tpl';
 	$TEMPLATE[DOC_SIGNAL] = 'gtk/signal.tpl';
 }

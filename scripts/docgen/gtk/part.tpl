@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 {EMPTY_REVISION_KEYWORD}
 
-<book xml:id="book.{EXT_NAME_ID}" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
- <title>{EXT_NAME}</title>
- <titleabbrev>{EXT_NAME}</titleabbrev>
-
- <preface xml:id="intro.{EXT_NAME_ID}">
+<part xml:id="part.{PART_NAME_ID}" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>{PART_NAME}</title>
+ <titleabbrev>{PART_NAME}</title>
+ 
+ <preface xml:id="intro.{PART_NAME_ID}">
   &reftitle.intro;
   <para>
-
+  
   </para>
  </preface>
-
- &reference.{EXT_NAME_ID}.setup;
- &reference.{EXT_NAME_ID}.constants;
-</book>
+ 
+ 
+</part>
 
 <!-- Keep this comment at the end of the file
 Local variables:
