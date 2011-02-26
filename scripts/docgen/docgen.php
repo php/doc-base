@@ -634,9 +634,10 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
    			
    			$markup = "<classsynopsisinfo role=\"comment\">Fields</classsynopsisinfo>\n";
 			foreach ($gtkfields as $field) {
+				if(strcasecmp($field->owner_type->name, $id) !== 0) continue;
 				$markup .= str_repeat(' ', $ident) ."<fieldsynopsis>\n";
 				$markup .= str_repeat(' ', $ident + 1) .'<modifier>'. $field->value_type->name ."</modifier>\n";
-				$markup .= str_repeat(' ', $ident + 1) .'<varname linkend="'. $id .'.fields.'. format_id($field->name) .'">'. $field->name ."</varname>\n";
+				$markup .= str_repeat(' ', $ident + 1) .'<varname linkend="'. format_id($field->owner_type->name) .'.fields.'. format_id($field->name) .'">'. $field->name ."</varname>\n";
 				$markup .= str_repeat(' ', $ident) ."</fieldsynopsis>\n";
 			}
 
@@ -655,12 +656,13 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 			$markup .= str_repeat(' ', $ident + 1) ."<variablelist>\n";
 
 			foreach ($gtkfields as $field) {
-				$markup .= str_repeat(' ', $ident + 2) .'<varlistentry xml:id="'. $id .'.fields.'. format_id($field->name) ."\">\n";
+				if(strcasecmp($field->owner_type_name, $id) !== 0) continue;
+				$markup .= str_repeat(' ', $ident + 2) .'<varlistentry xml:id="'. format_id($field->owner_type->name) .'.fields.'. format_id($field->name) ."\">\n";
 				$markup .= str_repeat(' ', $ident + 3) .'<term><varname>'. $field->name ."</varname></term>\n";
-	     		$markup .= str_repeat(' ', $ident + 3) ."<listitem>\n";
-	      		$markup .= str_repeat(' ', $ident + 4) ."<para></para>\n";
-	     		$markup .= str_repeat(' ', $ident + 3) ."</listitem>\n";
-	    		$markup .= str_repeat(' ', $ident + 2) ."</varlistentry>\n";
+		     		$markup .= str_repeat(' ', $ident + 3) ."<listitem>\n";
+		      		$markup .= str_repeat(' ', $ident + 4) ."<para></para>\n";
+		     		$markup .= str_repeat(' ', $ident + 3) ."</listitem>\n";
+		    		$markup .= str_repeat(' ', $ident + 2) ."</varlistentry>\n";
 			}
 
 			$markup .= str_repeat(' ', $ident + 1) ."</variablelist>\n";
