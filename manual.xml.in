@@ -30,6 +30,7 @@
 <!-- These are language independent -->
 <!ENTITY % frontpage.entities SYSTEM "../@EN_DIR@/contributors.ent">
 <!ENTITY % file.entities      SYSTEM "./entities/file-entities.ent">
+<!ENTITY % defpaths.entities  SYSTEM "./entities/function-definitions.ent">
 
 <!-- Include all external DTD parts defined previously -->
 %global.entities;
