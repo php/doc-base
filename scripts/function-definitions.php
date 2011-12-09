@@ -60,10 +60,10 @@ foreach($result as $extension_name => $extension) {
 			echo `svn propset srcurl '{$item}' ../../en/reference/{$extension_name}/functions/{$item_name}.xml`;
 		} elseif(is_array($item)) { // Method
 			if(!file_exists("../../en/reference/{$extension_name}/{$item_name}/")) continue;
-			foreach($item as $method_name => $method) {
+			foreach($item as $method_name => $url) {
 				$method_name = strtolower($method_name);
 				if(!file_exists("../../en/reference/{$extension_name}/{$item_name}/{$method_name}.xml")) continue;
-				echo `svn propset srcurl '{$item}' ../../en/reference/{$extension_name}/{$item_name}/{$method_name}.xml`;
+				echo `svn propset srcurl '{$url}' ../../en/reference/{$extension_name}/{$item_name}/{$method_name}.xml`;
 			}
 		}
 	}
