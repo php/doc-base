@@ -30,7 +30,7 @@ foreach($extensions as $extension) {
    if(!empty($file)) {
     $file = explode(PHP_EOL, $file);
     foreach($file as &$path) $path = $repourl.$path;
-    $result[$extension][$function->name] = implode(", ", $file);
+    $result[$extension][$function->name] = implode(PHP_EOL, $file);
    }
 		}
 
@@ -42,7 +42,7 @@ foreach($extensions as $extension) {
     if(!empty($file)) {
      $file = explode(PHP_EOL, $file);
      foreach($file as &$path) $path = $repourl.$path;
-     $result[$extension][$class->name][$method->name] = implode(", ", $file);
+     $result[$extension][$class->name][$method->name] = implode(PHP_EOL, $file);
     }
    }
    if(empty($result[$extension][$class->name])) unset($result[$extension][$class->name]);
