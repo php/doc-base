@@ -51,37 +51,20 @@ foreach($extensions as $extension) {
  if(empty($result[$extension])) unset($result[$extension]);
 }
 
-ksort($result);
-$entfile = fopen(__DIR__."/../entities/function-definitions.ent", "w");
-fwrite($entfile, <<<HEAD
-<!-- \$Revision$ -->
-
-<!-- Repository links to where functions/methods are defined. -->
-
-HEAD
-);
-foreach($result as $extension => $functions) {
- fwrite($entfile, <<<EXTNAME
-<!-- {$extension} -->
-
-EXTNAME
-);
- foreach($functions as $function => $content) {
-  if(is_string($content)) { // Function
-   $funcname = str_replace("_", "-", strtolower($function));
-   fwrite($entfile, <<<ENT
-<!ENTITY reference.{$extension}.functions.{$funcname}.defpath '<!-- Defined in: {$content} -->'>
-
-ENT
-);
-  } elseif(is_array($content)) foreach($content as $method => $url) { // Method
-   $classname = strtolower($function);
-   $methodname = str_replace("_", "-", strtolower($method));
-   fwrite($entfile, <<<ENT
-<!ENTITY reference.{$extension}.{$classname}.{$methodname}.defpath '<!-- Defined in: {$url} -->'>
-
-ENT
-);
-  }
- }
+foreach($result as $extension_name => $extension) {
+	if(!file_exists("../../en/reference/{$extension_name}/")) continue;
+	foreach($extension as $item_name => $item) {
+		$item_name = strtolower($item_name);
+		if(is_string($item)) { // Function
+			if(!file_exists("../../en/reference/{$extension_name}/functions/") || !file_exists("../../en/reference/{$extension_name}/functions/{$item_name}.xml")) continue;
+			echo `svn propset srcurl '{$item}' ../../en/reference/{$extension_name}/functions/{$item_name}.xml`;
+		} elseif(is_array($item)) { // Method
+			if(!file_exists("../../en/reference/{$extension_name}/{$item_name}/")) continue;
+			foreach($item as $method_name => $method) {
+				$method_name = strtolower($method_name);
+				if(!file_exists("../../en/reference/{$extension_name}/{$item_name}/{$method_name}.xml")) continue;
+				echo `svn propset srcurl '{$item}' ../../en/reference/{$extension_name}/{$item_name}/{$method_name}.xml`;
+			}
+		}
+	}
 }
