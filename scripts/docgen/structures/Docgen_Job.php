@@ -1,6 +1,6 @@
 <?php
 define("DOCGEN_VERSION", "alpha");
 
-class Docgen_Job {
+abstract class Docgen_Job {
     
 }

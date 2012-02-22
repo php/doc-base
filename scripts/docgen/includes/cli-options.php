@@ -73,6 +73,7 @@ class Docgen_Options {
         
         // Conditions upon which to display the usage message and exit
         if ($options === FALSE // Invalid option usage
+            || empty($options)
             || (array_key_exists("h", $options)
             || array_key_exists("help", $options)) // Help is requested
         ) {
@@ -86,7 +87,7 @@ class Docgen_Options {
         }
         
         // Cannot be both verbose and quiet
-        if ((!empty($options["q"]
+        if ((!empty($options["q"])
             || !empty($options["quiet"]))
             && (!empty($options["v"])
                 || !empty($options["verbose"]))
@@ -111,7 +112,7 @@ class Docgen_Options {
             if ((is_array($options[$shortoption])
                 || is_array($options[$longoption]))
                 || (!empty($options[$shortoption])
-                    && !empty($options[$longoption])
+                    && !empty($options[$longoption]))
                 && !in_array($shortoption, self::$option_spec['multiples'], true)
             ) {
                 trigger_error("Option -{$shortoption}, --{$longoption} does not support multiple specifications.", E_USER_ERROR);
@@ -126,7 +127,7 @@ class Docgen_Options {
             } elseif (isset($options[$shortoption]) && is_array($options[$longoption])) {
                 $options[$longoption][] = $option[$shortoption];
                 self::$options[$longoption] = $options[$longoption];
-            } elseif (isset($options[$shortoption) && isset($options[$longoption])) {
+            } elseif (isset($options[$shortoption]) && isset($options[$longoption])) {
                 self::$options[$longoption] = array($options[$shortoption], $options[$longoption]);
             } elseif (isset($options[$shortoption]) || isset($options[$longoption])) { // Just one version of the option is specified
                 self::$options[$longoption] = isset($options[$shortoption])?$options[$shortoption]:$options[$longoption];
@@ -134,7 +135,7 @@ class Docgen_Options {
         }
         
         // Change extension names to lowercase - just makes things easier in the long run
-        foreach (self::$options["extension"] as &$extension) {
+        if (is_array(self::$options["extension"])) foreach (self::$options["extension"] as &$extension) {
             $extension = strtolower($extension);
         }
         
@@ -161,13 +162,13 @@ class Docgen_Options {
                             && function_exists($item))
                         ) {
                             trigger_error("The '{$item}' {$jobtype} is not loaded. Documentation will not occur for this {$jobtype}.", E_USER_WARNING);
-                            unset($option[$jobtype][$index];
+                            unset($option[$jobtype][$index]);
                         }
                     }
                     if (empty($options[$jobtype])) $options[$jobtype] = null;
                 } else {
                     if (($jobtype == "extension"
-                        && !extension_loaded($options[$jobtype])
+                        && !extension_loaded($options[$jobtype]))
                         || ($jobtype == "class"
                         && !class_exists($options[$jobtype]))
                         || ($jobtype == "method"
@@ -228,7 +229,7 @@ class Docgen_Options {
                             if ($jobtype == "function") $reflect = new ReflectionFunction($options[$jobtype]);
                             $extension = strtolower($reflect->getExtensionName());
                             if (is_array($option["extension"]) && in_array($extension, $option["extension"])) {
-                                $options[$jobtype] = null
+                                $options[$jobtype] = null;
                             } elseif ($options["extension"] == $extension) {
                                 $options[$jobtype] = null;
                             }
@@ -257,7 +258,7 @@ class Docgen_Options {
         // Verify the specified phpdoc location exists and can be read
         if (!is_null($options["phpdoc"]) && !is_readable($options["phpdoc"])) {
             trigger_error("The phpdoc path '{$options["phpdoc"]}' does not exist or is not readable. It will not be analyzed or copied to.", E_USER_WARNING);
-            $options["phpdoc"] = null
+            $options["phpdoc"] = null;
             $options["copy"] = false;
         }
         
