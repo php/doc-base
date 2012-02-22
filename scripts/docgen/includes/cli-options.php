@@ -79,6 +79,12 @@ class Docgen_Options {
             self::display_usage(true);
         }
         
+        if (array_key_exists("v", $options)
+            || array_key_exists("version", $options)
+        ) {
+            self::display_version(true);
+        }
+        
         // Cannot be both verbose and quiet
         if ((!empty($options["q"]
             || !empty($options["quiet"]))
@@ -127,6 +133,11 @@ class Docgen_Options {
             }
         }
         
+        // Change extension names to lowercase - just makes things easier in the long run
+        foreach (self::$options["extension"] as &$extension) {
+            $extension = strtolower($extension);
+        }
+        
         self::validate_options();
     }
     
@@ -168,6 +179,59 @@ class Docgen_Options {
                     ) {
                         trigger_error("The '{$options[$jobtype]}' {$jobtype} is not loaded. Documentation will not occur for this {$jobtype}.", E_USER_WARNING);
                         $option[$jobtype] = null;
+                    }
+                }
+            }
+        }
+        
+        // Remove redundant jobs
+        foreach(array("extension", "class", "method", "function") as $jobtype) {
+            if (!is_null($options[$jobtype])) {
+                if (is_array($options[$jobtype])) {
+                    foreach($options[$jobtype] as $index => $job) {
+                        switch($jobtype) {
+                            case "method":
+                                $method = explode("::", $job);
+                                $reflect = new ReflectionMethod($method[0], $method[1]);
+                                $class = $reflect->getClassName();
+                                if (is_array($options["class"]) && in_array($class, $options["class"])) {
+                                    unset($options[$jobtype][$index]);
+                                } elseif ($options["class"] == $class) {
+                                    unset($options[$jobtype][$index]);
+                                }
+                            case "class":
+                                if ($jobtype == "class") $reflect = new ReflectionClass($job);
+                            case "function":
+                                if ($jobtype == "function") $reflect = new ReflectionFunction($job);
+                                $extension = strtolower($reflect->getExtensionName());
+                                if (is_array($option["extension"]) && in_array($extension, $option["extension"])) {
+                                    unset($options[$jobtype][$index]);
+                                } elseif ($options["extension"] == $extension) {
+                                    unset($options[$jobtype][$index]);
+                                }
+                        }
+                    }
+                } else {
+                    switch($jobtype) {
+                        case "method":
+                            $method = explode("::", $options[$jobtype]);
+                            $reflect = new ReflectionMethod($method[0], $method[1]);
+                            $class = $reflect->getClassName();
+                            if (is_array($options["class"]) && in_array($class, $options["class"])) {
+                                $options[$jobtype] = null;
+                            } elseif ($options["class"] == $class) {
+                                $options[$jobtype] = null;
+                            }
+                        case "class":
+                            if ($jobtype == "class") $reflect = new ReflectionClass($options[$jobtype]);
+                        case "function":
+                            if ($jobtype == "function") $reflect = new ReflectionFunction($options[$jobtype]);
+                            $extension = strtolower($reflect->getExtensionName());
+                            if (is_array($option["extension"]) && in_array($extension, $option["extension"])) {
+                                $options[$jobtype] = null
+                            } elseif ($options["extension"] == $extension) {
+                                $options[$jobtype] = null;
+                            }
                     }
                 }
             }
@@ -277,6 +341,25 @@ Examples:
 
     # Generate documentation skeletons for the substr function
     php docgen.php -f substr
+<?php
+        if ($exit === true) exit;
+    }
+    
+    public static function display_version($exit = false) {
+         $tmp = new ReflectionExtension("reflection");
+         $reflectionversion = $tmp->getVersion();
+         $tmp = new ReflectionExtension("dom");
+         $domversion = $tmp->getVersion();
+?>
+PHP Documentation Skeleton Generator
+====================================
+Docgen Version: <?php echo DOCGEN_VERSION; ?>
+
+Reflection Version: <?php echo $reflectionversion; ?>
+
+DOM Version: <?php echo $domversion; ?>
+
+
 <?php
         if ($exit === true) exit;
     }

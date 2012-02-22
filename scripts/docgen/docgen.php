@@ -1,7 +1,40 @@
 #!/usr/bin/env php
 <?php
-if(!extension_loaded("reflection")) trigger_error("docgen.php requires the Reflection extension", E_USER_ERROR);
-if(!extension_loaded("dom")) trigger_error("docgen.php requires the DOM extension", E_USER_ERROR);
+// Required extensions
+if(!extension_loaded("reflection")) trigger_error("Docgen requires the Reflection extension", E_USER_ERROR);
+if(!extension_loaded("dom")) trigger_error("Docgen requires the DOM extension", E_USER_ERROR);
 
-// 
-require(__DIR__."/includes/cli-options.php");
+// Required includes
+require_once(__DIR__."/structures/Docgen_JobManager.php");
+require_once(__DIR__."/structures/Docgen_Job.php");
+require_once(__DIR__."/includes/cli-options.php");
+
+// Handle script options
+Docgen_Options::process_options();
+
+if (is_array(Docgen_Options::$options["extension"])) {
+    foreach (Docgen_Options::$options["extension"] as $extension) Docgen_JobManager::queueJob(new Docgen_ExtensionJob($extension));
+} elseif (!is_null(Docgen_Options::$options["extension"])) {
+    Docgen_JobManager::queueJob(new Docgen_ExtensionJob(Docgen_Options::$options["extension"]));
+}
+
+if (is_array(Docgen_Options::$options["class"])) {
+    foreach (Docgen_Options::$options["class"] as $class) Docgen_JobManager::queueJob(new Docgen_ClassJob($class));
+} elseif (!is_null(Docgen_Options::$options["class"])) {
+    Docgen_JobManager::queueJob(new Docgen_ClassJob(Docgen_Options::$options["class"]));
+}
+
+if (is_array(Docgen_Options::$options["method"])) {
+    foreach (Docgen_Options::$options["method"] as $method) {
+        $method = explode("::", $method);
+        DocGen_JobManager::queueJob(new Docgen_MethodJob($class, $method));
+    }
+} elseif (!is_null(Docgen_Options::$options["method"])) {
+    Docgen_JobManager::queueJob(new Docgen_MethodJob(Docgen_Options::$options["method"]));
+}
+
+if (is_array(Docgen_Options::$options["function"])) {
+    foreach (Docgen_Options::$options["function"] as $function) DocGen_JobManager::queueJob(new Docgen_FunctionJob($function));
+} elseif (!is_null(Docgen_Options::$options["function"])) {
+    Docgen_JobManager::queueJob(new Docgen_FunctionJob(Docgen_Options::$options["function"]));
+}
