@@ -347,18 +347,16 @@ Examples:
     }
     
     public static function display_version($exit = false) {
-         $tmp = new ReflectionExtension("reflection");
-         $reflectionversion = $tmp->getVersion();
-         $tmp = new ReflectionExtension("dom");
-         $domversion = $tmp->getVersion();
 ?>
 PHP Documentation Skeleton Generator
 ====================================
 Docgen Version: <?php echo DOCGEN_VERSION; ?>
 
-Reflection Version: <?php echo $reflectionversion; ?>
+PHP Version: <?php echo phpversion(); ?>
 
-DOM Version: <?php echo $domversion; ?>
+Reflection Version: <?php echo phpversion("reflection"); ?>
+
+DOM Version: <?php echo phpversion("dom"); ?>
 
 
 <?php
