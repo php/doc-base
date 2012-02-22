@@ -24,14 +24,14 @@ class Docgen_ExtensionJob extends Docgen_Job {
         $book->appendChild($bookDocument->createElement("title", $this->reflection->name));
         $book->appendChild($bookDocument->createElement("titleabbrev", $this->reflection->name."..."));
         
-        $book->appendChild($bookDocument->createComment("{{{ preface"));
+        $book->appendChild($bookDocument->createComment(" {{{ preface "));
             $preface = $bookDocument->createElement("preface");
             $preface->setAttribute("xml:id", "intro.{$extensionID}");
             $book->appendChild($preface);
             
             $preface->appendChild($bookDocument->createEntityReference("reftitle.intro"));
             $preface->appendChild($bookDocument->createElement("para", "Extension introduction."));
-        $book->appendChild($bookDocument->createComment("}}}"));
+        $book->appendChild($bookDocument->createComment(" }}} "));
         
         $book->appendChild($bookDocument->createEntityReference("reference.{$extensionID}.setup"));
         $book->appendChild($bookDocument->createEntityReference("reference.{$extensionID}.constants"));
