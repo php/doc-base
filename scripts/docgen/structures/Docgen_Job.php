@@ -18,22 +18,16 @@ abstract class Docgen_Job {
         return preg_replace(array('/[^[:alnum:]]/', '/^-+/'), array('-', ''), strtolower($name));
     }
     
-    protected static function newline(DOMNode &$parent, DOMDocument &$document) {
-        $nl = $document->createDocumentFragment();
-        $nl->appendXML("\n");
-        $parent->appendChild($nl);
-    }
-    
-    protected function addExamples(DOMNode &$parent, DOMDocument &$document) {
+    protected function addExamples() {
         
     }
     
-    protected function addSeeAlso(DOMNode &$parent, DOMDocument &$document) {
+    protected function addSeeAlso() {
         
     }
     
-    protected function addLocalVariables(DOMNode &$parent, DOMDocument &$document) {
-        $parent->appendChild($document->createComment(
+    protected function addLocalVariables(XMLWriter $writer) {
+		$writer->writeComment(
 ' Keep this comment at the end of the file
 24	Local variables:
 25	mode: sgml
@@ -54,6 +48,6 @@ abstract class Docgen_Job {
 40	vim: et tw=78 syn=sgml
 41	vi: ts=1 sw=1 
 '
-        ));
+		);
     }
 }

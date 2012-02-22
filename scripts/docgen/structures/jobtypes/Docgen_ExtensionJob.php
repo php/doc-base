@@ -12,33 +12,43 @@ class Docgen_ExtensionJob extends Docgen_Job {
     public function createBook() {
         $extensionID = self::format_identifier($this->reflection->name);
         
-        $bookDocument = new DOMDocument("1.0", "utf-8");
-        $bookDocument->appendChild($bookDocument->createComment('$Revision$'));
+        $writer = new XMLWriter;
+        $writer->openMemory();
+        $writer->setIndent(true);
+        $writer->setIndentString("  ");
+        $writer->startDocument("1.0", "UTF-8");
+        $writer->writeComment(' $Revision$ ');
         
-        $book = $bookDocument->createElement("book");
-        $book->setAttribute("xml:id", "book.{$extensionID}");
-        $book->setAttribute("xmlns", "http://docbook.org/ns/docbook");
-        $book->setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-        $bookDocument->appendChild($book);
+        $writer->startElement("book");
+        $writer->writeAttribute("xml:id", "book.extname");
+        $writer->writeAttribute("xmlns", "http://docbook.org/ns/docbook");
+        $writer->writeAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
         
-        $book->appendChild($bookDocument->createElement("title", $this->reflection->name));
-        $book->appendChild($bookDocument->createElement("titleabbrev", $this->reflection->name."..."));
+			$writer->writeElement("title", $this->reflection->name);
+			$writer->writeElement("titleabbrev", $this->reflection->name."...");
+			
+			$writer->writeRaw("\n");
+			
+			$writer->writeComment(" {{{ preface ");
+			$writer->startElement("preface");
+				$writer->writeRaw("\n    &reftitle.intro;\n");
+				$writer->writeElement("para", "Extension introduction.");
+			$writer->endElement();
+			$writer->writeComment(" }}} ");
+			
+			$writer->writeRaw("\n");
+			
+			$writer->writeRaw("  &reference.{$extensionID}.setup;\n");
+			$writer->writeRaw("  &reference.{$extensionID}.constants;\n");
+			$writer->writeRaw("  &reference.{$extensionID}.reference;\n");
+			
+			$writer->writeRaw("\n");
+		
+		$writer->endElement();
+		$writer->endDocument();
+		
+		$this->addLocalVariables($writer);
         
-        $book->appendChild($bookDocument->createComment(" {{{ preface "));
-            $preface = $bookDocument->createElement("preface");
-            $preface->setAttribute("xml:id", "intro.{$extensionID}");
-            $book->appendChild($preface);
-            
-            $preface->appendChild($bookDocument->createEntityReference("reftitle.intro"));
-            $preface->appendChild($bookDocument->createElement("para", "Extension introduction."));
-        $book->appendChild($bookDocument->createComment(" }}} "));
-        
-        $book->appendChild($bookDocument->createEntityReference("reference.{$extensionID}.setup"));
-        $book->appendChild($bookDocument->createEntityReference("reference.{$extensionID}.constants"));
-        $book->appendChild($bookDocument->createEntityReference("reference.{$extensionID}.reference"));
-        
-        $this->addLocalVariables($bookDocument, $bookDocument);
-        
-        $this->documents["reference/{$extensionID}/book.xml"] = $bookDocument;
+        $this->documents["reference/{$extensionID}/book.xml"] = $writer->flush();
     }
 }

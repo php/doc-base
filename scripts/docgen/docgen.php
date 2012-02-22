@@ -3,7 +3,7 @@
 // Required extensions
 if(!extension_loaded("reflection")) trigger_error("Docgen requires the Reflection extension", E_USER_ERROR);
 if(!extension_loaded("pcre")) trigger_error("Docgen requires the PCRE extension", E_USER_ERROR);
-if(!extension_loaded("dom")) trigger_error("Docgen requires the DOM extension", E_USER_ERROR);
+if(!extension_loaded("xmlwriter")) trigger_error("Docgen requires the DOM extension", E_USER_ERROR);
 
 // Required includes
 require_once(__DIR__."/structures/Docgen_JobManager.php");
