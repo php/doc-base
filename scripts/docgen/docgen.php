@@ -1,7 +1,7 @@
 <?php
 /*  
   +----------------------------------------------------------------------+
-  | PHP Version 7                                                        |
+  | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
   | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
@@ -17,7 +17,7 @@
   |             Philip Olson <philip@php.net>                            |
   +----------------------------------------------------------------------+
  
-  $Id: docgen.php 336015 2015-02-27 20:31:12Z aharvey $
+  $Id$
 */
 
 if (!(extension_loaded('reflection') && extension_loaded('pcre'))) {
@@ -1116,7 +1116,7 @@ foreach ($options as $opt => $value) {
 	switch ($opt) {
 		case 'v':
 		case 'version':
-			printf("%s\n", '$Revision: 336015 $');
+			printf("%s\n", '$Revision$');
 			break;
 		case 'V':
 		case 'verbose':
