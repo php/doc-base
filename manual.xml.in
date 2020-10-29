@@ -287,7 +287,6 @@
    <title>&NonTextMIMEOutput;</title>
    &reference.fdf.book;
    &reference.gnupg.book;
-   &reference.pdf.book;
    &reference.wkhtmltox.book;
    &reference.ps.book;
    &reference.rpminfo.book;
