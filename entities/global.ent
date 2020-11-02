@@ -658,9 +658,9 @@
      use &null; if it's about the _value_ NULL
  -->
 <!ENTITY array '<type xmlns="http://docbook.org/ns/docbook">array</type>'>
-<!ENTITY integer '<type xmlns="http://docbook.org/ns/docbook">integer</type>'>
+<!ENTITY integer '<type xmlns="http://docbook.org/ns/docbook">int</type>'>
 <!ENTITY string '<type xmlns="http://docbook.org/ns/docbook">string</type>'>
-<!ENTITY boolean '<type xmlns="http://docbook.org/ns/docbook">boolean</type>'>
+<!ENTITY boolean '<type xmlns="http://docbook.org/ns/docbook">bool</type>'>
 <!ENTITY float '<type xmlns="http://docbook.org/ns/docbook">float</type>'>
 <!ENTITY object '<type xmlns="http://docbook.org/ns/docbook">object</type>'>
 <!ENTITY resource '<type xmlns="http://docbook.org/ns/docbook">resource</type>'>
