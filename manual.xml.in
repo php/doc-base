@@ -213,7 +213,6 @@
     &reference.ibm-db2.book;
     &reference.ifx.book;
     &reference.ingres-ii.book;
-    &reference.maxdb.book;
     &reference.mongo.book;
     &reference.mongodb.set;
     &reference.mysqlinfo.set;
