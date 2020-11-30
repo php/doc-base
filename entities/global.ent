@@ -643,7 +643,7 @@
 <!ENTITY email.sample                'yourname@example.com'>
 
 <!ENTITY link.superglobals '<link xmlns="http://docbook.org/ns/docbook" linkend="language.variables.predefined">superglobals</link>'>
-<!ENTITY link.autoload '<link xmlns="http://docbook.org/ns/docbook" linkend="language.oop5.autoload">__autoload</link>'>
+<!ENTITY link.autoload '<link xmlns="http://docbook.org/ns/docbook" linkend="language.oop.autoload">__autoload</link>'>
 
 <!ENTITY link.pecl '<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pecl;">PECL</link>'>
 
@@ -686,7 +686,7 @@
 <!ENTITY foreach '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.foreach"><literal>foreach</literal></link>'>
 <!ENTITY global '<link xmlns="http://docbook.org/ns/docbook" linkend="language.variables.scope.global"><literal>global</literal></link>'>
 <!ENTITY instanceof '<link xmlns="http://docbook.org/ns/docbook" linkend="language.operators.type"><literal>instanceof</literal></link>'>
-<!ENTITY new '<link xmlns="http://docbook.org/ns/docbook" linkend="language.oop5.basic.new"><literal>new</literal></link>'>
+<!ENTITY new '<link xmlns="http://docbook.org/ns/docbook" linkend="language.oop.basic.new"><literal>new</literal></link>'>
 <!ENTITY yield '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.yield"><literal>yield</literal></link>'>
 <!ENTITY yield.from '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.yield.from"><literal>yield from</literal></link>'>
 
