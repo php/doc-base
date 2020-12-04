@@ -80,6 +80,7 @@
   &language.errors;
   &language.exceptions;
   &language.generators;
+  &language.attributes;
   &language.references;
   &language.predefined.variables;
   &language.predefined.exceptions;
