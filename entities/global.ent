@@ -651,11 +651,11 @@
 <!ENTITY spec.pdf.fdf   'http://www.adobe.com/devnet/acrobat/fdftoolkit.html'>
 
 <!-- The three special language constants -->
-<!ENTITY true  '<constant xmlns="http://docbook.org/ns/docbook">TRUE</constant>'>
-<!ENTITY false '<constant xmlns="http://docbook.org/ns/docbook">FALSE</constant>'>
-<!ENTITY null  '<constant xmlns="http://docbook.org/ns/docbook">NULL</constant>'>
-<!-- use <type>NULL</type> if you're talking about the _type_ NULL,
-     use &null; if it's about the _value_ NULL
+<!ENTITY true  '<constant xmlns="http://docbook.org/ns/docbook">true</constant>'>
+<!ENTITY false '<constant xmlns="http://docbook.org/ns/docbook">false</constant>'>
+<!ENTITY null  '<constant xmlns="http://docbook.org/ns/docbook">null</constant>'>
+<!-- use <type>null</type> if you're talking about the _type_ null,
+     use &null; if it's about the _value_ null
  -->
 <!ENTITY array '<type xmlns="http://docbook.org/ns/docbook">array</type>'>
 <!ENTITY integer '<type xmlns="http://docbook.org/ns/docbook">int</type>'>
