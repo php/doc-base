@@ -27,14 +27,14 @@
 	 * Debug		- If enabled, output directories are not pruned
 	 * PhD Beta		- If enabled, then PhD is treated as an svn checkout rather than a pear package
 	 */
-	define('PATH_PHP', 	'E:\software\php\php.exe');
-	define('PATH_WGET',	'E:\servicesfiles\path\wget.exe');
-	define('PATH_CHM', 	'E:\www\hosted\php.tuxxedo.net\www\chm');
-	define('PATH_LOG', 	'E:\www\hosted\php.tuxxedo.net\www\chm\logs');
-	define('PATH_DOC', 	'E:\chm\doc-all');
-	define('PATH_SVN', 	'E:\chm\software\SlikSVN\bin\svn.exe');
-	define('PATH_HHC', 	'E:\chm\software\HTML Help Workshop\hhc.exe');
-	define('PATH_PHD', 	'E:\chm\software\phd\phd.bat');
+	define('PATH_PHP', 	'C:\Software\PHP7.2.6\php.exe');
+	define('PATH_WGET',	'C:\Software\wget\bin\wget.exe');
+	define('PATH_CHM', 	'C:\Dropbox\Dropbox\Public\chm');
+	define('PATH_LOG', 	'C:\phpdoc\logs');
+	define('PATH_DOC', 	'C:\phpdoc');
+	define('PATH_SVN', 	'C:\Software\Subversion Client\svn.exe');
+	define('PATH_HHC', 	'C:\Program Files (x86)\HTML Help Workshop\hhc.exe');
+	define('PATH_PHD', 	'C:\Software\PHP7.2.6\phd.bat');
  	//  Tools to build multibyte search enabled chm
  	define('PATH_DBCSFIX', 	'C:\Program Files (x86)\Sandcastle\ProductionTools\DBCSFix.exe');
  	define('PATH_APPLOCALE','C:\Program Files (x86)\Sandcastle\ProductionTools\SBAppLocale.exe');
@@ -63,6 +63,7 @@
 						'ro'    => 'Romanian',
 						'ru'    => 'Russian',
 						'tr'    => 'Turkish',
+						'kr'    => 'Korean',
 						'zh'    => 'Chinese (Simplified)',
 						);
 
