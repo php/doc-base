@@ -8,7 +8,7 @@ writing documentation yourself, or if you simply are curious
 about how the XML stuff works.
 
 If you just want to read the documentation, look at:
-http://www.php.net/docs.php
+https://www.php.net/docs.php
 
 # HOW TO WRITE PHPDOC FILES
 
@@ -29,7 +29,7 @@ phd -d .manual.xml
 ```
 
 However, PhD is a separate project which can be read about here:
-http://wiki.php.net/doc/phd
+https://wiki.php.net/doc/phd
 
 ## QUICK REFERENCE
 
@@ -129,7 +129,7 @@ about them)
     &false;             <constant>FALSE</constant>
     &php.ini;           <filename>php.ini</filename>
 
- Be sure to check out globals.ent and language-snippets.ent for
- more information for entities and urls.
+Be sure to check out globals.ent and language-snippets.ent for
+more information for entities and urls.
 
 ---------------------------------------------------------------------------
