@@ -66,8 +66,6 @@ and resources used in all languages.
   ```
 * If you are translating, remember to add the full Git commit hash of the English file that you are translating
   from, to the file's `EN-Revision` comment.
-
-  **Always run `php doc-base/configure.php` before commit!**
 * Commit your changes
   ```bash
   git commit path/to/file.xml
