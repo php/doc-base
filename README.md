@@ -34,15 +34,18 @@ http://wiki.php.net/doc/phd
 ## QUICK REFERENCE
 
 ### source checkout
+
+For a more general git-workflow see [the Wiki](https://wiki.php.net/vcs/gitworkflow#reviewing_and_closing_pull_requests). 
+Make sure to upload your SSH-key to your account at people.php.net
   
 Check out the source
 
 ```bash
 mkdir phpdoc
 cd phpdoc
-git clone https://git.php.net/repository/doc/en.git
-git clone https://git.php.net/repository/doc/your-language-of-choice.git
-git clone https://git.php.net/repository/doc/base.git doc-base
+git clone git@git.php.net:/doc/en.git
+git clone git@git.php.net:/doc/your-language-of-choice.git
+git clone git@git.php.net:/doc/base.git doc-base
 ```
 
 Change `your-language-of-choice` if you would like to check out a different language.
