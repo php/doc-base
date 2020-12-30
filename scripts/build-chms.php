@@ -35,7 +35,7 @@
 	include_once __DIR__ .'/build-chms-config.php';
 
 	/**
-	 * The languages to build are retrieved from https://svn.php.net/repository/web/php/trunk/include/languages.inc
+	 * The languages to build are retrieved from http://git.php.net/?p=web/php.git;a=blob_plain;f=include/languages.inc;hb=HEAD
 	 */
 	if (file_exists(__DIR__ . '\\languages.inc'))
 	{
@@ -68,7 +68,7 @@
 	if(PHD_BETA)
 	{
 		chdir(dirname(PATH_PHD));
-		execute_task('Updating PhD from svn', PATH_SVN, 'up', 'phd_svn');
+		execute_task('Updating PhD from svn', PATH_GIT, 'pull', 'phd_git');
 		chdir($cwd);
 	}
 	else
@@ -81,7 +81,7 @@
 	 * entities
 	 */
 	chdir(PATH_DOC . '\\doc-base\\');
-	execute_task('Updating doc-base', PATH_SVN, 'up', 'docbase');
+	execute_task('Updating doc-base', PATH_GIT, 'pull', 'doc_base');
 	chdir($cwd);
 
 	/**
@@ -108,7 +108,7 @@
 		 * Update that specific language folder in SVN
 		 */
 		chdir(PATH_DOC . '\\' . $lang_code . '\\');
-		execute_task('- SVN', PATH_SVN, 'up', 'svn_' . $lang_code);
+		execute_task('- GIT', PATH_GIT, 'pull', 'git_' . $lang_code);
 		chdir($cwd);
 
 		/**

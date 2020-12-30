@@ -33,6 +33,7 @@
 	define('PATH_LOG', 	'C:\phpdoc\logs');
 	define('PATH_DOC', 	'C:\phpdoc');
 	define('PATH_SVN', 	'C:\Software\Subversion Client\svn.exe');
+	define('PATH_GIT', 	'C:\Software\Git\bin\git.exe');
 	define('PATH_HHC', 	'C:\Program Files (x86)\HTML Help Workshop\hhc.exe');
 	define('PATH_PHD', 	'C:\Software\PHP7.2.6\phd.bat');
  	//  Tools to build multibyte search enabled chm
@@ -63,7 +64,6 @@
 						'ro'    => 'Romanian',
 						'ru'    => 'Russian',
 						'tr'    => 'Turkish',
-						'kr'    => 'Korean',
 						'zh'    => 'Chinese (Simplified)',
 						);
 

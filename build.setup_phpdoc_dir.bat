@@ -2,19 +2,19 @@ cd "C:\"
 mkdir phpdoc
 cd phpdoc
 mkdir logs
-svn checkout https://svn.php.net/repository/phpdoc/doc-base/trunk doc-base
-svn checkout https://svn.php.net/repository/phpdoc/en/trunk en
-svn checkout https://svn.php.net/repository/phpdoc/de/trunk de
-svn checkout https://svn.php.net/repository/phpdoc/es/trunk es
-svn checkout https://svn.php.net/repository/phpdoc/fr/trunk fr
-svn checkout https://svn.php.net/repository/phpdoc/it/trunk it
-svn checkout https://svn.php.net/repository/phpdoc/ja/trunk ja
-svn checkout https://svn.php.net/repository/phpdoc/pt_BR/trunk pt_BR
-svn checkout https://svn.php.net/repository/phpdoc/ro/trunk ro
-svn checkout https://svn.php.net/repository/phpdoc/ru/trunk ru
-svn checkout https://svn.php.net/repository/phpdoc/tr/trunk tr
-svn checkout https://svn.php.net/repository/phpdoc/kr/trunk kr
-svn checkout https://svn.php.net/repository/phpdoc/zh/trunk zh
+
+git clone https://git.php.net/repository/doc/base.git doc-base
+git clone https://git.php.net/repository/doc/en.git en
+git clone https://git.php.net/repository/doc/de.git de
+git clone https://git.php.net/repository/doc/es.git es
+git clone https://git.php.net/repository/doc/fr.git fr
+git clone https://git.php.net/repository/doc/it.git it
+git clone https://git.php.net/repository/doc/ja.git ja
+git clone https://git.php.net/repository/doc/pt_br.git pt_BR
+git clone https://git.php.net/repository/doc/ro.git ro
+git clone https://git.php.net/repository/doc/ru.git ru
+git clone https://git.php.net/repository/doc/tr.git tr
+git clone https://git.php.net/repository/doc/zh.git zh
 
 mkdir "C:\Dropbox\Dropbox\Public\chm"
 mkdir "C:\Software\"
