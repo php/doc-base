@@ -62,8 +62,8 @@ and resources used in all languages.
   ```bash
   php doc-base/configure.php
   ```  
-* If you are translating, remember to add the hash of the english base-file that you are translating 
-  from, to the file `.en-revisions.ref`
+* If you are translating, remember to add the full hash of the english base-file that you are translating 
+  from, to the files `EN-Revision`-comment
   
   **Always run `php configure.php` before commit!**
 * Commit your changes
