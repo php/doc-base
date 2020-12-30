@@ -13,7 +13,7 @@ https://www.php.net/docs.php
 # How to write phpdoc files
 
 If you are interested in information about how to
-set up the tools needed, how to work with git and
+set up the tools needed, how to work with Git and
 DocBook on Linux or Windows, or what conventions you
 should follow when writing phpdoc files, please refer
 to the PHP Documentation HOWTO.
@@ -36,9 +36,9 @@ https://wiki.php.net/doc/phd
 ### Source checkout
 
 For a more general git-workflow see [the Wiki](https://wiki.php.net/vcs/gitworkflow#reviewing_and_closing_pull_requests).
-Make sure to upload your SSH-key to your account at people.php.net
+Make sure to upload your SSH public key to your account at master.php.net
 
-Check out the source
+Check out the sources:
 
 ```bash
 mkdir phpdoc
@@ -50,7 +50,7 @@ git clone git@git.php.net:/doc/base.git doc-base
 
 Change `your-language-of-choice` if you would like to check out a different language.
 
-Where `en/` contains the DocBook source files, and `doc-base` contains tools
+The `en` folder contains the English DocBook source files, and `doc-base` contains tools
 and resources used in all languages.
 
 ### Edits
@@ -60,15 +60,14 @@ and resources used in all languages.
   ```bash
   git diff path/to/file.xml
   ```
-
 * Make sure no errors are present, so at the command line in your phpdoc source directory run:
   ```bash
-  php doc-base/configure.php
+  php configure.php
   ```
-* If you are translating, remember to add the full hash of the english base-file that you are translating
-  from, to the files `EN-Revision`-comment
+* If you are translating, remember to add the full Git commit hash of the English file that you are translating
+  from, to the file's `EN-Revision` comment.
 
-  **Always run `php configure.php` before commit!**
+  **Always run `php doc-base/configure.php` before commit!**
 * Commit your changes
   ```bash
   git commit path/to/file.xml
@@ -80,11 +79,11 @@ and concerns.
 
 ### New functions
 
-* Copy an existing xml file or use a skeleton from the HOWTO.
+* Copy an existing XML file or use a skeleton from the HOWTO.
   Rename and place it into the appropriate directory.
 * Edit.  Be sure no leftover text exists.  No tabs either.
-* If you are translating, remember to add the full commit-hash of the english
-  base-file that you are translating from, to the files `EN-Revision`-comment.
+* If you are translating, remember to add the full Git commit hash of the English
+  file that you are translating from, to the file's `EN-Revision` comment.
 * Now test locally before commit by first running
   ```bash
   php configure.php
@@ -98,10 +97,7 @@ and concerns.
   git commit path/to/yourfile.xml
   git push remote your-branch
   ```
-* Open a PullRequest to the main repository via github
-
-Note that the version numbers are taken care of elsewhere (don't worry
-about them)
+* Open a pull request to the main repository via GitHub
 
 ### Some popular tags and entities
 
@@ -129,7 +125,6 @@ about them)
     &false;             <constant>FALSE</constant>
     &php.ini;           <filename>php.ini</filename>
 
-Be sure to check out globals.ent and language-snippets.ent for
-more information for entities and urls.
-
----------------------------------------------------------------------------
+Be sure to check out [global.ent](entities/global.ent) and
+language-snippets.ent (located within each language's repo) for
+more information for entities and URLs.
