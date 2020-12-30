@@ -1,6 +1,6 @@
 
 # READ THIS FIRST
-    
+
 This directory contains source files and a setup for converting
 PHP's XML documentation into presentation formats like HTML and
 RTF. You should not have to bother with this unless you are
@@ -17,9 +17,9 @@ set up the tools needed, how to work with git and
 DocBook on Linux or Windows, or what conventions you
 should follow when writing phpdoc files, please refer
 to the PHP Documentation HOWTO.
-     
+
 You can read the HOWTO online at: http://doc.php.net/tutorial/
-    
+
 If you are already working with the phpdoc module,
 then you can find its XML source in the howto directory
 of the module, and build it yourself with:
@@ -35,9 +35,9 @@ http://wiki.php.net/doc/phd
 
 ### source checkout
 
-For a more general git-workflow see [the Wiki](https://wiki.php.net/vcs/gitworkflow#reviewing_and_closing_pull_requests). 
+For a more general git-workflow see [the Wiki](https://wiki.php.net/vcs/gitworkflow#reviewing_and_closing_pull_requests).
 Make sure to upload your SSH-key to your account at people.php.net
-  
+
 Check out the source
 
 ```bash
@@ -49,41 +49,41 @@ git clone git@git.php.net:/doc/base.git doc-base
 ```
 
 Change `your-language-of-choice` if you would like to check out a different language.
-         
+
 Where `en/` contains the DocBook source files, and `doc-base` contains tools
 and resources used in all languages.
-  
+
 ### edits
-    
+
 * Make the change.  Use spaces not tabs.  Be sure to carefully watch your whitespace!
 * Look at your unified diff, make sure it looks right and that whitespace changes aren't mixed in:
   ```bash
   git diff path/to/file.xml
   ```
-  	 
+
 * Make sure no errors are present, so at the command line in your phpdoc source directory run:
   ```bash
   php doc-base/configure.php
-  ```  
-* If you are translating, remember to add the full hash of the english base-file that you are translating 
+  ```
+* If you are translating, remember to add the full hash of the english base-file that you are translating
   from, to the files `EN-Revision`-comment
-  
+
   **Always run `php configure.php` before commit!**
 * Commit your changes
   ```bash
   git commit path/to/file.xml
   ```
-	 
+
 Read the HOWTO for more information.  After reading the HOWTO,
-email the phpdoc mailing list (phpdoc@lists.php.net) with questions 
+email the phpdoc mailing list (phpdoc@lists.php.net) with questions
 and concerns.
 
 ### new functions
-  
-* Copy an existing xml file or use a skeleton from the HOWTO. 
+
+* Copy an existing xml file or use a skeleton from the HOWTO.
   Rename and place it into the appropriate directory.
 * Edit.  Be sure no leftover text exists.  No tabs either.
-* If you are translating, remember to add the full commit-hash of the english 
+* If you are translating, remember to add the full commit-hash of the english
   base-file that you are translating from, to the files `EN-Revision`-comment.
 * Now test locally before commit by first running
   ```bash
@@ -99,31 +99,30 @@ and concerns.
   git push remote your-branch
   ```
 * Open a PullRequest to the main repository via github
-  
-Note that the version numbers are taken care of elsewhere (don't worry 
+
+Note that the version numbers are taken care of elsewhere (don't worry
 about them)
 
 ### some popular tags and entities
-   
+
     <filename>          filenames
     <constant>          constants
     <varname>           variables
     <parameter>         a function's parameter/argument
-    <function>          functions, this links to function pages or bolds if 
+    <function>          functions, this links to function pages or bolds if
                         already on the function's page.  it also adds ().
-    
+
     <literal>           teletype/mono-space font <tt>
     <emphasis>          italics
     <example>           see HOWTO, includes many other tags.
     <link>              internal manual links
                         <link linkend="language.variables">variables</link>
-    
+
     <link>              external links via global.ent
-                        <link xlink:href="&spec.cookies;">mmm cookies</link>                        
-    
+                        <link xlink:href="&spec.cookies;">mmm cookies</link>
+
     <type>              types, this links to the given types manual
                         page: <type>object</type> -> php.net/types.object
-    
 
     &return.success;    see: language-snippets.ent
     &true;              <constant>TRUE</constant>
