@@ -80,8 +80,8 @@ and concerns.
 * Copy an existing xml file or use a skeleton from the HOWTO. 
   Rename and place it into the appropriate directory.
 * Edit.  Be sure no leftover text exists.  No tabs either.
-* If you are translating, remember to add the file as well as the hash of the english 
-  base-file that you are translating from, to the file `.en-revisions.ref`.
+* If you are translating, remember to add the full commit-hash of the english 
+  base-file that you are translating from, to the files `EN-Revision`-comment.
 * Now test locally before commit by first running
   ```bash
   php configure.php
