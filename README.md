@@ -1,5 +1,5 @@
 
-# READ THIS FIRST
+# Read this first
 
 This directory contains source files and a setup for converting
 PHP's XML documentation into presentation formats like HTML and
@@ -10,7 +10,7 @@ about how the XML stuff works.
 If you just want to read the documentation, look at:
 https://www.php.net/docs.php
 
-# HOW TO WRITE PHPDOC FILES
+# How to write phpdoc files
 
 If you are interested in information about how to
 set up the tools needed, how to work with git and
@@ -31,9 +31,9 @@ phd -d .manual.xml
 However, PhD is a separate project which can be read about here:
 https://wiki.php.net/doc/phd
 
-## QUICK REFERENCE
+## Quick reference
 
-### source checkout
+### Source checkout
 
 For a more general git-workflow see [the Wiki](https://wiki.php.net/vcs/gitworkflow#reviewing_and_closing_pull_requests).
 Make sure to upload your SSH-key to your account at people.php.net
@@ -53,7 +53,7 @@ Change `your-language-of-choice` if you would like to check out a different lang
 Where `en/` contains the DocBook source files, and `doc-base` contains tools
 and resources used in all languages.
 
-### edits
+### Edits
 
 * Make the change.  Use spaces not tabs.  Be sure to carefully watch your whitespace!
 * Look at your unified diff, make sure it looks right and that whitespace changes aren't mixed in:
@@ -78,7 +78,7 @@ Read the HOWTO for more information.  After reading the HOWTO,
 email the phpdoc mailing list (phpdoc@lists.php.net) with questions
 and concerns.
 
-### new functions
+### New functions
 
 * Copy an existing xml file or use a skeleton from the HOWTO.
   Rename and place it into the appropriate directory.
@@ -103,7 +103,7 @@ and concerns.
 Note that the version numbers are taken care of elsewhere (don't worry
 about them)
 
-### some popular tags and entities
+### Some popular tags and entities
 
     <filename>          filenames
     <constant>          constants
