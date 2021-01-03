@@ -56,13 +56,17 @@ and resources used in all languages.
 ### Edits
 
 * Make the change.  Use spaces not tabs.  Be sure to carefully watch your whitespace!
+* cd into the desired clone directory, e.g.
+  ```bash
+  cd en
+  ```
 * Look at your unified diff, make sure it looks right and that whitespace changes aren't mixed in:
   ```bash
   git diff path/to/file.xml
   ```
 * Make sure no errors are present, so at the command line in your phpdoc source directory run:
   ```bash
-  php configure.php
+  php ../doc-base/configure.php
   ```
 * If you are translating, remember to add the full Git commit hash of the English file that you are translating
   from, to the file's `EN-Revision` comment.
@@ -82,9 +86,13 @@ and concerns.
 * Edit.  Be sure no leftover text exists.  No tabs either.
 * If you are translating, remember to add the full Git commit hash of the English
   file that you are translating from, to the file's `EN-Revision` comment.
+* cd into the desired clone directory, e.g.
+  ```bash
+  cd en
+  ```
 * Now test locally before commit by first running
   ```bash
-  php configure.php
+  php ../doc-base/configure.php
   ```
 * Add the file to your staging area
   ```bash
