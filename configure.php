@@ -234,7 +234,15 @@ $srcdir  = dirname(__FILE__);
 $workdir = $srcdir;
 $basedir = $srcdir;
 $rootdir = dirname($basedir);
-if (basename($rootdir) == 'doc-base') {
+
+/**
+ * When checking out this repository on GitHub Actions, the workspace  directory is "/home/runner/work/doc-base/doc-base".
+ *
+ * To avoid applying dirname() here, we check if we are running on GitHub Actions.
+ *
+ * @see https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables#default-environment-variables
+ */
+if (getenv('GITHUB_ACTIONS') !== 'true' && basename($rootdir) === 'doc-base') {
     $rootdir = dirname($rootdir);
 }
 
