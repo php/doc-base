@@ -418,9 +418,6 @@
    <title>&XMLManipulation;</title>
    &reference.dom.book;
    &reference.libxml.book;
-   &reference.sdo.book;
-   &reference.sdodasrel.book;
-   &reference.sdo-das-xml.book;
    &reference.simplexml.book;
    &reference.wddx.book;
    &reference.xmldiff.book;
