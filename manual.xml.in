@@ -368,7 +368,6 @@
    <title>&ServerSpecificExtensions;</title>
    &reference.apache.book;
    &reference.fpm.book;
-   &reference.nsapi.book;
   </set>
 
   <set xml:id="refs.basic.session">
