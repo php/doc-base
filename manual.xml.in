@@ -312,7 +312,6 @@
    &reference.geoip.book;
    &reference.fann.book;
    &reference.json.book;
-   &reference.judy.book;
    &reference.lua.book;
    &reference.luasandbox.book;
    &reference.misc.book;
