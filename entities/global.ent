@@ -28,7 +28,7 @@
 <!ENTITY url.apt-get "https://packages.debian.org/index">
 <!ENTITY url.argsep "http://www.w3.org/TR/html4/appendix/notes.html#h-B.2.2">
 <!ENTITY url.arraycolumn.compat "https://github.com/ramsey/array_column/blob/master/src/array_column.php">
-<!ENTITY url.asciitable "http://www.asciitable.com">
+<!ENTITY url.asciitable "https://www.man7.org/linux/man-pages/man7/ascii.7.html">
 <!ENTITY url.aspell "http://aspell.net/">
 <!ENTITY url.berkeleydb "https://www.oracle.com/database/berkeley-db/db.html">
 <!ENTITY url.bison "http://www.gnu.org/software/bison/bison.html">
