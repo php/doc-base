@@ -443,6 +443,7 @@
 <!ENTITY url.php.docs "https://www.php.net/docs.php">
 <!ENTITY url.php.dochowto "http://doc.php.net/tutorial/">
 <!ENTITY url.php.downloads "https://www.php.net/downloads.php">
+<!ENTITY url.php.git.mirror "https://github.com/php/">
 <!ENTITY url.php.win.downloads "https://windows.php.net/download/">
 <!ENTITY url.php.win.build "https://wiki.php.net/internals/windows/stepbystepbuild">
 <!ENTITY url.php.win.build2 "https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2">
