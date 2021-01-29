@@ -24,9 +24,8 @@
 */
 
 error_reporting(-1);
-$cvs_id = '$Id$';
 
-echo "configure.php: $cvs_id\n";
+echo "configure.php\n";
 
 function usage() // {{{
 {
@@ -229,6 +228,16 @@ function print_xml_errors($details = true) {
     }
     libxml_clear_errors();
 } // }}}
+
+function get_commit_id() {
+    global $ac;
+
+    if (is_file($file = $ac['LANGDIR'] . '/.git/refs/heads/master')) {
+        return trim(file_get_contents($file));
+    }
+
+    return '$Id$';
+}
 
 $srcdir  = dirname(__FILE__);
 $workdir = $srcdir;
@@ -505,6 +514,9 @@ if ($ac['LANGDIR'] == 'trunk') {
     $ac['EN_DIR'] = 'en';
 }
 checkvalue("yes");
+
+checking("commit ID");
+checkvalue(get_commit_id());
 
 checking("for partial build");
 checkvalue($ac['PARTIAL']);
