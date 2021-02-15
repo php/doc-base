@@ -569,6 +569,7 @@
 <!ENTITY url.ui.libui "https://github.com/andlabs/libui">
 <!ENTITY url.ultimatezip "http://www.ultimatezip.com/">
 <!ENTITY url.unicode "http://www.unicode.org/">
+<!ENTITY url.unicode.reports.tr "http://www.unicode.org/reports/tr">
 <!ENTITY url.unicode.normalization "http://unicode.org/reports/tr15/">
 <!ENTITY url.unicode.normalization.faq "http://unicode.org/faq/normalization.html">
 <!ENTITY url.unicode.reports "http://www.unicode.org/reports/tr21/">
