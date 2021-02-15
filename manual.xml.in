@@ -316,7 +316,6 @@
    &reference.misc.book;
    &reference.seaslog.book;
    &reference.spl.book;
-   &reference.spl-types.book;
    &reference.stream.book;
    &reference.swoole.book;
    &reference.tidy.book;
