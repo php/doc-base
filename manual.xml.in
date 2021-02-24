@@ -136,7 +136,6 @@
   <set xml:id="refs.basic.php">
    <title>&AffectingPHPsBehaviour;</title>
    &reference.apcu.book;
-   &reference.blenc.book;
    &reference.componere.book;
    &reference.errorfunc.book;
    &reference.ffi.book;
