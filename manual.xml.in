@@ -195,7 +195,6 @@
    <set xml:id="refs.database.abstract">
     <title>&AbstractionLayers;</title>
     &reference.dba.book;
-    &reference.dbx.book;
     &reference.uodbc.book;
     &reference.pdo.book;
    </set>
