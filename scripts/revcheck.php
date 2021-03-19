@@ -281,7 +281,7 @@ function print_html_all( $enFiles , $trFiles , $lang )
     //print_html_wip();
     //print_html_revtagproblem();
     //print_html_untranslated();
-    //print_html_notinen();
+    print_html_notinen( $enFiles );
     print_html_footer();
 }
 
@@ -332,6 +332,58 @@ function print_html_menu( $href )
 <p><a href="#intro">Introduction</a> | <a href="#translators">Translators</a> | <a href="#filesummary">File summary</a> | <a href="#files">Files</a> | <a href="#wip">Work in progress</a> | <a href="#revtag">Revision tag problem</a> | <a href="#untranslated">Untranslated files</a> | <a href="#notinen">Not in EN tree</a></p>
 
 HTML;
+}
+
+function print_html_notinen($enFiles)
+{
+    $exists = false;
+    $count = 0;
+    foreach( $enFiles as $key => $en )
+    {
+        if ( $en->syncStatus == FileStatusEnum::Untranslated ) {
+            $exists = true;
+            $count++;
+        }
+    }
+
+    if (!$exists) return;
+
+    print <<<HTML
+
+<p>&nbsp;</p>
+<a name="notinen"></a>
+<table width="600" border="0" cellpadding="3" cellspacing="1" align="center">
+ <tr>
+  <th>Not in EN Tree ($count files):</th>
+  <th>kb</th>
+ </tr>
+HTML;
+
+    $path = null;
+    foreach( $enFiles as $key => $en )
+    {
+        if ( $en->syncStatus != FileStatusEnum::Untranslated )
+            continue;
+        if ( !preg_match( "/^.*\.xml\$/", $en->name ) || $en->name === "versions.xml")
+            continue;
+        if ( $path !== $en->path )
+        {
+            $path = $en->path;
+            $path2 = $path == '' ? '/' : $path;
+            print " <tr><th class='blue' colspan='2'>$path2</th></tr>";
+        }
+        $size = $en->size < 1024 ? 1 : floor( $en->size / 1024 );
+
+    print <<<HTML
+
+ <tr class=bggray>
+  <td class="c">$en->name</td>
+  <td class="c">$size</td>
+ </tr>
+HTML;
+    }
+    print "</table>\n";
+    print "<p>&nbsp;</p>\n";
 }
 
 function print_html_footer()
