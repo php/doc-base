@@ -280,8 +280,8 @@ function print_html_all( $enFiles , $trFiles , $lang )
     print_html_files( $enFiles , $trFiles , $lang );
     //print_html_wip();
     //print_html_revtagproblem();
-    //print_html_untranslated();
-    print_html_notinen( $enFiles );
+    print_html_untranslated( $enFiles );
+    //print_html_notinen( $enFiles );
     print_html_footer();
 }
 
@@ -334,7 +334,7 @@ function print_html_menu( $href )
 HTML;
 }
 
-function print_html_notinen($enFiles)
+function print_html_untranslated($enFiles)
 {
     $exists = false;
     $count = 0;
@@ -351,10 +351,10 @@ function print_html_notinen($enFiles)
     print <<<HTML
 
 <p>&nbsp;</p>
-<a name="notinen"></a>
+<a name="untranslated"></a>
 <table width="600" border="0" cellpadding="3" cellspacing="1" align="center">
  <tr>
-  <th>Not in EN Tree ($count files):</th>
+  <th>Untranslated files ($count files):</th>
   <th>kb</th>
  </tr>
 HTML;
