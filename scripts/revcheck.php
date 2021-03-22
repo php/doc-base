@@ -300,6 +300,8 @@ h1 { color: #FFFFFF; }
 table { margin-left: auto; margin-right: auto; text-align: left; border-spacing: 1px; }
 th { color: white; background-color: #666699; padding: 0.2em; text-align: center; vertical-align: middle; }
 td { padding: 0.2em 0.3em; }
+.oc { white-space: nowrap; overflow: hidden; max-width: 7em; }
+.copy { margin:0; padding: 0; font-size:small; }
 .o { white-space: nowrap; overflow: hidden; max-width: 3em; }
 .c { text-align: center; }
 .r { text-align: right; }
@@ -389,6 +391,17 @@ HTML;
 function print_html_footer()
 {
     print <<<HTML
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+<script>
+  var clipboard = new ClipboardJS('.btn');
+  clipboard.on('success', function (e) {
+     console.log(e);
+  });
+  clipboard.on('error', function (e) {
+     console.log(e);
+  });
+</script>
 </body>
 </html>
 HTML;
@@ -460,7 +473,12 @@ HTML;
         print <<<HTML
  <tr class="$bg">
   <td class="l">$nm</td>
-  <td class="o">$h1</td>
+  <td class="oc">
+    <button class="btn copy" data-clipboard-text="{$en->hash}">
+      Copy
+    </button>
+    $h1
+  </td>
   <td class="o">$h2</td>
   <td class="r">$s1</td>
   <td class="r">$s2</td>
