@@ -456,7 +456,7 @@ HTML;
             case FileStatusEnum::TranslatedCritial: $bg = 'bgred'   ; break;
             default:                                $bg = 'bggray'  ; break;
         }
-        $df = "https://git.php.net/?p=doc/en.git;a=blobdiff;f=$key;hb={$en->hash};hpb={$tr->hash};";
+        $df = "https://git.php.net/?p=doc/en.git;a=blobdiff_plain;f=$key;hb={$en->hash};hpb={$tr->hash};";
         $nm = "<a href='$df'>{$en->name}</a>";
         if ( $en->syncStatus == FileStatusEnum::RevTagProblem )
             $nm = $en->name;
