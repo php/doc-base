@@ -302,6 +302,8 @@ th { color: white; background-color: #666699; padding: 0.2em; text-align: center
 td { padding: 0.2em 0.3em; }
 .oc { white-space: nowrap; overflow: hidden; max-width: 7em; }
 .copy { margin:0; padding: 0; font-size:small; }
+.copy:hover { text-transform: uppercase; }
+.copy:active { background: aqua; font-weight: bold; }
 .o { white-space: nowrap; overflow: hidden; max-width: 3em; }
 .c { text-align: center; }
 .r { text-align: right; }
