@@ -57,8 +57,9 @@ captureGitValues( 'en'  , $gitData );
 captureGitValues( $lang , $gitData );
 
 computeSyncStatus( $enFiles , $trFiles , $gitData , $lang );
+$translators = computeTranslatorStatus( $lang, $enFiles, $trFiles );
 
-print_html_all( $enFiles , $trFiles , $lang );
+print_html_all( $enFiles , $trFiles , $translators, $lang );
 
 // Model
 
@@ -88,6 +89,46 @@ class FileStatusInfo
     public function getKey()
     {
         return trim( $this->path . '/' . $this->name , '/' );
+    }
+}
+
+class TranslatorInfo
+{
+    public $name;
+    public $email;
+    public $nick;
+    public $vcs;
+
+    public $files_uptodate;
+    public $files_outdated;
+    public $files_wip;
+    public $files_sum;
+    public $files_other;
+
+    public function __construct() {
+        $this->files_uptodate = 0;
+        $this->files_outdated = 0;
+        $this->files_wip = 0;
+        $this->files_sum = 0;
+        $this->files_other = 0;
+    }
+
+    public static function getKey( $fileStatus ) {
+        switch ( $fileStatus ) {
+            case FileStatusEnum::Untranslated:
+            case FileStatusEnum::TranslatedOld:
+            case FileStatusEnum::TranslatedCritial:
+                return "files_outdated";
+                break;
+            case FileStatusEnum::TranslatedWip:
+                return "files_wip";
+                break;
+            case FileStatusEnum::TranslatedOk:
+                return "files_uptodate";
+                break;
+            default:
+                return "files_other";
+        }
     }
 }
 
@@ -269,13 +310,82 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
     }
 }
 
+function parse_attr_string ( $tags_attrs ) {
+    $tag_attrs_processed = array();
+
+    foreach($tags_attrs as $attrib_list) {
+        preg_match_all("!(.+)=\\s*([\"'])\\s*(.+)\\2!U", $attrib_list, $attribs);
+
+        $attrib_array = array();
+        foreach ($attribs[1] as $num => $attrname) {
+            $attrib_array[trim($attrname)] = trim($attribs[3][$num]);
+        }
+
+        $tag_attrs_processed[] = $attrib_array;
+    }
+
+    return $tag_attrs_processed;
+}
+
+function computeTranslatorStatus( $lang, $enFiles, $trFiles ) {
+    $translation_xml = getcwd() . "/" . $lang . "/translation.xml";
+    if (!file_exists($translation_xml)) {
+        return [];
+    }
+
+    $txml = join("", file($translation_xml));
+    $txml = preg_replace("/\\s+/", " ", $txml);
+
+    preg_match("!<\?xml(.+)\?>!U", $txml, $match);
+    $xmlinfo = parse_attr_string($match);
+    $output_charset = $xmlinfo[1]["encoding"];
+
+    $pattern = "!<person(.+)/\\s?>!U";
+    preg_match_all($pattern, $txml, $matches);
+    $translators = parse_attr_string($matches[1]);
+
+    $translatorInfos = [];
+    $unknownInfo = new TranslatorInfo();
+    $unknownInfo->nick = "unknown";
+    $translatorInfos["unknown"] = $unknownInfo;
+
+    foreach ($translators as $key => $translator) {
+        $info = new TranslatorInfo();
+        $info->name = $translator["name"];
+        $info->email = $translator["email"];
+        $info->nick = $translator["nick"];
+        $info->vcs = $translator["vcs"];
+
+        $translatorInfos[$info->nick] = $info;
+    }
+
+    foreach( $enFiles as $key => $enFile ) {
+        $statusKey = TranslatorInfo::getKey($enFile->syncStatus);
+        $info_exists = false;
+        if (array_key_exists($enFile->getKey(), $trFiles)) {
+            $trFile = $trFiles[$enFile->getKey()];
+            if (array_key_exists($trFile->maintainer, $translatorInfos)) {
+                $translatorInfos[$trFile->maintainer]->$statusKey++;
+                $translatorInfos[$trFile->maintainer]->files_sum++;
+                $info_exists = true;
+            }
+        }
+        if (!$info_exists) {
+            $translatorInfos["unknown"]->$statusKey++;
+            $translatorInfos["unknown"]->files_sum++;
+        }
+    }
+
+    return $translatorInfos;
+}
+
 // Output
 
-function print_html_all( $enFiles , $trFiles , $lang )
+function print_html_all( $enFiles , $trFiles , $translators , $lang )
 {
     print_html_header( $lang );
-    //print_html_introduction();
-    //print_html_translations();
+    print_html_menu( 'menus' );
+    print_html_translators($translators);
     //print_html_filesumary();
     print_html_files( $enFiles , $trFiles , $lang );
     //print_html_wip();
@@ -338,6 +448,53 @@ function print_html_menu( $href )
 HTML;
 }
 
+function print_html_translators( $translators ) {
+
+    if (count($translators) === 0) return;
+
+    print <<<HTML
+
+<a name="translators"></a>
+<table width="820" border="0" cellpadding="4" cellspacing="1" align="center">
+  <tr class=blue>
+    <th rowspan=2>Translator's name</th>
+    <th rowspan=2>Contact email</th>
+    <th rowspan=2>Nick</th>
+    <th rowspan=2>V<br>C<br>S</th>
+    <th colspan=4>Files maintained</th>
+  </tr>
+  <tr>
+    <th style="color:#000000">upto-<br>date</th>
+    <th style="color:#000000">old</th>
+    <th style="color:#000000">wip</th>
+    <th class="blue">sum</th>
+  </tr>
+HTML;
+
+    foreach( $translators as $key => $person )
+    {
+        if ($person->nick === "unknown") continue;
+
+        print <<<HTML
+
+<tr>
+  <td>{$person->name}</td>
+  <td>{$person->email}</td>
+  <td>{$person->nick}</td>
+  <td class=c>{$person->vcs}</td>
+
+  <td class=c>{$person->files_uptodate}</td>
+  <td class=c>{$person->files_outdated}</td>
+  <td class=c>{$person->files_wip}</td>
+  <td class=c>{$person->files_sum}</td>
+</tr>
+
+HTML;
+
+    }
+    print "</table>\n";
+}
+
 function print_html_untranslated($enFiles)
 {
     $exists = false;
@@ -387,7 +544,6 @@ HTML;
 HTML;
     }
     print "</table>\n";
-    print "<p>&nbsp;</p>\n";
 }
 
 function print_html_footer()
@@ -411,8 +567,10 @@ HTML;
 
 function print_html_files( $enFiles , $trFiles , $lang )
 {
-    print_html_menu( 'files' );
     print <<<HTML
+
+<p>&nbsp;</p>
+<a name="files"></a>
 <table>
  <tr>
   <th rowspan="2">Translated file</th>
