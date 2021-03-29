@@ -43,9 +43,9 @@ Check out the sources:
 ```bash
 mkdir phpdoc
 cd phpdoc
-git clone git@git.php.net:/doc/en.git
-git clone git@git.php.net:/doc/your-language-of-choice.git
-git clone git@git.php.net:/doc/base.git doc-base
+git clone git@github.com:php/doc-en.git
+git clone git@github.com:php/doc-your-language-of-choice.git
+git clone git@github.com:php/doc-base.git
 ```
 
 Change `your-language-of-choice` if you would like to check out a different language.
