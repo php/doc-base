@@ -20,9 +20,9 @@
 <!ENTITY url.apache.core "http://httpd.apache.org/docs/current/mod/core.html">
 <!ENTITY url.apache.fcgid "http://httpd.apache.org/mod_fcgid/">
 <!ENTITY url.apache.tuscany "http://tuscany.apache.org/">
-<!ENTITY url.apc.technotes "https://git.php.net/?p=pecl/caching/apc.git;a=blob;f=TECHNOTES.txt">
+<!ENTITY url.apc.technotes "https://github.com/php/pecl-caching-apc/blob/master/TECHNOTES.txt">
 <!ENTITY url.apc.bc "https://pecl.php.net/apcu_bc">
-<!ENTITY url.apc.source "https://git.php.net/?p=pecl/caching/apc.git">
+<!ENTITY url.apc.source "https://github.com/php/pecl-caching-apc/">
 <!ENTITY url.apd "https://pecl.php.net/apd">
 <!ENTITY url.apple.clt "https://developer.apple.com/downloads/index.action?name=Command&#37;20Line&#37;20Tools">
 <!ENTITY url.apt-get "https://packages.debian.org/index">
@@ -124,7 +124,6 @@
 <!ENTITY url.gettext "http://www.gnu.org/software/gettext/gettext.html">
 <!ENTITY url.gettext.docs "http://www.gnu.org/software/gettext/manual/gettext.html">
 <!ENTITY url.git.hub "https://github.com/">
-<!ENTITY url.git.php "https://git.php.net/">
 <!ENTITY url.glib "http://ftp.gnome.org/pub/gnome/sources/glib/">
 <!ENTITY url.glib.windows "http://ftp.gnome.org/pub/gnome/binaries/win32/glib/">
 <!ENTITY url.gmagick.winbuilds "http://valokuva.org/magick/">
@@ -463,7 +462,7 @@
 <!ENTITY url.php.release4.1.0 "https://www.php.net/releases/4_1_0.php">
 <!ENTITY url.php.release4.2.0 "https://www.php.net/releases/4_2_0.php">
 <!ENTITY url.php.svn "https://svn.php.net/">
-<!ENTITY url.php.git.phpini "https://git.php.net/?p=php-src.git;a=blob;f=php.ini-production;hb=HEAD">
+<!ENTITY url.php.git.phpini "https://github.com/php/php-src/blob/master/php.ini-production">
 <!ENTITY url.php.talks 'http://talks.php.net/'>
 <!ENTITY url.php.support "https://www.php.net/support.php">
 <!ENTITY url.php.urlhowto "https://www.php.net/urlhowto.php">
@@ -575,7 +574,7 @@
 <!ENTITY url.unicode.reports "http://www.unicode.org/reports/tr21/">
 <!ENTITY uri.unicode.graphemes "http://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries">
 <!ENTITY url.unixodbc "http://www.unixodbc.org/">
-<!ENTITY url.userlandnaming.cs "https://git.php.net/?p=php-src.git;a=blob_plain;f=CODING_STANDARDS.md;hb=HEAD">
+<!ENTITY url.userlandnaming.cs "https://github.com/php/php-src/raw/master/CODING_STANDARDS.md">
 <!ENTITY url.uuid "http://www.ossp.org/pkg/lib/uuid/">
 <!ENTITY url.v8engine "http://code.google.com/p/v8/">
 <!ENTITY url.wiki.leap-seconds "http://en.wikipedia.org/wiki/Leap_second">
