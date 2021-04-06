@@ -36,7 +36,7 @@ https://wiki.php.net/doc/phd
 ### Source checkout
 
 For a more general git-workflow see [the Wiki](https://wiki.php.net/vcs/gitworkflow#reviewing_and_closing_pull_requests).
-Make sure to upload your SSH public key to your account at master.php.net
+Make sure to upload your SSH public key to your account at main.php.net
 
 Check out the sources:
 
