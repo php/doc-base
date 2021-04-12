@@ -43,8 +43,8 @@ Check out the sources:
 ```bash
 mkdir phpdoc
 cd phpdoc
-git clone git@github.com:php/doc-en.git
-git clone git@github.com:php/doc-your-language-of-choice.git
+git clone git@github.com:php/doc-en.git en
+git clone git@github.com:php/doc-your-language-of-choice.git your-language-of-choice
 git clone git@github.com:php/doc-base.git
 ```
 
