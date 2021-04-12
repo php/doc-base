@@ -25,12 +25,12 @@ jobs:
           - "fr"
           - "it"
           - "ja"
-          - "pl"
+#          - "pl"
           - "pt_br"
-          - "ro"
+#          - "ro"
           - "ru"
           - "tr"
-          - "uk"
+#          - "uk"
           - "zh"
 
     steps:
