@@ -616,9 +616,12 @@ HTML;
             case FileStatusEnum::TranslatedCritial: $bg = 'bgred'   ; break;
             default:                                $bg = 'bggray'  ; break;
         }
-        $d1 = "https://git.php.net/?p=doc/en.git;a=blobdiff_plain;f=$key;hb={$en->hash};hpb={$tr->hash};"; // text
-        $d2 = "https://git.php.net/?p=doc/en.git;a=blobdiff;f=$key;hb={$en->hash};hpb={$tr->hash};";       // html
-        $nm = "<a href='$d1'>{$en->name}</a> <a href='$d2'>(h)</a>";
+        //$d1 = "https://git.php.net/?p=doc/en.git;a=blobdiff_plain;f=$key;hb={$en->hash};hpb={$tr->hash};";
+        //$d2 = "https://git.php.net/?p=doc/en.git;a=blobdiff;f=$key;hb={$en->hash};hpb={$tr->hash};";
+        //$nm = "<a href='$d1'>{$en->name}</a> <a href='$d2'>(h)</a>";
+        $kh = hash( 'sha256' , $key );
+        $df = "https://github.com/php/doc-en/compare/{$tr->hash}..{$en->hash}#diff-{$kh}";
+        $nm = "<a href='$df'>{$en->name}</a>";
         if ( $en->syncStatus == FileStatusEnum::RevTagProblem )
             $nm = $en->name;
         $h1 = "<a href='http://git.php.net/?p=doc/en.git;a=blob;f=$key;hb={$en->hash}'>{$en->hash}</a>";
