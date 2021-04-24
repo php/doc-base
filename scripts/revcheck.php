@@ -616,9 +616,20 @@ HTML;
             case FileStatusEnum::TranslatedCritial: $bg = 'bgred'   ; break;
             default:                                $bg = 'bggray'  ; break;
         }
-        $d1 = "https://git.php.net/?p=doc/en.git;a=blobdiff_plain;f=$key;hb={$en->hash};hpb={$tr->hash};"; // text
-        $d2 = "https://git.php.net/?p=doc/en.git;a=blobdiff;f=$key;hb={$en->hash};hpb={$tr->hash};";       // html
-        $nm = "<a href='$d1'>{$en->name}</a> <a href='$d2'>(h)</a>";
+        // GitHub web diff -- May not work with very old commits
+        $kh = hash( 'sha256' , $key );
+        $d1 = "https://github.com/php/doc-en/compare/{$tr->hash}..{$en->hash}#diff-{$kh}";
+        // Local git diff  -- Always work
+        $d2 = "(cd en; git diff {$tr->hash} {$en->hash} -- $key)";
+        $d2 = htmlspecialchars( $d2 );
+        // git.php.net     -- May not work with very recent commits
+        $d3 = "https://git.php.net/?p=doc/en.git;a=blobdiff_plain;f=$key;hb={$en->hash};hpb={$tr->hash};"; // text
+        $d4 = "https://git.php.net/?p=doc/en.git;a=blobdiff;f=$key;hb={$en->hash};hpb={$tr->hash};";       // html
+        // And now, all the options
+        $nm = "<a href='$d1' title='GitHub'>{$en->name}</a>"
+            ." <button class='btn copy' data-clipboard-text='{$d2}' title='git diff command'>(c)</button>"
+            ." <a href='$d3' title='git.php.net text'>(t)</a> "
+            ." <a href='$d4' title='git.php.net html'>(h)</a>";
         if ( $en->syncStatus == FileStatusEnum::RevTagProblem )
             $nm = $en->name;
         $h1 = "<a href='http://git.php.net/?p=doc/en.git;a=blob;f=$key;hb={$en->hash}'>{$en->hash}</a>";
