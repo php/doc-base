@@ -621,7 +621,7 @@ HTML;
         $d1 = "https://github.com/php/doc-en/compare/{$tr->hash}..{$en->hash}#diff-{$kh}";
         // Local git diff  -- Always work
         $d2 = "(cd en; git diff {$tr->hash} {$en->hash} -- $key)";
-        $d2 = htmlspecialchars( $d2 );
+        $d2 = htmlspecialchars( $d2 , ENT_QUOTES );
         // git.php.net     -- May not work with very recent commits
         $d3 = "https://git.php.net/?p=doc/en.git;a=blobdiff_plain;f=$key;hb={$en->hash};hpb={$tr->hash};"; // text
         $d4 = "https://git.php.net/?p=doc/en.git;a=blobdiff;f=$key;hb={$en->hash};hpb={$tr->hash};";       // html
