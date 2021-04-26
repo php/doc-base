@@ -51,7 +51,12 @@ $lang = $argv[1];
 
 $gitData = []; // filename lang hash,date
 
+$intro = "No intro available for the {$lang} translation of the manual.";
+
+$oldfiles = []; //path, name, size
+
 $enFiles = populateFileTree( 'en' );
+asort($enFiles);
 $trFiles = populateFileTree( $lang );
 captureGitValues( 'en'  , $gitData );
 captureGitValues( $lang , $gitData );
@@ -62,6 +67,17 @@ $translators = computeTranslatorStatus( $lang, $enFiles, $trFiles );
 print_html_all( $enFiles , $trFiles , $translators, $lang );
 
 // Model
+class OldFilesInfo
+{
+    public $path;
+    public $name;
+    public $size;
+
+    public function getKey()
+    {
+        return trim( $this->path . '/' . $this->name , '/' );
+    }
+}
 
 class FileStatusEnum
 {
@@ -134,6 +150,7 @@ class TranslatorInfo
 
 function populateFileTree( $lang )
 {
+    global $oldfiles;
     $dir = new \DirectoryIterator( $lang );
     if ( $dir === false )
     {
@@ -150,6 +167,7 @@ function populateFileTree( $lang )
 
 function populateFileTreeRecurse( $lang , $path , & $output )
 {
+    global $oldfiles;
     $dir = new DirectoryIterator( $path );
     if ( $dir === false )
     {
@@ -178,8 +196,27 @@ function populateFileTreeRecurse( $lang , $path , & $output )
             $file->size = filesize( $path . '/' . $filename );
             $file->syncStatus = null;
             if ( $lang != 'en' )
+            {
                 parseRevisionTag( $entry->getPathname() , $file );
-            $output[ $file->getKey() ] = $file;
+                if ( strlen($file->hash) == 40 and $file->size != 0  and $filename != "README.md" and $filename != "translation.xml" and $filename != "readme.first" and $filename != "license.xml" and $filename != "extensions.xml")
+                {
+                    $output[ $file->getKey() ] = $file;
+                }
+                $path_en = '../en/' . $trimPath . '/' . $filename;
+                if( !is_file($path_en) )
+                {
+                    if ($filename != "README.md" and $filename != "translation.xml" and $filename != "readme.first")
+                    {
+                       $oldfile = new OldFilesInfo;
+                       $oldfile->path = $trimPath;
+                       $oldfile->name = $filename;
+                       $oldfile->size = (int)($file->size / 1024);
+                       $oldfiles[ $oldfile->getKey() ] = $oldfile;
+                    }
+                }
+            } elseif ($trimPath !== "chmonly") {
+                $output[ $file->getKey() ] = $file;
+            }
         }
     }
     sort( $todoPaths );
@@ -192,21 +229,17 @@ function parseRevisionTag( $filename , FileStatusInfo $file )
     $fp = fopen( $filename , "r" );
     $contents = fread( $fp , 1024 );
     fclose( $fp );
-    $regex = "/<!--\s*EN-Revision:\s*(.+)\s*Maintainer:\s*(.+)\s*Status:\s*(.+)\s*-->/U";
-    $match = array();
-    preg_match ( $regex , $contents , $match );
-    if ( count( $match ) == 4 )
-    {
+
+    // No match before the preg
+    $match = array ();
+
+    $regex = "'<!--\s*EN-Revision:\s*(.+)\s*Maintainer:\s*(.+)\s*Status:\s*(.+)\s*-->'U";
+    if (preg_match ($regex , $contents , $match )) {
         $file->hash = trim( $match[1] );
         $file->maintainer = trim( $match[2] );
         $file->completion = trim( $match[3] );
     }
-    else
-    {
-        $file->hash = null;
-        $file->maintainer = null;
-        $file->completion = null;
-    }
+
     $regex = "/<!--\s*CREDITS:\s*(.+)\s*-->/U";
     $match = array();
     preg_match ( $regex , $contents , $match );
@@ -328,6 +361,7 @@ function parse_attr_string ( $tags_attrs ) {
 }
 
 function computeTranslatorStatus( $lang, $enFiles, $trFiles ) {
+    global $intro;
     $translation_xml = getcwd() . "/" . $lang . "/translation.xml";
     if (!file_exists($translation_xml)) {
         return [];
@@ -335,6 +369,9 @@ function computeTranslatorStatus( $lang, $enFiles, $trFiles ) {
 
     $txml = join("", file($translation_xml));
     $txml = preg_replace("/\\s+/", " ", $txml);
+
+    preg_match("!<intro>(.+)</intro>!s", $txml, $match);
+    $intro = trim($match[1]);
 
     preg_match("!<\?xml(.+)\?>!U", $txml, $match);
     $xmlinfo = parse_attr_string($match);
@@ -384,14 +421,10 @@ function computeTranslatorStatus( $lang, $enFiles, $trFiles ) {
 function print_html_all( $enFiles , $trFiles , $translators , $lang )
 {
     print_html_header( $lang );
-    print_html_menu( 'menus' );
-    print_html_translators($translators);
-    //print_html_filesumary();
+    print_html_translators($translators , $enFiles);
     print_html_files( $enFiles , $trFiles , $lang );
-    //print_html_wip();
-    //print_html_revtagproblem();
+    print_html_notinen();
     print_html_untranslated( $enFiles );
-    //print_html_notinen( $enFiles );
     print_html_footer();
 }
 
@@ -438,24 +471,32 @@ td { padding: 0.2em 0.3em; }
 HTML;
 }
 
-function print_html_menu( $href )
+
+function print_html_menu($href)
 {
     print <<<HTML
 
 <a id="$href"/>
-<p><a href="#intro">Introduction</a> | <a href="#translators">Translators</a> | <a href="#filesummary">File summary</a> | <a href="#files">Files</a> | <a href="#wip">Work in progress</a> | <a href="#revtag">Revision tag problem</a> | <a href="#untranslated">Untranslated files</a> | <a href="#notinen">Not in EN tree</a></p>
-
+<p><a href="#intro">Introduction</a>
+| <a href="#translators">Translators</a>
+| <a href="#filesummary">File summary</a>
+| <a href="#files">Outdated Files</a>
+|  <a href="#untranslated">Untranslated files</a>
+| <a href="#notinen">Not in EN tree</a></p><p/>
 HTML;
 }
 
-function print_html_translators( $translators ) {
-
+function print_html_translators( $translators , $enFiles )
+{
+    global $intro;
     if (count($translators) === 0) return;
-
+    print_html_menu("intro");
     print <<<HTML
-
-<a name="translators"></a>
 <table width="820" border="0" cellpadding="4" cellspacing="1" align="center">
+ <tr><td>$intro</td></tr>
+</table>
+<p/>
+<table id="translators" width="820" border="0" cellpadding="4" cellspacing="1" align="center">
   <tr class=blue>
     <th rowspan=2>Translator's name</th>
     <th rowspan=2>Contact email</th>
@@ -470,11 +511,19 @@ function print_html_translators( $translators ) {
     <th class="blue">sum</th>
   </tr>
 HTML;
+		  $files_uptodate = 0;
+		  $files_outdated = 0;
+		  $files_wip = 0;
+		  $files_sum = 0;
 
     foreach( $translators as $key => $person )
     {
         if ($person->nick === "unknown") continue;
 
+       $files_uptodate += $person->files_uptodate;
+       $files_outdated += $person->files_outdated;
+       $files_wip += $person->files_wip;
+       $files_sum += $person->files_sum;
         print <<<HTML
 
 <tr>
@@ -493,6 +542,55 @@ HTML;
 
     }
     print "</table>\n";
+
+//FILE SUMMARY
+    $count = 0;
+    $files_untranslated = 0;
+    foreach( $enFiles as $key => $en )
+    {
+        if ( $en->syncStatus == FileStatusEnum::Untranslated ) {
+            $files_untranslated++;
+        }
+        $count++;
+    }
+    $files_uptodate_percent = number_format($files_uptodate * 100 / $count, 2 );
+    $files_outdated_percent = number_format($files_outdated * 100 / $count, 2 );
+    $files_wip_percent = number_format($files_wip * 100 / $count, 2 );
+    $files_untranslated_percent = number_format($files_untranslated * 100 / $count, 2 );
+    print_html_menu("filesummary");
+    print <<<HTML
+<table border="0" cellpadding="4" cellspacing="1" style="text-align:center;">
+<tr>
+  <th>File status type</th>
+  <th>Number of files</th>
+  <th>Percent of files</th>
+</tr>
+<tr>
+  <td>Up to date files</td>
+  <td>$files_uptodate</td>
+  <td>$files_uptodate_percent%</td>
+</tr>
+<tr>
+  <td>Outdated files</td>
+  <td>$files_outdated</td>
+  <td>$files_outdated_percent%</td>
+</tr>
+<tr>
+  <td>Work in progress</td>
+  <td>$files_wip</td>
+  <td>$files_wip_percent%</td>
+</tr>
+<tr>
+  <td>Files available for translation</td>
+  <td>$files_untranslated</td>
+  <td>$files_untranslated_percent%</td>
+</tr>
+<tr>
+  <td class=b>Files total</td>
+  <td class=b>$count</td>
+  <td class=b>100%</td>
+</tr></table><p/>
+HTML;
 }
 
 function print_html_untranslated($enFiles)
@@ -508,14 +606,12 @@ function print_html_untranslated($enFiles)
     }
 
     if (!$exists) return;
-
+    print_html_menu("untranslated");
     print <<<HTML
-
-<p>&nbsp;</p>
-<a name="untranslated"></a>
 <table width="600" border="0" cellpadding="3" cellspacing="1" align="center">
  <tr>
   <th>Untranslated files ($count files):</th>
+  <th>Commit hash</th>
   <th>kb</th>
  </tr>
 HTML;
@@ -525,13 +621,18 @@ HTML;
     {
         if ( $en->syncStatus != FileStatusEnum::Untranslated )
             continue;
-        if ( !preg_match( "/^.*\.xml\$/", $en->name ) || $en->name === "versions.xml")
+        if ( !preg_match( "/^.*\.xml\$/", $en->name )
+        || $en->name === "versions.xml"
+        || $en->name === "license.xml"
+        || $en->name ===  "extensions.xml"
+        || $en->name === "contributors.xml"
+        || $en->name === "reserved.constants.xml" )
             continue;
         if ( $path !== $en->path )
         {
             $path = $en->path;
             $path2 = $path == '' ? '/' : $path;
-            print " <tr><th class='blue' colspan='2'>$path2</th></tr>";
+            print " <tr><th class='blue' colspan='3'>$path2</th></tr>";
         }
         $size = $en->size < 1024 ? 1 : floor( $en->size / 1024 );
 
@@ -539,6 +640,7 @@ HTML;
 
  <tr class=bggray>
   <td class="c">$en->name</td>
+  <td class="c">$en->hash</td>
   <td class="c">$size</td>
  </tr>
 HTML;
@@ -548,8 +650,9 @@ HTML;
 
 function print_html_footer()
 {
+    print_html_menu("");
     print <<<HTML
-
+<p/>
 <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
 <script>
   var clipboard = new ClipboardJS('.btn');
@@ -567,10 +670,8 @@ HTML;
 
 function print_html_files( $enFiles , $trFiles , $lang )
 {
-    print <<<HTML
-
-<p>&nbsp;</p>
-<a name="files"></a>
+        print_html_menu("files");
+        print <<<HTML
 <table>
  <tr>
   <th rowspan="2">Translated file</th>
@@ -663,5 +764,48 @@ HTML;
  </tr>
 HTML;
     }
-    print "</table>\n";
+print "</table><p/>\n";
+}
+
+function print_html_notinen()
+{
+    global $oldfiles;
+    print_html_menu("notinen");
+    $exists = false;
+    $count = 0;
+    foreach( $oldfiles as $key => $en )
+    {
+        if ( $key == "{$en->path}/{$en->name}" ) {
+            $exists = true;
+            $count++;
+        }
+    }
+    if (!$exists)
+    {
+         print "<p>Good, it seems that this translation doesn't contain any file which is not present in English tree.</p>\n";
+     } else {
+         print <<<HTML
+<table>
+ <tr>
+  <th>Files which is not present in English tree.  ($count files)</th>
+  <th>Size in kB</th>
+ </tr>
+HTML;
+         $path = null;
+         foreach( $oldfiles as $key => $en )
+         {
+              if ( $path !== $en->path )
+              {
+                   $path = $en->path;
+                   print " <tr><th class='blue' colspan='2'>/$path</th></tr>";
+              }
+              print <<<HTML
+ <tr class=bggray>
+  <td class="c">$en->name</td>
+  <td class="c">$en->size</td>
+ </tr>
+HTML;
+         }
+print "</table><p/>";
+    }
 }
