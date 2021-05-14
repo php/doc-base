@@ -208,8 +208,6 @@ function populateFileTreeRecurse( $lang , $path , & $output )
             
             $ignoredDirectories = [
                 'chmonly',
-                'internals',
-                'internals2',
             ];
             
             if(
