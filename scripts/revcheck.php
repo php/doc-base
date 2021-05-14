@@ -204,9 +204,6 @@ function populateFileTreeRecurse( $lang , $path , & $output )
                 'DO_NOT_TRANSLATE',
                 'rsusi.txt',
                 'missing-ids.xml',
-                'license.xml',
-                'translation.xml',
-                'versions.xml',
             ];
             
             $ignoredDirectories = [
