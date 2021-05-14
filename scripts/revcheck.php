@@ -216,9 +216,9 @@ function populateFileTreeRecurse( $lang , $path , & $output )
                 in_array($trimPath, $ignoredDirectories, true) 
                 || in_array($filename, $ignoredFileNames, true)
                 || (strpos($filename, 'entities.') === 0)
-                || !in_array(substr($filename, -3), array('xml','ent'))
+                || !in_array(substr($filename, -3), ['xml','ent'], true)
                 || (substr($filename, -13) === 'PHPEditBackup')
-                || ($trimPath === 'appendices' && (in_array($filename, ['reserved.constants.xml', 'extensions.xml'])))
+                || ($trimPath === 'appendices' && (in_array($filename, ['reserved.constants.xml', 'extensions.xml'], true)))
             ) {
                 continue;
             }
