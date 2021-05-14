@@ -733,8 +733,8 @@ HTML;
             ." <a href='$d4' title='git.php.net html'>(h)</a>";
         if ( $en->syncStatus == FileStatusEnum::RevTagProblem )
             $nm = $en->name;
-        $h1 = "<a href='http://git.php.net/?p=doc/en.git;a=blob;f=$key;hb={$en->hash}'>{$en->hash}</a>";
-        $h2 = "<a href='http://git.php.net/?p=doc/en.git;a=blob;f=$key;hb={$tr->hash}'>{$tr->hash}</a>";
+        $h1 = "<a href='https://github.com/php/doc-en/blob/{$en->hash}/$key'>{$en->hash}</a>";
+        $h2 = "<a href='https://github.com/php/doc-en/blob/{$tr->hash}/$key'>{$tr->hash}</a>";
         $s1 = $en->size < 1024 ? 1 : floor( $en->size / 1024 );
         $s2 = $tr->size < 1024 ? 1 : floor( $tr->size / 1024 );
         $s3 = $s2 - $s1;
