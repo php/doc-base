@@ -672,7 +672,7 @@ HTML;
     print <<<HTML
 
  <tr class=bggray>
-  <td class="c">$en->name</td>
+  <td class="c"><a href="https://github.com/php/doc-en/blob/{$en->hash}/$key">$en->name</a></td>
   <td class="c">$en->hash</td>
   <td class="c">$size</td>
  </tr>
