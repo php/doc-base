@@ -190,6 +190,42 @@ function populateFileTreeRecurse( $lang , $path , & $output )
         }
         if ( $entry->isFile() )
         {
+            $ignoredFileNames = [
+                'README.md',      
+                'translation.xml',      
+                'readme.first',      
+                'license.xml',      
+                'extensions.xml',
+                'versions.xml',
+                'book.developer.xml',
+                'contributors.ent',
+                'contributors.xml',
+                'README',
+                'DO_NOT_TRANSLATE',
+                'rsusi.txt',
+                'missing-ids.xml',
+                'license.xml',
+                'translation.xml',
+                'versions.xml',
+            ];
+            
+            $ignoredDirectories = [
+                'chmonly',
+                'internals',
+                'internals2',
+            ];
+            
+            if(
+                in_array($trimPath, $ignoredDirectories, true) 
+                || in_array($filename, $ignoredFileNames, true)
+                || (strpos($filename, 'entities.') === 0)
+                || !in_array(substr($filename, -3), array('xml','ent'))
+                || (substr($filename, -13) === 'PHPEditBackup')
+                || ($trimPath === 'appendices' && (in_array($filename, ['reserved.constants.xml', 'extensions.xml'])))
+            ) {
+                continue;
+            }
+            
             $file = new FileStatusInfo;
             $file->path = $trimPath;
             $file->name = $filename;
@@ -198,23 +234,20 @@ function populateFileTreeRecurse( $lang , $path , & $output )
             if ( $lang != 'en' )
             {
                 parseRevisionTag( $entry->getPathname() , $file );
-                if ( strlen($file->hash) == 40 and $file->size != 0  and $filename != "README.md" and $filename != "translation.xml" and $filename != "readme.first" and $filename != "license.xml" and $filename != "extensions.xml")
+                if ( strlen($file->hash) == 40 and $file->size != 0)
                 {
                     $output[ $file->getKey() ] = $file;
                 }
                 $path_en = '../en/' . $trimPath . '/' . $filename;
                 if( !is_file($path_en) )
                 {
-                    if ($filename != "README.md" and $filename != "translation.xml" and $filename != "readme.first")
-                    {
-                       $oldfile = new OldFilesInfo;
-                       $oldfile->path = $trimPath;
-                       $oldfile->name = $filename;
-                       $oldfile->size = (int)($file->size / 1024);
-                       $oldfiles[ $oldfile->getKey() ] = $oldfile;
-                    }
+                   $oldfile = new OldFilesInfo;
+                   $oldfile->path = $trimPath;
+                   $oldfile->name = $filename;
+                   $oldfile->size = (int)($file->size / 1024);
+                   $oldfiles[ $oldfile->getKey() ] = $oldfile;
                 }
-            } elseif ($trimPath !== "chmonly") {
+            } else {
                 $output[ $file->getKey() ] = $file;
             }
         }
