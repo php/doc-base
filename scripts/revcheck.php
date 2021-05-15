@@ -56,7 +56,6 @@ $intro = "No intro available for the {$lang} translation of the manual.";
 $oldfiles = []; //path, name, size
 
 $enFiles = populateFileTree( 'en' );
-asort($enFiles);
 $trFiles = populateFileTree( $lang );
 captureGitValues( 'en'  , $gitData );
 captureGitValues( $lang , $gitData );
@@ -87,7 +86,7 @@ class FileStatusEnum
     const TranslatedOk      = 'TranslatedOk';
     const TranslatedOld     = 'TranslatedOld';
     const TranslatedCritial = 'TranslatedCritial';
-    const ExistsInEnTree    = 'ExistsInEnTree';
+    const NotInEnTree       = 'NotInEnTree';
 }
 
 class FileStatusInfo
@@ -131,7 +130,7 @@ class TranslatorInfo
 
     public static function getKey( $fileStatus ) {
         switch ( $fileStatus ) {
-            case FileStatusEnum::Untranslated:
+            case FileStatusEnum::RevTagProblem:
             case FileStatusEnum::TranslatedOld:
             case FileStatusEnum::TranslatedCritial:
                 return "files_outdated";
@@ -150,7 +149,6 @@ class TranslatorInfo
 
 function populateFileTree( $lang )
 {
-    global $oldfiles;
     $dir = new \DirectoryIterator( $lang );
     if ( $dir === false )
     {
@@ -190,6 +188,39 @@ function populateFileTreeRecurse( $lang , $path , & $output )
         }
         if ( $entry->isFile() )
         {
+            $ignoredFileNames = [
+                'README.md',
+                'translation.xml',
+                'readme.first',
+                'license.xml',
+                'extensions.xml',
+                'versions.xml',
+                'book.developer.xml',
+                'contributors.ent',
+                'contributors.xml',
+                'README',
+                'DO_NOT_TRANSLATE',
+                'rsusi.txt',
+                'missing-ids.xml',
+                'license.xml',
+                'translation.xml',
+                'versions.xml',
+            ];
+
+            $ignoredDirectories = [
+                'chmonly',
+            ];
+
+            if(
+                in_array($trimPath, $ignoredDirectories, true)
+                || in_array($filename, $ignoredFileNames, true)
+                || (strpos($filename, 'entities.') === 0)
+                || !in_array(substr($filename, -3), ['xml','ent'], true)
+                || (substr($filename, -13) === 'PHPEditBackup')
+                || ($trimPath === 'appendices' && (in_array($filename, ['reserved.constants.xml', 'extensions.xml'], true)))
+            ) {
+                continue;
+            }
             $file = new FileStatusInfo;
             $file->path = $trimPath;
             $file->name = $filename;
@@ -198,26 +229,21 @@ function populateFileTreeRecurse( $lang , $path , & $output )
             if ( $lang != 'en' )
             {
                 parseRevisionTag( $entry->getPathname() , $file );
-                if ( strlen($file->hash) == 40 and $file->size != 0  and $filename != "README.md" and $filename != "translation.xml" and $filename != "readme.first" and $filename != "license.xml" and $filename != "extensions.xml")
-                {
-                    $output[ $file->getKey() ] = $file;
-                }
                 $path_en = '../en/' . $trimPath . '/' . $filename;
-                if( !is_file($path_en) )
+                if( !is_file($path_en) ) //notinen
                 {
-                    if ($filename != "README.md" and $filename != "translation.xml" and $filename != "readme.first")
-                    {
-                       $oldfile = new OldFilesInfo;
-                       $oldfile->path = $trimPath;
-                       $oldfile->name = $filename;
-                       $oldfile->size = (int)($file->size / 1024);
-                       $oldfiles[ $oldfile->getKey() ] = $oldfile;
-                    }
-                }
-            } elseif ($trimPath !== "chmonly") {
-                $output[ $file->getKey() ] = $file;
-            }
-        }
+                    $oldfile = new OldFilesInfo;
+                    $oldfile->path = $trimPath;
+                    $oldfile->name = $filename;
+                    $oldfile->size = $file->size < 1024 ? 1 : floor( $file->size / 1024 );
+                    $oldfiles[ $oldfile->getKey() ] = $oldfile;
+                 } else {
+                    $output[ $file->getKey() ] = $file;
+                 }
+             } else {
+                 $output[ $file->getKey() ] = $file;
+             }
+         }
     }
     sort( $todoPaths );
     foreach( $todoPaths as $path )
@@ -239,6 +265,10 @@ function parseRevisionTag( $filename , FileStatusInfo $file )
         $file->maintainer = trim( $match[2] );
         $file->completion = trim( $match[3] );
     }
+    if ( $file->hash == null or strlen( $file->hash ) != 40 or
+         $file->maintainer == null or
+         $file->completion == null )
+         $file->syncStatus = FileStatusEnum::RevTagProblem;
 
     $regex = "/<!--\s*CREDITS:\s*(.+)\s*-->/U";
     $match = array();
@@ -280,7 +310,7 @@ function captureGitValues( $lang , & $output )
         $filename = trim( $line );
         if ( isset( $output[$filename][$lang] ) )
             continue;
-        $output[$filename][$lang]['hash'] = $hash;
+        if ( $lang == 'en' ) $output[$filename][$lang]['hash'] = $hash;
         $output[$filename][$lang]['date'] = $date;
     }
     pclose( $fp );
@@ -290,6 +320,17 @@ function captureGitValues( $lang , & $output )
 function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
 {
     $now = new DateTime( 'now' );
+    foreach( $trFiles as $filename => $trFile )
+    {
+        // notinen
+        $path_en = 'en/' . $trFile->path . '/' . $trFile->name;
+        if( !is_file($path_en) )
+        {
+            $trFile->syncStatus = FileStatusEnum::NotInEnTree;
+            continue;
+        }
+
+    }
     foreach( $enFiles as $filename => $enFile )
     {
         if ( isset( $gitData[ $filename ]['en'] ) )
@@ -299,45 +340,39 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
         }
         else
             print "Warn: No hash for en/$filename\n";
+
         $trFile = isset( $trFiles[ $filename ] ) ? $trFiles[ $filename ] : null;
-        // Untranslated (default)
-        if ( $trFile == null )
+
+        if ( $trFile == null ) // Untranslated
         {
             $enFile->syncStatus = FileStatusEnum::Untranslated;
             continue;
         }
         else
         {
-            $trFile->syncStatus = FileStatusEnum::ExistsInEnTree;
             if ( isset( $gitData[ $filename ][ $lang ] ) )
                 $trFile->date = $gitData[ $filename ][ $lang ]['date'];
-        }
-        // RevTagProblem
-        if ( $trFile->hash == null || ( strlen( $enFile->hash ) != strlen( $trFile->hash ) ) )
-        {
-            $enFile->syncStatus = FileStatusEnum::RevTagProblem;
-            continue;
         }
         // TranslatedWip
         if ( $trFile->completion != null && $trFile->completion != "ready" )
         {
-            $enFile->syncStatus = FileStatusEnum::TranslatedWip;
+            $trFile->syncStatus = FileStatusEnum::TranslatedWip;
             continue;
         }
         // TranslatedOk
         // TranslatedOld
         // TranslatedCritial
         if ( $enFile->hash == $trFile->hash )
-            $enFile->syncStatus = FileStatusEnum::TranslatedOk;
-        else
+            $trFile->syncStatus = FileStatusEnum::TranslatedOk;
+        elseif ( strlen( $trFile->hash ) == 40 )
         {
-            $enFile->syncStatus = FileStatusEnum::TranslatedOld;
+            $trFile->syncStatus = FileStatusEnum::TranslatedOld;
             if ( $enFile->date == null
               || $trFile->date == null
               || $now->diff( $enFile->date , true )->days > 30
               || $now->diff( $trFile->date , true )->days > 30 )
             {
-                $enFile->syncStatus = FileStatusEnum::TranslatedCritial;
+                $trFile->syncStatus = FileStatusEnum::TranslatedCritial;
             }
         }
     }
@@ -397,10 +432,10 @@ function computeTranslatorStatus( $lang, $enFiles, $trFiles ) {
     }
 
     foreach( $enFiles as $key => $enFile ) {
-        $statusKey = TranslatorInfo::getKey($enFile->syncStatus);
         $info_exists = false;
         if (array_key_exists($enFile->getKey(), $trFiles)) {
             $trFile = $trFiles[$enFile->getKey()];
+            $statusKey = TranslatorInfo::getKey($trFile->syncStatus);
             if (array_key_exists($trFile->maintainer, $translatorInfos)) {
                 $translatorInfos[$trFile->maintainer]->$statusKey++;
                 $translatorInfos[$trFile->maintainer]->files_sum++;
@@ -424,6 +459,7 @@ function print_html_all( $enFiles , $trFiles , $translators , $lang )
     print_html_translators($translators , $enFiles);
     print_html_files( $enFiles , $trFiles , $lang );
     print_html_notinen();
+    print_html_misstags( $enFiles, $trFiles, $lang );
     print_html_untranslated( $enFiles );
     print_html_footer();
 }
@@ -481,8 +517,10 @@ function print_html_menu($href)
 | <a href="#translators">Translators</a>
 | <a href="#filesummary">File summary</a>
 | <a href="#files">Outdated Files</a>
-|  <a href="#untranslated">Untranslated files</a>
-| <a href="#notinen">Not in EN tree</a></p><p/>
+| <a href="#notinen">Not in EN tree</a>
+| <a href="#misstags">Missing revision numbers</a>
+| <a href="#untranslated">Untranslated files</a>
+</p><p/>
 HTML;
 }
 
@@ -593,6 +631,52 @@ HTML;
 HTML;
 }
 
+function print_html_misstags( $enFiles, $trFiles, $lang )
+{
+    print_html_menu("misstags");
+
+    $files_misstags = 0;
+    foreach( $trFiles as $key => $tr )
+    {
+        if ( $tr->syncStatus == FileStatusEnum::RevTagProblem )
+            $files_misstags++;
+    }
+
+    if ($files_misstags == 0)
+    {
+        echo '<p>Good, all files contain revision numbers.</p>';
+    } else {
+        print <<<HTML
+<table border="0" cellpadding="3" cellspacing="1" style="text-align:center">';
+<tr>
+ <th rowspan="2">Files without EN-Revision number ($files_misstags files):</th>
+ <th colspan="3">Sizes in kB</th>
+</tr>';
+<tr><th>en</th><th>$lang</th><th>diff</th></tr>';
+HTML;
+
+        $last_path = null;
+        asort($trFiles);
+        foreach ($trFiles as $key => $tr)
+        {
+            if ( $tr->syncStatus != FileStatusEnum::RevTagProblem )
+               continue;
+
+            $en = $enFiles[ $key ];
+
+            if ( $last_path != $tr->path )
+            {
+                 $path = $tr->path == '' ? '/' : $tr->path;
+                 echo "<tr><th colspan='4'>$path</th></tr>";
+                 $last_path = $tr->path;
+            }
+             $diff = intval($en->size - $tr->size);
+             echo "<tr class='bgorange'><td>{$tr->name}</td><td>{$en->size}</td><td>{$tr->size}</td><td>$diff</td></tr>";
+        }
+        echo '</table>';
+    }
+}
+
 function print_html_untranslated($enFiles)
 {
     $exists = false;
@@ -617,6 +701,7 @@ function print_html_untranslated($enFiles)
 HTML;
 
     $path = null;
+    asort($enFiles);
     foreach( $enFiles as $key => $en )
     {
         if ( $en->syncStatus != FileStatusEnum::Untranslated )
@@ -638,7 +723,7 @@ HTML;
 
     print <<<HTML
 
- <tr class=bggray>
+ <tr class="bgorange">
   <td class="c">$en->name</td>
   <td class="c">$en->hash</td>
   <td class="c">$size</td>
@@ -696,23 +781,27 @@ HTML;
 
     $now = new DateTime( 'now' );
     $path = null;
-    foreach( $enFiles as $key => $en )
+    asort($trFiles);
+    foreach( $trFiles as $key => $tr )
     {
-        if ( $en->syncStatus == FileStatusEnum::TranslatedOk )
+        if ( $tr->syncStatus == FileStatusEnum::TranslatedOk )
             continue;
+        if ( $tr->syncStatus == FileStatusEnum::RevTagProblem )
+            continue;
+        if ( $tr->syncStatus == FileStatusEnum::NotInEnTree )
+            continue;
+        $en = $enFiles[ $key ];
         if ( $en->syncStatus == FileStatusEnum::Untranslated )
-            continue;
-        $tr = $trFiles[ $key ];
+              continue;
+
         if ( $path !== $en->path )
         {
             $path = $en->path;
             $path2 = $path == '' ? '/' : $path;
             print " <tr><th colspan='11' class='blue c'>$path2</th></tr>";
         }
-        switch( $en->syncStatus )
+        switch( $tr->syncStatus )
         {
-            case FileStatusEnum::RevTagProblem:     $bg = 'bgorange'; break;
-            case FileStatusEnum::TranslatedOk:      $bg = 'bggreen' ; break;
             case FileStatusEnum::TranslatedOld:     $bg = 'bgyellow'; break;
             case FileStatusEnum::TranslatedCritial: $bg = 'bgred'   ; break;
             default:                                $bg = 'bggray'  ; break;
