@@ -1,2 +1,0 @@
-@echo OFF
-del %*
