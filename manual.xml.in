@@ -207,7 +207,6 @@
     &reference.mongodb.set;
     &reference.mysqlinfo.set;
     &reference.oci8.book;
-    &reference.paradox.book;
     &reference.pgsql.book;
     &reference.sqlite3.book;
     &reference.sqlsrv.book;
