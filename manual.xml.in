@@ -376,7 +376,6 @@
    &reference.ctype.book;
    &reference.filter.book;
    &reference.funchand.book;
-   &reference.quickhash.book;
    &reference.reflection.book;
    &reference.var.book;
   </set>
