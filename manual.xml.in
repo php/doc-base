@@ -139,7 +139,6 @@
    &reference.componere.book;
    &reference.errorfunc.book;
    &reference.ffi.book;
-   &reference.memtrack.book;
    &reference.opcache.book;
    &reference.outcontrol.book;
    &reference.info.book;
