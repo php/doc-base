@@ -162,7 +162,6 @@
 
   <set xml:id="refs.utilspec.cmdline">
    <title>&CommandLineSpecificExtensions;</title>
-   &reference.ncurses.book;
    &reference.readline.book;
   </set>
 
