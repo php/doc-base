@@ -380,7 +380,6 @@
    <title>&VariableandTypeRelatedExtensions;</title>
    &reference.array.book;
    &reference.classobj.book;
-   &reference.classkit.book;
    &reference.ctype.book;
    &reference.filter.book;
    &reference.funchand.book;
