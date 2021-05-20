@@ -205,7 +205,6 @@
     &reference.ibase.book;
     &reference.fbsql.book;
     &reference.ibm-db2.book;
-    &reference.ingres-ii.book;
     &reference.mongo.book;
     &reference.mongodb.set;
     &reference.mysqlinfo.set;
