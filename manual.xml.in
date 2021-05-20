@@ -210,7 +210,6 @@
     &reference.pgsql.book;
     &reference.sqlite3.book;
     &reference.sqlsrv.book;
-    &reference.tokyo-tyrant.book;
    </set>
   </set>
 
