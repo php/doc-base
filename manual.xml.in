@@ -201,7 +201,6 @@
    <set xml:id="refs.database.vendors">
     <title>&VendorSpecificDatabaseExtensions;</title>
     &reference.cubrid.book;
-    &reference.dbplus.book;
     &reference.dbase.book;
     &reference.filepro.book;
     &reference.ibase.book;
