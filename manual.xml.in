@@ -346,7 +346,6 @@
   <set xml:id="refs.search">
    <title>&SearchEngineExtensions;</title>
    &reference.solr.book;
-   &reference.sphinx.book;
   </set>
 
   <set xml:id="refs.utilspec.server">
