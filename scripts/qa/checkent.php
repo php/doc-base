@@ -47,8 +47,8 @@ set_time_limit(0);
 // Schemes we had to check
 $schemes = array("http", "ftp");
 
-// Start this script only from the scripts dir
-$filename = "../entities/global.ent";
+// Start this script only from the scripts/qa dir
+$filename = dirname(__DIR__, 2) . "/entities/global.ent";
 
 // Read in the file, or die
 $file_string = file_get_contents($filename);
@@ -108,7 +108,7 @@ foreach ($entity_urls as $num => $entity_url) {
                 if ($ftp = @ftp_connect($url["host"])) {
                     if (@ftp_login($ftp, "anonymous", "georg@php.net")) {
                         $flist = ftp_nlist($ftp, $url["path"]);
-                        if (!count($flist)) {
+                        if ($flist === false || !count($flist)) {
                             errormsg($entity, "unknown path: " . $url["path"] . " for ftp host: " . $url['host']);
                         }
                     } else {

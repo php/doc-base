@@ -66,7 +66,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($opts['p']
 	/*** Duplicate words ******************************************/
 	// @todo improve output
 	if (in_array($type, array('a', 'd'))) {
-		if (preg_match_all('/\b(\w+)\s+\1\b/i', implode($lines, "\n"), $matches)) {
+		if (preg_match_all('/\b(\w+)\s+\1\b/i', implode("\n", $lines), $matches)) {
 			if ($matches) {
 				$dups = array();
 				foreach ($matches[1] as $key => $match) {
