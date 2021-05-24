@@ -2,9 +2,9 @@
 <?php
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 4                                                        |
+  | PHP Version 8                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2011 The PHP Group                                |
+  | Copyright (c) 1997-2021 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.0 of the PHP license,       |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -15,6 +15,7 @@
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
   | Authors:    Nuno Lopes <nlopess@php.net>                             |
+  |             George Peter Banyard <girgias@php.net>                   |
   +----------------------------------------------------------------------+
 
   $Id$
@@ -31,14 +32,15 @@ if ($argc > 3 || $argc < 2 || in_array($argv[1], array('--help', '-help', '-h', 
   <entity> is the entity you want to search.
 
   <language-code> must be a valid language code used in the repository, or
-  'all' for all languages. Defaults to en.
+  'all' for all languages. Defaults to 'all'.
 
 <?php
   exit;
 }
 
 // CONFIG SECTION
-$docdir = "../../"; // Main directory of the PHP documentation (one dir up in cvs)
+// Main directory of the PHP documentation (two directories up in the structure)
+$docdir = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR;
 
 /*********************************************************************/
 /* Nothing to modify below this line                                 */
@@ -50,16 +52,25 @@ global $usage;
 set_time_limit(0);
 
 // Default values
-$langcodes = array("en");
+$langcodes = [
+    'de',
+    'en',
+    'es',
+    'fr',
+    'it',
+    'ja',
+    'pl',
+    'pt_br',
+    'ro',
+    'ru',
+    'tr',
+    'zh'
+];
 
 // Parameter value copying
-if ($argc == 3) { 
-    $langcodes = array($argv[2]);
-    if ($argv[2] === 'all') {
-        $langcodes = array("ar", "cs", "de", "el", "en", "es", "fi",
-                           "fr", "he", "hk", "hu", "it", "ja", "kr",
-                           "lt", "nl", "pt", "pl", "pt_BR", "ro",
-                           "ru", "sk", "sl", "sv", "tr", "tw", "zh");
+if ($argc == 3) {
+    if ($argv[2] !== 'all') {
+        $langcodes = [$argv[2]];
     }
 }
 
@@ -67,12 +78,12 @@ if ($argc == 3) {
 /* Here starts the functions part                                    */
 /*********************************************************************/
 
-// Checks a diretory of phpdoc XML files
+// Checks a directory of phpdoc XML files
 function check_dir($dir, $entity)
 {
-    // Collect files and diretcories in these arrays
-    $directories = array();
-    $files = array();
+    // Collect files and directories in these arrays
+    $directories = [];
+    $files = [];
     
     // Skip old and unused functions directories (theoretically
     // it should only be in the English tree, but we are smart
@@ -131,7 +142,7 @@ function check_file ($filename, $entity)
 /* Here starts the program                                           */
 /*********************************************************************/
 
-// Chechking all languages
+// Checking all languages
 foreach ($langcodes as $langcode) {
 
     $usage = 0;
@@ -153,5 +164,3 @@ foreach ($langcodes as $langcode) {
 }
 
 echo "Done!\n";
-
-?>
