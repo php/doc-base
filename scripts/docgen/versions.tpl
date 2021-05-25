@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-{EMPTY_REVISION_KEYWORD}
-<!--
-  Do NOT translate this file
--->
-
+<!-- Do NOT translate this file -->
 <versions>
  {VERSIONS}
 </versions>
-
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-{EMPTY_REVISION_KEYWORD}
-
 <appendix xml:id="{EXT_NAME_ID}.constants" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.constants;
  {CONSTANTS}
 </appendix>
-
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

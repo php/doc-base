@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
 "{PATH_TO_DOCBASE}/docbook/docbook-xml/docbook.dtd" [
-
-{EMPTY_REVISION_KEYWORD}
 <!-- We use xhtml entities all over the place -->
 <!ENTITY % xhtml-lat1        SYSTEM "{PATH_TO_DOCBASE}/entities/ISO/xhtml1-lat1.ent">
 <!ENTITY % xhtml-symbol      SYSTEM "{PATH_TO_DOCBASE}/entities/ISO/xhtml1-symbol.ent">
@@ -52,7 +50,6 @@
  &reference.{EXT_NAME_ID}.reference;
 
 </book>
-
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml
@@ -73,4 +70,3 @@ vim600: syn=xml fen fdm=syntax fdl=2 si
 vim: et tw=78 syn=sgml
 vi: ts=1 sw=1
 -->
-

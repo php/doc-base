@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-{EMPTY_REVISION_KEYWORD}
-
 <refentry xml:id="{CLASS_NAME_ID}.{METHOD_NAME_ID}" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>{FULL_METHOD_NAME}</refname>
@@ -35,7 +33,6 @@
 {DEFAULT_EXAMPLE}
 {DEFAULT_SEEALSO}
 </refentry>
-
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-{EMPTY_REVISION_KEYWORD}
-
 <phpdoc:classref xml:id="class.{CLASS_NAME_ID}" xmlns:phpdoc="http://php.net/ns/phpdoc" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
-
  <title>The {CLASS_NAME} {CLASS_TYPE}</title>
  <titleabbrev>{CLASS_NAME}</titleabbrev>
 
@@ -50,7 +47,6 @@
  &reference.{EXT_NAME_ID}.entities.{CLASS_NAME_ID};
 
 </phpdoc:classref>
-
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

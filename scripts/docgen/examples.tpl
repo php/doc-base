@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-{EMPTY_REVISION_KEYWORD}
-
 <chapter xml:id="{EXT_NAME_ID}.examples" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.examples;
  <example>
@@ -22,7 +20,6 @@
   </screen>
  </example>
 </chapter>
-
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml
