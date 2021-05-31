@@ -1,9 +1,10 @@
+#!/usr/bin/php -q
 <?php
 /*
   +----------------------------------------------------------------------+
   | PHP Documentation                                                    |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2011 The PHP Group                                |
+  | Copyright (c) 1997-2021 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.0 of the PHP license,       |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -14,25 +15,38 @@
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
   | Authors:    Nuno Lopes <nlopess@php.net>                             |
+  |             George Peter Banyard <girgias@php.net>                   |
   +----------------------------------------------------------------------+
- 
-  $Id$
+  | Description: This file parses the manual to find all documented      |
+  |              extensions, and create the extension reference page by  |
+                 using its membership status and state.                  |
+  |              Also used in CI to check the file is up to date         |
+  +----------------------------------------------------------------------+
 */
 
 
-/*
- This script updates the appendices/extensions.xml file automatically based
- on the tags placed in the 'reference.xml' files:
-<?phpdoc extension-membership="core, bundled, bundledexternal" ?>
-<!-- State: deprecated, experimental -->
-
-		--- NOTE: PHP >= 5.2 needed ---
+/**
+ * This script updates the appendices/extensions.xml file automatically based on
+ * the tags placed in the 'book.xml' (and 'reference.xml' for pdo drivers) files:
+<?phpdoc extension-membership="(core|bundled|bundledexternal|pecl)" ?>
+<!-- State: (deprecated|experimental) -->
 */
 
-$basedir = realpath(dirname(__FILE__) . '/../..');
-$files   = array_merge(glob("$basedir/en/reference/*/book.xml"), glob("$basedir/en/reference/pdo_*/reference.xml"));
+$checkFile = false;
+
+$opts = getopt('c', ['check']);
+if (array_key_exists('c', $opts) || array_key_exists('check', $opts)) {
+    $checkFile = true;
+}
+
+
+$basedir = dirname(__DIR__, 3);
+$files   = array_merge(
+    glob("$basedir/en/reference/*/book.xml"),
+    glob("$basedir/en/reference/pdo_*/reference.xml"),
+);
 sort($files);
-$Membership = $State = $Alphabetical = $debug = array();
+$Membership = $State = $Alphabetical = $debug = [];
 
 // read the files and save the tags' info
 foreach ($files as $filename) {
@@ -49,12 +63,16 @@ foreach ($files as $filename) {
 	}
 	$Alphabetical['alphabetical'][$ext] = 1;
 	
-	$m = 'pecl';
+	$m = '';
 	if (preg_match('/<\?phpdoc extension-membership="([^"]+)" *\?>/S', $file, $match)) {
 		$m = $match[1];
 	}
 
 	switch($m) {
+        case '':
+            $debug['membership'][] = $ext;
+            // Add to PECL as a fallback
+            $Membership['pecl'][$ext] = 1;
 		case 'bundledexternal':
 			$Membership['external'][$ext] = 1;
 			break;
@@ -74,11 +92,16 @@ foreach ($files as $filename) {
 
 
 $xml = file_get_contents("$basedir/en/appendices/extensions.xml");
+
+if ($checkFile) {
+    $originalXml = $xml;
+}
+
 // little hack to avoid loosing the entities
 $xml = preg_replace('/&([^;]+);/', PHP_EOL.'<!--'.PHP_EOL.'entity: "$1"'.PHP_EOL.'-->'.PHP_EOL, $xml);
 
-$simplexml = simplexml_load_string($xml);
 
+$simplexml = simplexml_load_string($xml);
 
 foreach ($simplexml->children() as $node) {
 
@@ -91,7 +114,7 @@ foreach ($simplexml->children() as $node) {
 
 		$tmp = $$section;
 
-		// we can get here as a father of 2 levels childs
+		// we can get here as a father of 2 levels children
 		if (empty($tmp[$topname])) continue;
 
 		$topnode->itemizedlist = PHP_EOL; // clean the list
@@ -120,11 +143,18 @@ XML;
 $xml = strtr(html_entity_decode($simplexml->asXML()), array("\r\n" => PHP_EOL, "\r" => PHP_EOL, "\n" => PHP_EOL));
 // get the entities back again
 $xml = preg_replace('/( *)[\r\n]*<!--\s+entity: "([^"]+)"\s+-->[\r\n]*/', '$1&$2;'.PHP_EOL.PHP_EOL, $xml);
-file_put_contents("$basedir/en/appendices/extensions.xml", $xml);
 
+if ($checkFile) {
+    if ($xml !== $originalXml) {
+        echo 'appendices/extensions.xml is not up to date.', \PHP_EOL;
+        exit(1);
+    }
+} else {
+    file_put_contents("$basedir/en/appendices/extensions.xml", $xml);
+    echo "{$basedir}/en/appendices/extensions.xml has been updated, check it for details\n";
+}
 
 // print the debug messages:
-
 if (isset($debug['membership'])) {
 	echo "\nExtensions Missing Membership:\n";
 	print_r($debug['membership']);
@@ -139,10 +169,3 @@ if (isset($debug['unknown-extension'])) {
 	echo "\nExtensions with unknown extension title:\n";
 	print_r($debug['unknown-extension']);
 }
-
-if (empty($debug)) {
-	echo "Success: Check {$basedir}/en/appendices/extensions.xml for details\n";
-}
-
-
-?>

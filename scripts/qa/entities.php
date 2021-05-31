@@ -2,9 +2,9 @@
 <?php
 /*  
   +----------------------------------------------------------------------+
-  | PHP Version 4                                                        |
+  | PHP Version 8                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2011 The PHP Group                                |
+  | Copyright (c) 1997-2021 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.0 of the PHP license,       |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -15,6 +15,7 @@
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
   | Authors:    Gabor Hojtsy <goba@php.net>                              |
+  |             George Peter Banyard <girgias@php.net>                   |
   +----------------------------------------------------------------------+
  
   $Id$
@@ -31,10 +32,10 @@ list used and unused entities.
 
   <entity-file> must be a file name (with relative
   path from the phpdoc root) to a file containing
-  <!ENTITY...> definitions. Defaults to doc-base/entities/global.ent.
+  <!ENTITY...> definitions. Defaults to 'base/entities/global.ent' and 'en/language-snippets.ent'.
 
   <language-code> must be a valid language code used in the repository, or
-  'all' for all languages. Defaults to en.
+  'all' for all languages. Defaults to 'all'.
 
   The script will generate an entity_usage.txt
   file, containing the entities defined in the
@@ -46,7 +47,7 @@ list used and unused entities.
 
 // CONFIG SECTION
 // Main directory of the PHP documentation (two directories up in the structure)
-$docdir = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..') . DIRECTORY_SEPARATOR;
+$docdir = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR;
 
 /*********************************************************************/
 /* Nothing to modify below this line                                 */
@@ -56,24 +57,34 @@ $docdir = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 
 set_time_limit(0);
 
 // Array to collect the entities
-$defined_entities = array();
+$defined_entities = [];
 
 // Default values
-$langcodes = array("en");
-$filename = "doc-base/entities/global.ent";
+$langcodes = [
+    'de',
+    'en',
+    'es',
+    'fr',
+    'it',
+    'ja',
+    'pl',
+    'pt_br',
+    'ro',
+    'ru',
+    'tr',
+    'zh'
+];
+$files = ['base/entities/global.ent', 'en/language-snippets.ent'];
 
 // Parameter value copying
-if ($argc == 3) { 
-    $langcodes = array($argv[2]);
-    if ($argv[2] === 'all') {
-        $langcodes = array("ar", "cs", "de", "en", "es", "fr",
-                           "hk", "hu", "it", "ja", "kr", "nl",
-                           "pl", "pt_BR", "ru", "tr", "tw");
+if ($argc == 3) {
+    if ($argv[2] !== 'all') {
+        $langcodes = [$argv[2]];
     }
 }
 
 if ($argc >= 2) {
-    $filename = $argv[1];
+    $files = [$argv[1]];
 }
   
 /*********************************************************************/
@@ -96,20 +107,22 @@ function extract_entity_definitions ($filename, &$entities)
     
     // Convert to hash
     foreach ($entities_found as $entity_name) {
-      $entities[$entity_name] = array();
+      $entities[$entity_name] = [];
     }
-
-    // Return with a useful regexp part
-    return "&(" . join("|", $entities_found) . ");";
-    
 } // extract_entity_definitions() function end
 
-// Checks a diretory of phpdoc XML files
+function entities_list_to_regex(array $entities): string
+{
+    $entities_found = array_keys($entities);
+    return "&(" . join("|", $entities_found) . ");";
+}
+
+// Checks a directory of phpdoc XML files
 function check_dir($dir, &$defined_entities, $entity_regexp)
 {
-    // Collect files and diretcories in these arrays
-    $directories = array();
-    $files = array();
+    // Collect files and directories in these arrays
+    $directories = [];
+    $files = [];
     
     // Open and traverse the directory
     $handle = @opendir($dir);
@@ -165,9 +178,16 @@ function check_file ($filename, &$defined_entities, $entity_regexp)
 /*********************************************************************/
 
 // Get entity definitions
-$entity_regexp = extract_entity_definitions($docdir . $filename, $defined_entities);
+foreach ($files as $file) {
+    echo "Registering entities defined in '$file'\n";
+    extract_entity_definitions($docdir . $file, $defined_entities);
+}
 
-// Chechking all languages
+echo "Found " . count($defined_entities) . " entities to check \n";
+
+$entity_regexp = entities_list_to_regex($defined_entities);
+
+// Checking all languages
 foreach ($langcodes as $langcode) {
 
     // Check for directory validity
@@ -189,17 +209,17 @@ foreach ($langcodes as $langcode) {
 echo "Generating entity_usage.txt ...\n";
     
 $fp = fopen("entity_usage.txt", "w");
-fwrite($fp, "ENTITY USAGE STATISCTICS
+fwrite($fp, "ENTITY USAGE STATISTICS
 
 =========================================================
 In this file you can find entity usage stats compiled
-from the entity file: $filename. The entity usage
+from the entity file: $file. The entity usage
 was tested in the following tree[s] at phpdoc:\n" .
 join(", ", $tested_trees) . ".
 
 You may find many unused entities here. Please do
 not delete the entities, unless you make sure, no
-translation makes use of the entity. The purpouse
+translation makes use of the entity. The purpose
 of this statistics is to reduce the number of unused
 entities in phpdoc. Here comes the numbers and file
 names:

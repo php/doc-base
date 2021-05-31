@@ -134,3 +134,12 @@ and concerns.
 Be sure to check out [global.ent](entities/global.ent) and
 language-snippets.ent (located within each language's repo) for
 more information for entities and URLs.
+
+# Quality Assurance Tools (QA Tools)
+
+There are various scripts available to ensure the quality of the documentation
+and find issues with it, they are located in the `scripts/qa/` directory.
+
+There might be some more just in `scripts/` but they need to be checked if they
+are still relevant and/or given some love.
+
