@@ -418,6 +418,7 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
 
         case 'broken-file-listing':
             $ac['USE_BROKEN_TRANSLATION_FILENAME'] = $v;
+            break;
 
         case 'stderr-to-stdout':
             $ac['STDERR_TO_STDOUT'] = $v;
@@ -740,7 +741,7 @@ CAT;
     if ($ac['DETAILED_ERRORMSG'] == 'yes') {
         echo "trying to figure out what went wrong...\n";
         echo "(This could take awhile. If you experience segfaults here, try again with --disable-xml-details)\n";
-        libxml_clear_errors(); // Clear the errrors, they contain incorrect filename&linenr
+        libxml_clear_errors(); // Clear the errors, they contain incorrect filename&line
 
         $dom->load("{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}", $LIBXML_OPTS | LIBXML_DTDVALID);
         print_xml_errors();
