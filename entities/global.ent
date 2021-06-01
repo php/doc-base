@@ -340,7 +340,6 @@
 <!ENTITY url.php.anongit "https://www.php.net/git.php">
 <!ENTITY url.php.bugs "https://bugs.php.net/">
 <!ENTITY url.php.bugs.howtoreport "https://bugs.php.net/how-to-report.php">
-<!ENTITY url.php.svn "https://svn.php.net/viewvc/">
 <!ENTITY url.php.doc.downloads "https://www.php.net/download-docs.php">
 <!ENTITY url.php.docs "https://www.php.net/docs.php">
 <!ENTITY url.php.dochowto "http://doc.php.net/tutorial/">
