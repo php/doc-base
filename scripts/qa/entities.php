@@ -32,7 +32,8 @@ list used and unused entities.
 
   <entity-file> must be a file name (with relative
   path from the phpdoc root) to a file containing
-  <!ENTITY...> definitions. Defaults to 'base/entities/global.ent' and 'en/language-snippets.ent'.
+  <!ENTITY...> definitions. Defaults to 'base/entities/global.ent',
+      'en/language-defs.ent, and 'en/language-snippets.ent'.
 
   <language-code> must be a valid language code used in the repository, or
   'all' for all languages. Defaults to 'all'.
@@ -56,13 +57,16 @@ $docdir = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR;
 // Long runtime
 set_time_limit(0);
 
+// Debug array
+$debug = [];
+
 // Array to collect the entities
 $defined_entities = [];
 
 // Default values
 $langcodes = [
-    'de',
     'en',
+    'de',
     'es',
     'fr',
     'it',
@@ -74,7 +78,7 @@ $langcodes = [
     'tr',
     'zh'
 ];
-$files = ['base/entities/global.ent', 'en/language-snippets.ent'];
+$files = ['base/entities/global.ent', 'en/language-defs.ent', 'en/language-snippets.ent'];
 
 // Parameter value copying
 if ($argc == 3) {
@@ -94,6 +98,7 @@ if ($argc >= 2) {
 // Extract the entity names from the file
 function extract_entity_definitions ($filename, &$entities)
 {
+    global $debug;
     // Read in the file, or die
     $file_array = file ($filename);
     if (!$file_array) { die ("Cannot open entity file ($filename)."); }
@@ -104,10 +109,13 @@ function extract_entity_definitions ($filename, &$entities)
     // Find entity names
     preg_match_all("/<!ENTITY\s+(.*)\s+/U", $file_string, $entities_found);
     $entities_found = $entities_found[1];
-    
+
     // Convert to hash
     foreach ($entities_found as $entity_name) {
-      $entities[$entity_name] = [];
+        if (array_key_exists($entity_name, $entities)) {
+            $debug[] = "$entity_name is redefined in $filename";
+        }
+        $entities[$entity_name] = [];
     }
 } // extract_entity_definitions() function end
 
@@ -127,16 +135,15 @@ function check_dir($dir, &$defined_entities, $entity_regexp)
     // Open and traverse the directory
     $handle = @opendir($dir);
     while ($file = @readdir($handle)) {
-      
-      // Collect directories and XML files
-      if ($file != '.svn' && $file != '.' &&
-          $file != '..' && is_dir($dir.$file)) {
-        $directories[] = $file;
-      }
-      elseif (strstr($file, ".xml")) {
-        $files[] = $file;
-      }
-
+        // Collect directories and XML files
+        if ($file != '.git' && $file != '.' && $file != '..' && is_dir($dir.$file)) {
+            $directories[] = $file;
+        } elseif (strstr($file, ".xml")) {
+            $files[] = $file;
+        } elseif ($file === 'language-snippets.ent') {
+            // Check usage of entities in language snippets too
+            $files[] = $file;
+        }
     }
     @closedir($handle);
       
@@ -146,17 +153,18 @@ function check_dir($dir, &$defined_entities, $entity_regexp)
       
     // Files first...
     foreach ($files as $file) {
-      check_file($dir.$file, $defined_entities, $entity_regexp);
+        check_file($dir.$file, $defined_entities, $entity_regexp);
     }
 
     // than the subdirs
     foreach ($directories as $file) {
-      check_dir($dir.$file."/", $defined_entities, $entity_regexp);
+        check_dir($dir.$file."/", $defined_entities, $entity_regexp);
     }
 } // check_dir() function end
 
 function check_file ($filename, &$defined_entities, $entity_regexp)
 {
+    global $debug;
     // Read in file contents
     $contents = preg_replace("/[\r\n]/", "", join("", file($filename)));
     
@@ -168,7 +176,11 @@ function check_file ($filename, &$defined_entities, $entity_regexp)
     
     // New occurrences found, so increase the number
     foreach ($entities_found[1] as $entity_name) {
-        if (isset($defined_entities[$entity_name])) { $defined_entities[$entity_name][] = $filename; }
+        if (!array_key_exists($entity_name, $defined_entities)) {
+            $debug[] = "Entity $entity_name has been found without any definition";
+            continue;
+        }
+        $defined_entities[$entity_name][] = $filename;
     }
 
 } // check_file() function end
@@ -192,7 +204,7 @@ foreach ($langcodes as $langcode) {
 
     // Check for directory validity
     if (!@is_dir($docdir . $langcode)) {
-        print("The $langcode language code is not valid\n");
+        $debug[] = "The $langcode language code is not valid";
         continue;
     } else {
         $tested_trees[] = $langcode;
@@ -234,5 +246,11 @@ foreach ($defined_entities as $entity_name => $files) {
 }
 
 fclose($fp);
+
+if ($debug !== []) {
+    echo 'Several issues are present:', \PHP_EOL;
+    print_r($debug);
+    exit(1);
+}
 
 echo "Done!\n";
