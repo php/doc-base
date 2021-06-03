@@ -15,7 +15,7 @@
       <entry>&Name;</entry>
       <entry>&Default;</entry>
       <entry>&Changeable;</entry>
-      <entry>Changelog</entry>
+      <entry>&Changelog;</entry>
      </row>
     </thead>
     <tbody>
@@ -23,7 +23,7 @@
       <entry>theini_option</entry>
       <entry>itsvalue</entry>
       <entry>its PHP_INI_* value</entry>
-      <entry>leave empty. this will be fiiled by an automatic script</entry>
+      <entry>version changes information</entry>
      </row>
      <row>
       <entry>anotherini_option</entry>
