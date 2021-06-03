@@ -44,10 +44,10 @@ function checkExtension($dirname)
 {
     $fileCount = 0;
 
-    $docdir = new RecursiveDirectoryIterator($dirname);
+    $docdir = new RecursiveDirectoryIterator($dirname, FilesystemIterator::SKIP_DOTS);
 
     foreach ($docdir as $base) {
-        if ($docdir->isDot() || !$base->isDir() || !$base->isReadable()) {
+        if (!$base->isDir() || !$base->isReadable()) {
             continue;
         }
 
@@ -71,12 +71,12 @@ function checkExtension($dirname)
 
 function getXMLFiles(string $dirname)
 {
-    $directory = new RecursiveDirectoryIterator($dirname);
+    $directory = new RecursiveDirectoryIterator($dirname, FilesystemIterator::SKIP_DOTS);
 
     $files = [];
 
     foreach ($directory as $dir) {
-        if ($directory->isDot() || $dir->isDir() || !$dir->isReadable()) {
+        if ($dir->isDir() || !$dir->isReadable()) {
             continue;
         }
 
