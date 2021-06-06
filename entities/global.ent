@@ -270,7 +270,7 @@
 <!ENTITY url.mongodb.jira "https://jira.mongodb.org/browse/PHP">
 <!ENTITY url.mono "http://www.mono-project.com/">
 <!ENTITY url.msoffice.serverside "http://support.microsoft.com/kb/257757">
-<!ENTITY url.msql "http://www.hughes.com.au/">
+<!ENTITY url.msql "https://hughestech.com.au/products/msql/">
 <!ENTITY url.mysql "http://www.mysql.com/">
 <!ENTITY url.mysql.docs "http://dev.mysql.com/doc/">
 <!ENTITY url.mysql.docs.commit "http://dev.mysql.com/doc/mysql/en/commit.html">
