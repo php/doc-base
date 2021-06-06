@@ -107,7 +107,10 @@ function checkSectionErrors(string $path): array
 {
     $content = file_get_contents($path);
     /* Skip aliases */
-    if (str_contains($content, '&info.function.alias;') || str_contains($content, '&Alias;')) {
+    if (str_contains($content, '&info.function.alias;')
+        || str_contains($content, '&Alias;')
+        || str_contains($content, "&info.method.alias;")
+    ) {
         return [];
     }
     /* Skip undocumented functions (for now) */
