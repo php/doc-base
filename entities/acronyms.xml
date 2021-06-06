@@ -2,9 +2,16 @@
 <!-- $Revision$ -->
 
 <!-- All Acronyms should be listed in Alphabetical order -->
+<!-- To use them, use the <acronym> tag -->
 <section xml:id="acronyms">
  <title>Acronyms</title>
  <variablelist>
+  <varlistentry>
+   <term>AKA</term>
+   <listitem>
+    <simpara>Also Known As</simpara>
+   </listitem>
+  </varlistentry>
   <varlistentry>
    <term>API</term>
    <listitem>

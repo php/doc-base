@@ -17,6 +17,9 @@
 <!ENTITY url.apache.source "http://httpd.apache.org/download.cgi">
 <!ENTITY url.apache.core "http://httpd.apache.org/docs/current/mod/core.html">
 <!ENTITY url.apache.fcgid "http://httpd.apache.org/mod_fcgid/">
+<!-- Windows binaries are not provided directly by Apache but ApacheLounge -->
+<!ENTITY url.apachelounge "https://www.apachelounge.com">
+<!ENTITY url.apachelounge.download "https://www.apachelounge.com/download/">
 <!ENTITY url.apc.technotes "https://github.com/php/pecl-caching-apc/blob/master/TECHNOTES.txt">
 <!ENTITY url.apc.bc "https://pecl.php.net/apcu_bc">
 <!ENTITY url.apd "https://pecl.php.net/apd">
@@ -517,6 +520,7 @@
 <!ENTITY url.zookeeper.doc.cbinding "https://zookeeper.apache.org/doc/trunk/zookeeperProgrammers.html#C+Binding">
 <!ENTITY url.microsoft.controlservice "https://docs.microsoft.com/en-us/windows/desktop/api/winsvc/nf-winsvc-controlservice">
 <!ENTITY url.microsoft.return.code "https://docs.microsoft.com/en-us/windows/desktop/debug/system-error-codes">
+<!ENTITY url.install.windows.stepbystep "https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2">
 
 <!ENTITY book.applied.cryptography 'Applied Cryptography by Schneier (ISBN 0-471-11709-9)'>
 <!ENTITY book.programming.classics "Programming Classics: Implementing the World's Best Algorithms by Oliver (ISBN 0-131-00413-1)">
