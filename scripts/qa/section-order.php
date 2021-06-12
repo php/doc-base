@@ -121,6 +121,12 @@ function checkSectionErrors(string $path): array
 {
     $isConstructorPage = false;
     $content = file_get_contents($path);
+
+    /* Skip class definitions */
+    if (str_contains($content, '<phpdoc:classref')) {
+        return [];
+    }
+
     /* Skip aliases */
     if (str_contains($content, '&info.function.alias;')
         || str_contains($content, '&Alias;')
