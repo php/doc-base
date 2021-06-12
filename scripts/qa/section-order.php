@@ -22,6 +22,15 @@
  *  +----------------------------------------------------------------------+
  */
 
+const SKIP_FOLDER = [
+    /* DateTimeImmutable docs refer to DateTime docs */
+    'datetimeimmutable',
+    /* Directory class refers to usual dir/ functions */
+    'directory',
+    /* We don't care about a tutorial doc in this script */
+    'tutorial',
+];
+
 $fileCount = 0;
 
 /* Path to the root of EN extension reference tree */
@@ -48,6 +57,11 @@ function checkExtension($dirname)
 
     foreach ($docdir as $base) {
         if (!$base->isDir() || !$base->isReadable()) {
+            continue;
+        }
+
+        // Skip folder dirs which refer to another folder
+        if (\in_array($base->getBasename(), SKIP_FOLDER)) {
             continue;
         }
 
