@@ -31,6 +31,17 @@ const SKIP_FOLDER = [
     'tutorial',
 ];
 
+const VALID_SECTION_ROLES = [
+    'description',
+    'parameters',
+    'returnvalues',
+    'errors',
+    'changelog',
+    'examples',
+    'notes',
+    'seealso',
+];
+
 $fileCount = 0;
 
 /* Path to the root of EN extension reference tree */
@@ -112,7 +123,7 @@ function getXMLFiles(string $dirname)
  * - parameters
  * - returnvalues
  * - errors
- * - unicode (obsolete)
+ * - changelog
  * - examples
  * - notes
  * - seealso
@@ -163,6 +174,10 @@ function checkCommonSectionOrder(DOMDocument $document, bool $isConstructorPage)
 
     foreach ($document->getElementsByTagName('refsect1') as $node) {
         $role = $node->getAttribute('role');
+        if (!in_array($role, VALID_SECTION_ROLES)) {
+            $errors[] = "Invalid section role: '$role'";
+            continue;
+        }
         if (in_array($role, $elements)) {
             $errors[] = "Duplicate section: '$role'";
             continue;
@@ -191,11 +206,6 @@ function checkCommonSectionOrder(DOMDocument $document, bool $isConstructorPage)
         if ($isConstructorPage) {
             return $errors;
         }
-    }
-
-    /* Section meant for differences between PHP 5 and PHP 6 */
-    if (in_array('unicode', $elements)) {
-        $errors[] = "Obsolete unicode sections";
     }
 
     /* There are bigger issues then section order so return early */
