@@ -105,6 +105,7 @@ function getXMLFiles(string $dirname)
  */
 function checkSectionErrors(string $path): array
 {
+    $isConstructorPage = false;
     $content = file_get_contents($path);
     /* Skip aliases */
     if (str_contains($content, '&info.function.alias;')
@@ -120,16 +121,27 @@ function checkSectionErrors(string $path): array
 
     /* Constructors are special */
     if (str_contains($content, '::__construct</')) {
-        return checkSectionErrorsConstructors($content);
+        if (!str_contains($content, '<constructorsynopsis>')) {
+            // This generates a lot of errors leave for later
+            //$errors[] = "Constructors should use <constructorsynopsis> instead of <methodsynopsis>";
+        }
+        $isConstructorPage = true;
+        //return checkSectionErrorsConstructors($content);
     }
 
     $dom = new DOMDocument();
     /* Load as HTML as to not verify entities */
     @$dom->loadHTML($content);
+
+    return checkCommonSectionOrder($dom, $isConstructorPage);
+}
+
+function checkCommonSectionOrder(DOMDocument $document, bool $isConstructorPage): array
+{
     $errors = [];
     $elements = [];
 
-    foreach ($dom->getElementsByTagName('refsect1') as $node) {
+    foreach ($document->getElementsByTagName('refsect1') as $node) {
         $role = $node->getAttribute('role');
         if (in_array($role, $elements)) {
             $errors[] = "Duplicate section: '$role'";
@@ -149,8 +161,18 @@ function checkSectionErrors(string $path): array
         $errors[] = "No parameters sections";
     }
     if (!in_array('returnvalues', $elements)) {
-        $errors[] = "No returnvalues sections";
+        // Constructor pages should not have a return value section
+        if (!$isConstructorPage) {
+            $errors[] = "No returnvalues sections";
+        }
+    } else {
+        /* Constructors might share page with procedural,
+         * bail out for now */
+        if ($isConstructorPage) {
+            return $errors;
+        }
     }
+
     /* Section meant for differences between PHP 5 and PHP 6 */
     if (in_array('unicode', $elements)) {
         $errors[] = "Obsolete unicode sections";
@@ -165,113 +187,17 @@ function checkSectionErrors(string $path): array
     if ($elements[1] !== 'parameters') {
         $errors[] = "Parameters sections is not second";
     }
-    if ($elements[2] !== 'returnvalues') {
+
+    // Check only for non constructor pages
+    if (!$isConstructorPage && $elements[2] !== 'returnvalues') {
         $errors[] = "Return values sections is not third";
     }
-    /* if an error section is present it must be the 4th element */
-    if (in_array('errors', $elements) && $elements[3] !== 'errors') {
+    /* if an error section is present it must be the 4th element
+     * if the page is a constructor it must be the 3rd element */
+    if (in_array('errors', $elements) && $elements[3-$isConstructorPage] !== 'errors') {
         $errors[] = "Errors sections is not fourth";
     }
     /* if an See Also section is present it must be the last element */
-    if (in_array('seealso', $elements) && $elements[array_key_last($elements)] !== 'seealso') {
-        $errors[] = "See also sections is not last";
-    }
-
-    $flipped = array_flip($elements);
-    if (in_array('errors', $elements) && in_array('changelog', $elements)) {
-        if ($flipped['errors'] > $flipped['changelog']) {
-            $errors[] = "Changelog section before errors";
-        }
-    }
-
-    /* Check example section is in correct position */
-    if (in_array('changelog', $elements) && in_array('examples', $elements)) {
-        if ($flipped['changelog'] > $flipped['examples']) {
-            $errors[] = "Example section before changelog";
-        }
-    }
-    if (in_array('errors', $elements) && in_array('examples', $elements)) {
-        if ($flipped['errors'] > $flipped['examples']) {
-            $errors[] = "Examples section before errors";
-        }
-    }
-
-    /* Check notes section is in correct position */
-    if (in_array('changelog', $elements) && in_array('notes', $elements)) {
-        if ($flipped['changelog'] > $flipped['notes']) {
-            $errors[] = "Notes section before changelog";
-        }
-    }
-    if (in_array('errors', $elements) && in_array('notes', $elements)) {
-        if ($flipped['errors'] > $flipped['notes']) {
-            $errors[] = "Notes section before errors";
-        }
-    }
-    if (in_array('examples', $elements) && in_array('notes', $elements)) {
-        if ($flipped['examples'] > $flipped['notes']) {
-            $errors[] = "Notes section before examples";
-        }
-    }
-
-    return $errors;
-}
-
-function checkSectionErrorsConstructors(string $content): array {
-    $dom = new DOMDocument();
-    /* Load as HTML as to not verify entities */
-    @$dom->loadHTML($content);
-    $errors = [];
-    $elements = [];
-
-    if (!str_contains($content, '<constructorsynopsis>')) {
-        // This generates a lot of errors leave for later
-        //$errors[] = "Constructors should use <constructorsynopsis> instead of <methodsynopsis>";
-    }
-
-    foreach ($dom->getElementsByTagName('refsect1') as $node) {
-        $role = $node->getAttribute('role');
-        if (in_array($role, $elements)) {
-            $errors[] = "Duplicate section: '$role'";
-            continue;
-        }
-        $elements[] = $role;
-    }
-
-    if ($elements === []) {
-        $errors[] = "No sections";
-        return $errors;
-    }
-    if (!in_array('description', $elements)) {
-        $errors[] = "No description sections";
-    }
-    if (!in_array('parameters', $elements)) {
-        $errors[] = "No parameters sections";
-    }
-    /* Section meant for differences between PHP 5 and PHP 6 */
-    if (in_array('unicode', $elements)) {
-        $errors[] = "Obsolete unicode sections";
-    }
-
-    /* Constructors might share page with procedural,
-     * bail out */
-    if (in_array('returnvalues', $elements)) {
-        return $errors;
-    }
-
-    /* There are bigger issues then section order so return early */
-    if ($errors) return $errors;
-
-    if ($elements[0] !== 'description') {
-        $errors[] = "Description sections is not first";
-    }
-    if ($elements[1] !== 'parameters') {
-        $errors[] = "Parameters sections is not second";
-    }
-    /* if an error section is present it must be the 3rd element */
-    if (in_array('errors', $elements) && $elements[2] !== 'errors') {
-        $errors[] = "Errors sections is not fourth";
-    }
-    /* if a See Also section is present it must be the last element */
     if (in_array('seealso', $elements) && $elements[array_key_last($elements)] !== 'seealso') {
         $errors[] = "See also sections is not last";
     }
