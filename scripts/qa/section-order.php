@@ -31,6 +31,18 @@ const SKIP_FOLDER = [
     'tutorial',
 ];
 
+/* Files which should be skipped, needs a *good* reason */
+const SKIP_FILE = [
+    /* Helper page to refer to unset() or unlink() */
+    'reference/filesystem/functions/delete.xml',
+    /* Helper page in case docref fails in a PHP diagnostic
+     * (needs to be fixed in php-src in that case) */
+    'reference/info/functions/main.xml',
+    /* This old alias was split into two functions and current
+     * alias detection doesn't find it... so add it here */
+    'reference/oci8/oldaliases/ocifetchinto.xml',
+];
+
 const VALID_SECTION_ROLES = [
     'description',
     'parameters',
@@ -42,10 +54,13 @@ const VALID_SECTION_ROLES = [
     'seealso',
 ];
 
+define('DOCROOT_EN', dirname(__DIR__, 3) . '/en/');
+
 $fileCount = 0;
 
 /* Path to the root of EN extension reference tree */
-$directoryToSearch = dirname(__DIR__, 3) . '/en/reference';
+
+$directoryToSearch = DOCROOT_EN . 'reference';
 
 foreach (new DirectoryIterator($directoryToSearch) as $docs) {
     if ($docs->isDot() || !$docs->isDir() || !$docs->isReadable()) {
@@ -109,6 +124,12 @@ function getXMLFiles(string $dirname)
             continue;
         }
         if (str_starts_with($dir->getFilename(), 'entities')) {
+            continue;
+        }
+
+        /* Skip certain files */
+        $pathnameFromRoot = str_replace(DOCROOT_EN, '', $dir->getPathname());
+        if (in_array($pathnameFromRoot, SKIP_FILE)) {
             continue;
         }
 
