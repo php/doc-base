@@ -29,6 +29,8 @@ const SKIP_FOLDER = [
     'directory',
     /* We don't care about a tutorial doc in this script */
     'tutorial',
+    /* Skip predefined variables folder */
+    'variables',
 ];
 
 /* Files which should be skipped, needs a *good* reason */
@@ -69,6 +71,9 @@ foreach (new DirectoryIterator($directoryToSearch) as $docs) {
 
     $fileCount += checkExtension($docs->getPathname());
 }
+
+/* Check section order in predefined classes */
+$fileCount += checkExtension(DOCROOT_EN . 'language/predefined');
 
 //echo "\n\e[0;32mFound {$fileCount} files with issues.\n";
 echo "\nFound {$fileCount} files with issues.\n";
