@@ -4,7 +4,6 @@ Introduction:
 	- This script checks for optional parameters that do not utilize the <initializer> tag.
 	- Pass in a path and it'll check it. The path might include all of phpdoc, or a simple extension
 TODO:
-	- Have better output when using -o
 	- Determine what initializer values should be as some cases aren't clear
 */
 
@@ -22,7 +21,7 @@ if (!is_dir($opts['p'])) {
 	usage();
 }
 
-$empty = array();
+$empty = [];
 $count_total = 0;
 $count_empty = 0;
 
@@ -37,7 +36,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($opts['p']
 	
 	$contents = file_get_contents($filepath);
 
-	$matches = array();
+	$matches = [];
 	preg_match_all('@<methodparam choice="opt"><type>(.*)</type><parameter>(.*)</parameter>(.*)</methodparam>@', $contents, $matches);
 
 	// Check if any optional parameters exist
@@ -47,18 +46,24 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($opts['p']
 
 	// Log optional parameters without default values
 	// We use the <initializer> DocBook tag for this task.
-	foreach ($matches[3] as $match) {
+	foreach ($matches[3] as $index => $match) {
 		$count_total++;
-		if (empty($match) || (false === strpos($match, '<initializer>'))) {
+		if (empty($match) || (!str_contains($match, '<initializer>'))) {
 			$count_empty++;
-			$empty[$filepath] = $matches;
+			// index 2 corresponds to the param, index 1 to the type
+			$empty[$filepath][$matches[2][$index]] = $matches[1][$index];
 		}
 	}
 }
 
 // This output could be more useful
-if (isset($opts['o'])) {
-	print_r($empty);
+if (array_key_exists('o', $opts)) {
+    foreach ($empty as $file => $issues) {
+        echo $file, ' has ', count($issues), ' optional parameters without initializers:', "\n";
+        foreach ($issues as $param => $type) {
+            echo '- Param "', $param, '" of type "', $type, "\"\n";
+        }
+    }
 }
 
 print "Found $count_total optional parameters, and $count_empty are empty.\n";
