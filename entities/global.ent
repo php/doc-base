@@ -299,7 +299,7 @@
 <!ENTITY url.oauth.examples "https://svn.php.net/viewvc/pecl/oauth/trunk/examples">
 <!ENTITY url.oauth.problemreporting "http://wiki.oauth.net/ProblemReporting">
 <!ENTITY url.oauth.provider.tutorial "http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html">
-<!ENTITY url.openal "http://connect.creativelabs.com/openal/default.aspx">
+<!ENTITY url.openal "https://www.openal.org/">
 <!ENTITY url.openbsd "http://www.openbsd.org/">
 <!ENTITY url.openbsd.chroot "http://www.openbsd.org/cgi-bin/man.cgi?query=chroot">
 <!ENTITY url.openbsd.packages "http://www.openbsd.org/cgi-bin/man.cgi?query=packages">
