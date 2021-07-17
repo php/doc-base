@@ -2249,7 +2249,7 @@
 <!ATTLIST type
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
 	role	CDATA	#IMPLIED
-	class	(union)	#IMPLIED
+	class	(union|intersection)	#IMPLIED
 	%db.common.attributes;
 	%db.common.linking.attributes;
 
