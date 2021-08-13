@@ -62,6 +62,7 @@ Package-specific:
                                  issues. [{$acd['SEGFAULT_SPEED']}]
   --disable-version-files        Do not merge the extension specific
                                  version.xml files
+  --disable-sources-file         Do not generate sources.xml file
   --disable-libxml-check         Disable the libxml 2.7.4+ requirement check
   --with-php=PATH                Path to php CLI executable [detect]
   --with-lang=LANG               Language to build [{$acd['LANG']}]
@@ -230,6 +231,67 @@ function print_xml_errors($details = true) {
     libxml_clear_errors();
 } // }}}
 
+function find_xml_files($path) // {{{
+{
+    $path = rtrim($path, '/');
+    $prefix_len = strlen($path . '/');
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+    foreach ($files as $fileinfo) {
+        if ($fileinfo->getExtension() === 'xml') {
+            yield substr($fileinfo->getPathname(), $prefix_len);
+        }
+    }
+} // }}}
+
+function generate_sources_file() // {{{
+{
+    global $ac;
+    $source_map = array();
+    echo 'Iterating over files for sources info... ';
+    $en_dir = "{$ac['rootdir']}/{$ac['EN_DIR']}";
+    $source_langs = array(
+        array('base', $ac['srcdir'], array('manual.xml.in', 'funcindex.xml')),
+        array('en', $en_dir, find_xml_files($en_dir)),
+    );
+    if ($ac['LANG'] !== 'en') {
+        $lang_dir = "{$ac['rootdir']}/{$ac['LANGDIR']}";
+        $source_langs[] = array($ac['LANG'], $lang_dir, find_xml_files($lang_dir));
+    }
+    foreach ($source_langs as list($source_lang, $source_dir, $source_files)) {
+        foreach ($source_files as $source_path) {
+            $source = file_get_contents("{$source_dir}/{$source_path}");
+            if (preg_match_all('/ xml:id=(["\'])([^"]+)\1/', $source, $matches)) {
+                foreach ($matches[2] as $xml_id) {
+                    $source_map[$xml_id] = array(
+                        'lang' => $source_lang,
+                        'path' => $source_path,
+                    );
+                }
+            }
+        }
+    }
+    asort($source_map);
+    echo "OK\n";
+    echo 'Generating sources XML... ';
+    $dom = new DOMDocument;
+    $dom->formatOutput = true;
+    $sources_elem = $dom->appendChild($dom->createElement("sources"));
+    foreach ($source_map as $id => $source) {
+        $el = $dom->createElement('item');
+        $el->setAttribute('id', $id);
+        $el->setAttribute('lang', $source["lang"]);
+        $el->setAttribute('path', $source["path"]);
+        $sources_elem->appendChild($el);
+    }
+    echo "OK\n";
+    echo "Saving sources.xml file... ";
+    if ($dom->save($ac['srcdir'] . '/sources.xml')) {
+        echo "OK\n";
+    } else {
+        echo "FAIL!\n";
+    }
+} // }}}
+
 $srcdir  = dirname(__FILE__);
 $workdir = $srcdir;
 $basedir = $srcdir;
@@ -285,6 +347,7 @@ $acd = array( // {{{
     'SEGFAULT_ERROR' => 'yes',
     'SEGFAULT_SPEED' => 'yes',
     'VERSION_FILES'  => 'yes',
+    'SOURCES_FILE' => 'yes',
     'LIBXML_CHECK' => 'yes',
     'USE_BROKEN_TRANSLATION_FILENAME' => 'yes',
     'OUTPUT_FILENAME' => $srcdir . '/.manual.xml',
@@ -394,6 +457,10 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
 
         case 'version-files':
             $ac['VERSION_FILES'] = $v;
+            break;
+
+        case 'sources-file':
+            $ac['SOURCES_FILE'] = $v;
             break;
 
         case 'libxml-check':
@@ -598,6 +665,10 @@ if ($ac['VERSION_FILES'] === 'yes') {
     } else {
         echo "FAIL!\n";
     }
+}
+
+if ($ac['SOURCES_FILE'] === 'yes') {
+    generate_sources_file();
 }
 
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');

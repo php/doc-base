@@ -5,6 +5,7 @@ install-unix.xml
 install-win.xml
 manual.xml
 version.xml
+sources.xml
 entities/file-entities.ent
 # File use to generate entities by configure script
 scripts/file-entities.php
