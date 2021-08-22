@@ -646,7 +646,7 @@ if ($ac['VERSION_FILES'] === 'yes') {
         }
         $globdir .= "/*/*/versions.xml";
     }
-    foreach(glob($globdir, GLOB_BRACE) as $file) {
+    foreach(glob($globdir) as $file) {
         if($tmp->load($file)) {
             foreach($tmp->getElementsByTagName("function") as $function) {
                 $function = $dom->importNode($function, true);
