@@ -26,6 +26,30 @@ $doc_en_root = dirname(__DIR__, 3) . '/en/reference';
 
 $total = 0;
 
+
+function isMagicMethod(string $method): bool
+{
+    switch ($method) {
+        case 'construct':
+        case 'destruct':
+        case 'tostring':
+        case 'call':
+        case 'callstatic':
+        case 'wakeup':
+        case 'sleep':
+        // case 'set': // TODO This conflicts with certain classes
+        // case 'get': // TODO This conflicts with certain classes
+        case 'isset':
+        case 'unset':
+        case 'setstate':
+        case 'clone':
+            return true;
+        default:
+            return false;
+    }
+}
+
+// TODO Need to add Predefined Interfaces/Classes
 /* make a method list from files in extension directories */
 function make_method_list(string $lang_doc_root): array
 {
@@ -54,9 +78,12 @@ function make_method_list(string $lang_doc_root): array
                 }
                 $class = str_replace($extension->getPath() . '/', '', $file->getPath());
                 $class = str_replace('/', '\\', $class);
+                //$class = str_replace('-', '_', $class);
+                $class = strtolower($class);
                 $method = str_replace(['-', '.'], '_', $file->getBasename('.xml'));
-                if ($method === 'construct') { $method = '__construct'; }
-                $fqn = strtolower($class . '::' . $method);
+                $method = strtolower($method);
+                if (isMagicMethod($method)) { $method = '__' . $method; }
+                $fqn = $class . '::' . $method;
                 $methods[$fqn] = true;
             }
         }
@@ -76,8 +103,11 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($doc_en_ro
         continue;
     }
 
+    $isFunction = false;
+
     $name = $file->getBasename();
     $path = $file->getPathname();
+    if (strpos($path, '/functions/') !== false) { $isFunction = true; }
     $contents = file_get_contents($path);
 
     if ($contents == '') {
@@ -88,14 +118,18 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($doc_en_ro
         && is_array($m)
         && is_array($m[1]))
     {
-        foreach ($m[1] as $method) {
-            $method = strtolower(trim($method));
-
-            if (!\array_key_exists($method, $methods)) {
+        if ($isFunction) {
+            // Unset the first entry as it is the function prototype
+            unset($m[1][0]);
+        }
+        foreach ($m[1] as $fqn) {
+            $lcFqn = strtolower(trim($fqn));
+            if (!\array_key_exists($lcFqn, $methods)) {
+                //var_dump($fqn);
                 $total++;
                 $fileout = substr($file, strlen($doc_en_root) + 1);
 
-                printf("%-60.60s  <methodname>$method</methodname>\n", $fileout);
+                printf("%-60.60s  <methodname>$fqn</methodname>\n", $fileout);
             }
         }
     }
