@@ -311,6 +311,7 @@
    &reference.yaconf.book;
    &reference.taint.book;
    &reference.ds.book;
+   &reference.var-representation.book;
   </set>
 
   <set xml:id="refs.remote.other">
