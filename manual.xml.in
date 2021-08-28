@@ -294,6 +294,7 @@
    <title>&OtherBasicExtensions;</title>
    &reference.geoip.book;
    &reference.fann.book;
+   &reference.igbinary.book;
    &reference.json.book;
    &reference.lua.book;
    &reference.luasandbox.book;
