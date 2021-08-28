@@ -1,5 +1,5 @@
 <?php
-/*  
+/*
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
@@ -16,7 +16,7 @@
   | Authors:    Felipe Pena <felipe@php.net>                             |
   |             Philip Olson <philip@php.net>                            |
   +----------------------------------------------------------------------+
- 
+
   $Id$
 */
 
@@ -56,7 +56,7 @@ $DOC_EXT = array(
 function usage() { /* {{{ */
 	$v = PHP_VERSION;
 	print <<<USAGE
-Usage: 
+Usage:
 	php docgen.php <options>
 
 Example options:
@@ -73,7 +73,7 @@ Options:
 	-e,--extension	-- extension name
 	-f,--function	-- function name
 	-h,--help	-- show this help
-	-i,--include	-- includes a PHP file 
+	-i,--include	-- includes a PHP file
 	(shortcut for: php -dauto_prepend_file=streams.php docgen.php)
 
 	-m,--method	-- method name (require -c)
@@ -96,15 +96,15 @@ USAGE;
 function find_function($ext, ReflectionMethod $method = NULL, ReflectionFunction $func = NULL) { /* {{{ */
 	$ext_name = strtolower($ext);
 	$ext = new ReflectionExtension($ext);
-	
-	if ($method) {	
+
+	if ($method) {
 		preg_match_all('/[A-Z][a-z]+|[a-z]+/', $method->name, $parts);
-	
+
 		$possibleNames = array(
 			$ext_name .'_'. strtolower(implode('_', $parts[0])),
 			$ext_name .'_'. strtolower(implode('_', array_reverse($parts[0])))
 		);
-		
+
 		foreach ($ext->getFunctions() as $function) {
 			if (in_array($function->name, $possibleNames)) {
 				return $function;
@@ -118,14 +118,14 @@ function find_function($ext, ReflectionMethod $method = NULL, ReflectionFunction
 			strtolower(implode($parts[0])),
 			strtolower(implode(array_reverse($parts[0])))
 		);
-		
+
 		foreach ($ext->getClasses() as $class) {
 			foreach ($class->getMethods() as $method) {
 				if (in_array(strtolower($method->name), $possibleNames)) {
 					return $method;
-				}		
+				}
 			}
-		}		
+		}
 	}
 	return false;
 }
@@ -190,11 +190,11 @@ function save_file($filename, $content) { /* {{{ */
 function get_type_by_string($str) { /* {{{ */
 	if (is_numeric($str)) {
 		if ($str && intval($str) == $str) {
-			return 'integer';
+			return 'int';
 		} else if ($str && floatval($str) == $str) {
 			return 'float';
 		} else {
-			return 'integer';
+			return 'int';
 		}
 	} else {
 		return 'string';
@@ -283,7 +283,7 @@ function global_check($content) { /* {{{ */
 
 	/* {EXT_NAME} */
 	$content = preg_replace('/\{EXT_NAME\}/', ucwords($INFO['actual_extension']), $content);
-	
+
 	/* {EMPTY_REVISION_KEYWORD} */
 	$content = str_replace('{EMPTY_REVISION_KEYWORD}', '<!-- '. chr(36) .'Revision$ -->', $content);
 
@@ -392,7 +392,7 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
 		/* {PARAMETERS_DESCRIPTION} */
 		if ($ident = get_ident_size('PARAMETERS_DESCRIPTION', $content)) {
 			$count = 1;
-			
+
 			$func_params = array();
 			$method_params = array();
 			foreach ($function->getParameters() as $param) {
@@ -404,7 +404,7 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
 
 			$markup  = "<para>". PHP_EOL;
 			$markup .= str_repeat(' ', $ident + 1) ."<variablelist>". PHP_EOL;
-			foreach ($func_params as $param) {				
+			foreach ($func_params as $param) {
 				$markup .= str_repeat(' ', $ident + 2) ."<varlistentry>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 3) .'<term><parameter>'. ($param ? $param : 'param'. $count) ."</parameter></term>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 3) ."<listitem>". PHP_EOL;
@@ -416,7 +416,7 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
     			$count++;
 			}
 			$diff_params = array_diff($method_params, $func_params);
-			
+
 			foreach ($method_params as $param) {
 				if (!($param && in_array($param, $diff_params))) {
 					continue;
@@ -430,7 +430,7 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
 				$markup .= str_repeat(' ', $ident + 3) ."</listitem>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 2) ."</varlistentry>". PHP_EOL;
 				$count++;
-			}			
+			}
 			$markup .= str_repeat(' ', $ident + 1) ."</variablelist>". PHP_EOL;
 			$markup .= str_repeat(' ', $ident) ."</para>";
 
@@ -440,11 +440,11 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
 		$content = preg_replace('/\{PARAMETERS\}/', '<void />', $content, 1);
 		$content = preg_replace('/\{PARAMETERS_DESCRIPTION\}/', '&no.function.parameters;', $content, 1);
 	}
-	
+
 	$content = gen_method_markup($method, $content);
 	$content = gen_function_markup($function, $content);
-	
-	return $content;	
+
+	return $content;
 }
 /* }}} */
 
@@ -479,7 +479,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 	/* {IMPLEMENTS} */
 	if ($interfaces = $class->getInterfaces()) {
 		$ident = get_ident_size('IMPLEMENTS', $content);
-		
+
 		// Don't get inherited interfaces, e.g. Traversable if we already have Iterator.
 		foreach ($interfaces as $interface) {
 			foreach (array_keys($interface->getInterfaces()) as $inherited_interface) {
@@ -573,7 +573,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 		if ($markup) {
 			$markup = "<classsynopsisinfo role=\"comment\">&Properties;</classsynopsisinfo>". PHP_EOL . $markup;
 		}
-		
+
 		if ($inherited) {
 			if ($markup) {
 				$markup .= PHP_EOL . str_repeat(' ', $ident);
@@ -583,7 +583,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 				$markup .= str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('" . strtolower($declaring_class) . ".synopsis')/descendant::db:fieldsynopsis)\"><xi:fallback/></xi:include>". PHP_EOL;
 			}
 		}
-		
+
 		$content = preg_replace('/\{PROPERTIES_LIST\}/', $markup, $content, 1);
 	} else {
 		$content = preg_replace('/^\s*\{PROPERTIES_LIST\}.*?\n/m', '', $content, 1);
@@ -649,14 +649,14 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 	switch ($xml_file) {
 		case 'ini.xml':
 			if ($ini = ini_get_all($obj->name)) {
-				
+
 				$visibility = array(
 				  INI_USER   => 'PHP_INI_USER',
 				  INI_PERDIR => 'PHP_INI_PERDIR',
 				  INI_SYSTEM => 'PHP_INI_SYSTEM',
 				  INI_ALL    => 'PHP_INI_ALL',
 				);
-				
+
 				$ident = get_ident_size('INI_ENTRIES', $content);
 
 				$markup = "<tbody>". PHP_EOL;
@@ -724,12 +724,12 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 				$content = preg_replace('/\{CONSTANTS\}/', '&no.constants;', $content, 1);
 			}
 		break;
-		
+
 		case 'configure.xml':
 
 			$ident  = get_ident_size('EXT_INSTALL_MAIN', $content);
 			$ident2 = get_ident_size('EXT_INSTALL_WIN',  $content);
-		
+
 			$markup  = '';
 			$markup2 = '';
 			if ($OPTION['pecl'] === true) {
@@ -768,7 +768,7 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 				$version_default = 'PECL {EXT_NAME_ID} &gt;= Unknown';
 			}
 
-			$markup = "";		
+			$markup = "";
 			/* Function list */
 			if ($functions = $obj->getFunctions()) {
 				$markup .= "<!-- Functions -->". PHP_EOL;
@@ -789,7 +789,7 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 			}
 			$content = preg_replace('/\{VERSIONS\}/', rtrim($markup), $content);
 		break;
-		
+
 		case 'book.developer.xml':
 			if ($OPTION['docbase'] && $OPTION['phpdoc']) {
 				$content = preg_replace('/\{PATH_TO_DOCBASE\}/', $OPTION['docbase'], $content);
@@ -828,13 +828,13 @@ function write_doc(Reflector $obj, $type) { /* {{{ */
 
 			$INFO['actual_file'] = $filename;
 			$INFO['mappeds'][] = $filename;
-		
+
 			/* Mappeds */
 			if ($function = find_function($INFO['actual_extension'], $obj, NULL)) {
 				$content = file_get_contents(dirname(__FILE__) .'/mapping.tpl');
 				$content = gen_mapping_markup($obj, $function, $content);
 				$content = str_replace('{DEFAULT_EXAMPLE}', get_default_role('example_mapping', "{$obj->class}::{$obj->name}", $OPTION['example']), $content);
-			} else {				
+			} else {
 				$content = file_get_contents(dirname(__FILE__) .'/'. $TEMPLATE[$type]);
 				$content = gen_method_markup($obj, $content);
 				$content = str_replace('{DEFAULT_EXAMPLE}', get_default_role('example', "{$obj->class}::{$obj->name}", $OPTION['example']), $content);
@@ -866,24 +866,24 @@ function write_doc(Reflector $obj, $type) { /* {{{ */
 			if ($method = find_function($INFO['actual_extension'], NULL, $obj)) {
 				$path = $OPTION['output'] .'/'. strtolower($method->class);
 				$filename = $path .'/'. format_filename($method->name) .'.xml';
-				
+
 				if (in_array($filename, $INFO['mappeds'])) {
 					return;
 				}
-				
-				create_dir($path);				
-				$INFO['actual_file'] = $filename;				
-				
+
+				create_dir($path);
+				$INFO['actual_file'] = $filename;
+
 				$content = file_get_contents(dirname(__FILE__) .'/mapping.tpl');
 				$content = gen_mapping_markup($method, $obj, $content);
 				$content = str_replace('{DEFAULT_EXAMPLE}', get_default_role('example_mapping', $obj->getName(), $OPTION['example']), $content);
 			} else {
 				$path = $OPTION['output'] .'/functions';
 				$filename = $path .'/'. format_filename($obj->getName()) .'.xml';
-				
+
 				create_dir($path);
 				$INFO['actual_file'] = $filename;
-			
+
 				$content = file_get_contents(dirname(__FILE__) .'/'. $TEMPLATE[$type]);
 				$content = gen_function_markup($obj, $content);
 				$content = str_replace('{DEFAULT_EXAMPLE}', get_default_role('example', $obj->getName(), $OPTION['example']), $content);
@@ -982,15 +982,15 @@ function gen_docs($name, $type) {	/* {{{ */
 /* }}} */
 
 function get_default_role ($role, $funcname, $default) {
-	
+
 	$out = '';
-	
+
 	if (!$default) {
 		return $out;
 	}
-	
+
 	if ($role === 'seealso') {
-		
+
 		$out = <<<ROLE
  <refsect1 role="seealso">
   &reftitle.seealso;
@@ -1000,9 +1000,9 @@ function get_default_role ($role, $funcname, $default) {
  </refsect1>
 ROLE;
 	}
-	
+
 	if ($role === 'example') {
-		
+
 		$out = <<<ROLE
  <refsect1 role="examples">
   &reftitle.examples;
@@ -1027,9 +1027,9 @@ ROLE;
  </refsect1>
 ROLE;
 	}
-	
+
 	if ($role === 'example_mapping') {
-		
+
 		$out = <<<ROLE
  <refsect1 role="examples">
   &reftitle.examples;
@@ -1068,7 +1068,7 @@ ROLE;
  </refsect1>
 ROLE;
 	}
-	
+
 	return PHP_EOL . $out . PHP_EOL;
 }
 
@@ -1179,7 +1179,7 @@ foreach ($options as $opt => $value) {
 			$OPTION['quiet'] = true;
 			break;
 		case 's':
-		case 'seealso':		
+		case 'seealso':
 			$OPTION['seealso'] = true;
 			break;
 		case 'x':
@@ -1243,7 +1243,7 @@ if (empty($OPTION['method']) && !empty($OPTION['class'])) {
 // Example: --output out --class domdocument --copy --phpdoc ../../../en/reference/dom/
 // That will copy over new domdocument files, while not overwriting any
 if (!empty($OPTION['copy']) && !empty($OPTION['phpdoc'])) {
-	
+
 	if (!is_dir($OPTION['phpdoc'])) {
 		echo "ERROR: The provided phpdoc path is not a directory: $OPTION[phpdoc]\n";
 		exit;
@@ -1252,7 +1252,7 @@ if (!empty($OPTION['copy']) && !empty($OPTION['phpdoc'])) {
 	if (!empty($OPTION['test'])) {
 		echo "INFO: Test mode, so will not copy over files.\n";
 	}
-	
+
 	$count_gen  = 0;
 	$count_copy = 0;
 	foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($OPTION['output'])) as $file) {
@@ -1264,16 +1264,16 @@ if (!empty($OPTION['copy']) && !empty($OPTION['phpdoc'])) {
 		if (!$file->isFile() || pathinfo($filename, PATHINFO_EXTENSION) !== 'xml') {
 			continue;
 		}
-	
+
 		// fileid is equal in docgen output and phpdoc
 		$fileid = str_replace($OPTION['output'], '', $filepathname);
-	
+
 		// Do not overwrite
 		if (file_exists($OPTION['phpdoc'] . $fileid)) {
 			echo "INFO: will not overwrite: $OPTION[phpdoc]$fileid\n";
 			continue;
 		}
-		
+
 		if (empty($OPTION['test'])) {
 			// Hack to create the directory
 			$dir = str_replace($filename, '', $OPTION['phpdoc'] . $fileid);
@@ -1288,7 +1288,7 @@ if (!empty($OPTION['copy']) && !empty($OPTION['phpdoc'])) {
 		}
 		$count_copy++;
 	}
-	
+
 	echo "INFO: Copied over $count_copy files, after generating $count_gen files.\n";
 	if ($count_copy > 0) {
 		echo "INFO: Be sure to add version information to $OPTION[phpdoc]/version.xml, because I am unsure how to do that (yet).\n";
