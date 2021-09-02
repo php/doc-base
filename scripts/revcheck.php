@@ -284,11 +284,13 @@ function captureGitValues( $lang , & $output )
     $hash = null;
     $date = null;
     $utct = new DateTimeZone( "UTC" );
+    $skipThisCommit = false;
     while ( ( $line = fgets( $fp ) ) !== false )
     {
         if ( substr( $line , 0 , 7 ) == "commit " )
         {
             $hash = trim( substr( $line , 7 ) );
+            $skipThisCommit = false;
             continue;
         }
         if ( strpos( $line , 'Date:' ) === 0 )
@@ -301,7 +303,13 @@ function captureGitValues( $lang , & $output )
         if ( trim( $line ) == "" )
             continue;
         if ( substr( $line , 0 , 4 ) == '    ' )
-            continue;
+        {
+            if ( stristr( $line, '[skip-revcheck]' ) !== false )
+            {
+                 $skipThisCommit = true;
+             }
+           continue;
+        }
         if ( strpos( $line , ': ' ) > 0 )
             continue;
         $filename = trim( $line );
@@ -309,6 +317,7 @@ function captureGitValues( $lang , & $output )
             continue;
         if ( $lang == 'en' ) $output[$filename][$lang]['hash'] = $hash;
         $output[$filename][$lang]['date'] = $date;
+        $output[$filename][$lang]['skip'] = $skipThisCommit;
     }
     pclose( $fp );
     chdir( $cwd );
@@ -334,6 +343,7 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
         {
             $enFile->hash = $gitData[ $filename ]['en']['hash'];
             $enFile->date = $gitData[ $filename ]['en']['date'];
+            $enFile->skip = $gitData[ $filename ]['en']['skip'];
         }
         else
             print "Warn: No hash for en/$filename\n";
@@ -371,6 +381,8 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
             {
                 $trFile->syncStatus = FileStatusEnum::TranslatedCritial;
             }
+            if ( $enFile->skip )
+                $trFile->syncStatus = FileStatusEnum::TranslatedOk;
         }
     }
 }
@@ -721,7 +733,7 @@ HTML;
     print <<<HTML
 
  <tr class="bgorange">
-  <td class="c">$en->name</td>
+  <td class="c"><a href="https://github.com/php/doc-en/blob/{$en->hash}/$key">$en->name</a></td>
   <td class="c">$en->hash</td>
   <td class="c">$size</td>
  </tr>
@@ -803,20 +815,10 @@ HTML;
             case FileStatusEnum::TranslatedCritial: $bg = 'bgred'   ; break;
             default:                                $bg = 'bggray'  ; break;
         }
-        // GitHub web diff -- May not work with very old commits
         $kh = hash( 'sha256' , $key );
-        $d1 = "https://github.com/php/doc-en/compare/{$tr->hash}..{$en->hash}#diff-{$kh}";
-        // Local git diff  -- Always work
-        $d2 = "(cd en; git diff {$tr->hash} {$en->hash} -- $key)";
-        $d2 = htmlspecialchars( $d2 , ENT_QUOTES );
-        // git.php.net     -- May not work with very recent commits
-        $d3 = "https://git.php.net/?p=doc/en.git;a=blobdiff_plain;f=$key;hb={$en->hash};hpb={$tr->hash};"; // text
-        $d4 = "https://git.php.net/?p=doc/en.git;a=blobdiff;f=$key;hb={$en->hash};hpb={$tr->hash};";       // html
-        // And now, all the options
-        $nm = "<a href='$d1' title='GitHub'>{$en->name}</a>"
-            ." <button class='btn copy' data-clipboard-text='{$d2}' title='git diff command'>(c)</button>"
-            ." <a href='$d3' title='git.php.net text'>(t)</a> "
-            ." <a href='$d4' title='git.php.net html'>(h)</a>";
+        $d1 = "http://doc.php.net/revcheck.php?p=plain&amp;lang={$lang}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=on";
+        $d2 = "http://doc.php.net/revcheck.php?p=plain&amp;lang={$lang}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=off";
+        $nm = "<a href='$d2'>{$en->name}</a> <a href='$d1'>[colored]</a>";
         if ( $en->syncStatus == FileStatusEnum::RevTagProblem )
             $nm = $en->name;
         $h1 = "<a href='https://github.com/php/doc-en/blob/{$en->hash}/$key'>{$en->hash}</a>";
