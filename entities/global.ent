@@ -556,6 +556,7 @@
 <!ENTITY object '<type xmlns="http://docbook.org/ns/docbook">object</type>'>
 <!ENTITY resource '<type xmlns="http://docbook.org/ns/docbook">resource</type>'>
 <!ENTITY mixed '<type xmlns="http://docbook.org/ns/docbook">mixed</type>'>
+<!ENTITY never '<type xmlns="http://docbook.org/ns/docbook">never</type>'>
 
 <!-- Exception keywords -->
 <!ENTITY throw '<link xmlns="http://docbook.org/ns/docbook" linkend="language.exceptions"><literal>throw</literal></link>'>
