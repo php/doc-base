@@ -4,8 +4,8 @@ $DEFAULT_FONT = "Arial,10,0";
 // Array to manual code -> HTML Help Code conversion
 // Code list: http://www.helpware.net/htmlhelp/hh_info.htm
 // Charset list: http://www.microsoft.com/globaldev/nlsweb/default.asp
-// Language code: http://www.unicode.org/unicode/onlinedat/languages.html
-// MIME preferred charset list: http://www.iana.org/assignments/character-sets
+// Language code: https://www.unicode.org/unicode/onlinedat/languages.html
+// MIME preferred charset list: https://www.iana.org/assignments/character-sets
 // Font list: http://www.microsoft.com/office/ork/xp/three/inte03.htm
 
 $LANGUAGES = array(

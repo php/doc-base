@@ -12,7 +12,7 @@ Build system of the extended CHMs
 =================================
 
 [See latest "official" output package online at
- http://php.net/docs-echm]
+ https://php.net/docs-echm]
 
 How to build a CHM manual with this system?
 

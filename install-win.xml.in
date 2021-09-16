@@ -69,7 +69,7 @@ If CRT is already installed, the installer will tell you that and not change any
 
 The CRT installer supports the /quiet and /norestart command-line switches, so you can script running it.
 
-VC11 CRT DLLs can be copied from your local machine to a remote machine(`Copy Deployment` installation) instead of running the installer on the remote machine (such as a web server you have restricted access to). See: http://www.sitepoint.com/install-php53-windows/
+VC11 CRT DLLs can be copied from your local machine to a remote machine(`Copy Deployment` installation) instead of running the installer on the remote machine (such as a web server you have restricted access to). See: https://www.sitepoint.com/install-php53-windows/
 
 VC14 CRT does not support a `Copy Deployment` installation. VC14 CRT has many more DLLs(most in files with names starting with api-*). If you can find them all and copy them, it will also work (try a tool like Resource Hacker to get a list of all the DLLs to copy).
 
@@ -83,7 +83,7 @@ VC14 CRT does not support a `Copy Deployment` installation. VC14 CRT has many mo
 <!--<sect1>
   <title>PECL</title>
 
-<para>PECL extensions are pre-built for Windows and available from: <link xlink:href="http://windows.php.net/downloads/pecl/releases/">http://windows.php.net/downloads/pecl/releases/</link>
+<para>PECL extensions are pre-built for Windows and available from: <link xlink:href="https://windows.php.net/downloads/pecl/releases/">https://windows.php.net/downloads/pecl/releases/</link>
 </para>
 
 </sect1>

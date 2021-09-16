@@ -10,7 +10,7 @@
   | This source file is subject to version 3.0 of the PHP license,       |
   | that is bundled with this package in the file LICENSE, and is        |
   | available through the world-wide-web at the following url:           |
-  | http://www.php.net/license/3_0.txt.                                  |
+  | https://www.php.net/license/3_0.txt.                                 |
   | If you did not receive a copy of the PHP license and are unable to   |
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
@@ -503,7 +503,7 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
 // Reject 'old' LibXML installations, due to LibXML feature #502960 {{{
 if (version_compare(LIBXML_DOTTED_VERSION, '2.7.4', '<') && $ac['LIBXML_CHECK'] === 'yes') {
     echo "LibXML 2.7.4+ added a 'feature' to break things, typically namespace related, and unfortunately we must require it.\n";
-    echo "For a few related details, see: http://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg777646.html\n";
+    echo "For a few related details, see: https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg777646.html\n";
     echo "Please recompile PHP with a LibXML version 2.7.4 or greater. Version detected: " . LIBXML_DOTTED_VERSION . "\n";
     echo "Or, pass in --disable-libxml-check if doing so feels safe.\n\n";
     #exit(100);

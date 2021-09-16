@@ -11,8 +11,8 @@ make chm_xsl
 cd htmlhelp
 rm -f mirrors.inc all
 
-wget http://php.net/include/mirrors.inc
-wget http://php.net/backend/notes/all.bz2
+wget https://php.net/include/mirrors.inc
+wget https://php.net/backend/notes/all.bz2
 
 bunzip2 all.bz2
 ./make_chm.bat
