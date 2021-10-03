@@ -656,12 +656,13 @@ function print_html_misstags( $enFiles, $trFiles, $lang )
         echo '<p>Good, all files contain revision numbers.</p>';
     } else {
         print <<<HTML
-<table border="0" cellpadding="3" cellspacing="1" style="text-align:center">';
+<table border="0" cellpadding="3" cellspacing="1" style="text-align:center">
 <tr>
- <th rowspan="2">Files without EN-Revision number ($files_misstags files):</th>
+ <th rowspan="2">Files without EN-Revision number ($files_misstags files)</th>
+ <th rowspan="2">Commit hash</th>
  <th colspan="3">Sizes in kB</th>
-</tr>';
-<tr><th>en</th><th>$lang</th><th>diff</th></tr>';
+</tr>
+<tr><th>en</th><th>$lang</th><th>diff</th></tr>
 HTML;
 
         $last_path = null;
@@ -676,11 +677,11 @@ HTML;
             if ( $last_path != $tr->path )
             {
                  $path = $tr->path == '' ? '/' : $tr->path;
-                 echo "<tr><th colspan='4'>$path</th></tr>";
+                 echo "<tr><th colspan='5'>$path</th></tr>";
                  $last_path = $tr->path;
             }
              $diff = intval($en->size - $tr->size);
-             echo "<tr class='bgorange'><td>{$tr->name}</td><td>{$en->size}</td><td>{$tr->size}</td><td>$diff</td></tr>";
+             echo "<tr class='bgorange'><td>{$tr->name}</td><td>{$en->hash}</td><td>{$en->size}</td><td>{$tr->size}</td><td>$diff</td></tr>";
         }
         echo '</table>';
     }
