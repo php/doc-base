@@ -423,6 +423,7 @@
 <!ENTITY url.sqlsrv.logging.activity "http://msdn.microsoft.com/en-us/library/cc296188.aspx">
 <!ENTITY url.sqlsrv.direct.execution "http://msdn.microsoft.com/en-us/library/ff754356.aspx">
 <!ENTITY url.sqlsrv.linuxodbc "http://www.microsoft.com/download/en/details.aspx?id=28160">
+<!ENTITY url.sqlsrv.linux-mac "https://docs.microsoft.com/en-us/sql/connect/php/installation-tutorial-linux-mac">
 <!ENTITY url.sqlsrv.localdb "http://msdn.microsoft.com/en-us/library/hh487161.aspx">
 <!ENTITY url.sqlsrv.localdbinfo "http://msdn.microsoft.com/en-us/library/hh510202(SQL.110).aspx">
 <!ENTITY url.sqlsrv.localdbdownload "http://go.microsoft.com/fwlink/?LinkID=237665">
