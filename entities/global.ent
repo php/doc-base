@@ -559,10 +559,10 @@
 <!ENTITY never '<type xmlns="http://docbook.org/ns/docbook">never</type>'>
 
 <!-- Exception keywords -->
-<!ENTITY throw '<link xmlns="http://docbook.org/ns/docbook" linkend="language.exceptions"><literal>throw</literal></link>'>
-<!ENTITY try '<link xmlns="http://docbook.org/ns/docbook" linkend="language.exceptions"><literal>try</literal></link>'>
-<!ENTITY catch '<link xmlns="http://docbook.org/ns/docbook" linkend="language.exceptions.catch"><literal>catch</literal></link>'>
-<!ENTITY finally '<link xmlns="http://docbook.org/ns/docbook" linkend="language.exceptions.finally"><literal>finally</literal></link>'>
+<!ENTITY throw '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.throw"><literal>throw</literal></link>'>
+<!ENTITY try '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.try"><literal>try</literal></link>'>
+<!ENTITY catch '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.catch"><literal>catch</literal></link>'>
+<!ENTITY finally '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.finally"><literal>finally</literal></link>'>
 
 <!-- Function keywords -->
 <!ENTITY function '<link xmlns="http://docbook.org/ns/docbook" linkend="functions.user-defined"><literal>function</literal></link>'>

@@ -77,7 +77,7 @@
   &language.functions;
   &language.oop5;
   &language.namespaces;
-  &language.errors;
+  &language.error-handling;
   &language.exceptions;
   &language.generators;
   &language.attributes;
