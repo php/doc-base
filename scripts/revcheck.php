@@ -284,13 +284,13 @@ function captureGitValues( $lang , & $output )
     $hash = null;
     $date = null;
     $utct = new DateTimeZone( "UTC" );
-    $skipThisCommit = false;
+    $skip = false;
     while ( ( $line = fgets( $fp ) ) !== false )
     {
         if ( substr( $line , 0 , 7 ) == "commit " )
         {
             $hash = trim( substr( $line , 7 ) );
-            $skipThisCommit = false;
+            $skip = false;
             continue;
         }
         if ( strpos( $line , 'Date:' ) === 0 )
@@ -305,9 +305,7 @@ function captureGitValues( $lang , & $output )
         if ( substr( $line , 0 , 4 ) == '    ' )
         {
             if ( stristr( $line, '[skip-revcheck]' ) !== false )
-            {
-                 $skipThisCommit = true;
-             }
+                $skip = true;
            continue;
         }
         if ( strpos( $line , ': ' ) > 0 )
@@ -315,9 +313,10 @@ function captureGitValues( $lang , & $output )
         $filename = trim( $line );
         if ( isset( $output[$filename][$lang] ) )
             continue;
-        if ( $lang == 'en' ) $output[$filename][$lang]['hash'] = $hash;
+        if ( $skip )
+            continue;
+        $output[$filename][$lang]['hash'] = $lang == 'en' ? $hash : null;
         $output[$filename][$lang]['date'] = $date;
-        $output[$filename][$lang]['skip'] = $skipThisCommit;
     }
     pclose( $fp );
     chdir( $cwd );
@@ -343,7 +342,6 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
         {
             $enFile->hash = $gitData[ $filename ]['en']['hash'];
             $enFile->date = $gitData[ $filename ]['en']['date'];
-            $enFile->skip = $gitData[ $filename ]['en']['skip'];
         }
         else
             print "Warn: No hash for en/$filename\n";
@@ -381,8 +379,6 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
             {
                 $trFile->syncStatus = FileStatusEnum::TranslatedCritial;
             }
-            if ( $enFile->skip )
-                $trFile->syncStatus = FileStatusEnum::TranslatedOk;
         }
     }
 }
