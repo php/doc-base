@@ -367,17 +367,20 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
         // TranslatedOk
         // TranslatedOld
         // TranslatedCritial
-        if ( $enFile->hash == $trFile->hash )
-            $trFile->syncStatus = FileStatusEnum::TranslatedOk;
-        elseif ( strlen( $trFile->hash ) == 40 )
+        if ( strlen( $trFile->hash ) == 40 )
         {
-            $trFile->syncStatus = FileStatusEnum::TranslatedOld;
-            if ( $enFile->date == null
-              || $trFile->date == null
-              || $now->diff( $enFile->date , true )->days > 30
-              || $now->diff( $trFile->date , true )->days > 30 )
+            if ( $enFile->hash == $trFile->hash )
+                $trFile->syncStatus = FileStatusEnum::TranslatedOk;
+            else
             {
-                $trFile->syncStatus = FileStatusEnum::TranslatedCritial;
+                $trFile->syncStatus = FileStatusEnum::TranslatedOld;
+                if ( $enFile->date == null
+                  || $trFile->date == null
+                  || $now->diff( $enFile->date , true )->days > 30
+                  || $now->diff( $trFile->date , true )->days > 30 )
+                {
+                    $trFile->syncStatus = FileStatusEnum::TranslatedCritial;
+                }
             }
         }
     }
