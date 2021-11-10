@@ -313,10 +313,10 @@ function captureGitValues( $lang , & $output )
         $filename = trim( $line );
         if ( isset( $output[$filename][$lang] ) )
             continue;
-        if ( $skip )
-            continue;
-        $output[$filename][$lang]['hash'] = $lang == 'en' ? $hash : null;
+        if ( $lang == 'en' ) $output[$filename][$lang]['hash'] = $hash;
+
         $output[$filename][$lang]['date'] = $date;
+        $output[$filename][$lang]['skip'] = $skip;
     }
     pclose( $fp );
     chdir( $cwd );
@@ -342,6 +342,7 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
         {
             $enFile->hash = $gitData[ $filename ]['en']['hash'];
             $enFile->date = $gitData[ $filename ]['en']['date'];
+            $enFile->skip = $gitData[ $filename ]['en']['skip'];
         }
         else
             print "Warn: No hash for en/$filename\n";
@@ -380,6 +381,15 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
                   || $now->diff( $trFile->date , true )->days > 30 )
                 {
                     $trFile->syncStatus = FileStatusEnum::TranslatedCritial;
+                }
+                if ( $enFile->skip )
+                {
+                    $cwd = getcwd();
+                    chdir( 'en' );
+                    $hashes = explode ( "\n" , `git log -2 --format=%H -- {$filename}` );
+                    chdir( $cwd );
+                    if ( $hashes[1] == $trFile->hash )
+                        $trFile->syncStatus = FileStatusEnum::TranslatedOk;
                 }
             }
         }
