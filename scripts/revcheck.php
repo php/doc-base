@@ -208,13 +208,19 @@ function populateFileTreeRecurse( $lang , $path , & $output )
                 'chmonly',
             ];
 
+            $ignoredFullPaths = [
+                'appendices/reserved.constants.xml',
+                'appendices/extensions.xml',
+                'reference/datetime/timezones.xml',
+            ];
+
             if(
                 in_array($trimPath, $ignoredDirectories, true)
                 || in_array($filename, $ignoredFileNames, true)
                 || (strpos($filename, 'entities.') === 0)
                 || !in_array(substr($filename, -3), ['xml','ent'], true)
                 || (substr($filename, -13) === 'PHPEditBackup')
-                || ($trimPath === 'appendices' && (in_array($filename, ['reserved.constants.xml', 'extensions.xml'], true)))
+                || (in_array($trimPath . '/' .$filename, $ignoredFullPaths, true))
             ) {
                 continue;
             }
