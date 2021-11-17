@@ -365,6 +365,8 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
             if ( isset( $gitData[ $filename ][ $lang ] ) )
                 $trFile->date = $gitData[ $filename ][ $lang ]['date'];
         }
+        // New "wip" translation
+        if ( $trFile->date == null ) $trFile->date = $now;
         // TranslatedWip
         if ( $trFile->completion != null && $trFile->completion != "ready" )
         {
