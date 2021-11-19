@@ -75,7 +75,7 @@
   &language.operators;
   &language.control-structures;
   &language.functions;
-  &language.oop5;
+  &language.oop;
   &language.namespaces;
   &language.enumerations;
   &language.errors;
