@@ -80,6 +80,7 @@
   &language.enumerations;
   &language.errors;
   &language.exceptions;
+  &language.fibers;
   &language.generators;
   &language.attributes;
   &language.references;
