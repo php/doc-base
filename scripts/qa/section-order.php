@@ -158,7 +158,7 @@ function getXMLFiles(string $dirname)
  */
 function checkSectionErrors(string $path): array
 {
-    $isConstructorPage = false;
+    $pageHasNoReturnSection = false;
     $content = file_get_contents($path);
 
     /* Skip class definitions */
@@ -184,18 +184,25 @@ function checkSectionErrors(string $path): array
             // This generates a lot of errors leave for later
             //$errors[] = "Constructors should use <constructorsynopsis> instead of <methodsynopsis>";
         }
-        $isConstructorPage = true;
-        //return checkSectionErrorsConstructors($content);
+        $pageHasNoReturnSection = true;
+    }
+    /* Destructors are special */
+    if (str_contains($content, '::__destruct</')) {
+        if (!str_contains($content, '<destructorsynopsis>')) {
+            // Early bail-out
+            return ["Destructors should use <destructorsynopsis> instead of <methodsynopsis>"];
+        }
+        $pageHasNoReturnSection = true;
     }
 
     $dom = new DOMDocument();
     /* Load as HTML as to not verify entities */
     @$dom->loadHTML($content);
 
-    return checkCommonSectionOrder($dom, $isConstructorPage);
+    return checkCommonSectionOrder($dom, $pageHasNoReturnSection);
 }
 
-function checkCommonSectionOrder(DOMDocument $document, bool $isConstructorPage): array
+function checkCommonSectionOrder(DOMDocument $document, bool $hasNotReturnValueSection): array
 {
     $errors = [];
     $elements = [];
@@ -224,14 +231,14 @@ function checkCommonSectionOrder(DOMDocument $document, bool $isConstructorPage)
         $errors[] = "No parameters sections";
     }
     if (!in_array('returnvalues', $elements)) {
-        // Constructor pages should not have a return value section
-        if (!$isConstructorPage) {
+        // Constructor&Destructor pages should not have a return value section
+        if (!$hasNotReturnValueSection) {
             $errors[] = "No returnvalues sections";
         }
     } else {
         /* Constructors might share page with procedural,
          * bail out for now */
-        if ($isConstructorPage) {
+        if ($hasNotReturnValueSection) {
             return $errors;
         }
     }
@@ -246,16 +253,16 @@ function checkCommonSectionOrder(DOMDocument $document, bool $isConstructorPage)
         $errors[] = "Parameters sections is not second";
     }
 
-    // Check only for non constructor pages
-    if (!$isConstructorPage && $elements[2] !== 'returnvalues') {
+    // Check only for non constructor/destructor pages
+    if (!$hasNotReturnValueSection && $elements[2] !== 'returnvalues') {
         $errors[] = "Return values sections is not third";
     }
     /* if an error section is present it must be the 4th element
-     * if the page is a constructor it must be the 3rd element */
-    if (in_array('errors', $elements) && $elements[3-$isConstructorPage] !== 'errors') {
+     * if the page is a constructor/destructor it must be the 3rd element */
+    if (in_array('errors', $elements) && $elements[3-$hasNotReturnValueSection] !== 'errors') {
         $errors[] = "Errors sections is not fourth";
     }
-    /* if an See Also section is present it must be the last element */
+    /* if a See Also section is present it must be the last element */
     if (in_array('seealso', $elements) && $elements[array_key_last($elements)] !== 'seealso') {
         $errors[] = "See also sections is not last";
     }
