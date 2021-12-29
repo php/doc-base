@@ -179,15 +179,15 @@ function checkSectionErrors(string $path): array
     }
 
     /* Constructors are special */
-    if (str_contains($content, '::__construct</')) {
+    if (str_ends_with($path, 'construct.xml')) {
         if (!str_contains($content, '<constructorsynopsis>')) {
             // This generates a lot of errors leave for later
-            //$errors[] = "Constructors should use <constructorsynopsis> instead of <methodsynopsis>";
+            //return ["Constructors should use <constructorsynopsis> instead of <methodsynopsis>"];
         }
         $pageHasNoReturnSection = true;
     }
     /* Destructors are special */
-    if (str_contains($content, '::__destruct</')) {
+    if (str_ends_with($path, 'destruct.xml')) {
         if (!str_contains($content, '<destructorsynopsis>')) {
             // Early bail-out
             return ["Destructors should use <destructorsynopsis> instead of <methodsynopsis>"];
