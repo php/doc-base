@@ -25,14 +25,14 @@ WHAT YOU NEED
 
 Microsoft(r) HTML Help Workshop. 
   You can download it freely at:
-  http://msdn.microsoft.com/library/en-us/htmlhelp/html/vsconhh1start.asp
+  https://msdn.microsoft.com/library/en-us/htmlhelp/html/vsconhh1start.asp
   You need the complete workshop package install (about 4 Megs).
   Of course you need Microsoft(r) Windows to run that software :)
 
 The html manual. You have two alternatives:
 
   a) Download the actual html manual from
-     http://www.php.net/download-docs.php
+     https://www.php.net/download-docs.php
      and untar the distribution into a directory
   b) Build the html manual yourself using Jade and the other
      tools needed (look into the HOWTO to see how to build it yourself)

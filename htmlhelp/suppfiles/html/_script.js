@@ -121,7 +121,7 @@ function bugOnPage()
         alert("You are in offline mode.\nThis functionality is not available");
     } else {
         window.open(
-            "http://bugs.php.net/report.php?" +
+            "https://bugs.php.net/report.php?" +
             escape("in[php_version]") + "=earlier&" +
             escape("in[bug_type]") + "=Documentation%20problem&" +
             escape("in[php_os]") + "=windows&" +
@@ -216,7 +216,7 @@ function contextMenuRewrite(first)
                 case "_GoogleSearch_":
                     if (prefs_online) {
                         menuHTML +=
-'<tr><td style="background-color: #f5f5f5;"><form action="http://www.google.com/search" class="thin"' +
+'<tr><td style="background-color: #f5f5f5;"><form action="https://www.google.com/search" class="thin"' +
 'onsubmit="contextMenuClose()" method="GET" target="_blank">' +
 '<img src="_google.gif" align="absmiddle" alt="Google"><input type="text" name="q" ' +
 'style="width:120px;"></form></td></tr>';
@@ -333,7 +333,7 @@ function contextParse(i)
             // Search for the selected text on Google
             case "searchSelGoogle":
                 sel = contextGetSelection();
-                if (sel != '') { window.open('http://www.google.com/search?q=' + escape(sel));  }
+                if (sel != '') { window.open('https://www.google.com/search?q=' + escape(sel));  }
                 break;
             
             // Search for the selected text on AlltheWeb
@@ -416,7 +416,7 @@ function contextMenu(e)
         contextMenuRewrite(false);
 
         // IE6+ is in standard compliant mode because of our !DOCTYPE
-        // [ http://msdn.microsoft.com/workshop/author/dhtml/reference/objects/doctype.asp ]
+        // [ https://msdn.microsoft.com/workshop/author/dhtml/reference/objects/doctype.asp ]
         // so we need to use the "html" tag instead of the "body" to measure scrolled distance.
         // For older browsers, we need to use the body.
         if (ie_version_major >= 6) { delement = document.body.parentElement; }

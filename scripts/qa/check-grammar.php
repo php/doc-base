@@ -3,7 +3,7 @@
 
 	Description:
 	This script checks the documentation for grammatical problems, and it's a port from here:
-		- http://matt.might.net/articles/shell-scripts-for-passive-voice-weasel-words-duplicates/
+		- https://matt.might.net/articles/shell-scripts-for-passive-voice-weasel-words-duplicates/
 	Read that entry for details and reasons.
 	
 	TODO:

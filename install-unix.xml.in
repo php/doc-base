@@ -28,7 +28,7 @@
   <para>
    These installation instructions were generated from the HTML version of
    the PHP Manual so formatting and linking have been altered. See the
-   online and updated version at: http://php.net/install.unix
+   online and updated version at: https://php.net/install.unix
   </para>
  </preface>
   &install.intro;
