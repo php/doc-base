@@ -185,6 +185,10 @@ function checkSectionErrors(string $path): array
             //return ["Constructors should use <constructorsynopsis> instead of <methodsynopsis>"];
         }
         $pageHasNoReturnSection = true;
+        /* Check if it has procedural constructor documented */
+        if (str_contains($content, '&style.procedural;')) {
+            $pageHasNoReturnSection = false;
+        }
     }
     /* Destructors are special */
     if (str_ends_with($path, 'destruct.xml')) {
@@ -236,10 +240,12 @@ function checkCommonSectionOrder(DOMDocument $document, bool $hasNotReturnValueS
             $errors[] = "No returnvalues sections";
         }
     } else {
-        /* Constructors might share page with procedural,
+        /* Generates a lot of issues,
+         * need to confirm constructors which share page with procedural aren't error-ing by mistake
          * bail out for now */
         if ($hasNotReturnValueSection) {
             return $errors;
+            $errors[] = "Return values sections should not be present for constructors/destructors";
         }
     }
 
@@ -260,7 +266,7 @@ function checkCommonSectionOrder(DOMDocument $document, bool $hasNotReturnValueS
     /* if an error section is present it must be the 4th element
      * if the page is a constructor/destructor it must be the 3rd element */
     if (in_array('errors', $elements) && $elements[3-$hasNotReturnValueSection] !== 'errors') {
-        $errors[] = "Errors sections is not fourth";
+        $errors[] = "Errors sections is not " . ($hasNotReturnValueSection ? 'third' : 'fourth');
     }
     /* if a See Also section is present it must be the last element */
     if (in_array('seealso', $elements) && $elements[array_key_last($elements)] !== 'seealso') {
