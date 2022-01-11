@@ -99,7 +99,7 @@
 <!ENTITY url.freetype "http://www.freetype.org/">
 <!ENTITY url.gc-paper "http://researcher.watson.ibm.com/researcher/files/us-bacon/Bacon01Concurrent.pdf">
 <!ENTITY url.gd "http://www.libgd.org/">
-<!ENTITY url.gdbm "ftp://ftp.gnu.org/pub/gnu/gdbm/">
+<!ENTITY url.gdbm "https://ftp.gnu.org/pub/gnu/gdbm/">
 <!ENTITY url.gearman "http://gearman.org">
 <!ENTITY url.gearman.libgearman "http://gearman.org/getting-started/">
 <!ENTITY url.gettext "http://www.gnu.org/software/gettext/gettext.html">
@@ -184,7 +184,7 @@
 <!ENTITY url.ldap.filters "https://wiki.mozilla.org/Mozilla_LDAP_SDK_Programmer&#37;27s_Guide/Searching_the_Directory_With_LDAP_C_SDK">
 <!ENTITY url.ldap.bind9 "http://www.bind9.net/download-openldap/">
 <!ENTITY url.ldap.openldap "http://www.openldap.org/">
-<!ENTITY url.ldap.openldap.source "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-stable/">
+<!ENTITY url.ldap.openldap.source "https://www.openldap.org/software/download/">
 <!ENTITY url.ldap.openldap-c-api "http://www.openldap.org/devel/cvsweb.cgi/~checkout~/doc/drafts/draft-ietf-ldapext-ldap-c-api-xx.txt">
 <!ENTITY url.libedit "http://www.thrysoee.dk/editline/">
 <!ENTITY url.libffi "https://sourceware.org/libffi/">
@@ -198,7 +198,7 @@
 <!ENTITY url.libpng "http://www.libpng.org/pub/png/libpng.html">
 <!ENTITY url.libradius "http://www.freebsd.org/cgi/man.cgi?query=libradius">
 <!ENTITY url.libradius.conf "http://www.freebsd.org/cgi/man.cgi?query=radius.conf">
-<!ENTITY url.libxpm "ftp://metalab.unc.edu/pub/Linux/libs/X/!INDEX.html">
+<!ENTITY url.libxpm "http://www.ibiblio.org/pub/Linux/libs/X/!INDEX.html">
 <!ENTITY url.libzip "https://libzip.org/">
 <!ENTITY url.lighttpd.doc "http://trac.lighttpd.net/trac/">
 <!ENTITY url.lmdb "https://symas.com/lmdb/">
@@ -452,7 +452,7 @@
 <!ENTITY url.swoole.docs "https://www.swoole.co.uk/docs/">
 <!ENTITY url.sybase "http://www.sybase.com/">
 <!ENTITY url.symbole-legendre "http://primes.utm.edu/glossary/page.php?sort=LegendreSymbol">
-<!ENTITY url.t1lib "ftp://sunsite.unc.edu/pub/Linux/libs/graphics/">
+<!ENTITY url.t1lib "http://www.ibiblio.org/pub/Linux/libs/graphics/">
 <!ENTITY url.tidy "http://tidy.sourceforge.net/">
 <!ENTITY url.tidy.conf "http://api.html-tidy.org/#quick-reference">
 <!ENTITY url.tidy5 "http://www.html-tidy.org/">
