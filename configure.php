@@ -787,7 +787,7 @@ if ($dom->validate()) {
 CAT;
 
     if (function_exists('proc_nice') && !is_windows()) {
-        echo " (Run `nice php configure.php` next time!)\n";
+        echo " (Run `nice php $_SERVER[SCRIPT_NAME]` next time!)\n";
     }
     if ($ac["SEGFAULT_SPEED"] == "yes" && version_compare(PHP_VERSION, "5.3.7-dev", "lt")) {
         $b = basename($mxml);
