@@ -341,7 +341,7 @@
 <!ENTITY url.phd "https://wiki.php.net/doc/phd/">
 <!ENTITY url.php "https://www.php.net/">
 <!ENTITY url.php.anongit "https://www.php.net/git.php">
-<!ENTITY url.php.bugs "https://bugs.php.net/">
+<!ENTITY url.php.bugs "https://github.com/php/php-src/issues">
 <!ENTITY url.php.bugs.howtoreport "https://bugs.php.net/how-to-report.php">
 <!ENTITY url.php.doc.downloads "https://www.php.net/download-docs.php">
 <!ENTITY url.php.docs "https://www.php.net/docs.php">
