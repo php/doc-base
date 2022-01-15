@@ -58,7 +58,6 @@ $oldfiles = []; //path, name, size
 $enFiles = populateFileTree( 'en' );
 $trFiles = populateFileTree( $lang );
 captureGitValues( 'en'  , $gitData );
-captureGitValues( $lang , $gitData );
 
 computeSyncStatus( $enFiles , $trFiles , $gitData , $lang );
 $translators = computeTranslatorStatus( $lang, $enFiles, $trFiles );
@@ -286,10 +285,8 @@ function captureGitValues( $lang , & $output )
 {
     $cwd = getcwd();
     chdir( $lang );
-    $fp = popen( "git --no-pager log --name-only" , "r" );
-    $hash = null;
-    $date = null;
-    $utct = new DateTimeZone( "UTC" );
+    $fp = popen( "git --no-pager log --no-renames --numstat" , "r" );
+    $hash = $additions = $deletions = $filename = null;
     $skip = false;
     while ( ( $line = fgets( $fp ) ) !== false )
     {
@@ -300,29 +297,28 @@ function captureGitValues( $lang , & $output )
             continue;
         }
         if ( strpos( $line , 'Date:' ) === 0 )
-        {
-            $date = trim( substr( $line , 5 ) );
-            $date = DateTime::createFromFormat ( "D M d H:i:s Y T" , $date );
-            $date->setTime( 0 , 0 );
             continue;
-        }
         if ( trim( $line ) == "" )
             continue;
         if ( substr( $line , 0 , 4 ) == '    ' )
         {
             if ( stristr( $line, '[skip-revcheck]' ) !== false )
                 $skip = true;
-           continue;
+            continue;
         }
         if ( strpos( $line , ': ' ) > 0 )
             continue;
-        $filename = trim( $line );
+        preg_match('/(\d+)\s+(\d+)\s*(.+)\s*/', $line, $matches);
+        if ($matches) {
+            [$all, $additions, $deletions, $filename] = $matches;
+        }
         if ( isset( $output[$filename][$lang] ) )
             continue;
-        if ( $lang == 'en' ) $output[$filename][$lang]['hash'] = $hash;
 
-        $output[$filename][$lang]['date'] = $date;
+        $output[$filename][$lang]['hash'] = $hash;
         $output[$filename][$lang]['skip'] = $skip;
+        $output[$filename][$lang]['adds'] = $additions;
+        $output[$filename][$lang]['dels'] = $deletions;
     }
     pclose( $fp );
     chdir( $cwd );
@@ -330,7 +326,6 @@ function captureGitValues( $lang , & $output )
 
 function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
 {
-    $now = new DateTime( 'now' );
     foreach( $trFiles as $filename => $trFile )
     {
         // notinen
@@ -347,11 +342,12 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
         if ( isset( $gitData[ $filename ]['en'] ) )
         {
             $enFile->hash = $gitData[ $filename ]['en']['hash'];
-            $enFile->date = $gitData[ $filename ]['en']['date'];
             $enFile->skip = $gitData[ $filename ]['en']['skip'];
+            $enFile->adds = $gitData[ $filename ]['en']['adds'];
+            $enFile->dels = $gitData[ $filename ]['en']['dels'];
         }
         else
-            print "Warn: No hash for en/$filename\n";
+            print "Warn: No hash for en/$filename<br/>";
 
         $trFile = isset( $trFiles[ $filename ] ) ? $trFiles[ $filename ] : null;
 
@@ -360,13 +356,6 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
             $enFile->syncStatus = FileStatusEnum::Untranslated;
             continue;
         }
-        else
-        {
-            if ( isset( $gitData[ $filename ][ $lang ] ) )
-                $trFile->date = $gitData[ $filename ][ $lang ]['date'];
-        }
-        // New "wip" translation
-        if ( $trFile->date == null ) $trFile->date = $now;
         // TranslatedWip
         if ( $trFile->completion != null && $trFile->completion != "ready" )
         {
@@ -383,13 +372,6 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
             else
             {
                 $trFile->syncStatus = FileStatusEnum::TranslatedOld;
-                if ( $enFile->date == null
-                  || $trFile->date == null
-                  || $now->diff( $enFile->date , true )->days > 30
-                  || $now->diff( $trFile->date , true )->days > 30 )
-                {
-                    $trFile->syncStatus = FileStatusEnum::TranslatedCritial;
-                }
                 if ( $enFile->skip )
                 {
                     $cwd = getcwd();
@@ -482,7 +464,7 @@ function computeTranslatorStatus( $lang, $enFiles, $trFiles ) {
 function print_html_all( $enFiles , $trFiles , $translators , $lang )
 {
     print_html_header( $lang );
-    print_html_translators($translators , $enFiles);
+    print_html_translators($translators , $enFiles, $trFiles);
     print_html_files( $enFiles , $trFiles , $lang );
     print_html_notinen();
     print_html_misstags( $enFiles, $trFiles, $lang );
@@ -502,14 +484,14 @@ function print_html_header( $lang )
 body { margin:0px 0px 0px 0px; background-color:#F0F0F0; font-family: sans-serif; text-align: center; }
 a { color: black; }
 h1 { color: #FFFFFF; }
-table { margin-left: auto; margin-right: auto; text-align: left; border-spacing: 1px; }
+table { margin-left: auto; margin-right: auto; text-align: left; border-spacing: 2px; }
 th { color: white; background-color: #666699; padding: 0.2em; text-align: center; vertical-align: middle; }
 td { padding: 0.2em 0.3em; }
 .oc { white-space: nowrap; overflow: hidden; max-width: 7em; }
 .copy { margin:0; padding: 0; font-size:small; }
 .copy:hover { text-transform: uppercase; }
 .copy:active { background: aqua; font-weight: bold; }
-.o { white-space: nowrap; overflow: hidden; max-width: 3em; }
+.o { white-space: nowrap; overflow: hidden; max-width: 5em; }
 .c { text-align: center; }
 .r { text-align: right; }
 .b { font-weight: bold; }
@@ -550,17 +532,17 @@ function print_html_menu($href)
 HTML;
 }
 
-function print_html_translators( $translators , $enFiles )
+function print_html_translators( $translators , $enFiles, $trFiles )
 {
-    global $intro;
+    global $intro, $oldfiles, $files_misstags, $notinen_count, $files_untranslated;
     if (count($translators) === 0) return;
     print_html_menu("intro");
     print <<<HTML
-<table width="820" border="0" cellpadding="4" cellspacing="1" align="center">
+<table class="c">
  <tr><td>$intro</td></tr>
 </table>
 <p/>
-<table id="translators" width="820" border="0" cellpadding="4" cellspacing="1" align="center">
+<table class="c">
   <tr class=blue>
     <th rowspan=2>Translator's name</th>
     <th rowspan=2>Contact email</th>
@@ -575,10 +557,10 @@ function print_html_translators( $translators , $enFiles )
     <th class="blue">sum</th>
   </tr>
 HTML;
-		  $files_uptodate = 0;
-		  $files_outdated = 0;
-		  $files_wip = 0;
-		  $files_sum = 0;
+    $files_uptodate = 0;
+    $files_outdated = 0;
+    $files_wip = 0;
+    $files_sum = 0;
 
     foreach( $translators as $key => $person )
     {
@@ -609,6 +591,22 @@ HTML;
 
 //FILE SUMMARY
     $count = 0;
+    $files_outdated = 0;
+    $files_sum = 0;
+    $files_uptodate = 0;
+    $files_misstags = 0;
+    $files_wip = 0;
+    foreach( $trFiles as $key => $tr )
+    {
+        if ( $tr->syncStatus == FileStatusEnum::TranslatedOld )
+            $files_outdated++;
+        if ( $tr->syncStatus == FileStatusEnum::TranslatedOk )
+            $files_uptodate++;
+        if ( $tr->syncStatus == FileStatusEnum::RevTagProblem )
+            $files_misstags++;
+        if ( $tr->syncStatus == FileStatusEnum::TranslatedWip )
+            $files_wip++;
+    }
     $files_untranslated = 0;
     foreach( $enFiles as $key => $en )
     {
@@ -617,13 +615,22 @@ HTML;
         }
         $count++;
     }
+    $notinen_count = 0;
+    foreach( $oldfiles as $key => $en )
+    {
+        if ( $key == "{$en->path}/{$en->name}" ) {
+            $notinen_count++;
+        }
+    }
     $files_uptodate_percent = number_format($files_uptodate * 100 / $count, 2 );
     $files_outdated_percent = number_format($files_outdated * 100 / $count, 2 );
     $files_wip_percent = number_format($files_wip * 100 / $count, 2 );
     $files_untranslated_percent = number_format($files_untranslated * 100 / $count, 2 );
+    $notinen_count_percent = number_format($notinen_count * 100 / $count, 2 );
+    $files_misstags_percent = number_format($files_misstags * 100 / $count, 2 );
     print_html_menu("filesummary");
     print <<<HTML
-<table border="0" cellpadding="4" cellspacing="1" style="text-align:center;">
+<table class="c">
 <tr>
   <th>File status type</th>
   <th>Number of files</th>
@@ -645,6 +652,16 @@ HTML;
   <td>$files_wip_percent%</td>
 </tr>
 <tr>
+  <td>Files without revision number</td>
+  <td>$files_misstags</td>
+  <td>$files_misstags_percent%</td>
+</tr>
+<tr>
+  <td>Not in EN tree</td>
+  <td>$notinen_count</td>
+  <td>$notinen_count_percent%</td>
+</tr>
+<tr>
   <td>Files available for translation</td>
   <td>$files_untranslated</td>
   <td>$files_untranslated_percent%</td>
@@ -661,19 +678,13 @@ function print_html_misstags( $enFiles, $trFiles, $lang )
 {
     print_html_menu("misstags");
 
-    $files_misstags = 0;
-    foreach( $trFiles as $key => $tr )
-    {
-        if ( $tr->syncStatus == FileStatusEnum::RevTagProblem )
-            $files_misstags++;
-    }
-
+    GLOBAL $files_misstags;
     if ($files_misstags == 0)
     {
         echo '<p>Good, all files contain revision numbers.</p>';
     } else {
         print <<<HTML
-<table border="0" cellpadding="3" cellspacing="1" style="text-align:center">
+<table class="c">
 <tr>
  <th rowspan="2">Files without EN-Revision number ($files_misstags files)</th>
  <th rowspan="2">Commit hash</th>
@@ -706,22 +717,14 @@ HTML;
 
 function print_html_untranslated($enFiles)
 {
+    global $files_untranslated;
     $exists = false;
-    $count = 0;
-    foreach( $enFiles as $key => $en )
-    {
-        if ( $en->syncStatus == FileStatusEnum::Untranslated ) {
-            $exists = true;
-            $count++;
-        }
-    }
-
-    if (!$exists) return;
+    if (!$files_untranslated) return;
     print_html_menu("untranslated");
     print <<<HTML
-<table width="600" border="0" cellpadding="3" cellspacing="1" align="center">
+<table class="c">
  <tr>
-  <th>Untranslated files ($count files):</th>
+  <th>Untranslated files ($files_untranslated files):</th>
   <th>Commit hash</th>
   <th>kb</th>
  </tr>
@@ -732,13 +735,6 @@ HTML;
     foreach( $enFiles as $key => $en )
     {
         if ( $en->syncStatus != FileStatusEnum::Untranslated )
-            continue;
-        if ( !preg_match( "/^.*\.xml\$/", $en->name )
-        || $en->name === "versions.xml"
-        || $en->name === "license.xml"
-        || $en->name ===  "extensions.xml"
-        || $en->name === "contributors.xml"
-        || $en->name === "reserved.constants.xml" )
             continue;
         if ( $path !== $en->path )
         {
@@ -787,21 +783,14 @@ function print_html_files( $enFiles , $trFiles , $lang )
 <table>
  <tr>
   <th rowspan="2">Translated file</th>
+  <th rowspan="2">Changes</th>
   <th colspan="2">Hash</th>
-  <th colspan="3">Size in kB</th>
-  <th colspan="3">Age in days</th>
   <th rowspan="2">Maintainer</th>
   <th rowspan="2">Status</th>
  </tr>
  <tr>
   <th>en</th>
   <th>$lang</th>
-  <th>en</th>
-  <th>$lang</th>
-  <th>diff</th>
-  <th>en</th>
-  <th>$lang</th>
-  <th>diff</th>
  </tr>
 
 HTML;
@@ -825,13 +814,7 @@ HTML;
         {
             $path = $en->path;
             $path2 = $path == '' ? '/' : $path;
-            print " <tr><th colspan='11' class='blue c'>$path2</th></tr>";
-        }
-        switch( $tr->syncStatus )
-        {
-            case FileStatusEnum::TranslatedOld:     $bg = 'bgyellow'; break;
-            case FileStatusEnum::TranslatedCritial: $bg = 'bgred'   ; break;
-            default:                                $bg = 'bggray'  ; break;
+            print " <tr><th colspan='6' class='blue c'>$path2</th></tr>";
         }
         $ll = strtolower( $lang );
         $kh = hash( 'sha256' , $key );
@@ -842,17 +825,13 @@ HTML;
             $nm = $en->name;
         $h1 = "<a href='https://github.com/php/doc-en/blob/{$en->hash}/$key'>{$en->hash}</a>";
         $h2 = "<a href='https://github.com/php/doc-en/blob/{$tr->hash}/$key'>{$tr->hash}</a>";
-        $s1 = $en->size < 1024 ? 1 : floor( $en->size / 1024 );
-        $s2 = $tr->size < 1024 ? 1 : floor( $tr->size / 1024 );
-        $s3 = $s2 - $s1;
-        $a1 = $now->diff( $en->date )->days;
-        $a2 = $now->diff( $tr->date )->days;
-        $a3 = $a2 - $a1;
+        $ch = "<span style='color: darkgreen;'>+{$en->adds}</span> <span style='color: firebrick;'>-{$en->dels}</span>";
         $ma = $tr->maintainer;
         $st = $tr->completion;
         print <<<HTML
- <tr class="$bg">
+ <tr class="bggray">
   <td class="l">$nm</td>
+  <td class="c">$ch</td>
   <td class="oc">
     <button class="btn copy" data-clipboard-text="{$en->hash}">
       Copy
@@ -860,12 +839,6 @@ HTML;
     $h1
   </td>
   <td class="o">$h2</td>
-  <td class="r">$s1</td>
-  <td class="r">$s2</td>
-  <td class="r">$s3</td>
-  <td class="r">$a1</td>
-  <td class="r">$a2</td>
-  <td class="r">$a3</td>
   <td class="c">$ma</td>
   <td class="c">$st</td>
  </tr>
@@ -876,25 +849,17 @@ print "</table><p/>\n";
 
 function print_html_notinen()
 {
-    global $oldfiles;
+    global $oldfiles, $notinen_count;
     print_html_menu("notinen");
     $exists = false;
-    $count = 0;
-    foreach( $oldfiles as $key => $en )
-    {
-        if ( $key == "{$en->path}/{$en->name}" ) {
-            $exists = true;
-            $count++;
-        }
-    }
-    if (!$exists)
+    if (!$notinen_count)
     {
          print "<p>Good, it seems that this translation doesn't contain any file which is not present in English tree.</p>\n";
      } else {
          print <<<HTML
-<table>
+<table class="c">
  <tr>
-  <th>Files which is not present in English tree.  ($count files)</th>
+  <th>Files which is not present in English tree.  ($notinen_count files)</th>
   <th>Size in kB</th>
  </tr>
 HTML;
