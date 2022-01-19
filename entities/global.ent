@@ -367,6 +367,8 @@
 <!ENTITY url.php.release4.2.0 "https://www.php.net/releases/4_2_0.php">
 <!ENTITY url.php.svn "https://svn.php.net/">
 <!ENTITY url.php.git.phpini "https://github.com/php/php-src/blob/master/php.ini-production">
+<!-- linking to specific source file is done like so: &url.php.git.src.master.view;file_path -->
+<!ENTITY url.php.git.src.master.view "https://github.com/php/php-src/blob/master/">
 <!ENTITY url.php.talks 'http://talks.php.net/'>
 <!ENTITY url.php.support "https://www.php.net/support.php">
 <!ENTITY url.php.urlhowto "https://www.php.net/urlhowto.php">
