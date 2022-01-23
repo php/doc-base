@@ -49,7 +49,7 @@ set_time_limit( 0 );
 $root = getcwd();
 $lang = $argv[1];
 
-$gitData = []; // filename lang hash,date
+$gitData = []; // filename lang hash
 
 $intro = "No intro available for the {$lang} translation of the manual.";
 
@@ -94,7 +94,9 @@ class FileStatusInfo
     public $name;
     public $size;
     public $hash;
-    public $date;
+    public $skip;
+    public $adds;
+    public $dels;
     public $syncStatus;
     public $maintainer;
     public $completion;
@@ -285,7 +287,7 @@ function captureGitValues( $lang , & $output )
 {
     $cwd = getcwd();
     chdir( $lang );
-    $fp = popen( "git --no-pager log --no-renames --numstat" , "r" );
+    $fp = popen( "git --no-pager log --name-only" , "r" );
     $hash = $additions = $deletions = $filename = null;
     $skip = false;
     while ( ( $line = fgets( $fp ) ) !== false )
@@ -308,17 +310,12 @@ function captureGitValues( $lang , & $output )
         }
         if ( strpos( $line , ': ' ) > 0 )
             continue;
-        preg_match('/(\d+)\s+(\d+)\s*(.+)\s*/', $line, $matches);
-        if ($matches) {
-            [$all, $additions, $deletions, $filename] = $matches;
-        }
+        $filename = trim( $line );
         if ( isset( $output[$filename][$lang] ) )
             continue;
 
         $output[$filename][$lang]['hash'] = $hash;
         $output[$filename][$lang]['skip'] = $skip;
-        $output[$filename][$lang]['adds'] = $additions;
-        $output[$filename][$lang]['dels'] = $deletions;
     }
     pclose( $fp );
     chdir( $cwd );
@@ -343,8 +340,6 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
         {
             $enFile->hash = $gitData[ $filename ]['en']['hash'];
             $enFile->skip = $gitData[ $filename ]['en']['skip'];
-            $enFile->adds = $gitData[ $filename ]['en']['adds'];
-            $enFile->dels = $gitData[ $filename ]['en']['dels'];
         }
         else
             print "Warn: No hash for en/$filename<br/>";
@@ -354,12 +349,6 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
         if ( $trFile == null ) // Untranslated
         {
             $enFile->syncStatus = FileStatusEnum::Untranslated;
-            continue;
-        }
-        // TranslatedWip
-        if ( $trFile->completion != null && $trFile->completion != "ready" )
-        {
-            $trFile->syncStatus = FileStatusEnum::TranslatedWip;
             continue;
         }
         // TranslatedOk
@@ -372,6 +361,19 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
             else
             {
                 $trFile->syncStatus = FileStatusEnum::TranslatedOld;
+
+                $cwd = getcwd();
+
+                chdir( 'en' );
+                $subject = `git diff --numstat $trFile->hash -- {$filename}`;
+                chdir( $cwd );
+                if ( $subject )
+                {
+                   preg_match('/(\d+)\s+(\d+)/', $subject, $matches);
+                   if ($matches)
+                       [, $enFile->adds, $enFile->dels] = $matches;
+                }
+
                 if ( $enFile->skip )
                 {
                     $cwd = getcwd();
@@ -383,6 +385,9 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
                 }
             }
         }
+        // TranslatedWip
+        if ( $trFile->completion != null && $trFile->completion != "ready" )
+            $trFile->syncStatus = FileStatusEnum::TranslatedWip;
     }
 }
 
@@ -825,7 +830,12 @@ HTML;
             $nm = $en->name;
         $h1 = "<a href='https://github.com/php/doc-en/blob/{$en->hash}/$key'>{$en->hash}</a>";
         $h2 = "<a href='https://github.com/php/doc-en/blob/{$tr->hash}/$key'>{$tr->hash}</a>";
-        $ch = "<span style='color: darkgreen;'>+{$en->adds}</span> <span style='color: firebrick;'>-{$en->dels}</span>";
+
+        if ($en->adds != null)
+            $ch = "<span style='color: darkgreen;'>+{$en->adds}</span> <span style='color: firebrick;'>-{$en->dels}</span>";
+        else
+            $ch = "<span style='color: firebrick;'>no data</span>";
+
         $ma = $tr->maintainer;
         $st = $tr->completion;
         print <<<HTML
