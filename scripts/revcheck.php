@@ -351,6 +351,9 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
             $enFile->syncStatus = FileStatusEnum::Untranslated;
             continue;
         }
+        if ( $trFile->syncStatus == FileStatusEnum::RevTagProblem )
+            continue;
+
         // TranslatedOk
         // TranslatedOld
         // TranslatedCritial
