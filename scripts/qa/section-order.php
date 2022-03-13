@@ -37,14 +37,13 @@ const SKIP_FOLDER = [
 const SKIP_FILE = [
     /* Helper page to refer to unset() or unlink() */
     'reference/filesystem/functions/delete.xml',
-    /* Helper page in case docref fails in a PHP diagnostic
-     * (needs to be fixed in php-src in that case) */
-    'reference/info/functions/main.xml',
     /* die() is equivalent to the language construct exit() */
     'reference/misc/functions/die.xml',
     /* This old alias was split into two functions and current
      * alias detection doesn't find it... so add it here */
     'reference/oci8/oldaliases/ocifetchinto.xml',
+    /* This page uses <xi:include> tags to include the docs from the OO version */
+    'reference/parallel/functions/parallel.run.xml',
 ];
 
 const VALID_SECTION_ROLES = [
