@@ -436,7 +436,7 @@
 <!ENTITY url.stuffit "http://www.stuffit.com/">
 <!ENTITY url.strftime.win32 "http://msdn.microsoft.com/en-us/library/fe06s4ak.aspx">
 <!ENTITY url.strftime.format.designer "http://strftime.net/">
-<!ENTITY url.strnatcmp "http://sourcefrog.net/projects/natsort/">
+<!ENTITY url.strnatcmp "https://github.com/sourcefrog/natsort">
 <!ENTITY url.stomp "https://stomp.github.io/">
 <!ENTITY url.svm "http://www.csie.ntu.edu.tw/~cjlin/libsvm">
 <!ENTITY url.svn "http://subversion.apache.org/">
