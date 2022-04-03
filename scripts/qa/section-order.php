@@ -79,7 +79,7 @@ $fileCount += checkExtension(DOCROOT_EN . 'language/predefined');
 //echo "\n\e[0;32mFound {$fileCount} files with issues.\n";
 echo "\nFound {$fileCount} files with issues.\n";
 
-exit((bool) $fileCount);
+exit ($fileCount > 0 ? 1 : 0);
 
 function checkExtension($dirname)
 {
