@@ -154,18 +154,23 @@ if ($checkFile) {
     echo "{$basedir}/en/appendices/extensions.xml has been updated, check it for details\n";
 }
 
+$status = 0;
 // print the debug messages:
 if (isset($debug['membership'])) {
 	echo "\nExtensions Missing Membership:\n";
+	$status = 2;
 	print_r($debug['membership']);
 }
 
 if (isset($debug['bogus-membership'])) {
 	echo "\nExtensions with bogus Membership:\n";
+	$status = 2;
 	print_r($debug['bogus-membership']);
 }
 
 if (isset($debug['unknown-extension'])) {
 	echo "\nExtensions with unknown extension title:\n";
+	$status = 2;
 	print_r($debug['unknown-extension']);
 }
+exit($status);
