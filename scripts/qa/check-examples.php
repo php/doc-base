@@ -59,7 +59,6 @@ const KNOWN_FILE_FAILURES = [
     'language/oop5/inheritance.xml',
     'language/oop5/properties.xml',
     'language/operators.xml',
-    'language/references.xml',
     'language/variables.xml',
     'language/types/array.xml',
     'language/types/declarations.xml',
