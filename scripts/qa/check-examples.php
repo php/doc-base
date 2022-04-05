@@ -36,9 +36,52 @@
 	  (any) directory
 */
 
-define('REGEX_EXAMPLE_FIND','#<(informalexample|example)>\s*(?:<title>(.+)</title>)?\s*<programlisting(?: role="php")?>\s*<!\[CDATA\[(.+)]]>\s*</programlisting>(.*)</\1>#isU');
-define('REGEX_OUTPUT_FIND', '#&example\.outputs.*?;\s*<screen>\s*<!\[CDATA\[(.+)]]>\s*</screen>#isU');
-define('REGEX_TITLE_CLEAN', '#<function>([\w_-]+)</function>#');
+// These usually demonstrate actual failures and the script needs to be improved
+// (probably by checking the result) and not doing a linter check
+const KNOWN_FILE_FAILURES = [
+    '.manual.xml',
+    // Just ignore the migration guides for the moment
+    'appendices/',
+    'language/basic-syntax.xml',
+    'language/control-structures/alternative-syntax.xml',
+    'language/control-structures/continue.xml',
+    'language/control-structures/declare.xml',
+    'language/control-structures/elseif.xml',
+    'language/control-structures/goto.xml',
+    'language/control-structures/match.xml',
+    'language/enumerations.xml',
+    'language/exceptions.xml',
+    'language/functions.xml',
+    'language/namespaces.xml',
+    'language/oop5/basic.xml',
+    'language/oop5/decon.xml',
+    'language/oop5/final.xml',
+    'language/oop5/inheritance.xml',
+    'language/oop5/properties.xml',
+    'language/operators.xml',
+    'language/variables.xml',
+    'language/types/array.xml',
+    'language/types/declarations.xml',
+    'language/types/string.xml',
+    'reference/strings/functions/echo.xml',
+
+    // Those need to be fixed
+    // Do not run this script on programs which are not PHP
+    'reference/yaf/yaf-loader.xml',
+    'reference/yaf/yaf_application/construct.xml',
+    'reference/yaf/yaf_router/addconfig.xml',
+    // Uses ...
+    'reference/ev/evwatcher/keepalive.xml',
+    // Gets out of the CDATA to does a reference via methodname tag
+    'reference/event/eventhttpconnection/setclosecallback.xml',
+    // ignore for now but should be easy fix
+    'reference/mbstring/functions/mb-decode-numericentity.xml',
+    'reference/mbstring/functions/mb-encode-numericentity.xml',
+];
+
+const REGEX_EXAMPLE_FIND = '#<(informalexample|example)>\s*(?:<title>(.+)</title>)?\s*<programlisting(?: role="php")?>\s*<!\[CDATA\[(.+)]]>\s*</programlisting>(.*)</\1>#isU';
+const REGEX_OUTPUT_FIND = '#&example\.outputs.*?;\s*<screen>\s*<!\[CDATA\[(.+)]]>\s*</screen>#isU';
+const REGEX_TITLE_CLEAN = '#<function>([\w_-]+)</function>#';
 
 $opts = getopt('p:t:o::h');
 
@@ -81,7 +124,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as
 
 if (empty($errors)) {
 	echo "No errors were found in examples!\n";
-	exit;
+	exit(0);
 } else {
 	$o = '';
 	foreach ($errors as $error) {
@@ -110,11 +153,11 @@ if (empty($errors)) {
 	}
 }
 
-function get_examples ($filename)  {
+function get_examples(string $filename): array  {
 
 	$content = file_get_contents($filename);
 
-	$info = array();
+	$info = [];
 	if ($number = preg_match_all(REGEX_EXAMPLE_FIND, $content, $matches)) {
 
 		// Found at least one example
@@ -136,21 +179,17 @@ function get_examples ($filename)  {
 				$title = preg_replace(REGEX_TITLE_CLEAN, '\1()', $matches[2][$num]);
 			}
 
-			$info[] = array(
-						'title' 	=> trim(str_replace("\n", '', $title)), 
-						'filename'	=> trim($filename), 
-						'example'	=> trim($example), 
-						'expected'	=> trim($expected),
-						'type'		=> trim($type),
-						'num'		=> (int) $num + 1,
-						);
-			
+			$info[] = [
+                'title' 	=> trim(str_replace("\n", '', $title)),
+                'filename'	=> trim($filename),
+                'example'	=> trim($example),
+                'expected'	=> trim($expected),
+                'type'		=> trim($type),
+                'num'		=> (int) $num + 1,
+            ];
 		}
 	}
-	
-	if (empty($info)) {
-		return false;
-	}	
+
 	return $info;
 }
 
@@ -168,7 +207,7 @@ function validate_example ($info, $filename) {
 	$info['return'] = trim(preg_replace(array("@(in $fq.*)@", "@Errors parsing $fq@"), '', $out[0]));
 
 	// Has it always been "No syntax errors detected"? Let's assume so for now
-	if (false === strpos($info['return'], 'No syntax errors detected')) {
+	if (!str_contains($info['return'], 'No syntax errors detected')) {
 		$parts = explode("\n", $info['example']);
 		
 		$error_line_num = (int) trim(substr($out[0], strpos($out[0], 'on line')+8));
@@ -186,33 +225,9 @@ function validate_example ($info, $filename) {
 	return $info;
 }
 
-function is_known_failure($filename) {
-
-	// Consider rewriting these examples to not fail
-	$known_failures = array(
-		'.manual.xml',
-		'appendices/migration52.xml',
-		'language/basic-syntax.xml',
-		'language/control-structures/declare.xml',
-		'language/control-structures/elseif.xml',
-		'language/exceptions.xml',
-		'language/namespaces.xml',
-		'language/oop.xml',
-		'language/oop5/basic.xml',
-		'language/oop5/final.xml',
-		'language/oop5/reflection.xml',
-		'language/references.xml',
-		'language/variables.xml',
-		'language/types/array.xml',
-		'language/types/string.xml',
-		'reference/ming/examples.xml',
-		'reference/overload/examples.xml',
-		'reference/sca/examples.xml',
-		'reference/strings/functions/echo.xml',
-	);
-
-	foreach ($known_failures as $fail) {		
-		if (false !== strpos($filename, $fail)) {
+function is_known_failure(string $filename): bool {
+	foreach (KNOWN_FILE_FAILURES as $fail) {
+		if (str_contains($filename, $fail)) {
 			return true;
 		}
 	}
