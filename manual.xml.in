@@ -286,7 +286,6 @@
    &reference.exec.book;
    &reference.parallel.book;
    &reference.pthreads.book;
-   &reference.pht.book;
    &reference.sem.book;
    &reference.shmop.book;
    &reference.sync.book;
