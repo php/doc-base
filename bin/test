@@ -1,0 +1,73 @@
+#!/usr/bin/env php
+<?php
+
+use PHPDoc\Internal\IO\Printer;
+use PHPDoc\Internal\IO\Style;
+use PHPDoc\Internal\String\Writer;
+use PHPDoc\Internal\Testing\Loader\TestClassLoader;
+use PHPDoc\Internal\Testing\Tester;
+
+require_once dirname(__DIR__).'/autoloader.php';
+
+$loader = new TestClassLoader(__DIR__.'/../', '__test__', 'Test');
+$loader->excludes(['fixtures']);
+
+$tester = new Tester($loader);
+if (isset($argv[1])) {
+    if (is_dir($argv[1])) {
+        $loader->onlyIn([$argv[1]]);
+    } else if ($loader->isValidResource($argv[1])) {
+        $loader->loadFile($argv[1]);
+
+        if (isset($argv[2]) && str_starts_with($argv[2], 'test')) {
+            $tester->setTestMethod($argv[2]);
+        }
+    } else {
+        Printer::printBgError(sprintf('File "%s" does not exists or is not a valid test file.', $argv[1]));
+        exit(1);
+    }
+} else {
+    $loader->onlyIn([
+        '/components',
+    ]);
+}
+
+try {
+    $report = $tester->test();
+} catch (Exception $e) {
+    echo $e;
+    exit(1);
+}
+
+if (empty($report['errors'])) {
+    if ($report['nb_skipped'] > 0) {
+        Printer::printWarning(sprintf('%d skipped(s) test.', $report['nb_skipped']));
+    }
+
+    if ($report['nb_passed_test'] > 0) {
+        Printer::printBgSuccess(sprintf('%d test(s), %d assertion(s) passed!', $report['nb_passed_test'], $report['nb_passed_assertion']));
+    } else {
+        Printer::printWarning('No errors were found because no tests were performed.');
+    }
+} else {
+    $writer = new Writer();
+    foreach ($report['errors'] as $error) {
+        foreach ($error['failures'] as $failure) {
+            $writer
+                ->writePair('test', $error['test'], false)
+                ->writePair('file', $failure['file'])
+                ->writePair('line', $failure['line']);
+
+            if ($failure['user_message']) {
+                $writer->writePair('about', $failure['user_message']);
+            }
+
+            $writer->writePair('given', Style::error($failure['given']))
+                ->writePair($failure['reason'], Style::success($failure['expected']))
+                ->cr();
+        }
+    }
+
+    $writer->writeLine(Style::bgError($report['nb_failed_assertion'].' assertion(s) failed...'))->echo();
+    exit(1);
+}
