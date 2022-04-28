@@ -932,6 +932,33 @@
 
 >
 
+<!ELEMENT interfacesynopsis ((ooclass|oointerface)+, (interfacesynopsisinfo|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|xi:include)*)>
+
+<!ATTLIST interfacesynopsis
+	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
+	role	CDATA	#IMPLIED
+	%db.common.attributes;
+	%db.common.linking.attributes;
+	language	CDATA	#IMPLIED
+	class	(class|interface)	#IMPLIED
+
+>
+
+<!ELEMENT interfacesynopsisinfo (#PCDATA|info|textobject|inlinemediaobject|remark|superscript|subscript|xref|link|olink|anchor|biblioref|alt|annotation|indexterm|abbrev|acronym|date|emphasis|footnote|footnoteref|foreignphrase|phrase|quote|wordasword|firstterm|glossterm|coref|productnumber|productname|database|application|hardware|trademark|citation|citerefentry|citetitle|citebiblioid|author|person|personname|org|orgname|editor|jobtitle|replaceable|systemitem|option|optional|package|parameter|property|termdef|nonterminal|errorcode|errortext|errorname|errortype|prompt|envar|filename|command|computeroutput|userinput|function|varname|returnvalue|type|classname|exceptionname|interfacename|methodname|modifier|initializer|ooclass|ooexception|oointerface|tag|markup|token|symbol|literal|code|constant|email|uri|guiicon|guibutton|guimenuitem|guimenu|guisubmenu|guilabel|menuchoice|mousebutton|keycombo|keycap|keycode|keysym|shortcut|accel|inlineequation|lineannotation|co)*>
+
+<!ATTLIST interfacesynopsisinfo
+	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
+	role	CDATA	#IMPLIED
+	%db.common.attributes;
+	%db.common.linking.attributes;
+	continuation	(continues|restarts)	#IMPLIED
+	linenumbering	(numbered|unnumbered)	#IMPLIED
+	startinglinenumber	NMTOKEN	#IMPLIED
+	language	CDATA	#IMPLIED
+	xml:space	(preserve)	#IMPLIED
+
+>
+
 <!ELEMENT ooclass ((package|modifier)*, classname)>
 
 <!ATTLIST ooclass
@@ -2644,7 +2671,7 @@
 
 >
 
-<!ELEMENT section (((title|titleabbrev|subtitle)*, info?), (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|(phpdoc:varentry|refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|(phpdoc:varentry|refentry|xi:include)+), (glossary|bibliography|index|toc)*)>
+<!ELEMENT section (((title|titleabbrev|subtitle)*, info?), (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|interfacesynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|(phpdoc:varentry|refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|(phpdoc:varentry|refentry|xi:include)+), (glossary|bibliography|index|toc)*)>
 
 <!ATTLIST section
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
