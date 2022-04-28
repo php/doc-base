@@ -23,11 +23,11 @@
    &reftitle.interfacesynopsis;
  
 <!-- {{{ Synopsis -->
-   <classsynopsis>
+   <interfacesynopsis>
     <ooclass><classname>InterfaceName</classname></ooclass>
  
 <!-- {{{ Class synopsis -->
-    <classsynopsisinfo>
+    <interfacesynopsisinfo>
      <oointerface>
       <interfacename>InterfaceName</interfacename>
      </oointerface>
@@ -38,11 +38,11 @@
       <interfacename>InterfaceName</interfacename>
      </oointerface>
 -->
-    </classsynopsisinfo>
+    </interfacesynopsisinfo>
 <!-- }}} -->
 
 <!-- Edit the classname below -->
-    <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
+    <interfacesynopsisinfo role="comment">&Methods;</interfacesynopsisinfo>
     <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:constructorsynopsis[not(@role='procedural')])">
      <xi:fallback />
     </xi:include>
@@ -59,7 +59,7 @@
      <xi:fallback/>
     </xi:include>
 -->
-   </classsynopsis>
+   </interfacesynopsis>
 <!-- }}} -->
  
   </section>
