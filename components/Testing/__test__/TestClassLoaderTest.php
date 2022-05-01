@@ -32,8 +32,9 @@ class TestClassLoaderTest extends Assert
     public function testExclude()
     {
         $loader = $this->createLoader();
+        $loader->excludes(['exclude', 'a', 'real']);
 
-        $this->assertCount(4, $loader->getResources());
+        $this->assertCount(2, $loader->getResources());
     }
 
     public function testOnlyIn()
