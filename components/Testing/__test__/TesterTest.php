@@ -53,7 +53,7 @@ class TesterTest extends Assert
     public function testFileWithoutClass()
     {
         $loader = new TestClassLoader(__DIR__.'/fixtures/', '__special_test__', 'Test');
-        $loader->onlyIn(['real/__special_test__/fail']);
+        $loader->loadFile(__DIR__.'/fixtures/real/__special_test__/fail/NotAClassTest.php');
         $tester = new Tester($loader);
 
         try {

@@ -83,16 +83,18 @@ class FileResolveTest extends Assert
         $resolver = new FileResolver(self::FIXTURES.'/foo');
         $resolver->excludes(['barr']);
         $this->assertCount(3, $resolved = $resolver->getResolved());
-        $this->assertSame(self::FIXTURES.'/foo/a.php', $resolved[0]);
-        $this->assertSame(self::FIXTURES.'/foo/bar/a.txt', $resolved[1]);
-        $this->assertSame(self::FIXTURES.'/foo/b.yml', $resolved[2]);
+        // use in_array because file are not retrieve on same order depending on OS/Distribution
+        $this->assertTrue(in_array(self::FIXTURES.'/foo/a.php', $resolved));
+        $this->assertTrue(in_array(self::FIXTURES.'/foo/bar/a.txt', $resolved));
+        $this->assertTrue(in_array(self::FIXTURES.'/foo/b.yml', $resolved));
 
         $resolver->setPrefix('a');
         // reinitialize data
         $resolver->resolve();
         $this->assertCount(2, $resolved = $resolver->getResolved());
-        $this->assertSame(self::FIXTURES.'/foo/a.php', $resolved[0]);
-        $this->assertSame(self::FIXTURES.'/foo/bar/a.txt', $resolved[1]);
+        $this->assertTrue(in_array(self::FIXTURES.'/foo/a.php', $resolved));
+        $this->assertTrue(in_array(self::FIXTURES.'/foo/bar/a.txt', $resolved));
+        $this->assertFalse(in_array(self::FIXTURES.'/foo/bar/b.yml', $resolved));
 
         $resolver->setSuffix('.php');
         // reinitialize data
@@ -124,9 +126,9 @@ class FileResolveTest extends Assert
         $this->assertTrue(file_exists(self::FIXTURES.'/foo/bar/a.txt'));
 
         $this->assertCount(3, $resolved = $resolver->getResolved());
-        $this->assertSame($resolved[0], self::FIXTURES.'/foo/a.php');
-        $this->assertSame($resolved[1], self::FIXTURES.'/foo/b.yml');
-        $this->assertSame($resolved[2], self::FIXTURES.'/a.txt');
+        $this->assertTrue(in_array(self::FIXTURES.'/foo/a.php', $resolved));
+        $this->assertTrue(in_array(self::FIXTURES.'/foo/b.yml', $resolved));
+        $this->assertTrue(in_array(self::FIXTURES.'/a.txt', $resolved));
     }
 
     public function testRelativeFileAccess()
