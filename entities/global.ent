@@ -131,7 +131,7 @@
 <!ENTITY url.icu.docs "http://site.icu-project.org/docs/">
 <!ENTITY url.icu.choiceformat "http://icu-project.org/apiref/icu4c/classChoiceFormat.html#details">
 <!ENTITY url.icu.dateformat "http://www.icu-project.org/apiref/icu4c/udat_8h.html#details">
-<!ENTITY url.icu.dateformat2 "http://www.icu-project.org/apiref/icu4c/classSimpleDateFormat.html#details">
+<!ENTITY url.icu.dateformat2 "https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax">
 <!ENTITY url.icu.decimalformat "http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#details">
 <!ENTITY url.icu.formatnumbers "https://unicode-org.github.io/icu/userguide/format_parse/numbers/">
 <!ENTITY url.icu.formatmsg "https://unicode-org.github.io/icu/userguide/format_parse/messages/">
