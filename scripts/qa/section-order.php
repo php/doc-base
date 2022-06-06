@@ -23,8 +23,6 @@
  */
 
 const SKIP_FOLDER = [
-    /* DateTimeImmutable docs refer to DateTime docs */
-    'datetimeimmutable',
     /* Directory class refers to usual dir/ functions */
     'directory',
     /* We don't care about a tutorial doc in this script */
