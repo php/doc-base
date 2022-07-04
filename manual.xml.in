@@ -263,6 +263,7 @@
    &reference.bc.book;
    &reference.gmp.book;
    &reference.math.book;
+   &reference.stats.book;
    &reference.trader.book;
   </set>
 
