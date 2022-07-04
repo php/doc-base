@@ -204,6 +204,7 @@
 <!ENTITY url.lmdb "https://symas.com/lmdb/">
 <!ENTITY url.lua "http://www.lua.org/">
 <!ENTITY url.mac.fink "http://www.finkproject.org/">
+<!ENTITY url.mac.ampps "https://www.ampps.com/">
 <!ENTITY url.mac.homebrew "https://github.com/Homebrew/brew">
 <!ENTITY url.mac.macports "http://www.macports.org/">
 <!ENTITY url.mac.liip "http://php-osx.liip.ch/">
