@@ -132,7 +132,7 @@ function getXMLFiles(string $dirname)
         }
 
         /* Skip certain files */
-        $pathnameFromRoot = str_replace(DOCROOT_EN, '', $dir->getPathname());
+        $pathnameFromRoot = str_replace([DOCROOT_EN, '\\'], ['', '/'], $dir->getPathname());
         if (in_array($pathnameFromRoot, SKIP_FILE)) {
             continue;
         }
