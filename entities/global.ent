@@ -48,7 +48,6 @@
 <!ENTITY url.comspecs "https://docs.microsoft.com/windows/desktop/com/component-object-model--com--portal">
 <!ENTITY url.com.visible "https://docs.microsoft.com/dotnet/api/system.runtime.interopservices.comvisibleattribute">
 <!ENTITY url.connectionstrings "http://www.connectionstrings.com/">
-<!ENTITY url.crypt.blowfish "https://www.php.net/security/crypt_blowfish.php">
 <!ENTITY url.crypt.sha "http://people.redhat.com/drepper/SHA-crypt.txt">
 <!ENTITY url.csprng.wiki "https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator">
 <!ENTITY url.csprng.crypt-gen-random "https://msdn.microsoft.com/en-us/library/windows/desktop/aa379942(v=vs.85).aspx">
