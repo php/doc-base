@@ -149,6 +149,7 @@
 <!ENTITY url.icu.userguide "https://unicode-org.github.io/icu/userguide/">
 <!ENTITY url.icu.uca "http://www.unicode.org/reports/tr10/">
 <!ENTITY url.icu.autoQuoteApostrophe "http://www.icu-project.org/apiref/icu4c/umsg_8h.html#9da796210146ff51d395affe4928f0b7">
+<!ENTITY url.icu.quoting "https://unicode-org.github.io/icu/userguide/format_parse/messages/#quotingescaping">
 <!ENTITY url.icu.rulebasedbreakiteratorguide "http://userguide.icu-project.org/boundaryanalysis#TOC-RBBI-Rules">
 <!ENTITY url.igbinary "https://github.com/igbinary/igbinary">
 <!ENTITY url.iis "http://support.microsoft.com/kb/q160422/">
