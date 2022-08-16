@@ -97,7 +97,7 @@
 <!ENTITY url.foldoc "http://foldoc.org/">
 <!ENTITY url.freetds "http://www.freetds.org/">
 <!ENTITY url.freetype "http://www.freetype.org/">
-<!ENTITY url.gc-paper "http://researcher.watson.ibm.com/researcher/files/us-bacon/Bacon01Concurrent.pdf">
+<!ENTITY url.gc-paper "https://pages.cs.wisc.edu/~cymen/misc/interests/Bacon01Concurrent.pdf">
 <!ENTITY url.gd "http://www.libgd.org/">
 <!ENTITY url.gdbm "https://ftp.gnu.org/pub/gnu/gdbm/">
 <!ENTITY url.gearman "http://gearman.org">
