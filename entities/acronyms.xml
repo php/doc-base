@@ -67,6 +67,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>DNF</term>
+   <listitem>
+    <simpara>Disjoint Normal Form</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>DSSSL</term>
    <listitem>
     <simpara>Document Style Semantics and Specification Language</simpara>
