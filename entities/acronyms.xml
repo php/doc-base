@@ -43,6 +43,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>CSPRNG</term>
+   <listitem>
+    <simpara>Cryptographically Secure PseudoRandom Number Generator</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>CSS</term>
    <listitem>
     <simpara>Cascading Style Sheets</simpara>
