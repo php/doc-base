@@ -155,6 +155,7 @@
 <!ENTITY url.iis.fastcgi.downloads "http://www.iis.net/extensions/fastcgi">
 <!ENTITY url.iis.fastcgi.settings "http://learn.iis.net/page.aspx/248/configuring-fastcgi-extension-for-iis-60/">
 <!ENTITY url.imagemagick "http://www.imagemagick.org/">
+<!ENTITY url.imagemagick.usage.color_mods.sigmoidal "http://www.imagemagick.org/Usage/color_mods/#sigmoidal">
 <!ENTITY url.imagemagick.usage.transform.function "http://www.imagemagick.org/Usage/transform/#function">
 <!ENTITY url.imap "https://github.com/uw-imap/imap">
 <!ENTITY url.imap.book "http://oreilly.com/catalog/9780596000127/">
