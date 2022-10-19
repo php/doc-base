@@ -298,6 +298,7 @@
    &reference.fann.book;
    &reference.igbinary.book;
    &reference.json.book;
+   &reference.simdjson.book;
    &reference.lua.book;
    &reference.luasandbox.book;
    &reference.misc.book;
