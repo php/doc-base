@@ -89,11 +89,11 @@ function is_translatable ($filename) {
 	}
 
 	// exclude filenames like htmlentities.xml
-	if (preg_match("/^entities./", basename($filename))) {
+	if (preg_match("/^entities\./", basename($filename))) {
 		return false;
 	}
 	
-	$files_matches = array('/internals/', '/internals2/', 'entities.');
+	$files_matches = array('/internals/', '/internals2/');
 	
 	foreach ($files_matches as $match) {
 		if (false !== strpos($filename, $match)) {
