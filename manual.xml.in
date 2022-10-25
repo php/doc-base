@@ -185,6 +185,7 @@
    &reference.mhash.book;
    &reference.openssl.book;
    &reference.password.book;
+   &reference.rnp.book;
    &reference.sodium.book;
   </set>
 
