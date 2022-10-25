@@ -302,6 +302,7 @@
    &reference.lua.book;
    &reference.luasandbox.book;
    &reference.misc.book;
+   &reference.random.book;
    &reference.seaslog.book;
    &reference.spl.book;
    &reference.stream.book;
