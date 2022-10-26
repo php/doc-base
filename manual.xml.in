@@ -179,7 +179,6 @@
 
   <set xml:id="refs.crypto">
    <title>&CryptographyExtensions;</title>
-   &reference.csprng.book;
    &reference.hash.book;
    &reference.mcrypt.book;
    &reference.mhash.book;
