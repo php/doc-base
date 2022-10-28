@@ -179,7 +179,6 @@
 
   <set xml:id="refs.crypto">
    <title>&CryptographyExtensions;</title>
-   &reference.csprng.book;
    &reference.hash.book;
    &reference.mcrypt.book;
    &reference.mhash.book;
@@ -302,6 +301,7 @@
    &reference.lua.book;
    &reference.luasandbox.book;
    &reference.misc.book;
+   &reference.random.book;
    &reference.seaslog.book;
    &reference.spl.book;
    &reference.stream.book;
