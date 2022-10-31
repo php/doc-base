@@ -391,6 +391,7 @@
 <!ENTITY url.relaxng "http://www.relaxng.org/">
 <!-- linking to specific rfcs is done like so: &url.rfc;xxxx so for example &url.rfc;2042 -->
 <!ENTITY url.rfc  'http://www.faqs.org/rfcs/rfc'>
+<!ENTITY url.rnp "https://www.rnpgp.org/">
 <!ENTITY url.iana.system-names 'http://www.iana.org/assignments/operating-system-names'>
 <!ENTITY url.rpmfind "http://www.rpmfind.net/">
 <!ENTITY url.rpmfind.pbone "http://rpm.pbone.net/">
