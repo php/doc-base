@@ -87,6 +87,7 @@
   &language.predefined.variables;
   &language.predefined.exceptions;
   &language.predefined.interfaces;
+  &language.predefined.attributes;
   &language.context;
   &language.wrappers;
  </book>
