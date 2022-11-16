@@ -24,8 +24,8 @@
 
 <!ENTITY % db.common.linking.attributes "
 	linkend	IDREF	#IMPLIED
-	xmlns:xlink	CDATA	#FIXED	'http://www.w3.org/1999/xlink'	
-	xmlns:xi	CDATA	#FIXED	'http://www.w3.org/2001/XInclude'	
+	xmlns:xlink	CDATA	#FIXED	'http://www.w3.org/1999/xlink'
+	xmlns:xi	CDATA	#FIXED	'http://www.w3.org/2001/XInclude'
 	xmlns:phpdoc CDATA  #FIXED  'http://php.net/ns/phpdoc'
 	xmlns:phd	CDATA	#FIXED	'http://www.php.net/ns/phd'
 	xlink:href	CDATA	#IMPLIED
@@ -275,7 +275,7 @@
 
 >
 
-<!ELEMENT para (#PCDATA|info|inlinemediaobject|remark|superscript|subscript|xref|link|olink|anchor|biblioref|alt|annotation|indexterm|abbrev|acronym|date|emphasis|footnote|footnoteref|foreignphrase|phrase|quote|wordasword|firstterm|glossterm|coref|productnumber|productname|database|application|hardware|trademark|citation|citerefentry|citetitle|citebiblioid|author|person|personname|org|orgname|editor|jobtitle|replaceable|systemitem|option|optional|package|parameter|property|termdef|nonterminal|errorcode|errortext|errorname|errortype|prompt|envar|filename|command|computeroutput|userinput|function|varname|returnvalue|type|classname|exceptionname|interfacename|methodname|modifier|initializer|ooclass|ooexception|oointerface|tag|markup|token|symbol|literal|code|constant|email|uri|guiicon|guibutton|guimenuitem|guimenu|guisubmenu|guilabel|menuchoice|mousebutton|keycombo|keycap|keycode|keysym|shortcut|accel|inlineequation|itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|revhistory)*>
+<!ELEMENT para (#PCDATA|info|inlinemediaobject|remark|superscript|subscript|xref|link|olink|anchor|biblioref|alt|annotation|indexterm|abbrev|acronym|date|emphasis|footnote|footnoteref|foreignphrase|phrase|quote|wordasword|firstterm|glossterm|coref|productnumber|productname|database|application|hardware|trademark|citation|citerefentry|citetitle|citebiblioid|author|person|personname|org|orgname|editor|jobtitle|replaceable|systemitem|option|optional|package|parameter|property|termdef|nonterminal|errorcode|errortext|errorname|errortype|prompt|envar|filename|command|computeroutput|userinput|function|varname|returnvalue|type|classname|exceptionname|interfacename|methodname|modifier|initializer|ooclass|ooexception|oointerface|tag|markup|token|symbol|literal|code|constant|email|uri|guiicon|guibutton|guimenuitem|guimenu|guisubmenu|guilabel|menuchoice|mousebutton|keycombo|keycap|keycode|keysym|shortcut|accel|inlineequation|itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|revhistory|xi:include)*>
 
 <!ATTLIST para
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -335,7 +335,7 @@
 
 >
 
-<!ELEMENT warning (((title|titleabbrev)*, info?), (itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+)>
+<!ELEMENT warning (((title|titleabbrev)*, info?), (itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation|xi:include)+)>
 
 <!ATTLIST warning
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -477,7 +477,7 @@
 
 >
 
-<!ELEMENT example (((title|titleabbrev)*, info?), (itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, caption?)>
+<!ELEMENT example (((title|titleabbrev)*, info?), (itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation|xi:include)+, caption?)>
 
 <!ATTLIST example
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2332,7 +2332,7 @@
 	role	CDATA	#IMPLIED
 	%db.common.attributes;
 	%db.common.linking.attributes;
-	pubwork	(article|bbs|book|cdrom|chapter|dvd|emailmessage|gopher|journal|manuscript|newsposting|part|varentry|refentry|section|series|set|webpage|wiki)	#IMPLIED
+	pubwork	(article|bbs|book|cdrom|chapter|dvd|emailmessage|gopher|journal|manuscript|newsposting|part|phpdoc:varentry|refentry|section|series|set|webpage|wiki)	#IMPLIED
 
 >
 
@@ -2785,7 +2785,7 @@
 
 >
 
-<!ELEMENT refentry ((indexterm)*, info?, refmeta?, (refnamediv)+, refsynopsisdiv?, ((refsection)+|(refsect1)+))>
+<!ELEMENT refentry ((indexterm)*, info?, refmeta?, (refnamediv)+, refsynopsisdiv?, ((refsection)+|(refsect1|xi:include)+))>
 
 <!ATTLIST refentry
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
