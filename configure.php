@@ -208,6 +208,9 @@ function print_xml_errors($details = true) {
     $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
     if ($errors && count($errors) > 0) {
         foreach($errors as $err) {
+                if (!strncmp($err->message, "XPointer evaluation failed", strlen("XPointer evaluation failed"))) {
+                    continue;
+                }
                 $errmsg = wordwrap(" " . trim($err->message), 80, "\n ");
                 if ($details && $err->file) {
                     $file = file(urldecode($err->file)); // libxml appears to urlencode() its errors strings
