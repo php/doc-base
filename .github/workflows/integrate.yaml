@@ -55,8 +55,8 @@ jobs:
       - name: "Run QA scripts for EN docs"
         if: "matrix.language == 'en'"
         run: |
-          php8.0 doc-base/scripts/qa/extensions.xml.php --check
-          php8.0 doc-base/scripts/qa/section-order.php
+          php doc-base/scripts/qa/extensions.xml.php --check
+          php doc-base/scripts/qa/section-order.php
 
       - name: "Build documentation for ${{ matrix.language }}"
-        run: "php8.0 doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ matrix.language }}"
+        run: "php doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ matrix.language }}"
