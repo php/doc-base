@@ -1,6 +1,6 @@
 <?php
 define("DEBUG", 0);
-$BUILDDIR = "https://mumumu.github.io/chm";
+$BUILDDIR = "https://www.mumumu.org/chm";
 $TMPDIR = sys_get_temp_dir();
 $CHMDIR = "/local/mirrors/phpweb/distributions/manual";
 
