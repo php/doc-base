@@ -178,7 +178,7 @@ function checkSectionErrors(string $path): array
     /* Constructors are special */
     if (str_ends_with($path, 'construct.xml')) {
         if (!str_contains($content, '<constructorsynopsis>') &&
-            !preg_match('/<constructorsynopsis role=".*">/', $content)
+            !preg_match('/<constructorsynopsis role="[^"]*">/', $content)
         ) {
             // This generates a lot of errors leave for later
             //return ["Constructors should use <constructorsynopsis> instead of <methodsynopsis>"];
