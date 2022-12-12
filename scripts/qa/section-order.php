@@ -192,7 +192,7 @@ function checkSectionErrors(string $path): array
     /* Destructors are special */
     if (str_ends_with($path, 'destruct.xml')) {
         if (!str_contains($content, '<destructorsynopsis>') &&
-            !preg_match('/<destructorsynopsis role=".*">/', $content)) {
+            !preg_match('/<destructorsynopsis role="[^"]*">/', $content)) {
             // Early bail-out
             return ["Destructors should use <destructorsynopsis> instead of <methodsynopsis>"];
         }
