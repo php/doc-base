@@ -715,8 +715,10 @@ echo "done.\n";
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
 flush();
 
-$dom->xinclude();
-print_xml_errors();
+if ($dom->xinclude() === -1) {
+    print_xml_errors();
+    errors_are_bad(1);
+}
 
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
     $dom->validate(); // we don't care if the validation works or not
