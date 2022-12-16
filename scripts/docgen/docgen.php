@@ -187,6 +187,32 @@ function save_file($filename, $content) { /* {{{ */
 }
 /* }}} */
 
+/** Returns an xml type tag or an entity to use in the generated xml for a PHP constant */
+function get_xml_type_tag_or_entity($value, bool $allow_entity) { /* {{{ */
+	// Entities from entities/global.ent are recommended for freeform text.
+	if (is_int($value)) {
+		return $allow_entity ? '&integer;' : '<type>int</type>';
+	} elseif (is_float($value)) {
+		return $allow_entity ? '&float;' : '<type>float</type>';
+	} elseif (is_null($value)) {
+		return '<type>null</type>';
+	} elseif (is_bool($value)) {
+		return $allow_entity ? '&boolean;' : '<type>bool</type>';
+	}
+	if ($allow_entity) {
+		if (is_array($value)) {
+			return '&array;';
+		} elseif (is_object($value)) {
+			return '&object;';
+		} elseif (is_resource($value)) {
+			return '&resource;';
+		}
+	}
+	// Use <type>$type</type> for other types
+	return '<type>' . gettype($value) . '</type>';
+}
+/* }}} */
+
 function get_type_by_string($str) { /* {{{ */
 	if (is_numeric($str)) {
 		if ($str && intval($str) == $str) {
@@ -507,7 +533,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 		foreach ($constants as $constant => $value) {
 			$markup .= str_repeat(' ', $ident) ."<fieldsynopsis>". PHP_EOL;
 			$markup .= str_repeat(' ', $ident + 1) ."<modifier>const</modifier>". PHP_EOL;
-			$markup .= str_repeat(' ', $ident + 1) .'<type>'. gettype($value) ."</type>". PHP_EOL;
+			$markup .= str_repeat(' ', $ident + 1) .get_xml_type_tag_or_entity($value, false). PHP_EOL; // For the class synopsis we use explicit <type> elements
       		$markup .= str_repeat(' ', $ident + 1) .'<varname linkend="'. $id .'.constants.'. format_id($constant) .'">'. $class->getName() .'::'. $constant ."</varname>". PHP_EOL;
       		$markup .= str_repeat(' ', $ident + 1) .'<initializer>'. $value ."</initializer>". PHP_EOL;
      		$markup .= str_repeat(' ', $ident) ."</fieldsynopsis>". PHP_EOL;
@@ -707,7 +733,7 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 					$markup .= str_repeat(' ', $ident + 2) .'<varlistentry xml:id="constant.'. format_id($name) .'">'. PHP_EOL;
 					$markup .= str_repeat(' ', $ident + 3) ."<term>". PHP_EOL;
 					$markup .= str_repeat(' ', $ident + 4) ."<constant>". $name ."</constant>". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 4) ."(<type>". gettype($value) ."</type>)". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 4) ."(". get_xml_type_tag_or_entity($value, true) .")". PHP_EOL;
 					$markup .= str_repeat(' ', $ident + 3) ."</term>". PHP_EOL;
 					$markup .= str_repeat(' ', $ident + 3) ."<listitem>". PHP_EOL;
 					$markup .= str_repeat(' ', $ident + 4) ."<simpara>". PHP_EOL;
