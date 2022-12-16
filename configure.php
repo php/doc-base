@@ -625,11 +625,11 @@ $LIBXML_OPTS = LIBXML_NOENT | $compact;
 
 if ($ac['VERSION_FILES'] === 'yes') {
     $dom = new DOMDocument;
-    $dom->preserveWhitespace = false;
+    $dom->preserveWhiteSpace = false;
     $dom->formatOutput       = true;
 
     $tmp = new DOMDocument;
-    $tmp->preserveWhitespace = false;
+    $tmp->preserveWhiteSpace = false;
 
     $versions = $dom->appendChild($dom->createElement("versions"));
 
