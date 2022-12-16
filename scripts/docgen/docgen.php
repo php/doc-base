@@ -195,7 +195,7 @@ function get_xml_type_tag_or_entity($value, bool $allow_entity) { /* {{{ */
 	} elseif (is_float($value)) {
 		return $allow_entity ? '&float;' : '<type>float</type>';
 	} elseif (is_null($value)) {
-		return $allow_entity ? '&null;' : '<type>null</type>';
+		return '<type>null</type>';
 	} elseif (is_bool($value)) {
 		return $allow_entity ? '&boolean;' : '<type>bool</type>';
 	}
