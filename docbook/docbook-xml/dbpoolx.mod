@@ -4539,7 +4539,7 @@ in the text (no (0) value, the default)
 <!ENTITY % fieldsynopsis.element "INCLUDE">
 <![%fieldsynopsis.element;[
 <!--doc:The name of a field in a class definition.-->
-<!ELEMENT fieldsynopsis %ho; (modifier*, type?, varname, initializer?)>
+<!ELEMENT fieldsynopsis %ho; (classsynopsisinfo*, modifier*, type?, varname, initializer?)>
 <!--end of fieldsynopsis.element-->]]>
 
 <!ENTITY % fieldsynopsis.attlist "INCLUDE">

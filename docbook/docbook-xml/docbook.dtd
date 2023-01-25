@@ -993,7 +993,7 @@
 
 >
 
-<!ELEMENT fieldsynopsis ((modifier)*, type?, varname, initializer?)>
+<!ELEMENT fieldsynopsis ((classsynopsisinfo)*, (modifier)*, type?, varname, initializer?)>
 
 <!ATTLIST fieldsynopsis
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
