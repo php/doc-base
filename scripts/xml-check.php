@@ -43,7 +43,7 @@ $fp = fopen($example_filename, "wb");
 fwrite($fp, $file);
 fclose($fp);
 
-passthru("$xmllint --noent --noout --valid $example_filename 2> $example_filename.out"); // xmllint outputs to stderr which is not catched by shell_exec, 2> &1 doesn't work on Windows
+passthru("XMLLINT_INDENT=' ' $xmllint --noent --noout --encode UTF-8 --format --valid $example_filename 2> $example_filename.out"); // xmllint outputs to stderr which is not catched by shell_exec, 2> &1 doesn't work on Windows
 $errors = file_get_contents("$example_filename.out");
 $errors = preg_replace("~.*validity error : IDREF attribute linkend references an unknown ID.*\n.*\n.*\n~", "", $errors);
 $errors = str_replace($example_filename, $_SERVER["argv"][1], $errors);
