@@ -15,21 +15,18 @@ enum RevcheckStatus
 
 class RevcheckFileInfo
 {
-    public string $path;
-    public string $name;
-    public int $size;
-    public DateTime $date;
-    public string $key;
+    public string $file; // from fs
+    public int    $size; // from fs
+    public int    $date; // from vcs
+    public string $hash; // from vcs
+    public RevcheckStatus $status;
 
-    public RevcheckStatus $syncStatus;
-
-    function __construct( string $path , string $name , int $size , $date = new DateTime('@0') )
+    function __construct( string $file , int $size )
     {
-        $this->path = $path;
-        $this->name = $name;
+        $this->file = $file;
         $this->size = $size;
-        $this->date = $date;
-        $this->key = ltrim( $path . '/' . $name , '/' );
-        $this->syncStatus = RevcheckStatus::Untranslated;
+        $this->date = 0;
+        $this->hash = "";
+        $this->status = RevcheckStatus::Untranslated;
     }
 }

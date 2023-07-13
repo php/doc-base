@@ -4,11 +4,16 @@ require_once __DIR__ . '/require_all.php';
 
 class RevcheckFileList
 {
-    private $list;
+    var $list = array();
 
     function __construct( $lang )
     {
         $this->loadTree( $lang );
+    }
+
+    function get( $file ): RevcheckFileInfo|null
+    {
+        return $this->list[ $file ] ?? null;
     }
 
     function loadTree( $lang )
@@ -18,12 +23,11 @@ class RevcheckFileList
             die( "$lang is not a directory.\n" );
         $cwd = getcwd();
         chdir( $lang );
-        $this->loadTreeRecurse( $lang , "" , $ret );
+        $this->loadTreeRecurse( $lang , "" );
         chdir( $cwd );
-        return $ret;
     }
 
-    function loadTreeRecurse( $lang , $path , & $output )
+    function loadTreeRecurse( $lang , $path )
     {
         $todoDirs = [];
         $dir = new DirectoryIterator( $path == "" ? "." : $path );
@@ -33,22 +37,23 @@ class RevcheckFileList
         foreach( $dir as $entry )
         {
             $name = $entry->getFilename();
+            $key = ltrim( $path . '/' . $name , '/' );
             if ( $name[0] == '.' )
                 continue;
             if ( $entry->isDir() )
             {
-                $todoDirs[] = ltrim( $path . '/' . $name , '/' );
+                $todoDirs[] = $key;
                 continue;
             }
 
-            $file = new RevcheckFileInfo( $path , $name , $entry->getSize() );
-            if ( RevcheckIgnore::ignore( $file->key ) )
+            if ( RevcheckIgnore::ignore( $key ) )
                 continue;
-            $output[ $file->key ] = $file;
+            $file = new RevcheckFileInfo( $key , $entry->getSize() );
+            $this->list[ $key ] = $file;
         }
 
         sort( $todoDirs );
         foreach( $todoDirs as $path )
-            $this->loadTreeRecurse( $lang , $path , $output );
+            $this->loadTreeRecurse( $lang , $path );
     }
 }
