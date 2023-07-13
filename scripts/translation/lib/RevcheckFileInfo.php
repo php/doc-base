@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/require_all.php';
+require_once __DIR__ . '/require.php';
 
 enum RevcheckStatus
 {
@@ -17,9 +17,11 @@ class RevcheckFileInfo
 {
     public string $file; // from fs
     public int    $size; // from fs
-    public int    $date; // from vcs
-    public string $hash; // from vcs
-    public RevcheckStatus $status;
+    public int    $date; // from vcs, source only
+    public string $hash; // from vcs, source only
+
+    public RevcheckStatus $status; // target only
+    public RevtagInfo $revtag;     // target only
 
     function __construct( string $file , int $size )
     {

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/require_all.php';
+require_once __DIR__ . '/require.php';
 
 class RevcheckFileList
 {
