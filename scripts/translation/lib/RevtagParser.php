@@ -20,10 +20,7 @@ class RevtagParser
     static function parseInto( string $lang , RevcheckFileList & $list )
     {
         foreach( $list->list as $entry )
-        {
-            $tag = RevtagParser::parseFile( $lang . '/' . $entry->file );
-            $entry->revtag = $tag;
-        }
+            $entry->revtag = RevtagParser::parseFile( $lang . '/' . $entry->file );
     }
 
     public static function parseFile( string $filename ): RevtagInfo|null
@@ -57,13 +54,16 @@ class RevtagParser
 
         if ( str_starts_with( $text , "EN-" ) )
         {
+            // /EN-Revision:\s*(\S+)\s*Maintainer:\s*(\S+)\s*Status:\s*(\S+)/ // restric maintainer with no spaces
+            // /EN-Revision:\s*(\S+)\s*Maintainer:\s(.*?)\sStatus:\s*(\S+)/   // accepts maintainer with spaces
+
             $match = array();
             $regex = "/EN-Revision:\s*(\S+)\s*Maintainer:\s*(\S+)\s*Status:\s*(\S+)/";
             if ( preg_match( $regex , $text , $match ) )
             {
-                $ret->revision = $match[1];
-                $ret->maintainer = $match[2];
-                $ret->status = $match[3];
+                $ret->revision = trim( $match[1] );
+                $ret->maintainer = trim( $match[2] );
+                $ret->status = trim( $match[3] );
 
                 if ( $ret->revision != "" && strlen( $ret->revision ) != 40 )
                     $ret->errors .= "Wrong hash size: {$ret->revision}\n";

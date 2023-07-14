@@ -3,7 +3,7 @@
 require_once __DIR__ . '/require.php';
 
 /**
- * Parse git log to complement file state
+ * Parse `git log` to complement file state
  */
 
 class GitLogParser

@@ -2,15 +2,15 @@
 
 require_once __DIR__ . '/require.php';
 
-enum RevcheckStatus
+enum RevcheckStatus :string
 {
-    case Untranslated      ;//= 'Untranslated';
-    case RevTagProblem     ;//= 'RevTagProblem';
-    case TranslatedWip     ;//= 'TranslatedWip';
-    case TranslatedOk      ;//= 'TranslatedOk';
-    case TranslatedOld     ;//= 'TranslatedOld';
-    case TranslatedCritial ;//= 'TranslatedCritial';
-    case NotInEnTree       ;//= 'NotInEnTree';
+    case Untranslated      = 'Untranslated';
+    case RevTagProblem     = 'RevTagProblem';
+    case TranslatedWip     = 'TranslatedWip';
+    case TranslatedOk      = 'TranslatedOk';
+    case TranslatedOld     = 'TranslatedOld';
+    case TranslatedCritial = 'TranslatedCritial';
+    case NotInEnTree       = 'NotInEnTree';
 }
 
 class RevcheckFileInfo
@@ -20,8 +20,8 @@ class RevcheckFileInfo
     public int    $date; // from vcs, source only
     public string $hash; // from vcs, source only
 
-    public RevcheckStatus $status; // target only
-    public RevtagInfo $revtag;     // target only
+    public RevcheckStatus  $status; // target only
+    public RevtagInfo|null $revtag; // target only
 
     function __construct( string $file , int $size )
     {
@@ -30,5 +30,6 @@ class RevcheckFileInfo
         $this->date = 0;
         $this->hash = "";
         $this->status = RevcheckStatus::Untranslated;
+        $this->revtag = null;
     }
 }

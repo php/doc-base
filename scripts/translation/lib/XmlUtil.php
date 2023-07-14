@@ -16,7 +16,7 @@ class XmlUtil
 
     public static function loadText( $contents ):DOMDocument
     {
-        $was = libxml_use_internal_errors( true ); // no entity warning
+        $was = libxml_use_internal_errors( true ); // do not print warnings
 
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = true;
