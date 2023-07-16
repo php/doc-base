@@ -15,11 +15,11 @@ class RevcheckRun
     // Separated lists
     public array $filesOk;
     public array $filesOld;
-    public array $filesCritical;
     public array $filesRevtagProblem;
     public array $filesUntranslated;
     public array $filesNotInEn;
     public array $filesWip;
+    public array $qaList;
 
     function __construct( $sourceDir , $targetDir )
     {
@@ -47,7 +47,6 @@ class RevcheckRun
         foreach( $this->sourceFiles->list as $source )
         {
             $target = $this->targetFiles->get( $source->file );
-            $monthAgo = strtotime( '-1 month' );
 
             // Untranslated
 
@@ -68,6 +67,8 @@ class RevcheckRun
             }
 
             $target->hash = $target->revtag->revision;
+            $daysOld = ( strtotime( "now" ) - $source->date ) / 86400;
+            $this->qaList[] = new QaFileInfo( $source->hash , $target->hash , $source->file , $daysOld );
 
             // TranslatedOk
 
@@ -90,26 +91,18 @@ class RevcheckRun
             }
 
             // TranslatedOld
-            // TranslatedCritial
 
-            if ( $source->date > $monthAgo )
-            {
-                $source->status = RevcheckStatus::TranslatedOld;
-                $this->filesOld[] = $source;
-            }
-            else
-            {
-                $source->status = RevcheckStatus::TranslatedCritial;
-                $this->filesCritical[] = $source;
-            }
+            $source->days = $daysOld;
+            $source->status = RevcheckStatus::TranslatedOld;
+            $this->filesOld[] = $source;
         }
 
         // NotInEnTree
 
         foreach( $this->targetFiles->list as $target )
         {
-            $sourcePath = $this->sourceDir . '/' . $target->file;
-            if( is_file( $sourcePath ) == false )
+            $source = $this->sourceFiles->get( $target->file );
+            if ( $source == null )
             {
                 $target->status = RevcheckStatus::NotInEnTree;
                 $this->filesNotInEn[] = $target;
