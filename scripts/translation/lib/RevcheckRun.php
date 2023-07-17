@@ -21,7 +21,7 @@ class RevcheckRun
     public array $filesWip;
     public array $qaList;
 
-    function __construct( $sourceDir , $targetDir )
+    function __construct( string $sourceDir , string $targetDir , bool $writeResults = true )
     {
         $this->sourceDir = $sourceDir;
         $this->targetDir = $targetDir;
@@ -36,7 +36,11 @@ class RevcheckRun
         // translated files get info from file contents
         RevtagParser::parseInto( $targetDir , $this->targetFiles );
 
+        // match and mix
         $this->calculateStatus();
+
+        if ( $writeResults )
+            QaFileInfo::cacheSave( $this->qaList );
     }
 
     private function calculateStatus()
@@ -68,7 +72,7 @@ class RevcheckRun
 
             $target->hash = $target->revtag->revision;
             $daysOld = ( strtotime( "now" ) - $source->date ) / 86400;
-            $this->qaList[] = new QaFileInfo( $source->hash , $target->hash , $source->file , $daysOld );
+            $this->qaList[] = new QaFileInfo( $source->hash , $target->hash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
 
             // TranslatedOk
 

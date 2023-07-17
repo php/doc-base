@@ -54,7 +54,7 @@ class RevtagParser
 
         if ( str_starts_with( $text , "EN-" ) )
         {
-            // /EN-Revision:\s*(\S+)\s*Maintainer:\s*(\S+)\s*Status:\s*(\S+)/ // restric maintainer with no spaces
+            // /EN-Revision:\s*(\S+)\s*Maintainer:\s*(\S+)\s*Status:\s*(\S+)/ // restric maintainer without spaces
             // /EN-Revision:\s*(\S+)\s*Maintainer:\s(.*?)\sStatus:\s*(\S+)/   // accepts maintainer with spaces
 
             $match = array();
@@ -66,7 +66,7 @@ class RevtagParser
                 $ret->status = trim( $match[3] );
 
                 if ( $ret->revision != "" && strlen( $ret->revision ) != 40 )
-                    $ret->errors .= "Wrong hash size: {$ret->revision}\n";
+                    $ret->errors .= "Wrong hash format or size: {$ret->revision}\n";
                 if ( $ret->maintainer == "" )
                     $ret->errors .= "Empty maintainer.\n";
                 if ( $ret->status != "" && strlen( $ret->revision ) != 40 )

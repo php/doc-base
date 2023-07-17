@@ -8,6 +8,21 @@ require_once __DIR__ . '/require.php';
 
 class XmlUtil
 {
+    public static function listNodeType( DOMNode $node , int $type )
+    {
+        $ret = array();
+        XmlUtil::listNodeTypeRecurse( $node , $type , $ret );
+        return $ret;
+    }
+
+    public static function listNodeTypeRecurse( DOMNode $node , int $type, array & $ret )
+    {
+        if ( $node->nodeType == $type )
+            $ret[] = $node;
+        foreach( $node->childNodes as $child )
+            XmlUtil::listNodeTypeRecurse( $child , $type, $ret );
+    }
+
     public static function loadFile( $filename ):DOMDocument
     {
         $contents = file_get_contents( $filename );

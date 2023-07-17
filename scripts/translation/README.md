@@ -14,3 +14,25 @@ across these scripts.
 
 See `MIGRATION.md` for procedures and breaking changes expected
 when migrating from previous `revcheck.php`.
+
+# Migration
+
+## No critical
+
+This revcheck will not emit a critical status, for files outdated for more
+than 30 days, as this was silently removed on
+<https://github.com/php/doc-base/commit/8f757b4fe281f5b00bd8bfe9cc1799fb0ce27822>
+
+There is a new `days` property that tracks how old a file is in days, to make
+decisions on coloring revcheck or deprecating translations.
+
+## Maintainers with spaces
+
+The regex on `RevtagParser` was narrowed to not accept maintainer's names
+with spaces. This need to be confirmed on all active translations, or
+the regex modified to accept spaces again.
+
+## en/chmonly
+
+`en/chmonly` is ignored on revcheck, but it appears translatable. If it's a
+`en/` only directory, this should be uncommented on RevcheckIgnore.
