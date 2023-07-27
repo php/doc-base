@@ -34,18 +34,18 @@ foreach ( $qalist as $qafile )
 
     print "qaxml.a.check: {$source} {$target}\n\n";
 
-    foreach( $onlySource as $only )
-        print "+ {$only}\n";
     foreach( $onlyTarget as $only )
         print "- {$only}\n";
+    foreach( $onlySource as $only )
+        print "+ {$only}\n";
 
     if ( count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
     {
         for ( $i = 0 ; $i < count($s) ; $i++ )
             if ( $s[$i] != $t[$i] )
             {
-                print "+ {$s[$i]}\n";
                 print "- {$t[$i]}\n";
+                print "+ {$s[$i]}\n";
             }
     }
 
