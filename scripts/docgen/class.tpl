@@ -19,9 +19,10 @@
 
 <!-- {{{ Synopsis -->
    <classsynopsis>
-    <ooclass><classname>{CLASS_NAME}</classname></ooclass>
+    <ooclass>
+     <classname>{CLASS_NAME}</classname>
+    </ooclass>
 
-<!-- {{{ Class synopsis -->
     <classsynopsisinfo>
      <ooclass>
       <classname>{CLASS_NAME}</classname>
@@ -29,7 +30,7 @@
      {EXTENDS}
      {IMPLEMENTS}
     </classsynopsisinfo>
-<!-- }}} -->
+
     {CONSTANTS_LIST}
     {PROPERTIES_LIST}
     {METHOD_XINCLUDE}
