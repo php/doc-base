@@ -52,7 +52,7 @@ function recurse($dir) {
 	foreach (glob("$dir/*") as $filename) {
 		if (is_dir($filename)) {
 			recurse($filename);
-		} elseif (eregi('\\.xml$', $filename)) {
+		} elseif (preg_match('/\\.xml$/i', $filename)) {
 			//~ echo "$filename\n";
 			$file = file_get_contents($filename);
 			$file = preg_replace_callback('~(<!\\[CDATA\\[)(.*)(\\]\\]>)~sU', "callback_htmlentities", $file);
