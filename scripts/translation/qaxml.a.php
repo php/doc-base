@@ -1,7 +1,7 @@
 <?php
 
 /**
- * qaxml.a.check.php -- Comparare attributes between XMLs
+ * qaxml.a.php -- Compare attributes between XMLs
  */
 
 require_once __DIR__ . '/lib/require.php';

@@ -72,7 +72,9 @@ class RevcheckRun
 
             $target->hash = $target->revtag->revision;
             $daysOld = ( strtotime( "now" ) - $source->date ) / 86400;
-            $this->qaList[] = new QaFileInfo( $source->hash , $target->hash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
+            $daysOld = (int)$daysOld;
+            $qaInfo = new QaFileInfo( $source->hash , $target->hash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
+            $this->qaList[ $source->file ] = $qaInfo;
 
             // TranslatedOk
 

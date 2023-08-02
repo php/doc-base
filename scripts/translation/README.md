@@ -12,8 +12,18 @@ assumptions of each script are described in each file.
 The `lib/` directory contains common code and functionality
 across these scripts.
 
-See `MIGRATION.md` for procedures and breaking changes expected
-when migrating from previous `revcheck.php`.
+Before using the scritps, it need be configured:
+```
+php doc-base/scripts/translation/configure.php $LANG_DIR
+```
+
+## qaxml.a.php
+
+`qaxml.a.php` checks if all updated files if the translated file have
+the same tag-attribute-value triples. Tags with attributes are extensivly
+utilized in manual for linking and XIncluding. Translated files with
+missing os mistyped attributes may cause build failing or missing
+parts not resolved by XIncludes.
 
 # Migration
 
