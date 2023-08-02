@@ -11,7 +11,7 @@ function apply($input)
 	$manual_ced_line = NULL;
 	$output = "";
 	foreach ($lines as $nr=>$line) {
-		if (eregi("Keep this comment at the end of the file", $line)) {
+		if (preg_match("/Keep this comment at the end of the file/i", $line)) {
 
 			// we're on top of the comment
 			if ($nr + 20 < $numlines) {
