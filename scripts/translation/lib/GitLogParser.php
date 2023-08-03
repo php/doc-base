@@ -55,22 +55,21 @@ class GitLogParser
             if ( $info == null )
                 continue;
 
-            // do not track skiped commits
+            // tracks the first skiped hash, if newer than a non skiped hash
             if ( $skip )
             {
-                if ( $info->hash == "" && $info->skip != "" )
-                    fwrite( STDERR , "Double [skip-revcheck] on $filename\n" );
-                $info->skip = $hash;
+                if ( $info->hash == "" && $info->skip == "" )
+                    $info->skip = $hash;
                 continue;
             }
 
-            // already found a more recent hash
+            // ignore newer commits
             if ( $info->hash != "" )
                 continue;
 
-            // finally, the oldest commit
-            $info->date = $date;
+            // found oldest hash and date
             $info->hash = $hash;
+            $info->date = $date;
         }
 
         pclose( $fp );
