@@ -14,11 +14,12 @@ enum RevcheckStatus :string
 
 class RevcheckFileInfo
 {
-    public string $file; // from fs
-    public int    $size; // from fs
-    public string $hash; // from vcs, source only
-    public int    $date; // from vcs, source only
-    public int    $days; // derived
+    public string $file = ""; // from fs
+    public int    $size = 0 ; // from fs
+    public string $hash = ""; // from vcs, source only
+    public string $skip = ""; // from vcs, source only
+    public int    $date = 0 ; // from vcs, source only
+    public int    $days = 0 ; // derived
 
     public RevcheckStatus  $status; // target only
     public RevtagInfo|null $revtag; // target only

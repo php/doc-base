@@ -19,11 +19,11 @@ php doc-base/scripts/translation/configure.php $LANG_DIR
 
 ## qaxml.a.php
 
-`qaxml.a.php` checks if all updated files if the translated file have
-the same tag-attribute-value triples. Tags with attributes are extensivly
+`qaxml.a.php` checks if all updated translated files have
+the same tag-attribute-value triples. Tag's attributes are extensively
 utilized in manual for linking and XIncluding. Translated files with
 missing os mistyped attributes may cause build failing or missing
-parts not resolved by XIncludes.
+parts not copied by XIncludes.
 
 # Migration
 

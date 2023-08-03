@@ -42,22 +42,37 @@ class GitLogParser
             // commit message
             if ( str_starts_with( $line , '    ' ) )
             {
-                // commits marked with `[skip-revcheck]` are skiped in full
+                // commits with this mark are ignored
                 if ( stristr( $line, '[skip-revcheck]' ) !== false )
                     $skip = true;
                 continue;
             }
             // otherwise, a filename
             $filename = trim( $line );
-
-            // newer file hash already parsed?
             $info = $list->get( $filename );
-            if ( $info == null || $info->hash != "" )
+
+            // untracked file (deleted, renamed)
+            if ( $info == null )
                 continue;
 
+            // do not track skiped commits
+            if ( $skip )
+            {
+                if ( $info->hash == "" && $info->skip != "" )
+                    fwrite( STDERR , "Double [skip-revcheck] on $filename\n" );
+                $info->skip = $hash;
+                continue;
+            }
+
+            // already found a more recent hash
+            if ( $info->hash != "" )
+                continue;
+
+            // finally, the oldest commit
             $info->date = $date;
             $info->hash = $hash;
         }
+
         pclose( $fp );
         chdir( $cwd );
     }
