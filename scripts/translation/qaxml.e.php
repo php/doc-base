@@ -1,7 +1,7 @@
 <?php
 
 /**
- * qaxml.a.php -- Compare attributes between XMLs
+ * qaxml.e.php -- Compare entities usage between XMLs
  */
 
 require_once __DIR__ . '/lib/require.php';
@@ -16,14 +16,8 @@ foreach ( $qalist as $qafile )
     $source = $qafile->sourceDir . '/' . $qafile->file;
     $target = $qafile->targetDir . '/' . $qafile->file;
 
-    $s = XmlUtil::loadFile( $source );
-    $t = XmlUtil::loadFile( $target );
-
-    $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
-    $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
-
-    $s = extractTriple( $s );
-    $t = extractTriple( $t );
+    $s = XmlUtil::extractEntities( $source );
+    $t = XmlUtil::extractEntities( $target );
 
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
@@ -32,7 +26,7 @@ foreach ( $qalist as $qafile )
     $onlySource = array_diff( $s , $intersect );
     $onlyTarget = array_diff( $t , $intersect );
 
-    print "qaxml.a: {$target}\n\n";
+    print "qaxml.e: {$target}\n\n";
 
     foreach( $onlyTarget as $only )
         print "- {$only}\n";
@@ -55,13 +49,4 @@ foreach ( $qalist as $qafile )
     }
 
     print "\n";
-}
-
-function extractTriple( array $list )
-{
-    $ret = array();
-    foreach( $list as $elem )
-        foreach( $elem->attributes as $attrib )
-            $ret[] = "{$elem->nodeName} {$attrib->nodeName} {$attrib->nodeValue}";
-    return $ret;
 }

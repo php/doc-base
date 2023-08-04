@@ -8,6 +8,28 @@ require_once __DIR__ . '/require.php';
 
 class XmlUtil
 {
+    public static function extractEntities( $filename )
+    {
+        $was = libxml_use_internal_errors( true );
+
+        $doc = new DOMDocument();
+        $doc->recover = true;
+        $doc->resolveExternals = false;
+        $doc->load( $filename );
+
+        $errors = libxml_get_errors();
+        libxml_clear_errors();
+        libxml_use_internal_errors( $was );
+
+        $ret = array();
+        foreach ($errors as $error)
+        {
+            if ( preg_match( "/Entity '(\S+)' not defined/" , $error->message , $matches ) )
+                $ret[] = $matches[1];
+        }
+        return $ret;
+    }
+
     public static function listNodeType( DOMNode $node , int $type )
     {
         $ret = array();
@@ -31,7 +53,7 @@ class XmlUtil
 
     public static function loadText( $contents ):DOMDocument
     {
-        $was = libxml_use_internal_errors( true ); // do not print warnings
+        $was = libxml_use_internal_errors( true );
 
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = true;
