@@ -43,7 +43,7 @@ foreach ( $qalist as $qafile )
 
         if ( ! $output )
         {
-            print "qaxml.t: {$target} content \n\n";
+            print "qaxml.t: {$target}\n\n";
             $output = true;
         }
 
@@ -96,7 +96,7 @@ foreach ( $qalist as $qafile )
             {
                 if ( ! $output )
                 {
-                    print "qaxml.t: {$target} count \n\n";
+                    print "qaxml.t: {$target}\n\n";
                     $output = true;
                 }
 
