@@ -34,16 +34,16 @@ foreach ( $qalist as $qafile )
         $s = extractTagContentList( $s , $tags );
         $t = extractTagContentList( $t , $tags );
 
-        if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
-            continue;
-
         $intersect = array_intersect( $s, $t );
         $onlySource = array_diff( $s , $intersect );
         $onlyTarget = array_diff( $t , $intersect );
 
+        if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
+            continue;
+
         if ( ! $output )
         {
-            print "qaxml.t: {$target}\n\n";
+            print "qaxml.t: {$target} content \n\n";
             $output = true;
         }
 
@@ -96,7 +96,7 @@ foreach ( $qalist as $qafile )
             {
                 if ( ! $output )
                 {
-                    print "qaxml.t: {$target}\n\n";
+                    print "qaxml.t: {$target} count \n\n";
                     $output = true;
                 }
 
