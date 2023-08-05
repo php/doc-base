@@ -12,7 +12,7 @@ assumptions of each script are described in each file.
 The `lib/` directory contains common code and functionality
 across these scripts.
 
-Before using the scritps, it need be configured:
+Before using the scripts, it need be configured:
 ```
 php doc-base/scripts/translation/configure.php $LANG_DIR
 ```
@@ -24,6 +24,54 @@ the same tag-attribute-value triples. Tag's attributes are extensively
 utilized in manual for linking and XIncluding. Translated files with
 missing os mistyped attributes may cause build failing or missing
 parts not copied by XIncludes.
+
+## qaxml.e.php
+
+`qaxml.e.php` checks if all updated translated files have
+the same external entities as the original files. Unbalanced entities
+may indicate mistyped or wrongly traduced parts.
+
+## qaxml.e.php
+
+`qaxml.p.php` checks if all updated translated files have
+the same processing instructions as the original files. Unbalanced entities
+may cause compilation errors, as they are utilized on manual in the build
+process.
+
+## qaxml.t.php
+
+`qaxml.t.php` checks if all updated translated files have
+the same tags as the original files. Different number of tags between
+source texts and target translations may cause compilation errors.
+
+This scripts accepts one parameter of comma separated tags to check their
+contents, as some tag' contents are expected *not* be translated.
+
+Suggested execution:
+```
+php doc-base/scripts/translation/qaxml.t.php acronym
+php doc-base/scripts/translation/qaxml.t.php classname
+php doc-base/scripts/translation/qaxml.t.php constant
+php doc-base/scripts/translation/qaxml.t.php envar
+php doc-base/scripts/translation/qaxml.t.php function
+php doc-base/scripts/translation/qaxml.t.php interfacename
+php doc-base/scripts/translation/qaxml.t.php parameter
+php doc-base/scripts/translation/qaxml.t.php type
+
+php doc-base/scripts/translation/qaxml.t.php classsynopsis
+php doc-base/scripts/translation/qaxml.t.php constructorsynopsis
+php doc-base/scripts/translation/qaxml.t.php destructorsynopsis
+php doc-base/scripts/translation/qaxml.t.php fieldsynopsis
+php doc-base/scripts/translation/qaxml.t.php funcsynopsis
+php doc-base/scripts/translation/qaxml.t.php methodsynopsis
+```
+May contain translated parts, so manual check is necessary:
+```
+php doc-base/scripts/translation/qaxml.t.php code
+php doc-base/scripts/translation/qaxml.t.php filename
+php doc-base/scripts/translation/qaxml.t.php literal
+php doc-base/scripts/translation/qaxml.t.php varname
+```
 
 # Migration
 
