@@ -138,17 +138,15 @@ function add_warning($err_msg) { /* {{{ */
 }
 /* }}} */
 
-function create_markup_to_modifiers(ReflectionMethod $method) { /* {{{ */
-	$modifiers = Reflection::getModifierNames($method->getModifiers());
-	$markup = '';
+function create_markup_to_modifiers(int $modifierFlags): array { /* {{{ */
+	$modifiers = Reflection::getModifierNames($modifierFlags);
+	$result = [];
 
-	if ($modifiers) {
-		foreach ($modifiers as $modifier) {
-			$markup .= '<modifier>'. $modifier .'</modifier> ';
-		}
-	}
+    foreach ($modifiers as $modifier) {
+        $result[] = '<modifier>'. $modifier .'</modifier>';
+    }
 
-	return $markup;
+	return $result;
 }
 /* }}} */
 
@@ -395,7 +393,7 @@ function gen_method_markup(ReflectionMethod $method, $content) { /* {{{ */
 	$content = preg_replace('/\{METHOD_NAME\}/', $method->name, $content);
 
 	/* {MODIFIERS} */
-	$content = preg_replace('/\{MODIFIERS\}/', create_markup_to_modifiers($method), $content, 1);
+	$content = preg_replace('/\{MODIFIERS\}/', implode(" ", create_markup_to_modifiers($method->getModifiers())), $content, 1);
 
 	/* {RETURN_TYPE} */
 	if (!$method->isConstructor()) {
@@ -476,6 +474,7 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
 
 function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 	$id = format_id($class->getName());
+	$escapedName = addslashes($class->getName());
 
 	/* {CLASS_NAME} */
 	$content = preg_replace('/\{CLASS_NAME\}/', $class->getName(), $content);
@@ -573,7 +572,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 
 
 	/* {PROPERTIES_LIST} */
-	if ($properties = $class->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED)) {
+	if ($properties = $class->getProperties()) {
 		$ident = get_ident_size('PROPERTIES_LIST', $content);
 		$inherited = array();
 
@@ -587,17 +586,21 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 				continue;
 			}
 
-			/* Get the modifier */
-			preg_match('/(\w+) \$/', (string) $property, $match);
-
 			$markup .= str_repeat(' ', $ident) ."<fieldsynopsis>". PHP_EOL;
-			$markup .= str_repeat(' ', $ident + 1) .'<modifier>'. $match[1] ."</modifier>". PHP_EOL;
-			$markup .= str_repeat(' ', $ident + 1) .'<varname linkend="'. $id .'.props.'. format_id($property->getName()) .'">'. $property->getName() ."</varname>". PHP_EOL;
-			$markup .= str_repeat(' ', $ident) ."</fieldsynopsis>". PHP_EOL;
+			$markup .= str_repeat(' ', $ident + 1) .
+                implode(
+                    str_repeat(' ', $ident + 1) . PHP_EOL,
+                    create_markup_to_modifiers($property->getModifiers())
+                ) . PHP_EOL;
+            if (PHP_VERSION_ID >= 74000 && $property->hasType()) {
+                $markup .= str_repeat(' ', $ident + 1) . get_type_as_xml_string($property->getType()). PHP_EOL;
+            }
+			$markup .= str_repeat(' ', $ident + 1) . '<varname linkend="'. $id .'.props.'. format_id($property->getName()) .'">'. $property->getName() ."</varname>". PHP_EOL;
+			$markup .= str_repeat(' ', $ident) . "</fieldsynopsis>". PHP_EOL;
 		}
 
 		if ($markup) {
-			$markup = "<classsynopsisinfo role=\"comment\">&Properties;</classsynopsisinfo>". PHP_EOL . $markup;
+			$markup = PHP_EOL . str_repeat(' ', $ident) . "<classsynopsisinfo role=\"comment\">&Properties;</classsynopsisinfo>". PHP_EOL . $markup;
 		}
 
 		if ($inherited) {
@@ -606,7 +609,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 			}
 			$markup .= '<classsynopsisinfo role="comment">&InheritedProperties;</classsynopsisinfo>'. PHP_EOL;
 			foreach ($inherited as $declaring_class) {
-				$markup .= str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('" . strtolower($declaring_class) . ".synopsis')/descendant::db:fieldsynopsis)\"><xi:fallback/></xi:include>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('" . strtolower($declaring_class) . ".synopsis')/descendant::db:fieldsynopsis)\">" . PHP_EOL . str_repeat(' ', $ident + 1) . "<xi:fallback/>" . PHP_EOL . str_repeat(' ', $ident) . "</xi:include>". PHP_EOL;
 			}
 		}
 
@@ -651,7 +654,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 	$ident = get_ident_size('METHOD_XINCLUDE', $content);
 	$content = preg_replace('/\{METHOD_XINCLUDE\}/',
 		PHP_EOL . str_repeat(' ', $ident) . "<classsynopsisinfo role=\"comment\">&Methods;</classsynopsisinfo>". PHP_EOL.
-		str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[not(@role='procedural')])\"><xi:fallback/></xi:include>",
+		str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\">" . PHP_EOL . str_repeat(' ', $ident + 1) . "<xi:fallback/>" . PHP_EOL . str_repeat(' ', $ident) . "</xi:include>",
 		$content, 1);
 
 	/* {INHERITED_XINCLUDE} */
@@ -659,7 +662,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 		$ident = get_ident_size('INHERITED_XINCLUDE', $content);
 		$content = preg_replace('/\{INHERITED_XINCLUDE\}/',
 			PHP_EOL . str_repeat(' ', $ident) ."<classsynopsisinfo role=\"comment\">&InheritedMethods;</classsynopsisinfo>". PHP_EOL.
-			str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". format_id($parent->getName()) ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[not(@role='procedural')])\"><xi:fallback/></xi:include>". PHP_EOL,
+			str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". format_id($parent->getName()) ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\">" . PHP_EOL . str_repeat(' ', $ident + 1) . "<xi:fallback/>" . PHP_EOL . str_repeat(' ', $ident) . "</xi:include>". PHP_EOL,
 			$content, 1);
 	} else {
 		$content = preg_replace('/^\s*\{INHERITED_XINCLUDE\}.*?\n/m', '', $content, 1);
