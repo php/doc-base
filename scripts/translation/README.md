@@ -31,7 +31,7 @@ parts not copied by XIncludes.
 the same external entities as the original files. Unbalanced entities
 may indicate mistyped or wrongly traduced parts.
 
-## qaxml.e.php
+## qaxml.p.php
 
 `qaxml.p.php` checks if all updated translated files have
 the same processing instructions as the original files. Unbalanced entities

@@ -128,7 +128,7 @@ function extractTagContentList( array $nodes , array $tags )
             if ( strlen( $text ) == $was )
                 break;
         }
-        $ret[] = $tag . " "  . $text;
+        $ret[] = $tag . ">"  . $text;
     }
     return $ret;
 }
