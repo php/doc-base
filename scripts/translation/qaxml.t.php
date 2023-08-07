@@ -21,7 +21,7 @@ foreach ( $qalist as $qafile )
     $source = $qafile->sourceDir . '/' . $qafile->file;
     $target = $qafile->targetDir . '/' . $qafile->file;
 
-    // Tag contents
+    // Tag contents, text
 
     if ( count( $tags ) > 0 )
     {
@@ -31,8 +31,61 @@ foreach ( $qalist as $qafile )
         $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
         $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
 
-        $s = extractTagContentList( $s , $tags );
-        $t = extractTagContentList( $t , $tags );
+        $s = extractTagsInnerText( $s , $tags );
+        $t = extractTagsInnerText( $t , $tags );
+
+        $intersect = array_intersect( $s, $t );
+        $onlySource = array_diff( $s , $intersect );
+        $onlyTarget = array_diff( $t , $intersect );
+
+        if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
+            continue;
+
+        if ( ! $output )
+        {
+            print "qaxml.t: {$target}\n\n";
+            $output = true;
+        }
+
+        foreach( $onlyTarget as $only )
+            print "- {$only}\n";
+        foreach( $onlySource as $only )
+            print "+ {$only}\n";
+
+        if ( count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
+        {
+            $s = array_count_values( $s );
+            $t = array_count_values( $t );
+            foreach ($s as $key => $countSource )
+            {
+                $countTarget = $t[$key];
+                $countDiff = $countSource - $countTarget;
+                if ( $countDiff > 0 )
+                    print "* {$key} +{$countDiff}\n";
+                if ( $countDiff < 0 )
+                    print "* {$key} {$countDiff}\n";
+            }
+        }
+
+        if ( $output )
+        {
+            print "\n";
+            continue;
+        }
+    }
+
+    // Tag contents, XML
+
+    if ( count( $tags ) > 0 && ! $output )
+    {
+        $s = XmlUtil::loadFile( $source );
+        $t = XmlUtil::loadFile( $target );
+
+        $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
+        $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
+
+        $s = extractTagsInnerXmls( $s , $tags );
+        $t = extractTagsInnerXmls( $t , $tags );
 
         $intersect = array_intersect( $s, $t );
         $onlySource = array_diff( $s , $intersect );
@@ -109,7 +162,7 @@ foreach ( $qalist as $qafile )
     }
 }
 
-function extractTagContentList( array $nodes , array $tags )
+function extractTagsInnerText( array $nodes , array $tags )
 {
     $ret = array();
     foreach( $nodes as $node )
@@ -121,7 +174,6 @@ function extractTagContentList( array $nodes , array $tags )
         while( true )
         {
             $was = strlen( $text );
-            $text = trim( $text );
             $text = str_replace( "\n" , " " , $text );
             $text = str_replace( "\r" , " " , $text );
             $text = str_replace( "  " , " " , $text );
@@ -129,6 +181,29 @@ function extractTagContentList( array $nodes , array $tags )
                 break;
         }
         $ret[] = $tag . ">"  . $text;
+    }
+    return $ret;
+}
+
+function extractTagsInnerXmls( array $nodes , array $tags )
+{
+    $ret = array();
+    foreach( $nodes as $node )
+    {
+        $tag = $node->nodeName;
+        if ( in_array( $tag , $tags ) == false )
+            continue;
+        $text = $node->ownerDocument->saveXML( $node );
+        while( true )
+        {
+            $was = strlen( $text );
+            $text = str_replace( "\n" , " " , $text );
+            $text = str_replace( "\r" , " " , $text );
+            $text = str_replace( "  " , " " , $text );
+            if ( strlen( $text ) == $was )
+                break;
+        }
+        $ret[] = $text;
     }
     return $ret;
 }
