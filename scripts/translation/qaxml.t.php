@@ -182,6 +182,20 @@ function extractTagsInnerText( array $nodes , array $tags )
             if ( strlen( $text ) == $was )
                 break;
         }
+        // Types not case-sensitive: https://github.com/php/doc-en/issues/2658
+        if ( $tag == "type" )
+        {
+            switch( strtolower( $text ) )
+            {
+                case "array":
+                case "string":
+                case "float":
+                case "bool":
+                case "null":
+                    $text = strtolower( $text );
+                    break;
+            }
+        }
         $ret[] = $tag . ">"  . $text;
     }
     return $ret;
