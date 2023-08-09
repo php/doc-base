@@ -67,6 +67,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>DER</term>
+   <listitem>
+    <simpara>Distinguished Encoding Rules</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>DLL</term>
    <listitem>
     <simpara>Dynamic Link Library</simpara>
@@ -238,6 +244,12 @@
    <term>PECL</term>
    <listitem>
     <simpara>PHP Extension and Application Repository</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>PEM</term>
+   <listitem>
+    <simpara>Privacy-Enhanced Mail</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
