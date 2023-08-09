@@ -49,6 +49,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>CSR</term>
+   <listitem>
+    <simpara>Certificate Signing Request</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>CSS</term>
    <listitem>
     <simpara>Cascading Style Sheets</simpara>
@@ -244,6 +250,12 @@
    <term>PHP</term>
    <listitem>
     <simpara>PHP: Hypertext Preprocessor</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>PKCS</term>
+   <listitem>
+    <simpara>Public Key Cryptography Standards</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
