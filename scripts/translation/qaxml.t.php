@@ -155,7 +155,7 @@ foreach ( $qalist as $qafile )
                     $output = true;
                 }
 
-                print "* {$tag} -{$sourceCount} +{$targetCount}\n";
+                print "* {$tag} -{$targetCount} +{$sourceCount}\n"
             }
         }
 
