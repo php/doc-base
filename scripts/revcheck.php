@@ -548,7 +548,7 @@ function print_html_translators( $translators , $enFiles, $trFiles )
 </table>
 <p/>
 <table class="c">
-  <tr class=blue>
+  <tr>
     <th rowspan=2>Translator's name</th>
     <th rowspan=2>Contact email</th>
     <th rowspan=2>Nick</th>
@@ -559,7 +559,7 @@ function print_html_translators( $translators , $enFiles, $trFiles )
     <th>upto-<br>date</th>
     <th>old</th>
     <th>wip</th>
-    <th class="blue">sum</th>
+    <th>sum</th>
   </tr>
 HTML;
     $files_uptodate = 0;
@@ -745,7 +745,7 @@ HTML;
         {
             $path = $en->path;
             $path2 = $path == '' ? '/' : $path;
-            print " <tr><th class='blue' colspan='3'>$path2</th></tr>";
+            print " <tr><th colspan='3'>$path2</th></tr>";
         }
         $size = $en->size < 1024 ? 1 : floor( $en->size / 1024 );
 
@@ -819,7 +819,7 @@ HTML;
         {
             $path = $en->path;
             $path2 = $path == '' ? '/' : $path;
-            print " <tr><th colspan='6' class='blue c'>$path2</th></tr>";
+            print " <tr><th colspan='6' class='c'>$path2</th></tr>";
         }
         $ll = strtolower( $lang );
         $kh = hash( 'sha256' , $key );
@@ -879,7 +879,7 @@ HTML;
               if ( $path !== $en->path )
               {
                    $path = $en->path;
-                   print " <tr><th class='blue' colspan='2'>/$path</th></tr>";
+                   print " <tr><th colspan='2'>/$path</th></tr>";
               }
               print <<<HTML
  <tr class=bggray>
