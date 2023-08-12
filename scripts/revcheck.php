@@ -833,7 +833,7 @@ HTML;
         $st = $tr->completion;
         print <<<HTML
  <tr class="bggray">
-  <td class="l">$nm</td>
+  <td>$nm</td>
   <td class="c">$ch</td>
   <td class="oc">
     <button class="btn copy" data-clipboard-text="{$en->hash}">
