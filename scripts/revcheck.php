@@ -94,6 +94,7 @@ class FileStatusInfo
     public $size;
     public $hash;
     public $skip;
+    public $days;
     public $adds;
     public $dels;
     public $syncStatus;
@@ -363,16 +364,20 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
                 $trFile->syncStatus = FileStatusEnum::TranslatedOld;
 
                 $cwd = getcwd();
-
                 chdir( 'en' );
+                //adds,dels
                 $subject = `git diff --numstat $trFile->hash -- {$filename}`;
-                chdir( $cwd );
                 if ( $subject )
                 {
                    preg_match('/(\d+)\s+(\d+)/', $subject, $matches);
                    if ($matches)
                        [, $enFile->adds, $enFile->dels] = $matches;
                 }
+                //days
+                $days = `git show --no-patch --format='%ct' $enFile->hash -- {$filename}`;
+                if ( $days != "" )
+                    $enFile->days = floor( ( time() - $days ) / 86400 );
+                chdir( $cwd );
 
                 if ( $enFile->skip )
                 {
@@ -785,6 +790,7 @@ function print_html_files( $enFiles , $trFiles , $lang )
   <th colspan="2">Hash</th>
   <th rowspan="2">Maintainer</th>
   <th rowspan="2">Status</th>
+  <th rowspan="2">Days</th>
  </tr>
  <tr>
   <th>en</th>
@@ -812,7 +818,7 @@ HTML;
         {
             $path = $en->path;
             $path2 = $path == '' ? '/' : $path;
-            print " <tr><th colspan='6' class='c'>$path2</th></tr>";
+            print " <tr><th colspan='7' class='c'>$path2</th></tr>";
         }
         $ll = strtolower( $lang );
         $kh = hash( 'sha256' , $key );
@@ -823,6 +829,10 @@ HTML;
             $nm = $en->name;
         $h1 = "<a href='https://github.com/php/doc-en/blob/{$en->hash}/$key'>{$en->hash}</a>";
         $h2 = "<a href='https://github.com/php/doc-en/blob/{$tr->hash}/$key'>{$tr->hash}</a>";
+
+        $bgdays = '';
+        if ($en->days === null || $en->days > 90)
+            $bgdays = 'bgorange';
 
         if ($en->adds != null)
             $ch = "<span style='color: darkgreen;'>+{$en->adds}</span> <span style='color: firebrick;'>-{$en->dels}</span>";
@@ -841,6 +851,7 @@ HTML;
   <td class="o">$h2</td>
   <td class="c">$ma</td>
   <td class="c">$st</td>
+  <td class="c {$bgdays}">{$en->days}</td>
  </tr>
 HTML;
     }
