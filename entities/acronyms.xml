@@ -49,6 +49,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>CSR</term>
+   <listitem>
+    <simpara>Certificate Signing Request</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>CSS</term>
    <listitem>
     <simpara>Cascading Style Sheets</simpara>
@@ -64,6 +70,12 @@
    <term>CVS</term>
    <listitem>
     <simpara>Concurrent Versions System</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>DER</term>
+   <listitem>
+    <simpara>Distinguished Encoding Rules</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
@@ -241,9 +253,21 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>PEM</term>
+   <listitem>
+    <simpara>Privacy-Enhanced Mail</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>PHP</term>
    <listitem>
     <simpara>PHP: Hypertext Preprocessor</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>PKCS</term>
+   <listitem>
+    <simpara>Public Key Cryptography Standards</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
