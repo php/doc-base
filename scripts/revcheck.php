@@ -84,7 +84,6 @@ class FileStatusEnum
     const TranslatedWip     = 'TranslatedWip';
     const TranslatedOk      = 'TranslatedOk';
     const TranslatedOld     = 'TranslatedOld';
-    const TranslatedCritial = 'TranslatedCritial';
     const NotInEnTree       = 'NotInEnTree';
 }
 
@@ -133,7 +132,6 @@ class TranslatorInfo
         switch ( $fileStatus ) {
             case FileStatusEnum::RevTagProblem:
             case FileStatusEnum::TranslatedOld:
-            case FileStatusEnum::TranslatedCritial:
                 return "files_outdated";
                 break;
             case FileStatusEnum::TranslatedWip:
@@ -356,7 +354,6 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
 
         // TranslatedOk
         // TranslatedOld
-        // TranslatedCritial
         if ( strlen( $trFile->hash ) == 40 )
         {
             if ( $enFile->hash == $trFile->hash )
