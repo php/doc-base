@@ -556,9 +556,9 @@ function print_html_translators( $translators , $enFiles, $trFiles )
     <th colspan=4>Files maintained</th>
   </tr>
   <tr>
-    <th style="color:#000000">upto-<br>date</th>
-    <th style="color:#000000">old</th>
-    <th style="color:#000000">wip</th>
+    <th>upto-<br>date</th>
+    <th>old</th>
+    <th>wip</th>
     <th class="blue">sum</th>
   </tr>
 HTML;
