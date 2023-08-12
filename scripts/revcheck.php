@@ -836,10 +836,7 @@ HTML;
   <td>$nm</td>
   <td class="c">$ch</td>
   <td class="oc">
-    <button class="btn copy" data-clipboard-text="{$en->hash}">
-      Copy
-    </button>
-    $h1
+    <button class="btn copy" data-clipboard-text="{$en->hash}">Copy</button> $h1
   </td>
   <td class="o">$h2</td>
   <td class="c">$ma</td>
