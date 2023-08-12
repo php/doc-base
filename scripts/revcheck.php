@@ -492,22 +492,15 @@ h1 { color: #FFFFFF; }
 table { margin-left: auto; margin-right: auto; text-align: left; border-spacing: 2px; }
 th { color: white; background-color: #666699; padding: 0.2em; text-align: center; vertical-align: middle; }
 td { padding: 0.2em 0.3em; }
-.oc { white-space: nowrap; overflow: hidden; max-width: 7em; }
 .copy { margin:0; padding: 0; font-size:small; }
 .copy:hover { text-transform: uppercase; }
 .copy:active { background: aqua; font-weight: bold; }
-.o { white-space: nowrap; overflow: hidden; max-width: 5em; }
-.c { text-align: center; }
-.r { text-align: right; }
 .b { font-weight: bold; }
-.white { color: white; }
-.black { color: black; }
-.bgblue { background-color: #666699;}
+.c { text-align: center; }
+.o { white-space: nowrap; overflow: hidden; max-width: 5em; }
+.oc { white-space: nowrap; overflow: hidden; max-width: 7em; }
 .bggray { background-color: #dcdcdc;}
-.bggreen { background-color: #68d888;}
 .bgorange { background-color: #f4a460;}
-.bgred { background-color: #ff6347;}
-.bgyellow { background-color: #eee8aa;}
 </style>
 </head>
 <body>
