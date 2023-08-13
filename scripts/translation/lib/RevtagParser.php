@@ -66,23 +66,23 @@ class RevtagParser
                 $ret->status = trim( $match[3] );
 
                 if ( $ret->revision != "" && strlen( $ret->revision ) != 40 )
-                    $ret->errors .= "Wrong hash format or size: {$ret->revision}\n";
+                    $ret->errors .= "Wrong hash size: {$ret->revision}\n";
                 if ( $ret->maintainer == "" )
                     $ret->errors .= "Empty maintainer.\n";
-                if ( $ret->status != "" && strlen( $ret->revision ) != 40 )
+                if ( $ret->status == "" )
                     $ret->errors .= "Empty status.\n";
             }
         }
 
-        if ( str_starts_with( $text , "CRED" ) )
+        if ( str_starts_with( $text , "CREDITS:" ) )
         {
             $match = array();
-            $regex = "/CREDITS:\s*(\S+)/";
+            $regex = "/CREDITS:(.*)/";
             if ( preg_match( $regex , $text , $match ) )
             {
-                $ret->credits = $match[1];
+                $ret->credits = trim( $match[1] );
 
-                if ( $ret->credits != "" && strlen( $ret->revision ) != 40 )
+                if ( $ret->credits == "" )
                     $ret->errors .= "Empty credits.\n";
             }
         }
