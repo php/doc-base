@@ -831,7 +831,7 @@ HTML;
         $h2 = "<a href='https://github.com/php/doc-en/blob/{$tr->hash}/$key'>{$tr->hash}</a>";
 
         $bgdays = '';
-        if ($en->days === null || $en->days > 90)
+        if ($en->days != null && $en->days > 90)
             $bgdays = 'bgorange';
 
         if ($en->adds != null)
