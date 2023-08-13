@@ -84,7 +84,6 @@ class FileStatusEnum
     const TranslatedWip     = 'TranslatedWip';
     const TranslatedOk      = 'TranslatedOk';
     const TranslatedOld     = 'TranslatedOld';
-    const TranslatedCritial = 'TranslatedCritial';
     const NotInEnTree       = 'NotInEnTree';
 }
 
@@ -95,6 +94,7 @@ class FileStatusInfo
     public $size;
     public $hash;
     public $skip;
+    public $days;
     public $adds;
     public $dels;
     public $syncStatus;
@@ -133,7 +133,6 @@ class TranslatorInfo
         switch ( $fileStatus ) {
             case FileStatusEnum::RevTagProblem:
             case FileStatusEnum::TranslatedOld:
-            case FileStatusEnum::TranslatedCritial:
                 return "files_outdated";
                 break;
             case FileStatusEnum::TranslatedWip:
@@ -356,7 +355,6 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
 
         // TranslatedOk
         // TranslatedOld
-        // TranslatedCritial
         if ( strlen( $trFile->hash ) == 40 )
         {
             if ( $enFile->hash == $trFile->hash )
@@ -366,16 +364,20 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
                 $trFile->syncStatus = FileStatusEnum::TranslatedOld;
 
                 $cwd = getcwd();
-
                 chdir( 'en' );
+                //adds,dels
                 $subject = `git diff --numstat $trFile->hash -- {$filename}`;
-                chdir( $cwd );
                 if ( $subject )
                 {
                    preg_match('/(\d+)\s+(\d+)/', $subject, $matches);
                    if ($matches)
                        [, $enFile->adds, $enFile->dels] = $matches;
                 }
+                //days
+                $days = `git show --no-patch --format='%ct' $enFile->hash -- {$filename}`;
+                if ( $days != "" )
+                    $enFile->days = floor( ( time() - $days ) / 86400 );
+                chdir( $cwd );
 
                 if ( $enFile->skip )
                 {
@@ -495,22 +497,15 @@ h1 { color: #FFFFFF; }
 table { margin-left: auto; margin-right: auto; text-align: left; border-spacing: 2px; }
 th { color: white; background-color: #666699; padding: 0.2em; text-align: center; vertical-align: middle; }
 td { padding: 0.2em 0.3em; }
-.oc { white-space: nowrap; overflow: hidden; max-width: 7em; }
 .copy { margin:0; padding: 0; font-size:small; }
 .copy:hover { text-transform: uppercase; }
 .copy:active { background: aqua; font-weight: bold; }
-.o { white-space: nowrap; overflow: hidden; max-width: 5em; }
-.c { text-align: center; }
-.r { text-align: right; }
 .b { font-weight: bold; }
-.white { color: white; }
-.black { color: black; }
-.bgblue { background-color: #666699;}
+.c { text-align: center; }
+.o { white-space: nowrap; overflow: hidden; max-width: 5em; }
+.oc { white-space: nowrap; overflow: hidden; max-width: 7em; }
 .bggray { background-color: #dcdcdc;}
-.bggreen { background-color: #68d888;}
 .bgorange { background-color: #f4a460;}
-.bgred { background-color: #ff6347;}
-.bgyellow { background-color: #eee8aa;}
 </style>
 </head>
 <body>
@@ -551,7 +546,7 @@ function print_html_translators( $translators , $enFiles, $trFiles )
 </table>
 <p/>
 <table class="c">
-  <tr class=blue>
+  <tr>
     <th rowspan=2>Translator's name</th>
     <th rowspan=2>Contact email</th>
     <th rowspan=2>Nick</th>
@@ -559,10 +554,10 @@ function print_html_translators( $translators , $enFiles, $trFiles )
     <th colspan=4>Files maintained</th>
   </tr>
   <tr>
-    <th style="color:#000000">upto-<br>date</th>
-    <th style="color:#000000">old</th>
-    <th style="color:#000000">wip</th>
-    <th class="blue">sum</th>
+    <th>upto-<br>date</th>
+    <th>old</th>
+    <th>wip</th>
+    <th>sum</th>
   </tr>
 HTML;
     $files_uptodate = 0;
@@ -748,7 +743,7 @@ HTML;
         {
             $path = $en->path;
             $path2 = $path == '' ? '/' : $path;
-            print " <tr><th class='blue' colspan='3'>$path2</th></tr>";
+            print " <tr><th colspan='3'>$path2</th></tr>";
         }
         $size = $en->size < 1024 ? 1 : floor( $en->size / 1024 );
 
@@ -795,6 +790,7 @@ function print_html_files( $enFiles , $trFiles , $lang )
   <th colspan="2">Hash</th>
   <th rowspan="2">Maintainer</th>
   <th rowspan="2">Status</th>
+  <th rowspan="2">Days</th>
  </tr>
  <tr>
   <th>en</th>
@@ -822,7 +818,7 @@ HTML;
         {
             $path = $en->path;
             $path2 = $path == '' ? '/' : $path;
-            print " <tr><th colspan='6' class='blue c'>$path2</th></tr>";
+            print " <tr><th colspan='7' class='c'>$path2</th></tr>";
         }
         $ll = strtolower( $lang );
         $kh = hash( 'sha256' , $key );
@@ -834,6 +830,10 @@ HTML;
         $h1 = "<a href='https://github.com/php/doc-en/blob/{$en->hash}/$key'>{$en->hash}</a>";
         $h2 = "<a href='https://github.com/php/doc-en/blob/{$tr->hash}/$key'>{$tr->hash}</a>";
 
+        $bgdays = '';
+        if ($en->days != null && $en->days > 90)
+            $bgdays = 'bgorange';
+
         if ($en->adds != null)
             $ch = "<span style='color: darkgreen;'>+{$en->adds}</span> <span style='color: firebrick;'>-{$en->dels}</span>";
         else
@@ -843,17 +843,15 @@ HTML;
         $st = $tr->completion;
         print <<<HTML
  <tr class="bggray">
-  <td class="l">$nm</td>
+  <td>$nm</td>
   <td class="c">$ch</td>
   <td class="oc">
-    <button class="btn copy" data-clipboard-text="{$en->hash}">
-      Copy
-    </button>
-    $h1
+    <button class="btn copy" data-clipboard-text="{$en->hash}">Copy</button> $h1
   </td>
   <td class="o">$h2</td>
   <td class="c">$ma</td>
   <td class="c">$st</td>
+  <td class="c {$bgdays}">{$en->days}</td>
  </tr>
 HTML;
     }
@@ -882,7 +880,7 @@ HTML;
               if ( $path !== $en->path )
               {
                    $path = $en->path;
-                   print " <tr><th class='blue' colspan='2'>/$path</th></tr>";
+                   print " <tr><th colspan='2'>/$path</th></tr>";
               }
               print <<<HTML
  <tr class=bggray>
