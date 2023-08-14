@@ -44,8 +44,13 @@ process.
 the same tags as the original files. Different number of tags between
 source texts and target translations may cause compilation errors.
 
-This scripts accepts one parameter of comma separated tags to check their
+Usage: `php qaxml.t.php [--detail] [tag[,tag]]`
+
+`[tag[,tag]]` is a comma separated tag list to check their
 contents, as some tag's contents are expected *not* be translated.
+
+`--detail` will also print line defintions of each mismatched tag,
+to facilitate bitsecting.
 
 Suggested execution:
 ```
