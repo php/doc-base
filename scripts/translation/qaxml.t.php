@@ -6,11 +6,21 @@
 
 require_once __DIR__ . '/lib/all.php';
 
-$qalist = QaFileInfo::cacheLoad();
-
 $tags = array();
-if ( count($argv) > 1 )
-    $tags = explode( ',' , $argv[1] );
+$showDetail = false;
+
+array_shift( $argv );
+
+if ( count( $argv ) > 0 && $argv[0] == '--detail' )
+{
+    $showDetail = true;
+    array_shift( $argv );
+}
+
+if ( count( $argv ) > 0 )
+    $tags = explode( ',' , $argv[0] );
+
+$qalist = QaFileInfo::cacheLoad();
 
 foreach ( $qalist as $qafile )
 {
@@ -156,6 +166,9 @@ foreach ( $qalist as $qafile )
                 }
 
                 print "* {$tag} -{$targetCount} +{$sourceCount}\n";
+
+                if ( $showDetail )
+                    printTagUsageDetail( $source , $target , $tag );
             }
         }
 
@@ -238,4 +251,36 @@ function equalizeKeys( array $list , array & $other , mixed $value = 0 )
     foreach( $list as $k => $v )
         if ( ! isset( $other[$k] ) )
             $other[$k] = $value;
+}
+
+function printTagUsageDetail( string $source , string $target , string $tag )
+{
+    print "\n";
+    $s = collectTagDefinitions( $source , $tag );
+    $t = collectTagDefinitions( $target , $tag );
+    $min = min( count( $s ) , count( $t ) );
+    for( $i = 0 ; $i < $min ; $i++ )
+    {
+        $d = $s[$i] - $t[$i];
+        print "\t{$tag}\t{$s[$i]}\t{$t[$i]}\t{$d}\n";
+    }
+    for( $i = $min ; $i < count($s) ; $i++ )
+        print "\t{$tag}\t{$s[$i]}\t\t\n";
+    for( $i = $min ; $i < count($t) ; $i++ )
+        print "\t{$tag}\t\t{$t[$i]}\t\n";
+    print "\n";
+}
+
+function collectTagDefinitions( string $file , string $tag )
+{
+    $ret = array();
+    $text = XmlUtil::loadFile( $file );
+    $list = XmlUtil::listNodeType( $text , XML_ELEMENT_NODE );
+    foreach( $list as $node )
+    {
+        if ( $node->nodeName != $tag )
+            continue;
+        $ret[] = $node->getLineNo();
+    }
+    return $ret;
 }
