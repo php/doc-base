@@ -4,7 +4,7 @@
  * qaxml.p.php -- Compare PI usage between XMLs
  */
 
-require_once __DIR__ . '/lib/require.php';
+require_once __DIR__ . '/lib/all.php';
 
 $qalist = QaFileInfo::cacheLoad();
 

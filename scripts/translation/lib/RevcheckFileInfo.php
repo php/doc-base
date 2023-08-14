@@ -1,8 +1,12 @@
 <?php
 
-require_once __DIR__ . '/require.php';
+require_once __DIR__ . '/all.php';
 
-enum RevcheckStatus :string
+/**
+ * General data of a file in a documentation tree
+ */
+
+ enum RevcheckStatus :string
 {
     case Untranslated      = 'Untranslated';
     case RevTagProblem     = 'RevTagProblem';

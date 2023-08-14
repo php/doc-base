@@ -1,6 +1,10 @@
 <?php
 
-require_once __DIR__ . '/require.php';
+require_once __DIR__ . '/all.php';
+
+/**
+ * General file transversal, ordered file listing
+ */
 
 class RevcheckFileList
 {

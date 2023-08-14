@@ -45,7 +45,7 @@ the same tags as the original files. Different number of tags between
 source texts and target translations may cause compilation errors.
 
 This scripts accepts one parameter of comma separated tags to check their
-contents, as some tag' contents are expected *not* be translated.
+contents, as some tag's contents are expected *not* be translated.
 
 Suggested execution:
 ```

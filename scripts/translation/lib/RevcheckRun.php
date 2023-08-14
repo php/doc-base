@@ -1,10 +1,11 @@
 <?php
 
-require_once __DIR__ . '/require.php';
+require_once __DIR__ . '/all.php';
 
 /**
  * Calculate translation sync/diff status from two directories
  */
+
 class RevcheckRun
 {
     public string $sourceDir;

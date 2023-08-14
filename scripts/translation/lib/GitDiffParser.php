@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/require.php';
+require_once __DIR__ . '/all.php';
 
 /**
  * Parse `git diff` to complement file state

@@ -1,5 +1,11 @@
 <?php
 
+require_once __DIR__ . '/all.php';
+
+/**
+ * Files ignored on translation tree
+ */
+
 class RevcheckIgnore
 {
     public static function ignore( $filename ) : bool
