@@ -29,9 +29,11 @@ foreach ( $qalist as $qafile )
     if ( $qafile->sourceHash != $qafile->targetHash )
         continue;
 
-    $output = false;
     $source = $qafile->sourceDir . '/' . $qafile->file;
     $target = $qafile->targetDir . '/' . $qafile->file;
+
+    $header = "qaxml.t: {$target}\n\n";
+    $output = new TextBufferHasher();
 
     // Tag contents, text
 
@@ -53,16 +55,12 @@ foreach ( $qalist as $qafile )
         if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
             continue;
 
-        if ( ! $output )
-        {
-            print "qaxml.t: {$target}\n\n";
-            $output = true;
-        }
+        $output->pushFirst( $header );
 
         foreach( $onlyTarget as $only )
-            print "- {$only}\n";
+            $output->push( "- {$only}\n" );
         foreach( $onlySource as $only )
-            print "+ {$only}\n";
+            $output->push( "+ {$only}\n" );
 
         if ( count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
         {
@@ -73,22 +71,18 @@ foreach ( $qalist as $qafile )
                 $countTarget = $t[$key];
                 $countDiff = $countSource - $countTarget;
                 if ( $countDiff > 0 )
-                    print "* {$key} +{$countDiff}\n";
+                    $output->push( "* {$key} +{$countDiff}\n" );
                 if ( $countDiff < 0 )
-                    print "* {$key} {$countDiff}\n";
+                    $output->push( "* {$key} {$countDiff}\n" );
             }
         }
 
-        if ( $output )
-        {
-            print "\n";
-            continue;
-        }
+        $output->pushExtra( "\n" );
     }
 
-    // Tag contents, XML
+    // Tag contents, XML, if other checks passed
 
-    if ( count( $tags ) > 0 && ! $output )
+    if ( count( $tags ) > 0 && count( $output->texts ) == 0 )
     {
         $s = XmlUtil::loadFile( $source );
         $t = XmlUtil::loadFile( $target );
@@ -106,16 +100,12 @@ foreach ( $qalist as $qafile )
         if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
             continue;
 
-        if ( ! $output )
-        {
-            print "qaxml.t: {$target}\n\n";
-            $output = true;
-        }
+        $output->pushFirst( $header );
 
         foreach( $onlyTarget as $only )
-            print "- {$only}\n";
+            $output->push( "- {$only}\n" );
         foreach( $onlySource as $only )
-            print "+ {$only}\n";
+            $output->push( "+ {$only}\n" );
 
         if ( count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
         {
@@ -126,17 +116,13 @@ foreach ( $qalist as $qafile )
                 $countTarget = $t[$key];
                 $countDiff = $countSource - $countTarget;
                 if ( $countDiff > 0 )
-                    print "* {$key} +{$countDiff}\n";
+                    $output->push( "* {$key} +{$countDiff}\n" );
                 if ( $countDiff < 0 )
-                    print "* {$key} {$countDiff}\n";
+                    $output->push( "* {$key} {$countDiff}\n" );
             }
         }
 
-        if ( $output )
-        {
-            print "\n";
-            continue;
-        }
+        $output->pushExtra( "\n" );
     }
 
     // Tag count
@@ -159,21 +145,46 @@ foreach ( $qalist as $qafile )
 
             if ( $sourceCount != $targetCount )
             {
-                if ( ! $output )
-                {
-                    print "qaxml.t: {$target}\n\n";
-                    $output = true;
-                }
+                $output->pushFirst( $header );
 
-                print "* {$tag} -{$targetCount} +{$sourceCount}\n";
+                $output->push( "* {$tag} -{$targetCount} +{$sourceCount}\n" );
 
                 if ( $showDetail )
                     printTagUsageDetail( $source , $target , $tag );
+
+                $output->pushExtra( "\n" );
             }
         }
+    }
 
-        if ( $output )
-            print "\n";
+    // Output
+
+    $marks = XmlUtil::listNodeType( XmlUtil::loadFile( $target ) , XML_COMMENT_NODE );
+    foreach( $marks as $k => $v )
+        $marks[$k] = trim( $v->nodeValue );
+
+    if ( count( $output->texts ) > 0 )
+    {
+        $hash = $output->hash();
+        $mark = "qaxml.t.php ignore $hash";
+
+        $key = array_search( $mark , $marks );
+        if ( $key !== false )
+        {
+            unset( $marks[$key] );
+        }
+        else
+        {
+            $output->print();
+            print "# Annotate with '<!-- $mark -->' to ignore.\n\n";
+        }
+
+        foreach ( $marks as $item )
+            if ( str_starts_with( $item , "qaxml.t.php ignore" ) )
+            {
+                print $header;
+                print "# Unconsumed annotation: $item\n\n";
+            }
     }
 }
 
@@ -283,4 +294,39 @@ function collectTagDefinitions( string $file , string $tag )
         $ret[] = $node->getLineNo();
     }
     return $ret;
+}
+
+class TextBufferHasher
+{
+    public array $texts = array();
+
+    function hash() : string
+    {
+        if ( count( $this->texts) == 0 )
+            return "";
+        return md5( implode( "" , $this->texts ) );
+    }
+
+    function push( string $text )
+    {
+        $this->texts[] = $text;
+    }
+
+    function pushFirst( string $text )
+    {
+        if ( count( $this->texts ) == 0 )
+            $this->push( $text );
+    }
+
+    function pushExtra( string $text )
+    {
+        if ( count( $this->texts ) > 0 )
+            $this->push( $text );
+    }
+
+    function print()
+    {
+        foreach( $this->texts as $text )
+            print $text;
+    }
 }

@@ -13,18 +13,4 @@ if ( count( $argv ) < 2 )
     return;
 }
 
-$run = new RevcheckRun( 'en' , $argv[1] , true );
-
-foreach( $run->targetFiles->list as $file )
-{
-    if ( $file->revtag == null ) continue;
-
-    //print $file->file . " : " . $file->revtag->maintainer . " : " . $file->revtag->credits . "\n";
-    //continue;
-
-    if ( $file->revtag->errors != "" )
-    {
-        //print $file->file . "\n";
-        print $file->revtag->errors ; "\n";
-    }
-}
+new RevcheckRun( 'en' , $argv[1] , true );
