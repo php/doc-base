@@ -67,8 +67,10 @@ Package-specific:
   --with-php=PATH                Path to php CLI executable [detect]
   --with-lang=LANG               Language to build [{$acd['LANG']}]
   --with-partial=my-xml-id       Root ID to build (e.g. <book xml:id="MY-ID">) [{$acd['PARTIAL']}]
-  --disable-broken-file-listing  Do not ignore translated files in 
+  --disable-broken-file-listing  Do not ignore translated files in
                                  broken-files.txt
+  --disable-xpointer-reporting   Do not show XInclude/XPointer failures. Only effective
+                                 on translations
   --redirect-stderr-to-stdout    Redirect STDERR to STDOUT. Use STDOUT as the
                                  standard output for XML errors [{$acd['STDERR_TO_STDOUT']}]
   --output=FILENAME              Save to given file (i.e. not .manual.xml)
@@ -356,6 +358,7 @@ $acd = array( // {{{
     'INPUT_FILENAME'   => 'manual.xml',
     'TRANSLATION_ONLY_INCL_BEGIN' => '',
     'TRANSLATION_ONLY_INCL_END' => '',
+    'XPOINTER_REPORTING' => 'yes',
 ); // }}}
 
 $ac = $acd;
@@ -490,7 +493,11 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
         case 'stderr-to-stdout':
             $ac['STDERR_TO_STDOUT'] = $v;
             break;
-            
+
+        case 'xpointer-reporting':
+            $ac['XPOINTER_REPORTING'] = $v;
+            break;
+
         case '':
             break;
 
@@ -710,14 +717,26 @@ if ($didLoad === false) {
     print_xml_errors();
     errors_are_bad(1);
 }
-
 echo "done.\n";
-echo "Validating {$ac["INPUT_FILENAME"]}... ";
+
+echo "Running XInclude/XPointer... ";
 flush();
 
 $dom->xinclude();
-print_xml_errors();
 
+echo "done.\n";
+flush();
+
+if ( $ac['XPOINTER_REPORTING'] == 'yes' || ($ac['LANG'] == 'en') )
+{
+    $errors = libxml_get_errors();
+    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
+    foreach( $errors as $error )
+        fprintf( $output , "{$error->message}\n");
+}
+
+echo "Validating {$ac["INPUT_FILENAME"]}... ";
+flush();
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
     $dom->validate(); // we don't care if the validation works or not
     $node = $dom->getElementById($ac['PARTIAL']);
