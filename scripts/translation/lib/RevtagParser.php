@@ -12,7 +12,7 @@ class RevtagInfo
     public string $maintainer = "";
     public string $status = "";
     public string $credits = "";
-    public string $errors = "";
+    public array  $errors = [];
 }
 
 class RevtagParser
@@ -66,12 +66,14 @@ class RevtagParser
                 $ret->status = trim( $match[3] );
 
                 if ( $ret->revision != "" && strlen( $ret->revision ) != 40 )
-                    $ret->errors .= "Wrong hash size: {$ret->revision}\n";
+                    $ret->errors[] = "Wrong hash size: {$ret->revision}";
                 if ( $ret->maintainer == "" )
-                    $ret->errors .= "Empty maintainer.\n";
+                    $ret->errors[] = "Empty maintainer.";
                 if ( $ret->status == "" )
-                    $ret->errors .= "Empty status.\n";
+                    $ret->errors[] = "Empty status.";
             }
+            else
+                $ret->errors[] = "No revtag.";
         }
 
         if ( str_starts_with( $text , "CREDITS:" ) )
@@ -83,7 +85,7 @@ class RevtagParser
                 $ret->credits = trim( $match[1] );
 
                 if ( $ret->credits == "" )
-                    $ret->errors .= "Empty credits.\n";
+                    $ret->errors[] = "Empty credits.";
             }
         }
     }

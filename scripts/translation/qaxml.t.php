@@ -176,7 +176,7 @@ foreach ( $qalist as $qafile )
         else
         {
             $output->print();
-            print "# Annotate with '<!-- $mark -->' to ignore.\n\n";
+            print "# To ignore, annotate with: <!-- $mark -->\n\n";
         }
 
         foreach ( $marks as $item )

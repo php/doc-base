@@ -17,6 +17,11 @@ Before using the scripts, it need be configured:
 php doc-base/scripts/translation/configure.php $LANG_DIR
 ```
 
+## qarvt.php
+
+`qarvt.a.php` checks if all translated files have revtags in the
+expected format.
+
 ## qaxml.a.php
 
 `qaxml.a.php` checks if all updated translated files have
@@ -52,7 +57,21 @@ contents, as some tag's contents are expected *not* be translated.
 `--detail` will also print line defintions of each mismatched tag,
 to facilitate bitsecting.
 
-Suggested execution:
+## Suggested execution
+
+Structural checks:
+
+```
+php doc-base/scripts/translation/configure.php $LANG_DIR
+
+php doc-base/scripts/translation/qarvt.php
+
+php doc-base/scripts/translation/qaxml.a.php
+php doc-base/scripts/translation/qaxml.e.php
+php doc-base/scripts/translation/qaxml.p.php
+php doc-base/scripts/translation/qaxml.t.php
+```
+Tags where is expected no translations:
 ```
 php doc-base/scripts/translation/qaxml.t.php acronym
 php doc-base/scripts/translation/qaxml.t.php classname
@@ -62,15 +81,20 @@ php doc-base/scripts/translation/qaxml.t.php function
 php doc-base/scripts/translation/qaxml.t.php interfacename
 php doc-base/scripts/translation/qaxml.t.php parameter
 php doc-base/scripts/translation/qaxml.t.php type
-
 php doc-base/scripts/translation/qaxml.t.php classsynopsis
 php doc-base/scripts/translation/qaxml.t.php constructorsynopsis
 php doc-base/scripts/translation/qaxml.t.php destructorsynopsis
 php doc-base/scripts/translation/qaxml.t.php fieldsynopsis
 php doc-base/scripts/translation/qaxml.t.php funcsynopsis
 php doc-base/scripts/translation/qaxml.t.php methodsynopsis
+
+php doc-base/scripts/translation/qaxml.t.php code
+php doc-base/scripts/translation/qaxml.t.php computeroutput
+php doc-base/scripts/translation/qaxml.t.php filename
+php doc-base/scripts/translation/qaxml.t.php literal
+php doc-base/scripts/translation/qaxml.t.php varname
 ```
-May contain translated parts, so manual check is necessary:
+Tags where is expected few translations:
 ```
 php doc-base/scripts/translation/qaxml.t.php code
 php doc-base/scripts/translation/qaxml.t.php filename
@@ -79,15 +103,6 @@ php doc-base/scripts/translation/qaxml.t.php varname
 ```
 
 # Migration
-
-## No critical
-
-This revcheck will not emit a critical status, for files outdated for more
-than 30 days, as this was silently removed on
-<https://github.com/php/doc-base/commit/8f757b4fe281f5b00bd8bfe9cc1799fb0ce27822>
-
-There is a new `days` property that tracks how old a file is in days, to make
-decisions on coloring revcheck or deprecating translations.
 
 ## Maintainers with spaces
 
