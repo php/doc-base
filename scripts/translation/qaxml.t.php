@@ -10,16 +10,46 @@ $tags = array();
 $showDetail = false;
 $showIgnore = false;
 
-array_shift( $argv );
+$igfile = new CacheFile( "qaxml.t.ignore" );
+$ignore = $igfile->load();
+if ( $ignore == null )
+    $ignore = array();
 
-if ( count( $argv ) > 0 && $argv[0] == '--detail' )
+$cmd0 = array_shift( $argv );
+
+while ( count( $argv ) > 0 )
 {
-    $showDetail = true;
-    array_shift( $argv );
-}
+    $arg = array_shift( $argv );
 
-if ( count( $argv ) > 0 )
-    $tags = explode( ',' , $argv[0] );
+    if ( $arg == "--detail" )
+    {
+        $showDetail = true;
+        continue;
+    }
+
+    if ( str_starts_with( $arg , "--add-ignore=" ) )
+    {
+        $add = substr( $arg , 13 );
+        $ignore[] = $add;
+        $igfile->save( $ignore );
+        exit;
+    }
+
+    if ( str_starts_with( $arg , "--del-ignore=" ) )
+    {
+        $del = substr( $arg , 13 );
+        $key = array_search( $del , $ignore );
+
+        if ( $key === false )
+            print "Ignore mark not found.\n";
+        else
+            unset( $ignore[$key] );
+        $igfile->save( $ignore );
+        exit;
+    }
+
+    $tags = explode( ',' , $arg );
+}
 
 $qalist = QaFileInfo::cacheLoad();
 
@@ -33,7 +63,7 @@ foreach ( $qalist as $qafile )
     $source = $qafile->sourceDir . '/' . $qafile->file;
     $target = $qafile->targetDir . '/' . $qafile->file;
 
-    $output = new TextBufferHasher( "qaxml.t: {$target}\n\n" );
+    $output = new OutputBufferHasher( "qaxml.t: {$target}\n\n" );
 
     // Check tag contents, inner text
 
@@ -151,36 +181,38 @@ foreach ( $qalist as $qafile )
                 $output->push( "* {$tag} -{$targetCount} +{$sourceCount}\n" );
 
                 if ( $showDetail )
-                    printTagUsageDetail( $source , $target , $tag );
+                    printTagUsageDetail( $source , $target , $tag , $output );
             }
         }
         $output->pushExtra( "\n" );
     }
 
+    // Output && Ignore
+
     if ( $showIgnore )
     {
         $hash = $output->hash();
-        $mark = "qaxml.t.php ignore $hash";
+        $mark = "{$hash},{$qafile->file}";
 
-        $marks = XmlUtil::listNodeType( XmlUtil::loadFile( $target ) , XML_COMMENT_NODE );
-        foreach( $marks as $k => $v )
-            $marks[$k] = trim( $v->nodeValue );
-        $key = array_search( $mark , $marks );
+        $key = array_search( $mark , $ignore );
 
         if ( $key === false )
-            $output->push( "  To ignore, annotate with: <!-- $mark -->\n" );
+        {
+            $output->push( "  To ignore, run:\n    php $cmd0 --add-ignore=$mark\n" );
+        }
         else
-            unset( $marks[$key] );
+        {
+            unset( $ignore[$key] );
+            $output->clear();
+        }
 
-        foreach ( $marks as $item )
-            if ( str_starts_with( $item , "qaxml.t.php ignore" ) )
-                $output->push( "  Unconsumed annotation: $item\n" );
-
-        $output->pushExtra( "\n" );
+        foreach ( $ignore as $item )
+            if ( str_ends_with( $item , ",$qafile->file" ) )
+                $output->push( "  Unused ignore. To drop, run:\n    php $cmd0 --del-ignore=$mark\n" );
     }
 
-    if ( $output->isEmpty() == false )
-        $output->print();
+    $output->pushExtra( "\n" );
+    $output->print();
 }
 
 function extractTagsInnerText( array $nodes , array $tags )
@@ -259,22 +291,19 @@ function equalizeKeys( array $list , array & $other , mixed $value = 0 )
             $other[$k] = $value;
 }
 
-function printTagUsageDetail( string $source , string $target , string $tag )
+function printTagUsageDetail( string $source , string $target , string $tag , OutputBufferHasher $output )
 {
-    print "\n";
+    $output->push( "\n" );
     $s = collectTagDefinitions( $source , $tag );
     $t = collectTagDefinitions( $target , $tag );
     $min = min( count( $s ) , count( $t ) );
     for( $i = 0 ; $i < $min ; $i++ )
-    {
-        $d = $s[$i] - $t[$i];
-        print "\t{$tag}\t{$s[$i]}\t{$t[$i]}\t{$d}\n";
-    }
+        $output->push( "\t{$tag}\t{$s[$i]}\t{$t[$i]}\n" );
     for( $i = $min ; $i < count($s) ; $i++ )
-        print "\t{$tag}\t{$s[$i]}\t\t\n";
+        $output->push( "\t{$tag}\t{$s[$i]}\t\t\n" );
     for( $i = $min ; $i < count($t) ; $i++ )
-        print "\t{$tag}\t\t{$t[$i]}\t\n";
-    print "\n";
+        $output->push( "\t{$tag}\t\t{$t[$i]}\t\n" );
+    $output->push( "\n" );
 }
 
 function collectTagDefinitions( string $file , string $tag )
@@ -291,7 +320,7 @@ function collectTagDefinitions( string $file , string $tag )
     return $ret;
 }
 
-class TextBufferHasher
+class OutputBufferHasher
 {
     public string $header = "";
     public array $texts = array();
@@ -299,6 +328,11 @@ class TextBufferHasher
     function __construct( string $header = "" )
     {
         $this->header = $header;
+    }
+
+    function clear()
+    {
+        $this->texts = array();
     }
 
     function hash() : string
@@ -331,6 +365,8 @@ class TextBufferHasher
 
     function print()
     {
+        if ( $this->isEmpty() )
+            return;
         print $this->header;
         foreach( $this->texts as $text )
             print $text;
