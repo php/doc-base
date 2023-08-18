@@ -210,6 +210,11 @@ function print_xml_errors($details = true) {
     $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
     if ($errors && count($errors) > 0) {
         foreach($errors as $err) {
+                if ($ac['LANG'] != 'en' &&                 // translations
+                    $ac['XPOINTER_REPORTING'] != 'yes' &&  // can disable
+                    strncmp($err->message, 'XPointer evaluation failed:', 27) == 0) {
+                    continue;
+                }
                 $errmsg = wordwrap(" " . trim($err->message), 80, "\n ");
                 if ($details && $err->file) {
                     $file = file(urldecode($err->file)); // libxml appears to urlencode() its errors strings
@@ -720,19 +725,22 @@ if ($didLoad === false) {
 echo "done.\n";
 
 echo "Running XInclude/XPointer... ";
-flush();
-
 $dom->xinclude();
-
 echo "done.\n";
 flush();
 
-if ( $ac['XPOINTER_REPORTING'] == 'yes' || ($ac['LANG'] == 'en') )
+if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
 {
     $errors = libxml_get_errors();
     $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
-    foreach( $errors as $error )
-        fprintf( $output , "{$error->message}\n");
+    if ( count( $errors ) > 0 )
+    {
+        fprintf( $output , "\n");
+        foreach( $errors as $error )
+            fprintf( $output , "{$error->message}\n");
+        if ( $ac['LANG'] == 'en' )
+            errors_are_bad(1);
+    }
 }
 
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
