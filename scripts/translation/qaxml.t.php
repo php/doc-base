@@ -8,9 +8,8 @@ require_once __DIR__ . '/lib/all.php';
 
 $tags = array();
 $showDetail = false;
-$showIgnore = false;
 
-$igfile = new CacheFile( "qaxml.t.ignore" );
+$igfile = new CacheFile( getcwd() . "/.qaxml.t.ignore" );
 
 $cmd0 = array_shift( $argv );
 
@@ -27,6 +26,8 @@ while ( count( $argv ) > 0 )
     if ( str_starts_with( $arg , "--add-ignore=" ) )
     {
         $ignore = $igfile->load( array() );
+        if ( count( $ignore ) == 0 )
+            print "Creating file ignore file on current working directory.\n";
         $add = substr( $arg , 13 );
         $ignore[] = $add;
         $igfile->save( $ignore );
@@ -85,8 +86,6 @@ foreach ( $qalist as $qafile )
         if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
             continue;
 
-        $showIgnore = true;
-
         foreach( $onlyTarget as $only )
             $output->push( "- {$only}\n" );
         foreach( $onlySource as $only )
@@ -129,8 +128,6 @@ foreach ( $qalist as $qafile )
 
         if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
             continue;
-
-        $showIgnore = true;
 
         foreach( $onlyTarget as $only )
             $output->push( "- {$only}\n" );
@@ -177,7 +174,6 @@ foreach ( $qalist as $qafile )
 
             if ( $sourceCount != $targetCount )
             {
-                $showIgnore = false;
                 $output->push( "* {$tag} -{$targetCount} +{$sourceCount}\n" );
 
                 if ( $showDetail )
@@ -187,9 +183,9 @@ foreach ( $qalist as $qafile )
         $output->pushExtra( "\n" );
     }
 
-    // Output && Ignore
+    // Ignore
 
-    if ( $showIgnore )
+    if ( $output->isEmpty() == false )
     {
         $prefix = $output->hash( $tags );
         $suffix = md5( implode( "" , $tags ) ) . ',' . $qafile->file;
@@ -211,6 +207,8 @@ foreach ( $qalist as $qafile )
 
         $output->pushExtra( "\n" );
     }
+
+    // Output
 
     $output->print();
 }

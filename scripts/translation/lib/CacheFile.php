@@ -14,7 +14,7 @@ class CacheFile
 
     function __construct( string $file )
     {
-        $this->filename = CacheFile::prepareFilename( "" , $file , true );
+        $this->filename = CacheFile::prepareFilename( $file , true );
     }
 
     public function load( mixed $init = null )
@@ -31,12 +31,13 @@ class CacheFile
         file_put_contents( $this->filename , $contents );
     }
 
-    public static function prepareFilename( string $path , string $file , bool $createDirs = false )
+    public static function prepareFilename( string $file , bool $createCacheDirs = false )
     {
-        $baseDir = CacheUtil::CACHE_DIR;
-        $outPath = rtrim( $baseDir , '/' ) . '/' . $path;
+        if ( str_starts_with( $file , '/' ) )
+            return $file;
+        $outPath = CacheUtil::CACHE_DIR . '/' . dirname( $file );
         $outFile = rtrim( $outPath , '/' ) . '/' . $file;
-        if ( $createDirs && file_exists( $outPath ) == false )
+        if ( $createCacheDirs && file_exists( $outPath ) == false )
             mkdir( $outPath , 0777 , true );
         return $outFile;
     }
