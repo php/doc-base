@@ -8,6 +8,7 @@ require_once __DIR__ . '/lib/all.php';
 
 $tags = array();
 $showDetail = false;
+$showIgnore = false;
 
 array_shift( $argv );
 
@@ -32,10 +33,9 @@ foreach ( $qalist as $qafile )
     $source = $qafile->sourceDir . '/' . $qafile->file;
     $target = $qafile->targetDir . '/' . $qafile->file;
 
-    $header = "qaxml.t: {$target}\n\n";
-    $output = new TextBufferHasher();
+    $output = new TextBufferHasher( "qaxml.t: {$target}\n\n" );
 
-    // Tag contents, text
+    // Check tag contents, inner text
 
     if ( count( $tags ) > 0 )
     {
@@ -55,7 +55,7 @@ foreach ( $qalist as $qafile )
         if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
             continue;
 
-        $output->pushFirst( $header );
+        $showIgnore = true;
 
         foreach( $onlyTarget as $only )
             $output->push( "- {$only}\n" );
@@ -80,9 +80,9 @@ foreach ( $qalist as $qafile )
         $output->pushExtra( "\n" );
     }
 
-    // Tag contents, XML, if other checks passed
+    // Check tag contents, inner XML
 
-    if ( count( $tags ) > 0 && count( $output->texts ) == 0 )
+    if ( count( $tags ) > 0 && $output->isEmpty() )
     {
         $s = XmlUtil::loadFile( $source );
         $t = XmlUtil::loadFile( $target );
@@ -100,7 +100,7 @@ foreach ( $qalist as $qafile )
         if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
             continue;
 
-        $output->pushFirst( $header );
+        $showIgnore = true;
 
         foreach( $onlyTarget as $only )
             $output->push( "- {$only}\n" );
@@ -125,7 +125,9 @@ foreach ( $qalist as $qafile )
         $output->pushExtra( "\n" );
     }
 
-    // Tag count
+    // Check tag count
+
+    if ( $output->isEmpty() )
     {
         $s = XmlUtil::loadFile( $source );
         $t = XmlUtil::loadFile( $target );
@@ -145,47 +147,40 @@ foreach ( $qalist as $qafile )
 
             if ( $sourceCount != $targetCount )
             {
-                $output->pushFirst( $header );
-
+                $showIgnore = false;
                 $output->push( "* {$tag} -{$targetCount} +{$sourceCount}\n" );
 
                 if ( $showDetail )
                     printTagUsageDetail( $source , $target , $tag );
-
-                $output->pushExtra( "\n" );
             }
         }
+        $output->pushExtra( "\n" );
     }
 
-    // Output
-
-    $marks = XmlUtil::listNodeType( XmlUtil::loadFile( $target ) , XML_COMMENT_NODE );
-    foreach( $marks as $k => $v )
-        $marks[$k] = trim( $v->nodeValue );
-
-    if ( count( $output->texts ) > 0 )
+    if ( $showIgnore )
     {
         $hash = $output->hash();
         $mark = "qaxml.t.php ignore $hash";
 
+        $marks = XmlUtil::listNodeType( XmlUtil::loadFile( $target ) , XML_COMMENT_NODE );
+        foreach( $marks as $k => $v )
+            $marks[$k] = trim( $v->nodeValue );
         $key = array_search( $mark , $marks );
-        if ( $key !== false )
-        {
-            unset( $marks[$key] );
-        }
+
+        if ( $key === false )
+            $output->push( "  To ignore, annotate with: <!-- $mark -->\n" );
         else
-        {
-            $output->print();
-            print "# To ignore, annotate with: <!-- $mark -->\n\n";
-        }
+            unset( $marks[$key] );
 
         foreach ( $marks as $item )
             if ( str_starts_with( $item , "qaxml.t.php ignore" ) )
-            {
-                print $header;
-                print "# Unconsumed annotation: $item\n\n";
-            }
+                $output->push( "  Unconsumed annotation: $item\n" );
+
+        $output->pushExtra( "\n" );
     }
+
+    if ( $output->isEmpty() == false )
+        $output->print();
 }
 
 function extractTagsInnerText( array $nodes , array $tags )
@@ -298,24 +293,34 @@ function collectTagDefinitions( string $file , string $tag )
 
 class TextBufferHasher
 {
+    public string $header = "";
     public array $texts = array();
+
+    function __construct( string $header = "" )
+    {
+        $this->header = $header;
+    }
 
     function hash() : string
     {
         if ( count( $this->texts) == 0 )
             return "";
-        return md5( implode( "" , $this->texts ) );
+        $text = $this->header . implode( "" , $this->texts );
+        $text = str_replace( " " , "" , $text );
+        $text = str_replace( "\n" , "" , $text );
+        $text = str_replace( "\r" , "" , $text );
+        $text = str_replace( "\t" , "" , $text );
+        return md5( $text );
+    }
+
+    function isEmpty() : bool
+    {
+        return count( $this->texts ) == 0;
     }
 
     function push( string $text )
     {
         $this->texts[] = $text;
-    }
-
-    function pushFirst( string $text )
-    {
-        if ( count( $this->texts ) == 0 )
-            $this->push( $text );
     }
 
     function pushExtra( string $text )
@@ -326,6 +331,7 @@ class TextBufferHasher
 
     function print()
     {
+        print $this->header;
         foreach( $this->texts as $text )
             print $text;
     }
