@@ -11,9 +11,6 @@ $showDetail = false;
 $showIgnore = false;
 
 $igfile = new CacheFile( "qaxml.t.ignore" );
-$ignore = $igfile->load();
-if ( $ignore == null )
-    $ignore = array();
 
 $cmd0 = array_shift( $argv );
 
@@ -29,6 +26,7 @@ while ( count( $argv ) > 0 )
 
     if ( str_starts_with( $arg , "--add-ignore=" ) )
     {
+        $ignore = $igfile->load( array() );
         $add = substr( $arg , 13 );
         $ignore[] = $add;
         $igfile->save( $ignore );
@@ -37,6 +35,7 @@ while ( count( $argv ) > 0 )
 
     if ( str_starts_with( $arg , "--del-ignore=" ) )
     {
+        $ignore = $igfile->load( array() );
         $del = substr( $arg , 13 );
         $key = array_search( $del , $ignore );
 
@@ -64,6 +63,7 @@ foreach ( $qalist as $qafile )
     $target = $qafile->targetDir . '/' . $qafile->file;
 
     $output = new OutputBufferHasher( "qaxml.t: {$target}\n\n" );
+    $ignore = $igfile->load( array() );
 
     // Check tag contents, inner text
 
@@ -191,27 +191,27 @@ foreach ( $qalist as $qafile )
 
     if ( $showIgnore )
     {
-        $hash = $output->hash();
-        $mark = "{$hash},{$qafile->file}";
+        $prefix = $output->hash( $tags );
+        $suffix = md5( implode( "" , $tags ) ) . ',' . $qafile->file;
+        $mark = "{$prefix},{$suffix}";
 
-        $key = array_search( $mark , $ignore );
-
-        if ( $key === false )
-        {
-            $output->push( "  To ignore, run:\n    php $cmd0 --add-ignore=$mark\n" );
-        }
-        else
-        {
-            unset( $ignore[$key] );
+        if ( in_array( $mark , $ignore ) )
             $output->clear();
-        }
+        else
+            $output->push( "  To ignore, run:\n    php $cmd0 --add-ignore=$mark\n" );
 
+        while ( in_array( $mark , $ignore ) )
+        {
+            $key = array_search( $mark , $ignore );
+            unset( $ignore[$key] );
+        }
         foreach ( $ignore as $item )
-            if ( str_ends_with( $item , ",$qafile->file" ) )
+            if ( str_ends_with( $item , $suffix ) )
                 $output->push( "  Unused ignore. To drop, run:\n    php $cmd0 --del-ignore=$mark\n" );
+
+        $output->pushExtra( "\n" );
     }
 
-    $output->pushExtra( "\n" );
     $output->print();
 }
 

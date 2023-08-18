@@ -17,10 +17,10 @@ class CacheFile
         $this->filename = CacheFile::prepareFilename( "" , $file , true );
     }
 
-    public function load()
+    public function load( mixed $init = null )
     {
         if ( file_exists( $this->filename ) == false )
-            return null;
+            return $init;
         $data = file_get_contents( $this->filename );
         return unserialize( gzdecode( $data ) );
     }
