@@ -8,6 +8,7 @@ require_once __DIR__ . '/lib/all.php';
 
 $tags = array();
 $showDetail = false;
+$showIgnore = true;
 
 $igfile = new CacheFile( getcwd() . "/.qaxml.t.ignore" );
 
@@ -46,6 +47,12 @@ while ( count( $argv ) > 0 )
             unset( $ignore[$key] );
         $igfile->save( $ignore );
         exit;
+    }
+
+    if ( str_starts_with( $arg , "--disable-ignore" ) )
+    {
+        $showIgnore = false;
+        continue;
     }
 
     $tags = explode( ',' , $arg );
@@ -182,7 +189,7 @@ foreach ( $qalist as $qafile )
 
     // Ignore
 
-    if ( $output->isEmpty() == false )
+    if ( $showIgnore && $output->isEmpty() == false )
     {
         $prefix = $output->hash( $tags );
         $suffix = md5( implode( "" , $tags ) ) . ',' . $qafile->file;
