@@ -14,13 +14,13 @@ class RevcheckRun
     public RevcheckFileList $targetFiles;
 
     // Separated lists
-    public array $filesOk;
-    public array $filesOld;
-    public array $filesRevtagProblem;
-    public array $filesUntranslated;
-    public array $filesNotInEn;
-    public array $filesWip;
-    public array $qaList;
+    public array $filesOk = [];
+    public array $filesOld = [];
+    public array $filesRevtagProblem = [];
+    public array $filesUntranslated = [];
+    public array $filesNotInEn = [];
+    public array $filesWip = [];
+    public array $qaList = [];
 
     function __construct( string $sourceDir , string $targetDir , bool $writeResults = true )
     {

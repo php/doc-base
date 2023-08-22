@@ -79,31 +79,23 @@ foreach ( $qalist as $qafile )
         $s = extractTagsInnerText( $s , $tags );
         $t = extractTagsInnerText( $t , $tags );
 
-        $intersect = array_intersect( $s, $t );
-        $onlySource = array_diff( $s , $intersect );
-        $onlyTarget = array_diff( $t , $intersect );
+        $match = array();
 
-        if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
-            continue;
+        foreach( $s as $v )
+            $match[$v] = array( 0 , 0 );
+        foreach( $t as $v )
+            $match[$v] = array( 0 , 0 );
 
-        foreach( $onlyTarget as $only )
-            $output->push( "- {$only}\n" );
-        foreach( $onlySource as $only )
-            $output->push( "+ {$only}\n" );
+        foreach( $s as $v )
+            $match[$v][0] += 1;
+        foreach( $t as $v )
+            $match[$v][1] += 1;
 
-        if ( count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
+        foreach( $match as $k => $v )
         {
-            $s = array_count_values( $s );
-            $t = array_count_values( $t );
-            foreach ($s as $key => $countSource )
-            {
-                $countTarget = $t[$key];
-                $countDiff = $countSource - $countTarget;
-                if ( $countDiff > 0 )
-                    $output->push( "* {$key} +{$countDiff}\n" );
-                if ( $countDiff < 0 )
-                    $output->push( "* {$key} {$countDiff}\n" );
-            }
+            if ( $v[0] == $v[1] )
+                continue;
+            $output->push( "* {$k} -{$v[1]} +{$v[0]}\n" );
         }
 
         $output->pushExtra( "\n" );
@@ -122,31 +114,23 @@ foreach ( $qalist as $qafile )
         $s = extractTagsInnerXmls( $s , $tags );
         $t = extractTagsInnerXmls( $t , $tags );
 
-        $intersect = array_intersect( $s, $t );
-        $onlySource = array_diff( $s , $intersect );
-        $onlyTarget = array_diff( $t , $intersect );
+        $match = array();
 
-        if ( count( $s ) == count( $t ) && count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
-            continue;
+        foreach( $s as $v )
+            $match[$v] = array( 0 , 0 );
+        foreach( $t as $v )
+            $match[$v] = array( 0 , 0 );
 
-        foreach( $onlyTarget as $only )
-            $output->push( "- {$only}\n" );
-        foreach( $onlySource as $only )
-            $output->push( "+ {$only}\n" );
+        foreach( $s as $v )
+            $match[$v][0] += 1;
+        foreach( $t as $v )
+            $match[$v][1] += 1;
 
-        if ( count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
+        foreach( $match as $k => $v )
         {
-            $s = array_count_values( $s );
-            $t = array_count_values( $t );
-            foreach ($s as $key => $countSource )
-            {
-                $countTarget = $t[$key];
-                $countDiff = $countSource - $countTarget;
-                if ( $countDiff > 0 )
-                    $output->push( "* {$key} +{$countDiff}\n" );
-                if ( $countDiff < 0 )
-                    $output->push( "* {$key} {$countDiff}\n" );
-            }
+            if ( $v[0] == $v[1] )
+                continue;
+            $output->push( "* {$k} -{$v[1]} +{$v[0]}\n" );
         }
 
         $output->pushExtra( "\n" );
@@ -162,24 +146,28 @@ foreach ( $qalist as $qafile )
         $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
         $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
 
-        $s = countTags( $s );
-        $t = countTags( $t );
+        $s = extractNodeName( $s );
+        $t = extractNodeName( $t );
 
-        equalizeKeys( $s , $t );
-        equalizeKeys( $t , $s );
+        $match = array();
 
-        foreach( $s as $tag => $sourceCount )
+        foreach( $s as $v )
+            $match[$v] = array( 0 , 0 );
+        foreach( $t as $v )
+            $match[$v] = array( 0 , 0 );
+
+        foreach( $s as $v )
+            $match[$v][0] += 1;
+        foreach( $t as $v )
+            $match[$v][1] += 1;
+
+        foreach( $match as $k => $v )
         {
-            $targetCount = $t[$tag];
-
-            if ( $sourceCount != $targetCount )
-            {
-                $output->push( "* {$tag} -{$targetCount} +{$sourceCount}\n" );
-
-                if ( $showDetail )
-                    printTagUsageDetail( $source , $target , $tag , $output );
-            }
+            if ( $v[0] == $v[1] )
+                continue;
+            $output->push( "* {$k} -{$v[1]} +{$v[0]}\n" );
         }
+
         $output->pushExtra( "\n" );
     }
 
@@ -211,6 +199,14 @@ foreach ( $qalist as $qafile )
     // Output
 
     $output->print();
+}
+
+function extractNodeName( array $list )
+{
+    $ret = array();
+    foreach( $list as $elem )
+        $ret[] = $elem->nodeName;
+    return $ret;
 }
 
 function extractTagsInnerText( array $nodes , array $tags )
@@ -271,22 +267,6 @@ function extractTagsInnerXmls( array $nodes , array $tags )
         $ret[] = $text;
     }
     return $ret;
-}
-
-function countTags( array $list )
-{
-    $ret = array();
-    foreach( $list as $elem )
-        $ret[] = $elem->nodeName;
-    $ret = array_count_values( $ret );
-    return $ret;
-}
-
-function equalizeKeys( array $list , array & $other , mixed $value = 0 )
-{
-    foreach( $list as $k => $v )
-        if ( ! isset( $other[$k] ) )
-            $other[$k] = $value;
 }
 
 function printTagUsageDetail( string $source , string $target , string $tag , OutputBufferHasher $output )

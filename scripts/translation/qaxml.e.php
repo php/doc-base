@@ -24,31 +24,33 @@ foreach ( $qalist as $qafile )
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
 
-    $intersect = array_intersect( $s, $t );
-    $onlySource = array_diff( $s , $intersect );
-    $onlyTarget = array_diff( $t , $intersect );
+    $header = true;
+    $match = array();
 
-    print "qaxml.e: {$target}\n\n";
+    foreach( $s as $v )
+        $match[$v] = array( 0 , 0 );
+    foreach( $t as $v )
+        $match[$v] = array( 0 , 0 );
 
-    foreach( $onlyTarget as $only )
-        print "- {$only}\n";
-    foreach( $onlySource as $only )
-        print "+ {$only}\n";
+    foreach( $s as $v )
+        $match[$v][0] += 1;
+    foreach( $t as $v )
+        $match[$v][1] += 1;
 
-    if ( count( $onlySource ) == 0 && count( $onlyTarget ) == 0 )
+    foreach( $match as $k => $v )
     {
-        $s = array_count_values( $s );
-        $t = array_count_values( $t );
-        foreach ($s as $key => $countSource )
+        if ( $v[0] == $v[1] )
+            continue;
+
+        if ( $header )
         {
-            $countTarget = $t[$key];
-            $countDiff = $countSource - $countTarget;
-            if ( $countDiff > 0 )
-                print "* {$key} +{$countDiff}\n";
-            if ( $countDiff < 0 )
-                print "* {$key} {$countDiff}\n";
+            print "qaxml.e: {$target}\n\n";
+            $header = false;
         }
+
+        print "* &{$k}; -{$v[1]} +{$v[0]}\n";
     }
 
-    print "\n";
+    if ( ! $header )
+        print "\n";
 }
