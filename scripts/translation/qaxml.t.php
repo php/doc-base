@@ -205,8 +205,8 @@ foreach ( $qalist as $qafile )
             $key = array_search( $mark , $ignore );
             unset( $ignore[$key] );
         }
-        foreach ( $ignore as $item )
-            if ( str_ends_with( $item , $suffix ) )
+        foreach ( $ignore as $mark )
+            if ( str_ends_with( $mark , $suffix ) )
                 $output->push( "  Unused ignore. To drop, run:\n    php $cmd0 --del-ignore=$mark\n" );
 
         $output->pushExtra( "\n" );
