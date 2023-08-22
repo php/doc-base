@@ -76,6 +76,9 @@ foreach ( $qalist as $qafile )
         $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
         $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
 
+        typesNotCaseSensitive( $s );
+        typesNotCaseSensitive( $t );
+
         $s = extractTagsInnerText( $s , $tags );
         $t = extractTagsInnerText( $t , $tags );
 
@@ -110,6 +113,9 @@ foreach ( $qalist as $qafile )
 
         $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
         $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
+
+        typesNotCaseSensitive( $s );
+        typesNotCaseSensitive( $t );
 
         $s = extractTagsInnerXmls( $s , $tags );
         $t = extractTagsInnerXmls( $t , $tags );
@@ -146,6 +152,9 @@ foreach ( $qalist as $qafile )
         $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
         $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
 
+        typesNotCaseSensitive( $s );
+        typesNotCaseSensitive( $t );
+
         $s = extractNodeName( $s , $tags );
         $t = extractNodeName( $t , $tags );
 
@@ -173,29 +182,28 @@ foreach ( $qalist as $qafile )
 
     // Ignore
 
-    if ( false )
-        if ( $output->isEmpty() == false )
+    if ( $output->isEmpty() == false )
+    {
+        $prefix = $output->hash( $tags );
+        $suffix = md5( implode( "" , $tags ) ) . ',' . $qafile->file;
+        $mark = "{$prefix},{$suffix}";
+
+        if ( in_array( $mark , $ignore ) )
+            $output->clear();
+        else
+            $output->push( "  To ignore, run:\n    php $cmd0 --add-ignore=$mark\n" );
+
+        while ( in_array( $mark , $ignore ) )
         {
-            $prefix = $output->hash( $tags );
-            $suffix = md5( implode( "" , $tags ) ) . ',' . $qafile->file;
-            $mark = "{$prefix},{$suffix}";
-
-            if ( in_array( $mark , $ignore ) )
-                $output->clear();
-            else
-                $output->push( "  To ignore, run:\n    php $cmd0 --add-ignore=$mark\n" );
-
-            while ( in_array( $mark , $ignore ) )
-            {
-                $key = array_search( $mark , $ignore );
-                unset( $ignore[$key] );
-            }
-            foreach ( $ignore as $item )
-                if ( str_ends_with( $item , $suffix ) )
-                    $output->push( "  Unused ignore. To drop, run:\n    php $cmd0 --del-ignore=$mark\n" );
-
-            $output->pushExtra( "\n" );
+            $key = array_search( $mark , $ignore );
+            unset( $ignore[$key] );
         }
+        foreach ( $ignore as $item )
+            if ( str_ends_with( $item , $suffix ) )
+                $output->push( "  Unused ignore. To drop, run:\n    php $cmd0 --del-ignore=$mark\n" );
+
+        $output->pushExtra( "\n" );
+    }
 
     // Output
 
@@ -209,6 +217,32 @@ function extractNodeName( array $list , array $tags )
         if ( in_array( $elem->nodeName , $tags) || count( $tags ) == 0 )
             $ret[] = $elem->nodeName;
     return $ret;
+}
+
+function typesNotCaseSensitive( array & $nodes )
+{
+    // Types not case-sensitive: https://github.com/php/doc-en/issues/2658
+
+    if ( $nodes == null )
+        return;
+
+    foreach( $nodes as $node )
+    {
+        if ( $node->nodeName == "type" )
+        {
+            $text = trim( strtolower( $node->nodeValue ) );
+            switch( $text )
+            {
+                case "array":
+                case "string":
+                case "float":
+                case "bool":
+                case "null":
+                    $node->nodeValue = $text;
+                    break;
+            }
+        }
+    }
 }
 
 function extractTagsInnerText( array $nodes , array $tags )
@@ -228,20 +262,6 @@ function extractTagsInnerText( array $nodes , array $tags )
             $text = str_replace( "  " , " " , $text );
             if ( strlen( $text ) == $was )
                 break;
-        }
-        // Types not case-sensitive: https://github.com/php/doc-en/issues/2658
-        if ( $tag == "type" )
-        {
-            switch( strtolower( $text ) )
-            {
-                case "array":
-                case "string":
-                case "float":
-                case "bool":
-                case "null":
-                    $text = strtolower( $text );
-                    break;
-            }
         }
         $ret[] = $tag . ">"  . $text;
     }
