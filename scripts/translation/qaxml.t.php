@@ -146,8 +146,8 @@ foreach ( $qalist as $qafile )
         $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
         $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
 
-        $s = extractNodeName( $s );
-        $t = extractNodeName( $t );
+        $s = extractNodeName( $s , $tags );
+        $t = extractNodeName( $t , $tags );
 
         $match = array();
 
@@ -173,39 +173,41 @@ foreach ( $qalist as $qafile )
 
     // Ignore
 
-    if ( $output->isEmpty() == false )
-    {
-        $prefix = $output->hash( $tags );
-        $suffix = md5( implode( "" , $tags ) ) . ',' . $qafile->file;
-        $mark = "{$prefix},{$suffix}";
-
-        if ( in_array( $mark , $ignore ) )
-            $output->clear();
-        else
-            $output->push( "  To ignore, run:\n    php $cmd0 --add-ignore=$mark\n" );
-
-        while ( in_array( $mark , $ignore ) )
+    if ( false )
+        if ( $output->isEmpty() == false )
         {
-            $key = array_search( $mark , $ignore );
-            unset( $ignore[$key] );
-        }
-        foreach ( $ignore as $item )
-            if ( str_ends_with( $item , $suffix ) )
-                $output->push( "  Unused ignore. To drop, run:\n    php $cmd0 --del-ignore=$mark\n" );
+            $prefix = $output->hash( $tags );
+            $suffix = md5( implode( "" , $tags ) ) . ',' . $qafile->file;
+            $mark = "{$prefix},{$suffix}";
 
-        $output->pushExtra( "\n" );
-    }
+            if ( in_array( $mark , $ignore ) )
+                $output->clear();
+            else
+                $output->push( "  To ignore, run:\n    php $cmd0 --add-ignore=$mark\n" );
+
+            while ( in_array( $mark , $ignore ) )
+            {
+                $key = array_search( $mark , $ignore );
+                unset( $ignore[$key] );
+            }
+            foreach ( $ignore as $item )
+                if ( str_ends_with( $item , $suffix ) )
+                    $output->push( "  Unused ignore. To drop, run:\n    php $cmd0 --del-ignore=$mark\n" );
+
+            $output->pushExtra( "\n" );
+        }
 
     // Output
 
     $output->print();
 }
 
-function extractNodeName( array $list )
+function extractNodeName( array $list , array $tags )
 {
     $ret = array();
     foreach( $list as $elem )
-        $ret[] = $elem->nodeName;
+        if ( in_array( $elem->nodeName , $tags) || count( $tags ) == 0 )
+            $ret[] = $elem->nodeName;
     return $ret;
 }
 
