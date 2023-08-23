@@ -16,7 +16,7 @@ switch ( count( $argv ) )
         $langDir = $argv[1];
         break;
     default:
-        print_usage_exit();
+        print_usage_exit($argv[0]);
         return;
 }
 
@@ -32,7 +32,7 @@ if ( $langDir == "" )
         }
     }
     else
-        print_usage_exit();
+        print_usage_exit($argv[0]);
 }
 
 $list = new RevcheckFileList( $langDir );
@@ -51,9 +51,9 @@ foreach( $list->list as $item )
     print "\n";
 }
 
-function print_usage_exit()
+function print_usage_exit($cmd)
 {
     fwrite( STDERR , "  Wrong paramater count. Usage:\n" );
-    fwrite( STDERR , "    {$argv[0]} [lang_dir]:\n" );
+    fwrite( STDERR , "    {$cmd} [lang_dir]:\n" );
     exit;
 }

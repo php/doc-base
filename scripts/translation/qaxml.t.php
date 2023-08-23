@@ -91,9 +91,9 @@ foreach ( $qalist as $qafile )
 
         $match = array();
 
-        foreach( $s as $v )
-            $match[$v] = array( 0 , 0 );
         foreach( $t as $v )
+            $match[$v] = array( 0 , 0 );
+        foreach( $s as $v )
             $match[$v] = array( 0 , 0 );
 
         foreach( $s as $v )
@@ -102,13 +102,9 @@ foreach ( $qalist as $qafile )
             $match[$v][1] += 1;
 
         foreach( $match as $k => $v )
-        {
-            if ( $v[0] == $v[1] )
-                continue;
-            $output->push( "* {$k} -{$v[1]} +{$v[0]}\n" );
-        }
+            $output->addDiff( $k , $v[0] , $v[1] );
 
-        $output->pushExtra( "\n" );
+        $output->addFooter( "\n" );
     }
 
     // Check tag contents, inner XML
@@ -129,9 +125,9 @@ foreach ( $qalist as $qafile )
 
         $match = array();
 
-        foreach( $s as $v )
-            $match[$v] = array( 0 , 0 );
         foreach( $t as $v )
+            $match[$v] = array( 0 , 0 );
+        foreach( $s as $v )
             $match[$v] = array( 0 , 0 );
 
         foreach( $s as $v )
@@ -140,13 +136,9 @@ foreach ( $qalist as $qafile )
             $match[$v][1] += 1;
 
         foreach( $match as $k => $v )
-        {
-            if ( $v[0] == $v[1] )
-                continue;
-            $output->push( "* {$k} -{$v[1]} +{$v[0]}\n" );
-        }
+            $output->addDiff( $k , $v[0] , $v[1] );
 
-        $output->pushExtra( "\n" );
+        $output->addFooter( "\n" );
     }
 
     // Check tag count
@@ -167,9 +159,9 @@ foreach ( $qalist as $qafile )
 
         $match = array();
 
-        foreach( $s as $v )
-            $match[$v] = array( 0 , 0 );
         foreach( $t as $v )
+            $match[$v] = array( 0 , 0 );
+        foreach( $s as $v )
             $match[$v] = array( 0 , 0 );
 
         foreach( $s as $v )
@@ -178,13 +170,9 @@ foreach ( $qalist as $qafile )
             $match[$v][1] += 1;
 
         foreach( $match as $k => $v )
-        {
-            if ( $v[0] == $v[1] )
-                continue;
-            $output->push( "* {$k} -{$v[1]} +{$v[0]}\n" );
-        }
+            $output->addDiff( $k , $v[0] , $v[1] );
 
-        $output->pushExtra( "\n" );
+        $output->addFooter( "\n" );
     }
 
     // Ignore
@@ -198,7 +186,7 @@ foreach ( $qalist as $qafile )
         if ( in_array( $mark , $ignore ) )
             $output->clear();
         else
-            $output->push( "  To ignore, run:\n    php $cmd0 --add-ignore=$mark\n" );
+            $output->add( "  php $cmd0 --add-ignore=$mark\n" );
 
         while ( in_array( $mark , $ignore ) )
         {
@@ -207,9 +195,9 @@ foreach ( $qalist as $qafile )
         }
         foreach ( $ignore as $mark )
             if ( str_ends_with( $mark , $suffix ) )
-                $output->push( "  Unused ignore. To drop, run:\n    php $cmd0 --del-ignore=$mark\n" );
+                $output->add( "  php $cmd0 --del-ignore=$mark\n" );
 
-        $output->pushExtra( "\n" );
+        $output->addFooter( "\n" );
     }
 
     // Output
@@ -300,17 +288,17 @@ function extractTagsInnerXmls( array $nodes , array $tags )
 
 function printTagUsageDetail( string $source , string $target , string $tag , OutputBufferHasher $output )
 {
-    $output->push( "\n" );
+    $output->add( "\n" );
     $s = collectTagDefinitions( $source , $tag );
     $t = collectTagDefinitions( $target , $tag );
     $min = min( count( $s ) , count( $t ) );
     for( $i = 0 ; $i < $min ; $i++ )
-        $output->push( "\t{$tag}\t{$s[$i]}\t{$t[$i]}\n" );
+        $output->add( "\t{$tag}\t{$s[$i]}\t{$t[$i]}\n" );
     for( $i = $min ; $i < count($s) ; $i++ )
-        $output->push( "\t{$tag}\t{$s[$i]}\t\t\n" );
+        $output->add( "\t{$tag}\t{$s[$i]}\t\t\n" );
     for( $i = $min ; $i < count($t) ; $i++ )
-        $output->push( "\t{$tag}\t\t{$t[$i]}\t\n" );
-    $output->push( "\n" );
+        $output->add( "\t{$tag}\t\t{$t[$i]}\t\n" );
+    $output->add( "\n" );
 }
 
 function collectTagDefinitions( string $file , string $tag )
@@ -354,20 +342,39 @@ class OutputBufferHasher
         return md5( $text );
     }
 
-    function isEmpty() : bool
-    {
-        return count( $this->texts ) == 0;
-    }
-
-    function push( string $text )
+    function add( string $text )
     {
         $this->texts[] = $text;
     }
 
-    function pushExtra( string $text )
+    function addDiff( string $text , int $sourceCount , int $targetCount )
+    {
+        if ( $sourceCount == $targetCount )
+            return;
+        $prefix = "* ";
+        $suffix = " -{$targetCount} +{$sourceCount}";
+        if ( $sourceCount == 0 )
+        {
+            $prefix = "- ";
+            $suffix = $targetCount == 1 ? "" : " -{$targetCount}";
+        }
+        if ( $targetCount == 0 )
+        {
+            $prefix = "+ ";
+            $suffix = $sourceCount == 1 ? "" : " +{$sourceCount}";
+        }
+        $this->add( "{$prefix}{$text}{$suffix}\n" );
+    }
+
+    function addFooter( string $text )
     {
         if ( count( $this->texts ) > 0 )
-            $this->push( $text );
+            $this->add( $text );
+    }
+
+    function isEmpty() : bool
+    {
+        return count( $this->texts ) == 0;
     }
 
     function print()
