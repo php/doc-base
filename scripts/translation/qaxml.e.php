@@ -45,7 +45,6 @@ foreach ( $qalist as $qafile )
             continue;
 
         $output->add( "* &{$k}; -{$v[1]} +{$v[0]}\n" );
-
     }
 
     $output->addLine();

@@ -47,20 +47,22 @@ class OutputIgnoreBuffer
 
     function addLine()
     {
-        if ( count( $this->texts ) > 0 )
+        if ( count( $this->texts ) > 0 && end( $this->texts ) != "\n" )
             $this->add( "\n" );
     }
 
-    function print( bool $showIgnore = true )
+    function print() : bool
     {
         if ( count( $this->texts ) == 0 )
-            return;
+            return false;
+
+        $this->addLine( "\n" );
 
         $head = $this->filename . ':' . $this->hash( false ) . ':';
         $mark = $head . $this->hash( true );
         $marks = OutputIgnoreArgv::cacheFile()->load( array() );
 
-        if ( $showIgnore )
+        if ( $this->args->showIgnore )
         {
             if ( in_array( $mark , $marks ) )
                 $this->texts = array();
@@ -78,15 +80,18 @@ class OutputIgnoreBuffer
                     if ( str_starts_with( $mark , $head ) )
                         $this->args->pushDelIgnore( $this , $mark );
 
-            $this->addLine( "\n" );
         }
 
-        if ( count( $this->texts) == 0 )
-            return;
+        $this->addLine( "\n" );
+
+        if ( count( $this->texts ) == 0 )
+            return false;
 
         print $this->header;
         foreach( $this->texts as $text )
             print $text;
+
+        return true;
     }
 
     private function hash( bool $withContents ) : string

@@ -8,12 +8,11 @@ require_once __DIR__ . '/lib/all.php';
 
 $tags = array();
 $showDetail = false;
-$showIgnore = true;
 
-$igfile = new CacheFile( getcwd() . "/.qaxml.t.ignore" );
+$qalist = QaFileInfo::cacheLoad();
+$outarg = new OutputIgnoreArgv( $argv );
 
-$cmd0 = array_shift( $argv );
-
+array_shift( $argv );
 while ( count( $argv ) > 0 )
 {
     $arg = array_shift( $argv );
@@ -21,44 +20,12 @@ while ( count( $argv ) > 0 )
     if ( $arg == "--detail" )
     {
         $showDetail = true;
-        continue;
-    }
-
-    if ( str_starts_with( $arg , "--add-ignore=" ) )
-    {
-        $ignore = $igfile->load( array() );
-        if ( count( $ignore ) == 0 )
-            print "Creating file ignore file on current working directory.\n";
-        $add = substr( $arg , 13 );
-        $ignore[] = $add;
-        $igfile->save( $ignore );
-        exit;
-    }
-
-    if ( str_starts_with( $arg , "--del-ignore=" ) )
-    {
-        $ignore = $igfile->load( array() );
-        $del = substr( $arg , 13 );
-        $key = array_search( $del , $ignore );
-
-        if ( $key === false )
-            print "Ignore mark not found.\n";
-        else
-            unset( $ignore[$key] );
-        $igfile->save( $ignore );
-        exit;
-    }
-
-    if ( str_starts_with( $arg , "--disable-ignore" ) )
-    {
-        $showIgnore = false;
+        $outarg->showIgnore = false;
         continue;
     }
 
     $tags = explode( ',' , $arg );
 }
-
-$qalist = QaFileInfo::cacheLoad();
 
 foreach ( $qalist as $qafile )
 {
@@ -70,8 +37,7 @@ foreach ( $qalist as $qafile )
     $source = $qafile->sourceDir . '/' . $qafile->file;
     $target = $qafile->targetDir . '/' . $qafile->file;
 
-    $output = new OutputBufferHasher( "qaxml.t: {$target}\n\n" );
-    $ignore = $igfile->load( array() );
+    $output = new OutputIgnoreBuffer( $outarg , "qaxml.t: {$target}\n\n" , $target );
 
     // Check tag contents, inner text
 
@@ -104,12 +70,17 @@ foreach ( $qalist as $qafile )
         foreach( $match as $k => $v )
             $output->addDiff( $k , $v[0] , $v[1] );
 
-        $output->addFooter( "\n" );
+        if ( $showDetail )
+            foreach( $match as $tag => $v )
+                printTagUsageDetail( $source , $target , $tag , $output );
+
+        if ( $output->print() )
+            continue;
     }
 
     // Check tag contents, inner XML
 
-    if ( count( $tags ) > 0 && $output->isEmpty() )
+    if ( count( $tags ) > 0 )
     {
         $s = XmlUtil::loadFile( $source );
         $t = XmlUtil::loadFile( $target );
@@ -138,69 +109,46 @@ foreach ( $qalist as $qafile )
         foreach( $match as $k => $v )
             $output->addDiff( $k , $v[0] , $v[1] );
 
-        $output->addFooter( "\n" );
+        if ( $showDetail )
+            foreach( $match as $tag => $v )
+                printTagUsageDetail( $source , $target , $tag , $output );
+
+        if ( $output->print() )
+            continue;
     }
 
     // Check tag count
 
-    if ( $output->isEmpty() )
-    {
-        $s = XmlUtil::loadFile( $source );
-        $t = XmlUtil::loadFile( $target );
+    $s = XmlUtil::loadFile( $source );
+    $t = XmlUtil::loadFile( $target );
 
-        $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
-        $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
+    $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
+    $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
 
-        typesNotCaseSensitive( $s );
-        typesNotCaseSensitive( $t );
+    typesNotCaseSensitive( $s );
+    typesNotCaseSensitive( $t );
 
-        $s = extractNodeName( $s , $tags );
-        $t = extractNodeName( $t , $tags );
+    $s = extractNodeName( $s , $tags );
+    $t = extractNodeName( $t , $tags );
 
-        $match = array();
+    $match = array();
 
-        foreach( $t as $v )
-            $match[$v] = array( 0 , 0 );
-        foreach( $s as $v )
-            $match[$v] = array( 0 , 0 );
+    foreach( $t as $v )
+        $match[$v] = array( 0 , 0 );
+    foreach( $s as $v )
+        $match[$v] = array( 0 , 0 );
 
-        foreach( $s as $v )
-            $match[$v][0] += 1;
-        foreach( $t as $v )
-            $match[$v][1] += 1;
+    foreach( $s as $v )
+        $match[$v][0] += 1;
+    foreach( $t as $v )
+        $match[$v][1] += 1;
 
-        foreach( $match as $k => $v )
-            $output->addDiff( $k , $v[0] , $v[1] );
+    foreach( $match as $k => $v )
+        $output->addDiff( $k , $v[0] , $v[1] );
 
-        $output->addFooter( "\n" );
-    }
-
-    // Ignore
-
-    if ( $showIgnore && $output->isEmpty() == false )
-    {
-        $prefix = $output->hash( $tags );
-        $suffix = md5( implode( "" , $tags ) ) . ',' . $qafile->file;
-        $mark = "{$prefix},{$suffix}";
-
-        if ( in_array( $mark , $ignore ) )
-            $output->clear();
-        else
-            $output->add( "  php $cmd0 --add-ignore=$mark\n" );
-
-        while ( in_array( $mark , $ignore ) )
-        {
-            $key = array_search( $mark , $ignore );
-            unset( $ignore[$key] );
-        }
-        foreach ( $ignore as $mark )
-            if ( str_ends_with( $mark , $suffix ) )
-                $output->add( "  php $cmd0 --del-ignore=$mark\n" );
-
-        $output->addFooter( "\n" );
-    }
-
-    // Output
+    if ( $showDetail )
+        foreach( $match as $tag => $v )
+            printTagUsageDetail( $source , $target , $tag , $output );
 
     $output->print();
 }
@@ -286,19 +234,53 @@ function extractTagsInnerXmls( array $nodes , array $tags )
     return $ret;
 }
 
-function printTagUsageDetail( string $source , string $target , string $tag , OutputBufferHasher $output )
+function printTagUsageDetail( string $source , string $target , string $tag , OutputIgnoreBuffer $output )
 {
-    $output->add( "\n" );
-    $s = collectTagDefinitions( $source , $tag );
-    $t = collectTagDefinitions( $target , $tag );
-    $min = min( count( $s ) , count( $t ) );
-    for( $i = 0 ; $i < $min ; $i++ )
-        $output->add( "\t{$tag}\t{$s[$i]}\t{$t[$i]}\n" );
-    for( $i = $min ; $i < count($s) ; $i++ )
-        $output->add( "\t{$tag}\t{$s[$i]}\t\t\n" );
-    for( $i = $min ; $i < count($t) ; $i++ )
-        $output->add( "\t{$tag}\t\t{$t[$i]}\t\n" );
-    $output->add( "\n" );
+    $source = collectTagDefinitions( $source , $tag );
+    $target = collectTagDefinitions( $target , $tag );
+    if ( count( $source ) == count($target) )
+        return;
+    $output->addLine();
+    $s = null;
+    $t = null;
+    while ( count( $source ) > 0 || count( $target ) > 0 )
+    {
+        if ( $s == null )
+            $s = array_shift( $source );
+        if ( $t == null )
+            $t = array_shift( $target );
+        if ( $s != null && $t != null )
+        {
+            if ( abs( $s - $t ) < 1 )
+            {
+                $output->add( "\t{$tag}\t{$s}\t{$t}\n" );
+                $s = null;
+                $t = null;
+                continue;
+            }
+            if ( $s < $t )
+            {
+                array_unshift( $target , $t );
+                $t = null;
+            }
+            else
+            {
+                array_unshift( $source , $s );
+                $s = null;
+            }
+        }
+        if ( $s != null )
+        {
+            $output->add( "\t{$tag}\t{$s}\t-\n" );
+            $s = null;
+        }
+        if ( $t != null )
+        {
+            $output->add( "\t{$tag}\t-\t{$t}\n" );
+            $t = null;
+        }
+    }
+    $output->addLine();
 }
 
 function collectTagDefinitions( string $file , string $tag )
@@ -313,76 +295,4 @@ function collectTagDefinitions( string $file , string $tag )
         $ret[] = $node->getLineNo();
     }
     return $ret;
-}
-
-class OutputBufferHasher
-{
-    public string $header = "";
-    public array $texts = array();
-
-    function __construct( string $header = "" )
-    {
-        $this->header = $header;
-    }
-
-    function clear()
-    {
-        $this->texts = array();
-    }
-
-    function hash() : string
-    {
-        if ( count( $this->texts) == 0 )
-            return "";
-        $text = $this->header . implode( "" , $this->texts );
-        $text = str_replace( " " , "" , $text );
-        $text = str_replace( "\n" , "" , $text );
-        $text = str_replace( "\r" , "" , $text );
-        $text = str_replace( "\t" , "" , $text );
-        return md5( $text );
-    }
-
-    function add( string $text )
-    {
-        $this->texts[] = $text;
-    }
-
-    function addDiff( string $text , int $sourceCount , int $targetCount )
-    {
-        if ( $sourceCount == $targetCount )
-            return;
-        $prefix = "* ";
-        $suffix = " -{$targetCount} +{$sourceCount}";
-        if ( $sourceCount == 0 )
-        {
-            $prefix = "- ";
-            $suffix = $targetCount == 1 ? "" : " -{$targetCount}";
-        }
-        if ( $targetCount == 0 )
-        {
-            $prefix = "+ ";
-            $suffix = $sourceCount == 1 ? "" : " +{$sourceCount}";
-        }
-        $this->add( "{$prefix}{$text}{$suffix}\n" );
-    }
-
-    function addFooter( string $text )
-    {
-        if ( count( $this->texts ) > 0 )
-            $this->add( $text );
-    }
-
-    function isEmpty() : bool
-    {
-        return count( $this->texts ) == 0;
-    }
-
-    function print()
-    {
-        if ( $this->isEmpty() )
-            return;
-        print $this->header;
-        foreach( $this->texts as $text )
-            print $text;
-    }
 }
