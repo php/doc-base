@@ -7,6 +7,7 @@
 require_once __DIR__ . '/lib/all.php';
 
 $qalist = QaFileInfo::cacheLoad();
+$outarg = new OutputIgnoreArgv( $argv );
 
 foreach ( $qalist as $qafile )
 {
@@ -24,7 +25,8 @@ foreach ( $qalist as $qafile )
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
 
-    $header = true;
+    $output = new OutputIgnoreBuffer( $outarg , "qaxml.e: {$target}\n\n" , $target );
+
     $match = array();
 
     foreach( $s as $v )
@@ -42,15 +44,10 @@ foreach ( $qalist as $qafile )
         if ( $v[0] == $v[1] )
             continue;
 
-        if ( $header )
-        {
-            print "qaxml.e: {$target}\n\n";
-            $header = false;
-        }
+        $output->add( "* &{$k}; -{$v[1]} +{$v[0]}\n" );
 
-        print "* &{$k}; -{$v[1]} +{$v[0]}\n";
     }
 
-    if ( ! $header )
-        print "\n";
+    $output->addLine();
+    $output->print();
 }

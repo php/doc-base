@@ -8,6 +8,8 @@ require_once __DIR__ . '/CacheFile.php';
 require_once __DIR__ . '/CacheUtil.php';
 require_once __DIR__ . '/GitDiffParser.php';
 require_once __DIR__ . '/GitLogParser.php';
+require_once __DIR__ . '/OutputIgnoreArgv.php';
+require_once __DIR__ . '/OutputIgnoreBuffer.php';
 require_once __DIR__ . '/QaFileInfo.php';
 require_once __DIR__ . '/RevcheckFileInfo.php';
 require_once __DIR__ . '/RevcheckFileList.php';
