@@ -64,7 +64,7 @@ class OutputIgnoreArgv
 
     public static function cacheFile()
     {
-        return new CacheFile( getcwd() . "/.qa.ignore" );
+        return new CacheFile( getcwd() . "/.qaxml.ignore" );
     }
 
     function pushAddIgnore( OutputIgnoreBuffer $output, string $mark )

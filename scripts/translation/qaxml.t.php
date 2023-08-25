@@ -39,9 +39,9 @@ foreach ( $qalist as $qafile )
 
     $output = new OutputIgnoreBuffer( $outarg , "qaxml.t: {$target}\n\n" , $target );
 
-    // Check tag contents, inner text
+    // First check, by tag contents, inner text
 
-    if ( count( $tags ) > 0 )
+    if ( count( $tags ) > 0 && $output->printCount == 0 )
     {
         $s = XmlUtil::loadFile( $source );
         $t = XmlUtil::loadFile( $target );
@@ -74,13 +74,12 @@ foreach ( $qalist as $qafile )
             foreach( $match as $tag => $v )
                 printTagUsageDetail( $source , $target , $tag , $output );
 
-        if ( $output->print() )
-            continue;
+        $output->print();
     }
 
-    // Check tag contents, inner XML
+    // Second check, by tag contents, inner XML
 
-    if ( count( $tags ) > 0 )
+    if ( count( $tags ) > 0 && $output->printCount == 0 )
     {
         $s = XmlUtil::loadFile( $source );
         $t = XmlUtil::loadFile( $target );
@@ -113,44 +112,46 @@ foreach ( $qalist as $qafile )
             foreach( $match as $tag => $v )
                 printTagUsageDetail( $source , $target , $tag , $output );
 
-        if ( $output->print() )
-            continue;
+        $output->print();
     }
 
-    // Check tag count
+    // Last check, simple tag count
 
-    $s = XmlUtil::loadFile( $source );
-    $t = XmlUtil::loadFile( $target );
+    if ( $output->printCount == 0 )
+    {
+        $s = XmlUtil::loadFile( $source );
+        $t = XmlUtil::loadFile( $target );
 
-    $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
-    $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
+        $s = XmlUtil::listNodeType( $s , XML_ELEMENT_NODE );
+        $t = XmlUtil::listNodeType( $t , XML_ELEMENT_NODE );
 
-    typesNotCaseSensitive( $s );
-    typesNotCaseSensitive( $t );
+        typesNotCaseSensitive( $s );
+        typesNotCaseSensitive( $t );
 
-    $s = extractNodeName( $s , $tags );
-    $t = extractNodeName( $t , $tags );
+        $s = extractNodeName( $s , $tags );
+        $t = extractNodeName( $t , $tags );
 
-    $match = array();
+        $match = array();
 
-    foreach( $t as $v )
-        $match[$v] = array( 0 , 0 );
-    foreach( $s as $v )
-        $match[$v] = array( 0 , 0 );
+        foreach( $t as $v )
+            $match[$v] = array( 0 , 0 );
+        foreach( $s as $v )
+            $match[$v] = array( 0 , 0 );
 
-    foreach( $s as $v )
-        $match[$v][0] += 1;
-    foreach( $t as $v )
-        $match[$v][1] += 1;
+        foreach( $s as $v )
+            $match[$v][0] += 1;
+        foreach( $t as $v )
+            $match[$v][1] += 1;
 
-    foreach( $match as $k => $v )
-        $output->addDiff( $k , $v[0] , $v[1] );
+        foreach( $match as $k => $v )
+            $output->addDiff( $k , $v[0] , $v[1] );
 
-    if ( $showDetail )
-        foreach( $match as $tag => $v )
-            printTagUsageDetail( $source , $target , $tag , $output );
+        if ( $showDetail )
+            foreach( $match as $tag => $v )
+                printTagUsageDetail( $source , $target , $tag , $output );
 
-    $output->print();
+        $output->print();
+    }
 }
 
 function extractNodeName( array $list , array $tags )

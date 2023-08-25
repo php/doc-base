@@ -8,6 +8,8 @@ require_once __DIR__ . '/all.php';
 
 class OutputIgnoreBuffer
 {
+    public int $printCount = 0;
+
     private string $header = "";
     private string $filename = "";
     private array $texts = array();
@@ -51,12 +53,14 @@ class OutputIgnoreBuffer
             $this->add( "\n" );
     }
 
-    function print() : bool
+    function print()
     {
         if ( count( $this->texts ) == 0 )
-            return false;
+            return;
 
         $this->addLine( "\n" );
+        if ( count ( $this->texts ) > 0 )
+             $this->printCount++;
 
         $head = $this->filename . ':' . $this->hash( false ) . ':';
         $mark = $head . $this->hash( true );
@@ -85,13 +89,11 @@ class OutputIgnoreBuffer
         $this->addLine( "\n" );
 
         if ( count( $this->texts ) == 0 )
-            return false;
+            return;
 
         print $this->header;
         foreach( $this->texts as $text )
             print $text;
-
-        return true;
     }
 
     private function hash( bool $withContents ) : string
