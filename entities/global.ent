@@ -388,6 +388,7 @@
 <!ENTITY url.random.mersenne-twister "http://www.math.sci.hiroshima-u.ac.jp/m-mat/MT/ARTICLES/mt.pdf">
 <!ENTITY url.random.pcg "https://www.pcg-random.org/">
 <!ENTITY url.random.xoshiro "https://prng.di.unimi.it/">
+<!ENTITY url.random.gamma-section "https://dl.acm.org/doi/10.1145/3503512">
 <!ENTITY url.rar "http://www.rarlabs.com/">
 <!ENTITY url.readline "http://cnswww.cns.cwru.edu/~chet/readline/rltop.html">
 <!ENTITY url.readline.windows "http://mingweditline.sourceforge.net/">
