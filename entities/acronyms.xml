@@ -217,6 +217,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>LFS</term>
+   <listitem>
+    <simpara>Large File Support</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>MIME</term>
    <listitem>
     <simpara>Multipurpose Internet Mail Extensions</simpara>
