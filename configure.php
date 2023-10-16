@@ -611,7 +611,6 @@ $infiles = array(
     'manual.xml.in',
     'install-unix.xml.in',
     'install-win.xml.in',
-    'developer.template.xml.in',
     'scripts/file-entities.php.in',
 );
 
@@ -699,7 +698,6 @@ if ($ac["GENERATE"] != "no") {
     $ac["GENERATE"] = str_replace($ac["ROOTDIR"].$ac["LANGDIR"], "", $tmp);
     $str = "\n<!ENTITY developer.include.file SYSTEM 'file:///{$ac["GENERATE"]}'>";
     file_put_contents("{$ac["basedir"]}/entities/file-entities.ent", $str, FILE_APPEND);
-    $ac["INPUT_FILENAME"] = "developer.template.xml";
     $ac["FORCE_DOM_SAVE"] = "yes";
 }
 checkvalue($ac["GENERATE"]);
