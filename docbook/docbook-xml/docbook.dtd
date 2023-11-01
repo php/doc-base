@@ -2332,7 +2332,7 @@
 	role	CDATA	#IMPLIED
 	%db.common.attributes;
 	%db.common.linking.attributes;
-	pubwork	(article|bbs|book|cdrom|chapter|dvd|emailmessage|gopher|journal|manuscript|newsposting|part|phpdoc:varentry|refentry|section|series|set|webpage|wiki)	#IMPLIED
+	pubwork	(article|bbs|book|cdrom|chapter|dvd|emailmessage|gopher|journal|manuscript|newsposting|part|refentry|section|series|set|webpage|wiki)	#IMPLIED
 
 >
 
@@ -2584,7 +2584,7 @@
 
 >
 
-<!ELEMENT appendix (((title|titleabbrev|subtitle)*, info?), ((glossary|bibliography|index|toc)*, (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+), (glossary|bibliography|index|toc)*))>
+<!ELEMENT appendix (((title|titleabbrev|subtitle)*, info?), ((glossary|bibliography|index|toc)*, (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+), (glossary|bibliography|index|toc)*))>
 
 <!ATTLIST appendix
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2596,7 +2596,7 @@
 
 >
 
-<!ELEMENT chapter (((title|titleabbrev|subtitle)*, info?), ((glossary|bibliography|index|toc)*, (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+), (glossary|bibliography|index|toc)*))>
+<!ELEMENT chapter (((title|titleabbrev|subtitle)*, info?), ((glossary|bibliography|index|toc)*, (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+), (glossary|bibliography|index|toc)*))>
 
 <!ATTLIST chapter
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2608,7 +2608,7 @@
 
 >
 
-<!ELEMENT part (((title|titleabbrev|subtitle)*, info?), partintro?, (glossary|bibliography|index|toc|dedication|acknowledgements|preface|chapter|appendix|article|colophon|phpdoc:varentry|refentry|reference|phpdoc:exceptionref|phpdoc:classref)+)>
+<!ELEMENT part (((title|titleabbrev|subtitle)*, info?), partintro?, (glossary|bibliography|index|toc|dedication|acknowledgements|preface|chapter|appendix|article|colophon|refentry|reference|phpdoc:exceptionref|phpdoc:classref)+)>
 
 <!ATTLIST part
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2620,7 +2620,7 @@
 
 >
 
-<!ELEMENT preface (((title|titleabbrev|subtitle)*, info?), ((glossary|bibliography|index|toc)*, (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+), (glossary|bibliography|index|toc)*))>
+<!ELEMENT preface (((title|titleabbrev|subtitle)*, info?), ((glossary|bibliography|index|toc)*, (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+), (glossary|bibliography|index|toc)*))>
 
 <!ATTLIST preface
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2632,7 +2632,7 @@
 
 >
 
-<!ELEMENT partintro (((title|titleabbrev|subtitle)*, info?), (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+))>
+<!ELEMENT partintro (((title|titleabbrev|subtitle)*, info?), (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+))>
 
 <!ATTLIST partintro
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2644,7 +2644,7 @@
 
 >
 
-<!ELEMENT section (((title|titleabbrev|subtitle)*, info?), (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|(phpdoc:varentry|refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|(phpdoc:varentry|refentry|xi:include)+), (glossary|bibliography|index|toc)*)>
+<!ELEMENT section (((title|titleabbrev|subtitle)*, info?), (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|(refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|(refentry|xi:include)+), (glossary|bibliography|index|toc)*)>
 
 <!ATTLIST section
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2668,7 +2668,7 @@
 
 >
 
-<!ELEMENT article (((title|titleabbrev|subtitle)*, info?), (glossary|bibliography|index|toc|appendix|acknowledgements|colophon)*, (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(phpdoc:varentry|refentry)+), (glossary|bibliography|index|toc|appendix|acknowledgements|colophon)*)>
+<!ELEMENT article (((title|titleabbrev|subtitle)*, info?), (glossary|bibliography|index|toc|appendix|acknowledgements|colophon)*, (((itemizedlist|orderedlist|procedure|simplelist|variablelist|segmentedlist|glosslist|bibliolist|calloutlist|qandaset|caution|important|note|tip|warning|example|figure|table|equation|informalexample|informalfigure|informaltable|informalequation|sidebar|blockquote|address|epigraph|mediaobject|screenshot|task|productionset|constraintdef|msgset|programlisting|screen|literallayout|synopsis|programlistingco|screenco|cmdsynopsis|funcsynopsis|classsynopsis|methodsynopsis|constructorsynopsis|destructorsynopsis|fieldsynopsis|bridgehead|remark|revhistory|indexterm|anchor|para|formalpara|simpara|annotation)+, (((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+)?)|((section)+, (simplesect)*)|(simplesect)+|((sect1)+, (simplesect)*)|(refentry)+), (glossary|bibliography|index|toc|appendix|acknowledgements|colophon)*)>
 
 <!ATTLIST article
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2741,7 +2741,7 @@
 
 >
 
-<!ELEMENT reference (((title|titleabbrev|subtitle)*, info?), partintro?, (phpdoc:varentry|refentry)+)>
+<!ELEMENT reference (((title|titleabbrev|subtitle)*, info?), partintro?, (refentry)+)>
 
 <!ATTLIST reference
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2753,7 +2753,7 @@
 
 >
 
-<!ELEMENT classref (((title|titleabbrev|subtitle)*, info?), partintro?, (phpdoc:varentry|refentry)*)>
+<!ELEMENT classref (((title|titleabbrev|subtitle)*, info?), partintro?, (refentry)*)>
 
 <!ATTLIST classref
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
@@ -2773,7 +2773,7 @@
 >
 <!ELEMENT fallback EMPTY>
 
-<!ELEMENT exceptionref (((title|titleabbrev|subtitle)*, info?), partintro?, (phpdoc:varentry|refentry)*)>
+<!ELEMENT exceptionref (((title|titleabbrev|subtitle)*, info?), partintro?, (refentry)*)>
 
 <!ATTLIST exceptionref
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
