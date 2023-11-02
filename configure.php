@@ -614,6 +614,24 @@ $infiles = array(
     'scripts/file-entities.php.in',
 );
 
+// Show local repository status to facilitate debug
+
+$repos = array();
+$repos['doc-base']  = $ac['basedir'];
+$repos['en']        = "{$ac['rootdir']}/{$ac['EN_DIR']}";
+$repos[$ac['LANG']] = "{$ac['rootdir']}/{$ac['LANG']}";
+$repos = array_unique($repos);
+
+foreach ($repos as $name => $path)
+{
+    $output = str_pad( "$name:" , 10 );
+    $output .= `cd $path; git rev-parse HEAD;`;
+    $output .= `cd $path; git status -s;`;
+    $output .= `cd $path; git for-each-ref --format="%(push:track)" refs/heads`;
+    echo trim($output) . "\n";
+}
+echo "\n";
+
 foreach ($infiles as $in) {
     $in = chop("{$ac['basedir']}/{$in}");
 
