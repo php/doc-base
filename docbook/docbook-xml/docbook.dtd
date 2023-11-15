@@ -18,7 +18,6 @@
 	vendor	CDATA	#IMPLIED
 	wordsize	CDATA	#IMPLIED
 	annotations	CDATA	#IMPLIED
-	phd:chunk	CDATA	#IMPLIED
 
 ">
 
@@ -27,7 +26,6 @@
 	xmlns:xlink	CDATA	#FIXED	'http://www.w3.org/1999/xlink'
 	xmlns:xi	CDATA	#FIXED	'http://www.w3.org/2001/XInclude'
 	xmlns:phpdoc CDATA  #FIXED  'http://php.net/ns/phpdoc'
-	xmlns:phd	CDATA	#FIXED	'http://www.php.net/ns/phd'
 	xlink:href	CDATA	#IMPLIED
 	xlink:type	CDATA	#IMPLIED
 	xlink:role	CDATA	#IMPLIED
@@ -1052,7 +1050,6 @@
 <!ATTLIST methodname
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
 	role	CDATA	#IMPLIED
-	phd:args	CDATA	#IMPLIED
 	%db.common.attributes;
 	%db.common.linking.attributes;
 
@@ -1903,7 +1900,6 @@
 <!ATTLIST function
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
 	role	CDATA	#IMPLIED
-	phd:args	CDATA	#IMPLIED
 	%db.common.attributes;
 	%db.common.linking.attributes;
 
