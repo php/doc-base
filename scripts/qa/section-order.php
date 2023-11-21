@@ -42,6 +42,26 @@ const SKIP_FILE = [
     'reference/oci8/oldaliases/ocifetchinto.xml',
     /* This page uses <xi:include> tags to include the docs from the OO version */
     'reference/parallel/functions/parallel.run.xml',
+    /* These pages use <xi:include> tags to include the docs from the interface version */
+    'reference/dom/domcharacterdata/after.xml',
+    'reference/dom/domcharacterdata/remove.xml',
+    'reference/dom/domcharacterdata/replacewith.xml',
+    'reference/dom/domcharacterdata/before.xml',
+    'reference/dom/domelement/prepend.xml',
+    'reference/dom/domelement/after.xml',
+    'reference/dom/domelement/replacechildren.xml',
+    'reference/dom/domelement/remove.xml',
+    'reference/dom/domelement/replacewith.xml',
+    'reference/dom/domelement/append.xml',
+    'reference/dom/domelement/before.xml',
+    'reference/dom/domnamednodemap/getiterator.xml',
+    'reference/dom/domdocumentfragment/prepend.xml',
+    'reference/dom/domdocumentfragment/replacechildren.xml',
+    'reference/dom/domdocumentfragment/append.xml',
+    'reference/dom/domdocument/prepend.xml',
+    'reference/dom/domdocument/replacechildren.xml',
+    'reference/dom/domdocument/append.xml',
+    'reference/dom/domnodelist/getiterator.xml',
 ];
 
 const VALID_SECTION_ROLES = [
