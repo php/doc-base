@@ -5,19 +5,17 @@ error_reporting(E_ALL);
 
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 5                                                        |
+  | Copyright (c) 1997-2023 The PHP Group                                |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2011 The PHP Group                                |
-  +----------------------------------------------------------------------+
-  | This source file is subject to version 3.0 of the PHP license,       |
+  | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
   | available through the world-wide-web at the following url:           |
-  | http://www.php.net/license/3_0.txt.                                  |
+  | https://www.php.net/license/3_01.txt.                                |
   | If you did not receive a copy of the PHP license and are unable to   |
   | obtain it through the world-wide-web, please send a note to          |
-  | license@php.net so we can mail you a copy immediately.               |
+  | license@php.net, so we can mail you a copy immediately.              |
   +----------------------------------------------------------------------+
-  | Authors : Yannick Torrès <yannick@php.net>                             |
+  | Authors : Yannick Torres <yannick@php.net>                           |
   +----------------------------------------------------------------------+
 */
 
@@ -34,7 +32,7 @@ Feel free to ask me some others checks.
   Usage:
   <?php echo $argv[0]; ?> <language-code>
 
-  Authors:Yannick Torrès <yannick@php.net>
+  Authors:Yannick Torrï¿½s <yannick@php.net>
 
 <?php
   exit;
@@ -240,7 +238,7 @@ for( $i=0; $i < count($en_linkend); $i ++ ) {
  if( isset($lang_linkend[$i]) && $en_linkend[$i] != $lang_linkend[$i]  && $en_linkend[$i] != 'somethingelse' ) {
   $nb_error['link'] ++;
   $result_error[] = array(
-   "libel" => "Error in link, attribut : linkend n°$i",
+   "libel" => "Error in link, attribut : linkend nï¿½$i",
    "value_en" => $en_linkend[$i],
    "value_lang" => $lang_linkend[$i],
    "type" => "link",
@@ -614,7 +612,7 @@ for( $j=0; $j < count($match2[5]); $j++) {
 }
 
 
-// Vérif
+// Vï¿½rif
 for( $i=0; $i < count($en_methodsynopsis); $i++) {
 
  if( isset($en_methodsynopsis[$i]['methodname']['name']) ) {
@@ -875,7 +873,7 @@ for( $i = 0; $i < count($match[1]); $i++) {
 
 }
 
-// Vérif
+// Vï¿½rif
 for( $i=0; $i < count($en_classsynopsis); $i++) {
 
  if( !isset($lang_classsynopsis[$i]['ooclass']['classname']) ) { $lang_classsynopsis[$i]['ooclass']['classname'] = ''; }
@@ -1086,7 +1084,7 @@ function get_dir_status($dir) {
 
 global $LANG;
 
-    //echo "Entrée dans le répertoire : ".$dir."\n";
+    //echo "Entrï¿½e dans le rï¿½pertoire : ".$dir."\n";
 
     $en_dir = str_replace("/$LANG/", "/en/", $dir);
 

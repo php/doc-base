@@ -5,11 +5,11 @@
  *
  * If you did not receive a copy of this file's license and are unable
  * to obtain it through the world-wide-web, please send a note to
- * license@php.net so we can mail you a copy immediately.
+ * license@php.net, so we can mail you a copy immediately.
  *
  * @author    Carola Sammy Kummert <sammywg@php.net>
- * @license   http://www.php.net/license/3_0.txt PHP License 3.0
- * @copyright (c) 1997-2011 The PHP Group
+ * @license   https://www.php.net/license/3_01.txt PHP License 3.01
+ * @copyright (c) 1997-2023 The PHP Group
  *
  * @package   TranTools
  *
