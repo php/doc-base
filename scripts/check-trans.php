@@ -32,7 +32,7 @@ Feel free to ask me some others checks.
   Usage:
   <?php echo $argv[0]; ?> <language-code>
 
-  Authors:Yannick Torr�s <yannick@php.net>
+  Authors:Yannick Torres <yannick@php.net>
 
 <?php
   exit;
@@ -238,7 +238,7 @@ for( $i=0; $i < count($en_linkend); $i ++ ) {
  if( isset($lang_linkend[$i]) && $en_linkend[$i] != $lang_linkend[$i]  && $en_linkend[$i] != 'somethingelse' ) {
   $nb_error['link'] ++;
   $result_error[] = array(
-   "libel" => "Error in link, attribut : linkend n�$i",
+   "libel" => "Error in link, attribut : linkend $i",
    "value_en" => $en_linkend[$i],
    "value_lang" => $lang_linkend[$i],
    "type" => "link",
@@ -612,7 +612,7 @@ for( $j=0; $j < count($match2[5]); $j++) {
 }
 
 
-// V�rif
+// Verify
 for( $i=0; $i < count($en_methodsynopsis); $i++) {
 
  if( isset($en_methodsynopsis[$i]['methodname']['name']) ) {
@@ -754,7 +754,7 @@ for( $i=0; $i < count($en_methodsynopsis); $i++) {
 
 // END : methodsynopsis
 
-// Check if tere is a space or a point at the end of refpurpose
+// Check if there is a space or a point at the end of refpurpose
 
 preg_match_all("/<refpurpose>.*([^A-Za-z1-9 ])<\/refpurpose>/s", $lang_content, $match2);
 
@@ -873,7 +873,7 @@ for( $i = 0; $i < count($match[1]); $i++) {
 
 }
 
-// V�rif
+// Verify
 for( $i=0; $i < count($en_classsynopsis); $i++) {
 
  if( !isset($lang_classsynopsis[$i]['ooclass']['classname']) ) { $lang_classsynopsis[$i]['ooclass']['classname'] = ''; }
@@ -1043,7 +1043,7 @@ $result = do_check($en_content, $lang_content);
 // Grabs the revision tag and stores credits from the file given
 function get_tags($file, $val = "en-rev") {
     // Read the first 500 chars. The comment should be at
-    // the begining of the file
+    // the beginning of the file
 
     if( !is_file($file) ) {
      return false;
@@ -1078,13 +1078,13 @@ function get_tags($file, $val = "en-rev") {
 // A function to check directory status in translated directory
 // =========================================================================
 
-// Check the status of files in a diretory of phpdoc XML files
+// Check the status of files in a directory of phpdoc XML files
 // The English directory is passed to this function to check
 function get_dir_status($dir) {
 
 global $LANG;
 
-    //echo "Entr�e dans le r�pertoire : ".$dir."\n";
+    //echo "Enter in directory: ".$dir."\n";
 
     $en_dir = str_replace("/$LANG/", "/en/", $dir);
 
