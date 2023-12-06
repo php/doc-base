@@ -180,6 +180,10 @@ function checkSectionErrors(string $path): array
     if (str_contains($content, '<phpdoc:classref')) {
         return [];
     }
+    /* Skip Exception classes definitions */
+    if (str_contains($content, '<phpdoc:exceptionref')) {
+        return [];
+    }
 
     /* Skip aliases */
     if (str_contains($content, '&info.function.alias;')
