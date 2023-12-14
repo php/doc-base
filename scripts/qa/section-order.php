@@ -1,20 +1,18 @@
 <?php
 /**
  *  +----------------------------------------------------------------------+
- *  | PHP Version 8                                                        |
+ *  | Copyright (c) 1997-2023 The PHP Group                                |
  *  +----------------------------------------------------------------------+
- *  | Copyright (c) 1997-2021 The PHP Group                                |
- *  +----------------------------------------------------------------------+
- *  | This source file is subject to version 3.0 of the PHP license,       |
+ *  | This source file is subject to version 3.01 of the PHP license,      |
  *  | that is bundled with this package in the file LICENSE, and is        |
  *  | available through the world-wide-web at the following url:           |
- *  | http://www.php.net/license/3_0.txt.                                  |
+ *  | https://www.php.net/license/3_01.txt.                                |
  *  | If you did not receive a copy of the PHP license and are unable to   |
  *  | obtain it through the world-wide-web, please send a note to          |
- *  | license@php.net so we can mail you a copy immediately.               |
+ *  | license@php.net, so we can mail you a copy immediately.              |
  *  +----------------------------------------------------------------------+
  *  | Authors:    Kim Hallberg <work@hallberg.kim>                         |
- *  |             George Peter Banyard <girgias@php.net>                   |
+ *  |             Gina Peter Banyard <girgias@php.net>                     |
  *  +----------------------------------------------------------------------+
  *  | Description: This file parses the manual and checks that the         |
  *  |              necessary sections are present, and that their order    |
@@ -180,6 +178,10 @@ function checkSectionErrors(string $path): array
 
     /* Skip class definitions */
     if (str_contains($content, '<phpdoc:classref')) {
+        return [];
+    }
+    /* Skip Exception classes definitions */
+    if (str_contains($content, '<phpdoc:exceptionref')) {
         return [];
     }
 
