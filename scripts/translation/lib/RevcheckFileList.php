@@ -21,7 +21,7 @@ require_once __DIR__ . '/all.php';
 
 class RevcheckFileList
 {
-    var $list = array();
+    private $list = array();
 
     function __construct( $lang )
     {
@@ -31,6 +31,11 @@ class RevcheckFileList
     function get( $file ): RevcheckFileInfo|null
     {
         return $this->list[ $file ] ?? null;
+    }
+
+    function iterator(): Iterator
+    {
+        return new ArrayIterator( $this->list );
     }
 
     function loadTree( $lang )

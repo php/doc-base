@@ -63,7 +63,7 @@ class RevcheckRun
         // All status are marked in source files,
         // except notinen, that are marked on target.
 
-        foreach( $this->sourceFiles->list as $source )
+        foreach( $this->sourceFiles->iterator() as $source )
         {
             $target = $this->targetFiles->get( $source->file );
 
@@ -130,7 +130,7 @@ class RevcheckRun
 
         // NotInEnTree
 
-        foreach( $this->targetFiles->list as $target )
+        foreach( $this->targetFiles->iterator() as $target )
         {
             $source = $this->sourceFiles->get( $target->file );
             if ( $source == null )
