@@ -52,7 +52,7 @@ class RevtagParser
         return $ret;
     }
 
-    public static function parseNodeRecurse( DOMNode $node , RevtagInfo & $ret , $filename = "" )
+    public static function parseNodeRecurse( DOMNode $node , RevtagInfo $ret , $filename = "" )
     {
         if ( $node->nodeType == XML_COMMENT_NODE )
             RevtagParser::parseComment( $node , $ret , $filename );
@@ -61,7 +61,7 @@ class RevtagParser
             RevtagParser::parseNodeRecurse( $child , $ret , $filename );
     }
 
-    public static function parseComment( DOMNode $node , RevtagInfo & $ret , $filename = "" )
+    public static function parseComment( DOMNode $node , RevtagInfo $ret , $filename = "" )
     {
         $text = trim( $node->textContent );
 
