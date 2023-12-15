@@ -67,7 +67,7 @@ class RevtagParser
 
         if ( str_starts_with( $text , "EN-" ) )
         {
-            // /EN-Revision:\s*(\S+)\s*Maintainer:\s*(\S+)\s*Status:\s*(\S+)/ // restric maintainer without spaces
+            // /EN-Revision:\s*(\S+)\s*Maintainer:\s*(\S+)\s*Status:\s*(\S+)/ // restrict maintainer without spaces
             // /EN-Revision:\s*(\S+)\s*Maintainer:\s(.*?)\sStatus:\s*(\S+)/   // accepts maintainer with spaces
 
             $match = array();

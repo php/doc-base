@@ -87,16 +87,11 @@ php doc-base/scripts/translation/qaxml.t.php destructorsynopsis
 php doc-base/scripts/translation/qaxml.t.php fieldsynopsis
 php doc-base/scripts/translation/qaxml.t.php funcsynopsis
 php doc-base/scripts/translation/qaxml.t.php methodsynopsis
-
-php doc-base/scripts/translation/qaxml.t.php code
-php doc-base/scripts/translation/qaxml.t.php computeroutput
-php doc-base/scripts/translation/qaxml.t.php filename
-php doc-base/scripts/translation/qaxml.t.php literal
-php doc-base/scripts/translation/qaxml.t.php varname
 ```
 Tags where is expected few translations:
 ```
 php doc-base/scripts/translation/qaxml.t.php code
+php doc-base/scripts/translation/qaxml.t.php computeroutput
 php doc-base/scripts/translation/qaxml.t.php filename
 php doc-base/scripts/translation/qaxml.t.php literal
 php doc-base/scripts/translation/qaxml.t.php varname
