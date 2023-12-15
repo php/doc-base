@@ -19,10 +19,10 @@
 
 require_once __DIR__ . '/lib/all.php';
 
-if ( count( $argv ) < 2 )
+if ( count( $argv ) < 2 || in_array( '--help' , $argv ) || in_array( '-h' , $argv ) )
 {
-    fwrite( STDERR , "  Missing paramater. Usage:\n" );
-    fwrite( STDERR , "    {$argv[0]} [lang_dir]:\n" );
+    fwrite( STDERR , "Usage: {$argv[0]} [lang_dir]\n\n" );
+    fwrite( STDERR , "See https://github.com/php/doc-base/tree/master/scripts/translation#readme for more info.\n" );
     return;
 }
 
