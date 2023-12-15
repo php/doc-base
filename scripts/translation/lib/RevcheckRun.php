@@ -85,22 +85,25 @@ class RevcheckRun
                 continue;
             }
 
-            $target->hash = $target->revtag->revision;
+            // Translation compares ok from multiple hashs. The head hash or the last non-skiped hash.
+            // See https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L374
+            // and https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L392 .
 
-            // translation compares ok from multiple hashs. See https://github.com/php/doc-base/commit/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f
-            $wobblyOkHash = $source->head;        // L372
-            if ( $target->hash == $source->diff ) // R391
-                $wobblyOkHash = $source->diff;    // R392
+            $sourceHash = $source->head;
+            $targetHash = $target->revtag->revision;
+
+            if ( $targetHash == $source->diff )
+                $sourceHash = $source->diff;
 
             $daysOld = ( strtotime( "now" ) - $source->date ) / 86400;
             $daysOld = (int)$daysOld;
 
-            $qaInfo = new QaFileInfo( $wobblyOkHash , $target->hash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
+            $qaInfo = new QaFileInfo( $sourceHash , $targetHash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
             $this->qaList[ $source->file ] = $qaInfo;
 
             // TranslatedOk
 
-            if ( $target->revtag->status == "ready" && $wobblyOkHash == $target->hash )
+            if ( $target->revtag->status == "ready" && $sourceHash == $targetHash )
             {
                 $source->status = RevcheckStatus::TranslatedOk;
                 $this->filesOk[] = $source;
