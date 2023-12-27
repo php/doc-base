@@ -236,7 +236,7 @@
 <!ENTITY url.mongodb.libbson "https://github.com/mongodb/mongo-c-driver/tree/master/src/libbson">
 <!ENTITY url.mongodb.library "https://github.com/mongodb/mongo-php-library">
 <!ENTITY url.mongodb.library.docs "https://www.mongodb.com/docs/php-library/current/">
-<!ENTITY url.mongodb.library.apidocs "https://www.mongodb.com/docs/php-library/master/reference/">
+<!ENTITY url.mongodb.library.apidocs "https://www.mongodb.com/docs/php-library/master/reference">
 <!ENTITY url.mongodb.libmongoc "https://github.com/mongodb/mongo-c-driver">
 <!ENTITY url.mongodb.libmongocrypt "https://github.com/mongodb/libmongocrypt">
 <!ENTITY url.mongodb.glossary "https://www.mongodb.com/docs/manual/reference/glossary/">
