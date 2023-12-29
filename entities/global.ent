@@ -461,7 +461,7 @@
 <!ENTITY url.svn.manual.status   "http://svnbook.red-bean.com/en/1.2/svn.ref.svn.c.status.html">
 <!ENTITY url.svn.manual.update   "http://svnbook.red-bean.com/en/1.2/svn.ref.svn.c.update.html">
 <!ENTITY url.svn.manual.externaldifftools "http://svnbook.red-bean.com/en/1.2/svn.advanced.externaldifftools.html">
-<!ENTITY url.swoole.docs "https://www.swoole.co.uk/docs/">
+<!ENTITY url.swoole.docs "https://wiki.swoole.com/">
 <!ENTITY url.sybase "http://www.sybase.com/">
 <!ENTITY url.symbole-legendre "http://primes.utm.edu/glossary/page.php?sort=LegendreSymbol">
 <!ENTITY url.t1lib "http://www.ibiblio.org/pub/Linux/libs/graphics/">
