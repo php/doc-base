@@ -67,9 +67,9 @@ INIXML_FOOTER;
 $legend = <<<LEGEND
  <para>
   Read the manual section on <link linkend="configuration">
-  Configurations</link> for more information in regards to setting 
-  PHP configurations.  The <literal>PHP_INI_*</literal> 
-  <link linkend="language.constants">constants</link> used in the 
+  Configurations</link> for more information in regards to setting
+  PHP configurations.  The <literal>INI_*</literal>
+  <link linkend="language.constants">constants</link> used in the
   table below are defined as follows:
  </para>
  <para>
@@ -83,23 +83,23 @@ $legend = <<<LEGEND
    </thead>
    <tbody>
     <row>
-     <entry><constant>PHP_INI_USER</constant></entry>
+     <entry><constant>INI_USER</constant></entry>
      <entry>1</entry>
      <entry>Entry can be set in user scripts</entry>
     </row>
     <row>
-     <entry><constant>PHP_INI_PERDIR</constant></entry>
+     <entry><constant>INI_PERDIR</constant></entry>
      <entry>2</entry>
      <entry>Entry can be set in <filename>.htaccess</filename></entry>
     </row>
     <row>
-     <entry><constant>PHP_INI_SYSTEM</constant></entry>
+     <entry><constant>INI_SYSTEM</constant></entry>
      <entry>4</entry>
      <entry>Entry can be set in <filename>php.ini</filename> or
       <filename>httpd.conf</filename></entry>
     </row>
     <row>
-     <entry><constant>PHP_INI_ALL</constant></entry>
+     <entry><constant>INI_ALL</constant></entry>
      <entry>7</entry>
      <entry>Entry can be set anywhere</entry>
     </row>
@@ -192,7 +192,7 @@ function findINI($fname) {/*{{{*/
                 continue;
             }
             $found['INI'][$entry[1]] = array(
-                                'def' => $entry[2], 
+                                'def' => $entry[2],
                                 'mod' => str_replace(array(' ', "\n","\r","\t"),'',$entry[3])
                                 );
             }
@@ -218,7 +218,7 @@ function flatentree($tree, $section) {/*{{{*/
 
 function createINI($dir, $cfgs) {/*{{{*/
     global $master_ini_table;
-    
+
     if (empty($cfgs)) {
         return false;
     }
@@ -252,7 +252,7 @@ function createINI($dir, $cfgs) {/*{{{*/
         $rows .= "     </row>\n";
     }
     $master_ini_table .= $rows;
-    
+
     if ($dir == 'en/chapters') {
         $id = 'general';
     } else {
@@ -284,7 +284,7 @@ function createMasterINI ($dir, $rows) {/*{{{*/
 	fflush($fp);
 	fclose($fp);
 	echo "CREATED {$GLOBALS['phpdoc_dir']}/{$dir}/config.master_test.xml\n";
-    }	
+    }
 }	/*}}}*/
 
 // Set the PHP4 and the PHPDOC source dirs

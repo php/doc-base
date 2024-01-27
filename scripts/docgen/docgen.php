@@ -678,10 +678,10 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 			if ($ini = ini_get_all($obj->name)) {
 
 				$visibility = array(
-				  INI_USER   => 'PHP_INI_USER',
-				  INI_PERDIR => 'PHP_INI_PERDIR',
-				  INI_SYSTEM => 'PHP_INI_SYSTEM',
-				  INI_ALL    => 'PHP_INI_ALL',
+				  INI_USER   => 'INI_USER',
+				  INI_PERDIR => 'INI_PERDIR',
+				  INI_SYSTEM => 'INI_SYSTEM',
+				  INI_ALL    => 'INI_ALL',
 				);
 
 				$ident = get_ident_size('INI_ENTRIES', $content);
