@@ -21,13 +21,13 @@
      <row>
       <entry>theini_option</entry>
       <entry>itsvalue</entry>
-      <entry>its PHP_INI_* value</entry>
+      <entry>its INI_* value</entry>
       <entry>version changes information</entry>
      </row>
      <row>
       <entry>anotherini_option</entry>
       <entry>itsvalue</entry>
-      <entry>its PHP_INI_* value</entry>
+      <entry>its INI_* value</entry>
       <entry></entry>
      </row>
     </tbody>
@@ -37,9 +37,9 @@
   &ini.php.constants;
 
  </para>
- 
+
  &ini.descriptions.title;
- 
+
  <para>
   <variablelist>
 

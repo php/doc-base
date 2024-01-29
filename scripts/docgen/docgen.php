@@ -678,10 +678,10 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 			if ($ini = ini_get_all($obj->name)) {
 
 				$visibility = array(
-				  INI_USER   => 'PHP_INI_USER',
-				  INI_PERDIR => 'PHP_INI_PERDIR',
-				  INI_SYSTEM => 'PHP_INI_SYSTEM',
-				  INI_ALL    => 'PHP_INI_ALL',
+				  INI_USER   => 'INI_USER',
+				  INI_PERDIR => 'INI_PERDIR',
+				  INI_SYSTEM => 'INI_SYSTEM',
+				  INI_ALL    => 'INI_ALL',
 				);
 
 				$ident = get_ident_size('INI_ENTRIES', $content);
@@ -693,7 +693,7 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 					$markup .= str_repeat(' ', $ident + 1) ."<row>". PHP_EOL;
 					$markup .= str_repeat(' ', $ident + 2) ."<entry><link linkend=\"". $id ."\">". $config ."</link></entry>". PHP_EOL;
 					$markup .= str_repeat(' ', $ident + 2) ."<entry>". $value['global_value'] ."</entry>". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 2) ."<entry>" . (isset($visibility[$value['access']]) ? $visibility[$value['access']] : $value['access']) . "</entry>". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 2) ."<entry>" . (isset($visibility[$value['access']]) ? ('<constant>' . $visibility[$value['access']] . '</constant>') : $value['access']) . "</entry>". PHP_EOL;
 					$markup .= str_repeat(' ', $ident + 2) ."<entry><!-- leave empty, this will be filled by an automatic script --></entry>". PHP_EOL;
 					$markup .= str_repeat(' ', $ident + 1) ."</row>". PHP_EOL;
 

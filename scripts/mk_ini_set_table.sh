@@ -6,18 +6,18 @@
 # Author: Jesus M. Castagnetto
 # Created: Mon Mar 19 04:57:02 PST 2001
 # Updated: Thu Apr 25 11:42:26 PDT 2002
-# - look through all PHP_INI_ containing files
+# - look through all INI_ containing files
 # - save table in the new split dir for the function
 # Updated: Wed Nov 20 18:16:12 PST 2002
-# - rearrange the order of the tables, put the PHP_INI_* definitions first.
+# - rearrange the order of the tables, put the INI_* definitions first.
 
-cfiles=`grep -rl PHP_INI_ ../php4/*`
+cfiles=`grep -rl INI_ ../php4/*`
 ini_set_table="en/reference/info/functions/ini_set_table";
 
 awk 'BEGIN {
 	print "<note>";
 	print " <para>";
-	print "  The PHP_INI_* constants used in the table below are defined as follows:";
+	print "  The INI_* constants used in the table below are defined as follows:";
 	print "  <table>";
 	print "   <thead>";
 	print "    <row>";
@@ -28,23 +28,23 @@ awk 'BEGIN {
 	print "   </thead>";
 	print "   <tbody>";
 	print "    <row>";
-	print "     <entry>PHP_INI_USER</entry>";
+	print "     <entry><constant>INI_USER</constant></entry>";
 	print "     <entry>1</entry>";
 	print "     <entry>Entry can be set in user scripts</entry>";
 	print "    </row>";
 	print "    <row>";
-	print "     <entry>PHP_INI_PERDIR</entry>";
+	print "     <entry><constant>INI_PERDIR</constant></entry>";
 	print "     <entry>2</entry>";
 	print "     <entry>Entry can be set in <filename>.htaccess</filename></entry>";
 	print "    </row>";
 	print "    <row>";
-	print "     <entry>PHP_INI_SYSTEM</entry>";
+	print "     <entry><constant>INI_SYSTEM</constant></entry>";
 	print "     <entry>4</entry>";
 	print "     <entry>Entry can be set in <filename>php.ini</filename> or";
 	print "      <filename>httpd.conf</filename></entry>";
 	print "    </row>";
 	print "    <row>";
-	print "     <entry>PHP_INI_ALL</entry>";
+	print "     <entry><constant>INI_ALL</constant></entry>";
 	print "     <entry>7</entry>";
 	print "     <entry>Entry can be set anywhere</entry>";
 	print "    </row>";
@@ -63,7 +63,7 @@ awk 'BEGIN {
 	print "  </thead>";
 	print "  <tbody>";
 }
-$0 ~ /PHP_INI_.*\(/ && $0 !~ /^static/ && $0 !~ /PHP_INI_(BEGIN|END)/ {
+$0 ~ /INI_.*\(/ && $0 !~ /^static/ && $0 !~ /INI_(BEGIN|END)/ {
 nf = split($0,tmp,",");
 
 varname = substr(tmp[1], index(tmp[1], "\""));
