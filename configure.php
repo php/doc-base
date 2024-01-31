@@ -620,10 +620,11 @@ $repos = array_unique($repos);
 
 foreach ($repos as $name => $path)
 {
+    $driveSwitch = is_windows() ? '/d' : '';
     $output = str_pad( "$name:" , 10 );
-    $output .= `cd $path; git rev-parse HEAD;`;
-    $output .= `cd $path; git status -s;`;
-    $output .= `cd $path; git for-each-ref --format="%(push:track)" refs/heads`;
+    $output .= `cd $driveSwitch $path && git rev-parse HEAD`;
+    $output .= `cd $driveSwitch $path && git status -s`;
+    $output .= `cd $driveSwitch $path && git for-each-ref --format="%(push:track)" refs/heads`;
     echo trim($output) . "\n";
 }
 echo "\n";
