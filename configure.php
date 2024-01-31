@@ -27,7 +27,7 @@ echo "configure.php: $cvs_id\n";
 function usage() // {{{
 {
     global $acd;
-    
+
     echo <<<HELPCHUNK
 configure.php configures this package to adapt to many kinds of systems, and PhD
 builds too.
@@ -96,7 +96,7 @@ function is_windows() {
 function checking($for) // {{{
 {
     global $ac;
-    
+
     if ($ac['quiet'] != 'yes') {
         echo "Checking {$for}... ";
         flush();
@@ -106,7 +106,7 @@ function checking($for) // {{{
 function checkerror($msg) // {{{
 {
     global $ac;
-    
+
     if ($ac['quiet'] != 'yes') {
         echo "\n";
     }
@@ -117,7 +117,7 @@ function checkerror($msg) // {{{
 function checkvalue($v) // {{{
 {
     global $ac;
-    
+
     if ($ac['quiet'] != 'yes') {
         echo "{$v}\n";
     }
@@ -390,7 +390,7 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
     } else {
         continue;
     }
-    
+
     $overridden_settings[] = strtoupper($o);
     switch ($o) {
         case 'h':
@@ -478,7 +478,7 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
         case 'basedir':
             $ac['basedir'] = $v;
             break;
-        
+
         case 'output':
             $ac['OUTPUT_FILENAME'] = $v;
             break;
@@ -793,7 +793,7 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
     echo "done.\n";
     echo "Partial manual saved to {$filename}. To build it, run 'phd -d {$filename}'\n";
     exit(0);
-} // }}} 
+} // }}}
 
 $mxml = $ac["OUTPUT_FILENAME"];
 if ($dom->validate()) {
@@ -839,7 +839,7 @@ CAT;
     echo "\nThe document didn't validate, ";
 
     // Allow the .manual.xml file to be created, even if it is not valid.
-    if ($ac['FORCE_DOM_SAVE'] == 'yes') { 
+    if ($ac['FORCE_DOM_SAVE'] == 'yes') {
         printf("writing %s anyway, and ", basename($ac["OUTPUT_FILENAME"]));
         if ($ac["SEGFAULT_SPEED"] == "yes") {
             $t = $dom->doctype;
