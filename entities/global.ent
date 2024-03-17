@@ -221,8 +221,8 @@
 <!ENTITY url.mersenne "http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">
 <!ENTITY url.mhash "http://mhash.sourceforge.net/">
 <!ENTITY url.mirrors "https://www.php.net/mirrors.php">
-<!ENTITY url.ml.general.subscribe "php-general-subscribe@lists.php.net">
-<!ENTITY url.ml.general.unsubscribe "php-general-unsubscribe@lists.php.net">
+<!ENTITY url.ml.general.subscribe "php-general+subscribe@lists.php.net">
+<!ENTITY url.ml.general.unsubscribe "php-general+unsubscribe@lists.php.net">
 <!ENTITY url.mm "http://www.ossp.org/pkg/lib/mm/">
 <!-- pecl/mongodb -->
 <!ENTITY url.mongodb.github.phpc "https://github.com/mongodb/mongo-php-driver">
@@ -539,10 +539,10 @@
 
 <!ENTITY email.harald                'harald.radi@nme.at'>
 <!ENTITY email.php.install           'php-install@lists.php.net'>
-<!ENTITY email.php.install.subscribe 'php-install-subscribe@lists.php.net'>
+<!ENTITY email.php.install.subscribe 'php-install+subscribe@lists.php.net'>
 <!ENTITY email.php.doc               'phpdoc@lists.php.net'>
 <!ENTITY email.php.doc.license       'doc-license@lists.php.net'>
-<!ENTITY email.php.doc.subscribe     'phpdoc-subscribe@lists.php.net'>
+<!ENTITY email.php.doc.subscribe     'phpdoc+subscribe@lists.php.net'>
 <!ENTITY email.sample                'yourname@example.com'>
 
 <!ENTITY link.superglobals '<link xmlns="http://docbook.org/ns/docbook" linkend="language.variables.predefined">superglobals</link>'>
