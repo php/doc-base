@@ -59,6 +59,7 @@ Package-specific:
   --disable-version-files        Do not merge the extension specific
                                  version.xml files
   --disable-sources-file         Do not generate sources.xml file
+  --disable-history-file         Do not copy file modification history file
   --disable-libxml-check         Disable the libxml 2.7.4+ requirement check
   --with-php=PATH                Path to php CLI executable [detect]
   --with-lang=LANG               Language to build [{$acd['LANG']}]
@@ -295,6 +296,35 @@ function generate_sources_file() // {{{
     }
 } // }}}
 
+function getFileModificationHistory(): array {
+    global $ac;
+
+    $lang_mod_file = (($ac['LANG'] !== 'en') ? ("{$ac['rootdir']}/{$ac['EN_DIR']}") : ("{$ac['rootdir']}/{$ac['LANGDIR']}")) . "/fileModHistory.php";
+    $doc_base_mod_file = __DIR__ . "/fileModHistory.php";
+
+    if (file_exists($lang_mod_file)) {
+        $history_file = include $lang_mod_file;
+        if (is_array($history_file)) {
+            echo 'Copying modification history file... ';
+            $isFileCopied = copy($lang_mod_file, $doc_base_mod_file);
+            echo $isFileCopied ? "done.\n" : "failed.\n";
+        } else {
+            echo "Corrupted modification history file found: $lang_mod_file \n";
+        }
+    } else {
+        echo "Modification history file $lang_mod_file not found.\n";
+    }
+
+    if (!is_array($history_file)) {
+        $history_file = [];
+        echo "Creating empty modification history file...";
+        file_put_contents($doc_base_mod_file, "<?php\n\nreturn [];\n");
+        echo "done.\n";
+    }
+
+    return $history_file;
+}
+
 $srcdir  = dirname(__FILE__);
 $workdir = $srcdir;
 $basedir = $srcdir;
@@ -351,6 +381,7 @@ $acd = array( // {{{
     'SEGFAULT_SPEED' => 'yes',
     'VERSION_FILES'  => 'yes',
     'SOURCES_FILE' => 'yes',
+    'HISTORY_FILE' => 'yes',
     'LIBXML_CHECK' => 'yes',
     'USE_BROKEN_TRANSLATION_FILENAME' => 'yes',
     'OUTPUT_FILENAME' => $srcdir . '/.manual.xml',
@@ -464,6 +495,10 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
             break;
 
         case 'sources-file':
+            $ac['SOURCES_FILE'] = $v;
+            break;
+
+        case 'history-file':
             $ac['SOURCES_FILE'] = $v;
             break;
 
@@ -697,6 +732,11 @@ if ($ac['SOURCES_FILE'] === 'yes') {
     generate_sources_file();
 }
 
+$history_file = [];
+if ($ac['HISTORY_FILE'] === 'yes') {
+    $history_file = getFileModificationHistory();
+}
+
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
 $redir = ($ac['quiet'] == 'yes') ? ' > ' . (is_windows() ? 'nul' : '/dev/null') : '';
@@ -875,4 +915,3 @@ CAT;
     errors_are_bad(1); // Tell the shell that this script finished with an error.
 }
 ?>
-
