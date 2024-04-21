@@ -24,6 +24,9 @@ $cvs_id = '$Id$';
 
 echo "configure.php: $cvs_id\n";
 
+const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
+const RNG_SCHEMA_FILE = RNG_SCHEMA_DIR . 'docbook.rng';
+
 function usage() // {{{
 {
     global $acd;
