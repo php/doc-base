@@ -803,7 +803,7 @@ if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
 flush();
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
-    $dom->validate(); // we don't care if the validation works or not
+    $dom->relaxNGValidate(RNG_SCHEMA_FILE); // we don't care if the validation works or not
     $node = $dom->getElementById($ac['PARTIAL']);
     if (!$node) {
         echo "failed.\n";
@@ -841,7 +841,7 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
 } // }}}
 
 $mxml = $ac["OUTPUT_FILENAME"];
-if ($dom->validate()) {
+if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
     printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
     flush();
