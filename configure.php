@@ -53,9 +53,6 @@ Package-specific:
   --enable-xml-details           Enable detailed XML error messages [{$acd['DETAILED_ERRORMSG']}]
   --disable-segfault-error       LIBXML may segfault with broken XML, use this
                                  if it does [{$acd['SEGFAULT_ERROR']}]
-  --disable-segfault-speed       PHP (<5.3.7) will segfault during shutdown.
-                                 Disabling that segfault causes performance
-                                 issues. [{$acd['SEGFAULT_SPEED']}]
   --disable-version-files        Do not merge the extension specific
                                  version.xml files
   --disable-sources-file         Do not generate sources.xml file
@@ -378,7 +375,6 @@ $acd = array( // {{{
     'PARTIAL' => 'no',
     'DETAILED_ERRORMSG' => 'no',
     'SEGFAULT_ERROR' => 'yes',
-    'SEGFAULT_SPEED' => 'yes',
     'VERSION_FILES'  => 'yes',
     'SOURCES_FILE' => 'yes',
     'HISTORY_FILE' => 'yes',
@@ -484,10 +480,6 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
 
         case 'segfault-error':
             $ac['SEGFAULT_ERROR'] = $v;
-            break;
-
-        case 'segfault-speed':
-            $ac['SEGFAULT_SPEED'] = $v;
             break;
 
         case 'version-files':
@@ -628,8 +620,6 @@ checkvalue(LIBXML_DOTTED_VERSION);
 
 checking('whether to enable detailed error reporting (may segfault)');
 checkvalue($ac['SEGFAULT_ERROR']);
-checking('whether to optimize out the DTD (performance gain, but segfaults)');
-checkvalue($ac['SEGFAULT_SPEED']);
 
 if ($ac["GENERATE"] != "no") {
     $ac["ONLYDIR"] = dirname(realpath($ac["GENERATE"]));
@@ -847,10 +837,6 @@ if ($dom->validate()) {
     echo "done.\n";
     printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
     flush();
-    if ($ac["SEGFAULT_SPEED"] == "yes") {
-        $t = $dom->doctype;
-        $dom->removeChild($t);
-    }
     $dom->save($mxml);
 
     echo "done.\n";
@@ -875,10 +861,6 @@ CAT;
     if (function_exists('proc_nice') && !is_windows()) {
         echo " (Run `nice php $_SERVER[SCRIPT_NAME]` next time!)\n";
     }
-    if ($ac["SEGFAULT_SPEED"] == "yes" && version_compare(PHP_VERSION, "5.3.7-dev", "lt")) {
-        $b = basename($mxml);
-        echo "\n\nPHP will segfault now :) - Don't worry though, the $b has been saved :D\n";
-    }
 
     exit(0); // Tell the shell that this script finished successfully.
 } else {
@@ -888,10 +870,6 @@ CAT;
     // Allow the .manual.xml file to be created, even if it is not valid.
     if ($ac['FORCE_DOM_SAVE'] == 'yes') {
         printf("writing %s anyway, and ", basename($ac["OUTPUT_FILENAME"]));
-        if ($ac["SEGFAULT_SPEED"] == "yes") {
-            $t = $dom->doctype;
-            $dom->removeChild($t);
-        }
         $dom->save($mxml);
     }
 
@@ -910,11 +888,6 @@ CAT;
 
     // Exit normally when don't care about validation
     if ($ac["FORCE_DOM_SAVE"] == "yes") {
-        if ($ac["SEGFAULT_SPEED"] == "yes" && version_compare(PHP_VERSION, "5.3.7-dev", "lt")) {
-            $b = basename($mxml);
-            echo "\n\nPHP will segfault now :) - Don't worry though, the $b has been saved :D\n";
-        }
-
         exit(0);
     }
 
