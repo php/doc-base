@@ -778,8 +778,14 @@ if ($didLoad === false) {
 echo "done.\n";
 
 echo "Running XInclude/XPointer... ";
-$dom->xinclude();
-echo "done.\n";
+$status = $dom->xinclude();
+if ($status === -1) {
+    echo "failed.\n";
+} else {
+    /* For some dumb reason when no substitution are made it returns false instead of 0... */
+    $status = (int) $status;
+    echo "done. Performed $status XIncludes\n";
+}
 flush();
 
 if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
