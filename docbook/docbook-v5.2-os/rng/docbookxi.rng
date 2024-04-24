@@ -16394,7 +16394,9 @@ where the nonterminal
         <zeroOrMore>
           <ref name="db.templatename"/>
         </zeroOrMore>
-        <ref name="db.oo.inlines"/>
+        <oneOrMore>
+          <ref name="db.oo.inlines"/>
+        </oneOrMore>
         <zeroOrMore>
           <choice>
             <ref name="db.template"/>

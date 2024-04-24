@@ -18,6 +18,12 @@ DocBook on Linux or Windows, or what conventions you
 should follow when writing phpdoc files, please refer
 to the PHP Documentation HOWTO.
 
+The PHP Documentation uses the [DocBook 5.2](https://tdg.docbook.org/tdg/5.2/) XML schema. \
+However, there is one small change between the official Docbook 5.2 schema and the schema used by the PHP documentation:
+the `<classsynopsis>` tag allows "One or more Oriented Object Programming inlines",
+like the [DocBook 5.1](https://tdg.docbook.org/tdg/5.1/classsynopsis) schema does,
+instead of "One Oriented Object Programming inlines".
+
 You can read the HOWTO online at: http://doc.php.net/tutorial/
 
 If you are already working with the phpdoc module,
