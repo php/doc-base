@@ -299,6 +299,7 @@ function getFileModificationHistory(): array {
     $lang_mod_file = (($ac['LANG'] !== 'en') ? ("{$ac['rootdir']}/{$ac['EN_DIR']}") : ("{$ac['rootdir']}/{$ac['LANGDIR']}")) . "/fileModHistory.php";
     $doc_base_mod_file = __DIR__ . "/fileModHistory.php";
 
+    $history_file = null;
     if (file_exists($lang_mod_file)) {
         $history_file = include $lang_mod_file;
         if (is_array($history_file)) {
