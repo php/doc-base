@@ -2737,7 +2737,7 @@
 
 >
 
-<!ELEMENT reference (((title|titleabbrev|subtitle)*, info?), partintro?, (refentry)+)>
+<!ELEMENT reference (((title|titleabbrev|subtitle)*, info?), partintro?, (refentry)*)>
 
 <!ATTLIST reference
 	xmlns	CDATA	#FIXED	"http://docbook.org/ns/docbook"
