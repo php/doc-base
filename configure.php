@@ -673,7 +673,8 @@ if ($ac['SEGFAULT_ERROR'] === 'yes') {
 }
 
 $compact = defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0;
-$LIBXML_OPTS = LIBXML_NOENT | $compact;
+$big_lines = defined('LIBXML_BIGLINES') ? LIBXML_BIGLINES : 0;
+$LIBXML_OPTS = LIBXML_NOENT | $big_lines | $compact;
 
 if ($ac['VERSION_FILES'] === 'yes') {
     $dom = new DOMDocument;
