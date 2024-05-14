@@ -841,6 +841,10 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
 } // }}}
 
 $mxml = $ac["OUTPUT_FILENAME"];
+
+/* TODO: For some reason libxml does not validate the RelaxNG schema unless reloading the document in full */
+$dom->save($mxml);
+$dom->load($mxml, $LIBXML_OPTS);
 if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
     printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
@@ -875,24 +879,15 @@ CAT;
     echo "failed.\n";
     echo "\nThe document didn't validate, ";
 
-    // Allow the .manual.xml file to be created, even if it is not valid.
-    if ($ac['FORCE_DOM_SAVE'] == 'yes') {
-        printf("writing %s anyway, and ", basename($ac["OUTPUT_FILENAME"]));
-        $dom->save($mxml);
-    }
-
-    if ($ac['DETAILED_ERRORMSG'] == 'yes') {
-        echo "trying to figure out what went wrong...\n";
-        echo "(This could take awhile. If you experience segfaults here, try again with --disable-xml-details)\n";
-        libxml_clear_errors(); // Clear the errors, they contain incorrect filename&line
-
-        $dom->load("{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}", $LIBXML_OPTS | LIBXML_DTDVALID);
-        print_xml_errors();
-    } else {
-        echo "here are the errors I got:\n";
-        echo "(If this isn't enough information, try again with --enable-xml-details)\n";
-        print_xml_errors(false);
-    }
+    /**
+     * TODO: Integrate jing to explain schema violations as libxml is *useless*
+     * And this is not going to change for a while as the maintainer of libxml2 even acknowledges:
+     * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
+     * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
+     */
+    echo 'Please use Jing and the:' . PHP_EOL
+        . 'java -jar ./build/jing.jar /path/to/doc-base/docbook/docbook-v5.2-os/rng/docbook.rng /path/to/doc-base/.manual.xml' . PHP_EOL
+        . 'command to check why the RelaxNG schema failed.' . PHP_EOL;
 
     // Exit normally when don't care about validation
     if ($ac["FORCE_DOM_SAVE"] == "yes") {
