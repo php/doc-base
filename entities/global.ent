@@ -160,9 +160,9 @@
 <!ENTITY url.imap "https://github.com/uw-imap/imap">
 <!ENTITY url.imap.book "http://oreilly.com/catalog/9780596000127/">
 <!ENTITY url.imode "http://www.nttdocomo.com/services/imode/">
-<!ENTITY url.informix.connectionstring "http://publib.boulder.ibm.com/infocenter/idshelp/v10/topic/com.ibm.odbc.doc/odbc66.htm#sii02998361">
-<!ENTITY url.informix.csdk "http://www-306.ibm.com/software/data/informix/tools/csdk/">
-<!ENTITY url.informix.dsn "http://publib.boulder.ibm.com/infocenter/idshelp/v10/index.jsp">
+<!ENTITY url.informix.connectionstring "https://www.ibm.com/docs/en/informix-servers/14.10?topic=sources-connection-string-keywords-that-make-connection">
+<!ENTITY url.informix.csdk "https://www.ibm.com/products/informix/developer-tools/">
+<!ENTITY url.informix.dsn "https://www.ibm.com/docs/en/informix-servers/14.10?topic=guide-configure-data-sources">
 <!ENTITY url.ingres.downloads "http://esd.ingres.com/">
 <!ENTITY url.ingres.peclext "http://esd.ingres.com/product/drivers/PHP/">
 <!ENTITY url.ingres.wiki "http://community.ingres.com/wiki/">
