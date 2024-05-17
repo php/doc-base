@@ -699,7 +699,7 @@ if ($ac['VERSION_FILES'] === 'yes') {
         $globdir .= "/*/*/versions.xml";
     }
     if (!defined('GLOB_BRACE')) {
-        defined('GLOB_BRACE', 0);
+        define('GLOB_BRACE', 0);
     }
     foreach(glob($globdir, GLOB_BRACE) as $file) {
         if($tmp->load($file)) {
