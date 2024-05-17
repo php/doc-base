@@ -688,7 +688,7 @@ if ($ac['VERSION_FILES'] === 'yes') {
 
     echo "Iterating over extension specific version files... ";
     if ($ac["GENERATE"] != "no") {
-        $globdir = dirname($ac["GENERATE"]) . "/{../,./}versions.xml";
+        $globdir = dirname($ac["GENERATE"]) . "/{../../}versions.xml";
     }
     else {
         if (file_exists($ac['rootdir'] . '/en/trunk')) {
@@ -697,6 +697,9 @@ if ($ac['VERSION_FILES'] === 'yes') {
             $globdir = $ac['rootdir'] . '/en';
         }
         $globdir .= "/*/*/versions.xml";
+    }
+    if (!defined('GLOB_BRACE')) {
+        GLOB_BRACE = 0;
     }
     foreach(glob($globdir, GLOB_BRACE) as $file) {
         if($tmp->load($file)) {
