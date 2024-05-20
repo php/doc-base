@@ -109,9 +109,12 @@ where `<your_github_username>` needs to be replaced by your GitHub username.
   - [German](https://github.com/php/doc-de) (doc-de)
   - [Italian](https://github.com/php/doc-it) (doc-it)
   - [Japanese](https://github.com/php/doc-ja) (doc-ja)
+  - [Polish](https://github.com/php/doc-pl) (doc-pl)
+  - [Romanian](https://github.com/php/doc-ro) (doc-ro)
   - [Russian](https://github.com/php/doc-ru) (doc-ru)
   - [Spanish](https://github.com/php/doc-es) (doc-es)
   - [Turkish](https://github.com/php/doc-tr) (doc-tr)
+  - [Ukrainian](https://github.com/php/doc-uk) (doc-uk)
 </details>
 
 #### Setting up a local mirror
