@@ -59,7 +59,7 @@ before you [open a PR](#commit-changes-and-open-a-pr).
 
 If you'd like to know more about what each repository is
 and/or how PHP's documentation is built please refer to
-this [overview](https://github.com/php/doc-base/OVERVIEW.md).
+this [overview](https://github.com/php/doc-base/blob/master/OVERVIEW.md).
 
 ### Requirements
 

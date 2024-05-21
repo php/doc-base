@@ -22,7 +22,7 @@ and these are where changes to the content/structure
 of the [php.net's documentation pages](https://www.php.net/docs.php) are made.
 
 Please refer to [doc-base's](https://github.com/php/doc-base)
-[contribution guidlines](https://github.com/php/doc-base/CONTRIBUTING_DOCS.md)
+[contribution guidlines](https://github.com/php/doc-base/blob/master/CONTRIBUTING_DOCS.md)
 on how to contribute to the documentation.
 
 ## doc-base
@@ -40,7 +40,7 @@ and the `configure.php` script which processes the documentation:
 - validates the document based on its DTD
 
 Please refer to [doc-base's](https://github.com/php/doc-base)
-[contribution guidlines](https://github.com/php/doc-base/CONTRIBUTING_DOCS.md)
+[contribution guidlines](https://github.com/php/doc-base/blob/master/CONTRIBUTING_DOCS.md)
 on further details on how to use doc-base.
 
 ## PhD
@@ -68,7 +68,7 @@ Other than the above PhD also does the following:
  (the TOC/navbar on the right side of the documentation pages)
 
 Please refer to [doc-base's](https://github.com/php/doc-base)
-[contribution guidlines](https://github.com/php/doc-base/CONTRIBUTING_DOCS.md)
+[contribution guidlines](https://github.com/php/doc-base/blob/master/CONTRIBUTING_DOCS.md)
 on further details on how to use PhD.
 
 ## web-php
