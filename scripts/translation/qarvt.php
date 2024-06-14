@@ -50,7 +50,7 @@ if ( $langDir == "" )
 
 $list = new RevcheckFileList( $langDir );
 
-foreach( $list->list as $item )
+foreach( $list->iterator() as $item )
 {
     $file = $langDir . '/' . $item->file;
     $revt = RevtagParser::parseFile( $file );
