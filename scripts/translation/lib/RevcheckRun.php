@@ -123,7 +123,6 @@ class RevcheckRun
 
             // TranslatedOld
 
-            $source->days = $daysOld;
             $source->status = RevcheckStatus::TranslatedOld;
             $this->filesOld[] = $source;
         }
