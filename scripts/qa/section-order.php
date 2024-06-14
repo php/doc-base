@@ -177,7 +177,7 @@ function checkSectionErrors(string $path): array
     $content = file_get_contents($path);
 
     /* Skip class definitions */
-    if (str_contains($content, '<phpdoc:classref')) {
+    if (preg_match('#<reference xml:id="(.+)" role="class"#', $content)) {
         return [];
     }
     /* Skip Exception classes definitions */
