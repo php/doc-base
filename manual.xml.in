@@ -41,7 +41,7 @@
  <title>&PHPManual;</title>
  &bookinfo;
 
- <book xml:id="manual">
+ <book xml:id="manual" annotations="chunk:false">
   <title>&PHPManual;</title>
   &preface;
  </book>
