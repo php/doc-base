@@ -86,5 +86,5 @@ to serve up images/css files, generate the right side TOC/navbar on the document
 and make the search bar on [php.net](https://php.net) work.
 
 Please refer to [doc-base's](https://github.com/php/doc-base)
-[contribution guidlines](https://github.com/php/doc-base/CONTRIBUTING_DOCS.md)
+[contribution guidlines](https://github.com/php/doc-base/blob/master/CONTRIBUTING_DOCS.md)
 on further details on how to use web-php.
