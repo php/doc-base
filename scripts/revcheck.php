@@ -55,7 +55,7 @@ $oldfiles = []; //path, name, size
 
 $enFiles = populateFileTree( 'en' );
 $trFiles = populateFileTree( $lang );
-captureGitValues( 'en'  , $gitData );
+populateGitHashes( 'en'  , $gitData );
 
 computeSyncStatus( $enFiles , $trFiles , $gitData , $lang );
 $translators = computeTranslatorStatus( $lang, $enFiles, $trFiles );
@@ -280,39 +280,69 @@ function parseRevisionTag( $filename , FileStatusInfo $file )
         $file->credits = '';
 }
 
-function captureGitValues( $lang , & $output )
+function populateGitHashes( $lang , & $output )
 {
+    $hash = "";
+    $cmsg = 0;
+    $sync = true;
+    $skip = false;
+
     $cwd = getcwd();
     chdir( $lang );
     $fp = popen( "git --no-pager log --name-only" , "r" );
-    $hash = $additions = $deletions = $filename = null;
-    $skip = false;
     while ( ( $line = fgets( $fp ) ) !== false )
     {
         if ( substr( $line , 0 , 7 ) == "commit " )
         {
+            // New git log block
             $hash = trim( substr( $line , 7 ) );
+            $cmsg = 0;
+            $sync = true;
             $skip = false;
             continue;
         }
-        if ( strpos( $line , 'Date:' ) === 0 )
+        if ( $line[0] != ' ' && strpos( $line , ': ' ) > false )
+        {
+            // Named headers
+            if ( str_starts_with( $line , 'Author: ' ) )
+                continue;
+            if ( str_starts_with( $line , 'Date: ' ) )
+                continue;
+            if ( str_starts_with( $line , 'Merge: ' ) )
+                continue;
+            fwrite( STDERR , "Unknown header line: $line\n" );
             continue;
+        }
         if ( trim( $line ) == "" )
             continue;
         if ( substr( $line , 0 , 4 ) == '    ' )
         {
+            // Commit message
+            $cmsg++;
+            if ( str_starts_with( trim( $line ), '[skip-revcheck]' ) && $cmsg == 1 )
+                $sync = false;
+
             if ( stristr( $line, '[skip-revcheck]' ) !== false )
                 $skip = true;
+
             continue;
         }
-        if ( strpos( $line , ': ' ) > 0 )
-            continue;
-        $filename = trim( $line );
-        if ( isset( $output[$filename][$lang] ) )
+        $file = trim( $line );
+
+        // Record the relevant hashes:
+        // - last: the most recent commit hash
+        // - sync: the most recent non-skipped commit hash
+
+        if ( isset( $output[$file][$lang]['last'] ) == false )
+            $output[$file][$lang]['last'] = $hash;
+        if ( isset( $output[$file][$lang]['sync'] ) == false && $sync )
+            $output[$file][$lang]['sync'] = $hash;
+
+        if ( isset( $output[$file][$lang]['hash'] ) )
             continue;
 
-        $output[$filename][$lang]['hash'] = $hash;
-        $output[$filename][$lang]['skip'] = $skip;
+        $output[$file][$lang]['hash'] = $hash;
+        $output[$file][$lang]['skip'] = $skip;
     }
     pclose( $fp );
     chdir( $cwd );
