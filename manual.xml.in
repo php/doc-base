@@ -112,7 +112,6 @@
   &features.http-auth;
   &features.cookies;
   &features.sessions;
-  &features.xforms;
   &features.file-upload;
   &features.remote-files;
   &features.connection-handling;
