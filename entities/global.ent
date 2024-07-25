@@ -77,7 +77,7 @@
 <!ENTITY url.spec.dom3.nodelist "http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-536297177">
 <!ENTITY url.spec.html401.accept-charset "http://www.w3.org/TR/REC-html40/interact/forms.html#adef-accept-charset">
 <!ENTITY url.eio.libeio "http://software.schmorp.de/pkg/libeio.html">
-<!ENTITY url.email.book "http://www.oreilly.com/catalog/progintemail/noframes.html">
+<!ENTITY url.email.book "https://www.oreilly.com/library/view/programming-internet-email/9780596802585/">
 <!ENTITY url.enchant "http://www.abisource.com/projects/enchant/">
 <!ENTITY url.exifspec "http://exif.org/Exif2-2.PDF">
 <!ENTITY url.exiftags "http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html">
