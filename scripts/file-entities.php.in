@@ -200,7 +200,7 @@ function file_entities($work_dir, $trans_dir, $orig_dir, &$entities, $prefix=fal
             // If this is a functions directory, collect it into
             // the special $function_entities array
             if (isset($function_entities)) {
-                $function_entities[] = "&$name;";
+                $function_entities[] = "&$name";
             }
             
             // If we have a translated file, use it, otherwise fall back to English
@@ -229,7 +229,7 @@ function file_entities($work_dir, $trans_dir, $orig_dir, &$entities, $prefix=fal
         // Write out all entities with newlines
         $fp = fopen($functions_file, "w");
         foreach ($function_entities as $entity) {
-            fputs($fp, "$entity\n");
+            fputs($fp, "$entity;\n");
         }
         fclose($fp);
     }
