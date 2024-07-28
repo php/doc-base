@@ -115,10 +115,6 @@
 <!ENTITY url.gpgme "http://www.gnupg.org/related_software/gpgme/">
 <!ENTITY url.hp.software "http://software.hp.com/">
 <!ENTITY url.hpux.installguide "http://www.tekwire.net/joomla/building/apache/http-hpux-11-11">
-<!ENTITY spec.http1.1  'http://tools.ietf.org/html/rfc7231'>
-<!ENTITY spec.soap1.1  'http://www.w3.org/TR/soap11/'>
-<!ENTITY spec.soap1.2  'http://www.w3.org/TR/soap12/'>
-<!ENTITY spec.wsdl     'http://www.w3.org/TR/wsdl'>
 <!ENTITY url.iana.locale.subtags "http://www.iana.org/assignments/language-subtag-registry">
 <!ENTITY url.ibase "http://www.embarcadero.com/products/interbase">
 <!ENTITY url.ibm.db2.client "https://www.ibm.com/developerworks/downloads/im/db2express/index.html">
@@ -166,6 +162,7 @@
 <!ENTITY url.ingres.downloads "http://esd.ingres.com/">
 <!ENTITY url.ingres.peclext "http://esd.ingres.com/product/drivers/PHP/">
 <!ENTITY url.ingres.wiki "http://community.ingres.com/wiki/">
+<!ENTITY url.install.windows.stepbystep "https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2">
 <!ENTITY url.installkits "http://wikipedia.org/wiki/List_of_AMP_packages">
 <!ENTITY url.iodbc "http://www.iodbc.org/">
 <!ENTITY url.ip2long.tech "http://ps-2.kev009.com/wisclibrary/aix52/usr/share/man/info/en_US/a_doc_lib/libs/commtrf2/inet_addr.htm">
@@ -220,6 +217,9 @@
 <!ENTITY url.memcache "http://www.memcached.org/">
 <!ENTITY url.mersenne "http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">
 <!ENTITY url.mhash "http://mhash.sourceforge.net/">
+<!ENTITY url.microsoft.controlservice "https://docs.microsoft.com/en-us/windows/desktop/api/winsvc/nf-winsvc-controlservice">
+<!ENTITY url.microsoft.return.code "https://docs.microsoft.com/en-us/windows/desktop/debug/system-error-codes">
+<!ENTITY url.microsoft.visualc.redistr "https://visualstudio.microsoft.com/downloads/#microsoft-visual-c-redistributable-for-visual-studio-2022">
 <!ENTITY url.mirrors "https://www.php.net/mirrors.php">
 <!ENTITY url.ml.general.subscribe "php-general+subscribe@lists.php.net">
 <!ENTITY url.ml.general.unsubscribe "php-general+unsubscribe@lists.php.net">
@@ -529,9 +529,11 @@
 <!ENTITY url.zlib.manual "http://www.zlib.net/manual.html">
 <!ENTITY url.zookeeper "https://zookeeper.apache.org/">
 <!ENTITY url.zookeeper.doc.cbinding "https://zookeeper.apache.org/doc/trunk/zookeeperProgrammers.html#C+Binding">
-<!ENTITY url.microsoft.controlservice "https://docs.microsoft.com/en-us/windows/desktop/api/winsvc/nf-winsvc-controlservice">
-<!ENTITY url.microsoft.return.code "https://docs.microsoft.com/en-us/windows/desktop/debug/system-error-codes">
-<!ENTITY url.install.windows.stepbystep "https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2">
+
+<!ENTITY spec.http1.1  'http://tools.ietf.org/html/rfc7231'>
+<!ENTITY spec.soap1.1  'http://www.w3.org/TR/soap11/'>
+<!ENTITY spec.soap1.2  'http://www.w3.org/TR/soap12/'>
+<!ENTITY spec.wsdl     'http://www.w3.org/TR/wsdl'>
 
 <!ENTITY book.applied.cryptography 'Applied Cryptography by Schneier (ISBN 0-471-11709-9)'>
 <!ENTITY book.programming.classics "Programming Classics: Implementing the World's Best Algorithms by Oliver (ISBN 0-131-00413-1)">
