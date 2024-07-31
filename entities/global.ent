@@ -113,6 +113,7 @@
 <!ENTITY url.gnu.configure "http://www.airs.com/ian/configure/">
 <!ENTITY url.gnupg "http://www.gnupg.org/">
 <!ENTITY url.gpgme "http://www.gnupg.org/related_software/gpgme/">
+<!ENTITY url.hash.nist-hash-functions "https://csrc.nist.gov/projects/hash-functions">
 <!ENTITY url.hp.software "http://software.hp.com/">
 <!ENTITY url.hpux.installguide "http://www.tekwire.net/joomla/building/apache/http-hpux-11-11">
 <!ENTITY url.iana.locale.subtags "http://www.iana.org/assignments/language-subtag-registry">

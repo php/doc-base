@@ -151,6 +151,18 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>HKDF</term>
+   <listitem>
+    <simpara>HMAC Key Definition Function</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>HMAC</term>
+   <listitem>
+    <simpara>Hash-based Message Authentication Code</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>HTML</term>
    <listitem>
     <simpara>Hyper Text Markup Language</simpara>
@@ -244,6 +256,12 @@
    <term>NNTP</term>
    <listitem>
     <simpara>Network News Transfer Protocol</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>PBKDF2</term>
+   <listitem>
+    <simpara>Password-Based Key Derivation Function 2</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
