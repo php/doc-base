@@ -30,7 +30,7 @@ jobs:
 #          - "ro"
           - "ru"
           - "tr"
-#          - "uk"
+          - "uk"
           - "zh"
 
     steps:
