@@ -206,6 +206,7 @@
 <!ENTITY url.mac.homebrew "https://github.com/Homebrew/brew">
 <!ENTITY url.mac.macports "http://www.macports.org/">
 <!ENTITY url.mac.liip "http://php-osx.liip.ch/">
+<!ENTITY url.mariadb "http://www.mariadb.org/">
 <!ENTITY url.maxmind "http://www.maxmind.com/">
 <!ENTITY url.maxmind.fips "http://www.maxmind.com/app/fips10_4">
 <!ENTITY url.maxmind.geoip "http://www.maxmind.com/app/c">
@@ -339,6 +340,7 @@
 <!ENTITY url.pecl.submit "https://pecl.php.net/package-new.php">
 <!-- linking to specific pecl packages is done like so: &url.pecl.package;package_name -->
 <!ENTITY url.pecl.package.get "https://pecl.php.net/get/">
+<!ENTITY url.perconaserver "https://www.percona.com/">
 <!ENTITY url.pgsql "http://www.postgresql.org/">
 <!ENTITY url.pgsql.manual "http://www.postgresql.org/docs/current/interactive/">
 <!ENTITY url.phd "https://wiki.php.net/doc/phd/">
@@ -465,6 +467,7 @@
 <!ENTITY url.sybase "http://www.sybase.com/">
 <!ENTITY url.symbole-legendre "http://primes.utm.edu/glossary/page.php?sort=LegendreSymbol">
 <!ENTITY url.t1lib "http://www.ibiblio.org/pub/Linux/libs/graphics/">
+<!ENTITY url.tidb "https://www.pingcap.com/tidb/">
 <!ENTITY url.tidy "http://tidy.sourceforge.net/">
 <!ENTITY url.tidy.conf "http://api.html-tidy.org/#quick-reference">
 <!ENTITY url.tidy5 "http://www.html-tidy.org/">
