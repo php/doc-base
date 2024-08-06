@@ -340,7 +340,7 @@
 <!ENTITY url.pecl.submit "https://pecl.php.net/package-new.php">
 <!-- linking to specific pecl packages is done like so: &url.pecl.package;package_name -->
 <!ENTITY url.pecl.package.get "https://pecl.php.net/get/">
-<!ENTITY url.perconaserver "https://www.percona.com/">
+<!ENTITY url.perconaserver "https://www.percona.com/mysql/software/percona-server-for-mysql">
 <!ENTITY url.pgsql "http://www.postgresql.org/">
 <!ENTITY url.pgsql.manual "http://www.postgresql.org/docs/current/interactive/">
 <!ENTITY url.phd "https://wiki.php.net/doc/phd/">
