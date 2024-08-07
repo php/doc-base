@@ -83,6 +83,10 @@ foreach ($files as $filename) {
 			$debug['bogus-membership'][] = array($ext, $m);
 	}
 
+	if (preg_match('/<!-- State: (\w+)/S', $file, $match)) {
+		$State[$match[1]][$ext] = 1;
+	}
+
 }
 
 
