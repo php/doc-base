@@ -111,6 +111,7 @@
 <!ENTITY url.gmp "http://gmplib.org/#DOWNLOAD">
 <!ENTITY url.gnochm "http://gnochm.sourceforge.net/">
 <!ENTITY url.gnu.configure "http://www.airs.com/ian/configure/">
+<!ENTITY url.gnu.make "https://www.gnu.org/software/make/make.html">
 <!ENTITY url.gnupg "http://www.gnupg.org/">
 <!ENTITY url.gpgme "http://www.gnupg.org/related_software/gpgme/">
 <!ENTITY url.hash.nist-hash-functions "https://csrc.nist.gov/projects/hash-functions">
