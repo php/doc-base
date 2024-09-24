@@ -163,6 +163,8 @@
 <!ENTITY url.ingres.downloads "http://esd.ingres.com/">
 <!ENTITY url.ingres.peclext "http://esd.ingres.com/product/drivers/PHP/">
 <!ENTITY url.ingres.wiki "http://community.ingres.com/wiki/">
+<!ENTITY url.install.unix.pax-mprotect "https://en.wikibooks.org/wiki/Grsecurity/Appendix/Grsecurity_and_PaX_Configuration_Options#Restrict_mprotect()">
+<!ENTITY url.install.unix.w-x-violation "https://en.wikipedia.org/wiki/W^X">
 <!ENTITY url.install.windows.stepbystep "https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2">
 <!ENTITY url.installkits "http://wikipedia.org/wiki/List_of_AMP_packages">
 <!ENTITY url.iodbc "http://www.iodbc.org/">
