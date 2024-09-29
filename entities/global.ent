@@ -250,11 +250,11 @@
 <!ENTITY url.mongodb.doctrine-odm "https://github.com/doctrine/mongodb-odm">
 <!ENTITY url.mongodb.drivers "https://www.mongodb.com/docs/drivers/">
 <!ENTITY url.mongodb.specs "https://github.com/mongodb/specifications">
-<!ENTITY url.mongodb.specs.extendedjson "https://github.com/mongodb/specifications/blob/master/source/extended-json.rst">
-<!ENTITY url.mongodb.crud "https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst">
-<!ENTITY url.mongodb.serverselection "https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst">
-<!ENTITY url.mongodb.sdam "https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst">
-<!ENTITY url.mongodb.sdam-monitoring "https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring-monitoring.rst">
+<!ENTITY url.mongodb.specs.extendedjson "https://github.com/mongodb/specifications/blob/master/source/extended-json/extended-json.md">
+<!ENTITY url.mongodb.crud "https://github.com/mongodb/specifications/blob/master/source/crud/crud.md">
+<!ENTITY url.mongodb.serverselection "https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.md">
+<!ENTITY url.mongodb.sdam "https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md">
+<!ENTITY url.mongodb.sdam-monitoring "https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring-logging-and-monitoring.md">
 <!ENTITY url.mongodb.docs.regex "https://www.mongodb.com/docs/manual/reference/operator/query/regex/">
 <!ENTITY url.mongodb.docs.bson "https://www.mongodb.com/docs/manual/reference/bson-types/">
 <!ENTITY url.mongodb.docs.collation "https://www.mongodb.com/docs/upcoming/reference/collation/">
