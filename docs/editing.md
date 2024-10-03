@@ -18,8 +18,8 @@ repository and uses reflection to generate documentation (DocBook) files.
 ### Option B: Copy skeleton files
 This involves copying the skeleton files into the correct location:
 ```
-cp doc-base/RFC/skeletons/method.xml classname/methodname.xml   #for new methods
-cp doc-base/RFC/skeletons/function.xml functions/functionname.xml #for new functions
+cp doc-base/skeletons/method.xml classname/methodname.xml   #for new methods
+cp doc-base/skeletons/function.xml functions/functionname.xml #for new functions
 ```
 
 Note: *classname*, *methodname* and *functionname* are lowercased names of the
