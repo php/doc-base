@@ -12,6 +12,10 @@ XML schema, with one change to allow the `<classsynopsis>` tag to support
 more than one `<ooclass>`, `<ooexception>`, or `<oointerface>` as the
 [DocBook 5.1](https://tdg.docbook.org/tdg/5.1/classsynopsis) schema does.
 
+The manual is built from the documentation using a tool called
+[PhD](http://doc.php.net/phd.php). The [local setup](local-setup)
+chapter explains how to set up a local development environment.
+
 ## Glossary
 
 This guide uses some terminology that you have to know. Don't worry, it's easy:
@@ -25,7 +29,8 @@ This guide uses some terminology that you have to know. Don't worry, it's easy:
   for the Git repo and *pt-br* for the mailing list suffix.
 
 ## Table of Contents
-- [Setting up a documentation environment](local-setup)
+- [Overview of the build system](overview)
+- [Setting up a local build environment](local-setup)
 - [Editing the PHP Manual](editing)
 - [Documentation structure](structure)
 - [Style guidelines](style)
@@ -45,5 +50,5 @@ This guide uses some terminology that you have to know. Don't worry, it's easy:
 
 You can report problems or make contributions to this guide by using the
 "Edit this page" or "Report a problem" links in the header of each page
-at https://doc.php.net/tutorial/, or to the GitHub repository at
-https://www.github.com/php/doc-base/.
+at [the online version of this documentation](https://doc.php.net/tutorial/),
+or through [the GitHub repository](https://www.github.com/php/doc-base/).
