@@ -13,7 +13,7 @@ more than one `<ooclass>`, `<ooexception>`, or `<oointerface>` as the
 [DocBook 5.1](https://tdg.docbook.org/tdg/5.1/classsynopsis) schema does.
 
 The manual is built from the documentation using a tool called
-[PhD](http://doc.php.net/phd.php). The [local setup](local-setup)
+[PhD](http://doc.php.net/phd.php). The [local setup](local-setup.md)
 chapter explains how to set up a local development environment.
 
 ## Glossary
@@ -29,22 +29,22 @@ This guide uses some terminology that you have to know. Don't worry, it's easy:
   for the Git repo and *pt-br* for the mailing list suffix.
 
 ## Table of Contents
-- [Overview of the build system](overview)
-- [Setting up a local build environment](local-setup)
-- [Editing the PHP Manual](editing)
-- [Documentation structure](structure)
-- [Style guidelines](style)
-- [Coding standard for examples](cs-for-examples)
-- [Translating documentation](translating)
-- [Joining the team](joining)
+- [Overview of the build system](overview.md)
+- [Setting up a local build environment](local-setup.md)
+- [Editing the PHP Manual](editing.md)
+- [Documentation structure](structure.md)
+- [Style guidelines](style.md)
+- [Coding standard for examples](cs-for-examples.md)
+- [Translating documentation](translating.md)
+- [Joining the team](joining.md)
 
 ## Appendices
-- [FAQ](faq)
-- [Tools](tools)
-- [Frequently used tags and entities](tags-and-entities)
-- [Why whitespace is important in phpdoc](whitespace)
-- [User Note Editing Guidelines](user-notes)
-- [How the released versions are built](public-builds)
+- [FAQ](faq.md)
+- [Tools](tools.md)
+- [Frequently used tags and entities](tags-and-entities.md)
+- [Why whitespace is important in phpdoc](whitespace.md)
+- [User Note Editing Guidelines](user-notes.md)
+- [How the released versions are built](public-builds.md)
 
 ## Feedback
 

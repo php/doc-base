@@ -49,7 +49,7 @@ and your PR is ready to be discussed with and merged by the maintainers.
 
 To build and view the documentation after making more extensive changes
 (e.g. adding entire sections or files), you will need to
-[set up a local build environment](local-setup)
+[set up a local build environment](local-setup.md)
 in addition to the language repository you want to
 [make the changes](#make-changes-to-the-documentation) to.
 If the changes validate and look good, you can
@@ -57,11 +57,11 @@ If the changes validate and look good, you can
 
 If you'd like to know more about what each repository is
 and/or how PHP's documentation is built please refer to
-the [overview](overview).
+the [overview](overview.md).
 
 ### Make changes to the documentation
 
-Make your changes keeping in mind the [style guidelines](style).
+Make your changes keeping in mind the [style guidelines](style.md).
 
 ### Commit changes and open a PR
 
