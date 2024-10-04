@@ -2,7 +2,7 @@
 
 ## Introduction
 Before making any changes to the manual - either the English version or a
-translation, make sure you have read the [style guidelines](style.php)!
+translation, make sure you have read the [style guidelines](style.md)!
 
 ## Editing existing documentation
 Simply open the files and edit them.
@@ -25,10 +25,10 @@ cp doc-base/skeletons/function.xml functions/functionname.xml #for new functions
 Note: *classname*, *methodname* and *functionname* are lowercased names of the
 class, method, or function, respectively, not a literal file name.
 
-Remember the extension folder [structure](structure.php) when copying those files.
+Remember the extension folder [structure](structure.md) when copying those files.
 
 ## Translating documentation
-The translation process is described in the [translating chapter](translating.php).
+The translation process is described in the [translating chapter](translating.md).
 
 ## Validating your changes
 Every time you make changes to documentation sources (both English or translation),
@@ -45,7 +45,7 @@ outputs something like "All good. Saving .manual.xml… done." then you know it 
 You can commit your changes now.
 
 ## Commit changes
-If you have the appropriate [commit karma][karma], you can commit your modified files.
+If you have the appropriate access to the repository, you can commit your modified files.
 Otherwise, create a Pull Request to have your changes reviewed by the team.
 
 ## Viewing changes online
@@ -54,9 +54,9 @@ website mirrors. However, there is a special mirror at [docs.php.net][docs] - wh
 the manual is updated from sources every four hours. If any errors occurred, a message
 will be delivered to the appropriate mailinglist (`doc-{LANG}@lists.php.net`).
 
-Read more about manual builds in the [builds appendix](builds.php).
+Read more about manual builds in the [builds appendix](public-builds.md).
 
-The next chapter contains [style guidelines](style.php) that you are obliged to
+The next chapter contains [style guidelines](style.md) that you are obliged to
 follow. Read them carefully.
 
 [docgen]: https://github.com/php/doc-base/tree/master/scripts/docgen

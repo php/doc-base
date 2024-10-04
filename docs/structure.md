@@ -3,7 +3,7 @@
 ## Downloading the PHP Manual sources
 The PHP Manual sources are currently stored in our Git repositories.
 
-To checkout the PHP Manual sources, follow the steps in [Setting up a documentation environment](local-setup.php)
+To checkout the PHP Manual sources, follow the steps in [Setting up a documentation environment](local-setup.md)
 
 ## Files structure
 **Note for translators:** if any of the source files don't exist in your translation, the English content will be used
@@ -44,4 +44,4 @@ There are some other important files:
 - *{LANG}/translation.xml* - this file is used to store all central translation info, like a small
   intro text for translators and the persons list. This file is not present in the English tree.
 
-The next chapter will discuss how to [edit the manual sources](editing.php).
+The next chapter will discuss how to [edit the manual sources](editing.md).

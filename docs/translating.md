@@ -1,7 +1,7 @@
 # Translating documentation
 
 **Watch out:** this chapter describes special parts of the whole editing process.
-You will also have to follow other steps from the [editing manual sources](editing.php) section.
+You will also have to follow other steps from the [editing manual sources](editing.md) section.
 
 Translating documentation into other languages might look like a complicated
 process, but in fact, it's rather simple.

@@ -45,6 +45,6 @@ To be clear: you don't need Git commit access to start contributing to the
 documentation! Anyone with a GitHub account (which is free) can submit Pull
 Requests to the documentation repositories.
 
-The next chapter will explain how to get the manual sources and how are they [structured](structure.php).
+The next chapter will explain how to get the manual sources and how are they [structured](structure.md).
 
 [doc-en]: https://github.com/php/doc-en
