@@ -54,12 +54,10 @@ If you have the appropriate access to the repository, you can commit your modifi
 Otherwise, create a Pull Request to have your changes reviewed by the team.
 
 ## Viewing changes online
-Documentation is built every night, at around 23:00 CST, then synced out to the
-website mirrors. However, there is a special mirror at [docs.php.net][docs] - where
-the manual is updated from sources every four hours. If any errors occurred, a message
-will be delivered to the appropriate mailinglist (`doc-{LANG}@lists.php.net`).
+The documentation used on the PHP.net website is rebuilt every few hours from
+the latest source pushed to the documentation trees.
 
-Read more about manual builds in the [builds appendix](public-builds.md).
+Read more details in [the appendix on public builds](public-builds.md).
 
 The next chapter contains [style guidelines](style.md) that you are obliged to
 follow. Read them carefully.
@@ -69,4 +67,3 @@ follow. Read them carefully.
 [gen_stub]: https://github.com/php/php-src/tree/master/build/gen_stub.php
 [php-src]: https://github.com/php/php-src/
 [configure.php]: https://github.com/php/doc-base/blob/master/configure.php
-[docs]: http://docs.php.net/
