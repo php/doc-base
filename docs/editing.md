@@ -8,14 +8,19 @@ translation, make sure you have read the [style guidelines](style.md)!
 Simply open the files and edit them.
 
 ## Adding new documentation
-When adding new functions or methods, there are a couple of options.
+When adding new functions or methods, there are a few options.
 
-### Option A: Generating files using docgen
-This is preferred way to generate files for new extensions, classes, functions
+### Option A: Generating stub using `gen_stub.php`
+This is the new preferred way to generate files for new extensions, classes, functions
+or methods using [`get_stub.php`][gen_stub]. The script is found in the [php-src][php-src]
+repository and uses the stub files to generate documentation (DocBook) files.
+
+### Option B: Generating files using docgen
+This is the old preferred way to generate files for new extensions, classes, functions
 or methods using [`docgen`][docgen]. The script is found in the [doc-base][doc-base]
 repository and uses reflection to generate documentation (DocBook) files.
 
-### Option B: Copy skeleton files
+### Option C: Copy skeleton files
 This involves copying the skeleton files into the correct location:
 ```
 cp doc-base/skeletons/method.xml classname/methodname.xml   #for new methods
@@ -61,5 +66,7 @@ follow. Read them carefully.
 
 [docgen]: https://github.com/php/doc-base/tree/master/scripts/docgen
 [doc-base]: https://github.com/php/doc-base/
+[gen_stub]: https://github.com/php/php-src/tree/master/build/gen_stub.php
+[php-src]: https://github.com/php/php-src/
 [configure.php]: https://github.com/php/doc-base/blob/master/configure.php
 [docs]: http://docs.php.net/
