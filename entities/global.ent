@@ -547,7 +547,6 @@
 <!ENTITY book.applied.cryptography 'Applied Cryptography by Schneier (ISBN 0-471-11709-9)'>
 <!ENTITY book.programming.classics "Programming Classics: Implementing the World's Best Algorithms by Oliver (ISBN 0-131-00413-1)">
 
-<!ENTITY email.harald                'harald.radi@nme.at'>
 <!ENTITY email.php.install           'php-install@lists.php.net'>
 <!ENTITY email.php.install.subscribe 'php-install+subscribe@lists.php.net'>
 <!ENTITY email.php.doc               'phpdoc@lists.php.net'>
