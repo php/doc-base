@@ -53,12 +53,13 @@ email                    | e-mail
 [example.com][example]   | php.net, google.com
 extension                | module
 Linux                    | linux, *n*x, *nix, *nux, etc
-PHP 5                    | PHP5, PHP-5
-PHP 4.3.0                | PHP 4.3, PHP 4.3.0RC2, PHP 5.0.0BETA, PHP 4.3.0PL1
+PHP 8                    | PHP8, PHP-8
+PHP 8.3.0                | PHP 8.3, PHP 8.3.0RC2, PHP 8.0.0BETA, PHP 8.3.0PL1
 superglobals             | super globals, autoglobals
 web server               | webserver
 the [Foo Page][example]  | [click here][example], go [here][example]
 Unix                     | UNIX (it's a registered trademark)
 Windows                  | windows (when referring to Microsoft Windows)
+macOS                    | MacOS, Mac OS X
 
 [example]: http://example.com
