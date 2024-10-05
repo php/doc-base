@@ -41,7 +41,7 @@ Filter files by directory or username (username used here comes from the `Mantai
 variable in the header comment described above). Let's assume that the tool marked
 `password-needs-rehash.xml` as outdated. Click on the filename and you will see
 *diff* - list of changes between two versions of file: your version (current
-commit hash in EN-Revision in your translation) and newest version in the English source
+commit hash in `EN-Revision` in your translation) and newest version in the English source
 tree. The example below shows what the diff might look like:
 
 ```
@@ -55,7 +55,7 @@ index 984eb2dc5c..860758a4a4 100644
     <methodparam><type>string</type><parameter>hash</parameter></methodparam>
 -   <methodparam><type>string</type><parameter>algo</parameter></methodparam>
 -   <methodparam choice="opt"><type>string</type><parameter>options</parameter></methodparam>
-+   <methodparam><type>integer</type><parameter>algo</parameter></methodparam>
++   <methodparam><type>int</type><parameter>algo</parameter></methodparam>
 +   <methodparam choice="opt"><type>array</type><parameter>options</parameter></methodparam>
    </methodsynopsis>
    <para>
@@ -64,12 +64,12 @@ index 984eb2dc5c..860758a4a4 100644
 
 As you can see, there is a difference between two lines. The `types` for the
 parameters `options` and `algo` in the synopsis had been changed from `string`,
-to `integer` and `array` respectively. You have to perform these changes in your
+to `int` and `array` respectively. You have to perform these changes in your
 translation to make it up-to-date. Open `phpdoc/{LANG}/reference/password/functions/password-needs-rehash.xml`
 and change those lines to match the English version.
 
-Then update the EN-Revision commit hash in the header comment. You can also add your
-credits using the CREDITS tag. Your file header might look like this initially:
+Then update the EN-Revision commit hash in the header comment.
+Your file header might look like this initially:
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <!-- EN-Revision: 6640ca4c12c6bcaf0b2a99e75871f417b38df1a2 Maintainer: someone Status: ready -->
@@ -78,11 +78,8 @@ and after changes it should look like this:
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <!-- EN-Revision: a1b67e45e7c762a917323d260c491c0361040ce4 Maintainer: someone Status: ready -->
-<!-- CREDITS: johnsmith -->
 ```
-The new EN-Revision commit hash came from the doc tools page. If you want to add
-yourself to a CREDITS tag that already exists, separate
-usernames with a comma, i.e.: `<!-- CREDITS: george, johnsmith -->`.
+The new EN-Revision commit hash came from the doc tools page.
 
 Your translation is now up-to-date. It is quite a long process but it's simple
 and logical when you get used to it.
