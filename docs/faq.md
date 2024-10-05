@@ -16,12 +16,6 @@ before committing. Thinking that it is okay to commit the skeleton files because
 you will soon come along and flesh them out might seem like a good idea. However,
 temporary often becomes permanent.
 
-## Running configure.php ends up segfaulting, what is up?
-There are bugs with certain versions of libxml that cause this, so hacks exist to get around it.
-To execute the hack, pass in: `$ php configure.php --disable-segfault-error`.  
-Note: This disables some error checking and beautification but raw errors will be shown.  
-Note: Usually the problem is a major XML syntax issue.
-
 ## Is there an online editor?
 No, but [simple changes can be submitted via GitHub](contributing#minor-changes).
 
