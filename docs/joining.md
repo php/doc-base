@@ -1,6 +1,9 @@
 # Joining the team
+
 Joining the PHP Documentation team is a simple process, but a process nonetheless.
-It can be summarized as:
+You don't have to the join the team to [contribute](contributing.md),
+but joining the team can be a way to get more involved in the process
+and help out with larger projects.
 
 ## Write to a mailing list
 Because official communication is done there, you should write to the proper list.
@@ -9,7 +12,15 @@ for a while, or reading the archives, but ultimately let the list know who you a
 
 ### For authors
 You should send your message to the `phpdoc@lists.php.net` mailing list. You
-will need to subscribe to the list in order to send email to it.
+will need to subscribe to the list in order to send email to it. You can find
+[archives of the list on news-web.php.net](https://news-web.php.net/php.doc),
+and there is also a form to subscribe to the list there.
+
+You can subscribe the regular version of the list (you get every
+message as it is sent), the digest version (you'll get a daily-or-so
+mail containing all of the new messages to the list), or the "no mail"
+version which allows you to send a message but doesn't send you any emails
+(useful if you just read through the web archive or an NNTP client).
 
 ### For translators
 You should send your message to the appropriate `doc-{LANG}@lists.php.net` mailing list.
