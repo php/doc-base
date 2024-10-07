@@ -42,7 +42,6 @@ This guide uses some terminology that you have to know. Don't worry, it's easy:
 - [FAQ](faq.md)
 - [Tools](tools.md)
 - [Frequently used tags and entities](tags-and-entities.md)
-- [Why whitespace is important in phpdoc](whitespace.md)
 - [User Note Editing Guidelines](user-notes.md)
 - [How the released versions are built](public-builds.md)
 
