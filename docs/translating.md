@@ -9,7 +9,7 @@ process, but in fact, it's rather simple.
 Every file in Git has a *commit hash*. It is basically the current version of
 the specified file. We use commit hashes to check if a file is synchronized with its
 English counterpart: to find out if the translation is up-to-date. That's why every
-file in your translation requires an EN-Revision comment with the following syntax:
+file in your translation requires an `EN-Revision` comment with the following syntax:
 ```
 <!-- EN-Revision: [some commit hash] Maintainer: [username] Status: ready -->
 ```
@@ -68,7 +68,7 @@ to `int` and `array` respectively. You have to perform these changes in your
 translation to make it up-to-date. Open `phpdoc/{LANG}/reference/password/functions/password-needs-rehash.xml`
 and change those lines to match the English version.
 
-Then update the EN-Revision commit hash in the header comment.
+Then update the `EN-Revision` commit hash in the header comment.
 Your file header might look like this initially:
 ```
 <?xml version="1.0" encoding="utf-8"?>
@@ -79,7 +79,7 @@ and after changes it should look like this:
 <?xml version="1.0" encoding="utf-8"?>
 <!-- EN-Revision: a1b67e45e7c762a917323d260c491c0361040ce4 Maintainer: someone Status: ready -->
 ```
-The new EN-Revision commit hash came from the doc tools page.
+The new `EN-Revision` commit hash came from the doc tools page.
 
 Your translation is now up-to-date. It is quite a long process but it's simple
 and logical when you get used to it.
