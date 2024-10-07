@@ -43,5 +43,3 @@ There are some other important files:
   Including common warnings, notes, etc.
 - *{LANG}/translation.xml* - this file is used to store all central translation info, like a small
   intro text for translators and the persons list. This file is not present in the English tree.
-
-The next chapter will discuss how to [edit the manual sources](editing.md).

@@ -59,9 +59,6 @@ the latest source pushed to the documentation trees.
 
 Read more details in [the appendix on public builds](public-builds.md).
 
-The next chapter contains [style guidelines](style.md) that you are obliged to
-follow. Read them carefully.
-
 [docgen]: https://github.com/php/doc-base/tree/master/scripts/docgen
 [doc-base]: https://github.com/php/doc-base/
 [gen_stub]: https://github.com/php/php-src/tree/master/build/gen_stub.php
