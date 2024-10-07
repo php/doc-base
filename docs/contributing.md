@@ -61,7 +61,7 @@ the [overview](overview.md).
 
 ### Make changes to the documentation
 
-Make your changes keeping in mind the [style guidelines](style.md).
+[Make your changes](editing.md) keeping in mind the [style guidelines](style.md).
 
 ### Commit changes and open a PR
 
