@@ -340,7 +340,7 @@
 <!ENTITY url.pecl "https://pecl.php.net/">
 <!ENTITY url.pecl.package "https://pecl.php.net/package/">
 <!ENTITY url.pecl.vcs "https://svn.php.net/viewvc/pecl/">
-<!ENTITY url.pecl.windows.releases "https://windows.php.net/downloads/pecl/releases/">
+<!ENTITY url.pecl.windows.releases "https://downloads.php.net/~windows/pecl/releases/">
 <!ENTITY url.pecl.submit "https://pecl.php.net/package-new.php">
 <!-- linking to specific pecl packages is done like so: &url.pecl.package;package_name -->
 <!ENTITY url.pecl.package.get "https://pecl.php.net/get/">
