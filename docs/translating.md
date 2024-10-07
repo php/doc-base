@@ -6,6 +6,13 @@ You will also have to follow other steps from the [editing manual sources](editi
 Translating documentation into other languages might look like a complicated
 process, but in fact, it's rather simple.
 
+Because any files that are not yet translated are automatically included
+from the English version of the manual when the HTML and other versions
+of the translated manual are built, only files that are translated should
+be added to the repository for a translation. Untranslated files that
+are added to the repository could otherwise become out-of-date and cause
+problems with building the translated manual.
+
 Every file in Git has a *commit hash*. It is basically the current version of
 the specified file. We use commit hashes to check if a file is synchronized with its
 English counterpart: to find out if the translation is up-to-date. That's why every
