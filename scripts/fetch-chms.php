@@ -5,9 +5,10 @@ $TMPDIR = sys_get_temp_dir();
 $CHMDIR = "/local/mirrors/phpweb/distributions/manual";
 
 $chminfo = "$BUILDDIR/build.log";
-fetch($chminfo, tempnam(sys_get_temp_dir(), "chm"));
+$tmpfilename = tempnam(sys_get_temp_dir(), "chm");
+fetch($chminfo, $tmpfilename);
 
-$chms = file($chminfo, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+$chms = file($tmpfilename, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 if (!$chms) {
     err("No chm info\n");
     return 1;
@@ -104,7 +105,14 @@ function stream_notification_callback($notification_code, $severity, $message, $
 
 function fetch($filename, $outputname) {
     debug("Fetching $filename");
-    $ctx = stream_context_create(null, array("notification" => "stream_notification_callback"));
+    $opts = [
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true,
+        ],
+    ];
+    $ctx = stream_context_create($opts, array("notification" => "stream_notification_callback"));
 
     $fp = fopen($filename, "r", false, $ctx);
     if (!is_resource($fp)) {
