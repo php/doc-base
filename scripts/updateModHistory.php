@@ -182,7 +182,8 @@ function processGitDiffLine($line, &$modifiedFiles): void {
 }
 
 function verifyCommandLineOptions($commandLineOptions): void {
-    echo timeStamp() . " - Parsing command line arguments... ";
+    $output = timeStamp() . " - Parsing command line arguments... ";
+    echo $output;
     if ($commandLineOptions === false
         || !isset($commandLineOptions["docs-path"])) {
         echo "\"--docs-path\" is a required argument\n";
@@ -190,10 +191,11 @@ function verifyCommandLineOptions($commandLineOptions): void {
     }
     echo "documentation path supplied\n";
     if (isset($commandLineOptions["history-path"])) {
-        echo "                                               mod history file path supplied\n";
+        echo str_repeat(" ", strlen($output)) . "mod history file path supplied\n";
     }
 
-    echo timeStamp() . " - Verifying command line arguments... ";
+    $output = timeStamp() . " - Verifying command line arguments... ";
+    echo $output;
     if (!file_exists($commandLineOptions["docs-path"])) {
         echo "documentation path \"" . $commandLineOptions["docs-path"] . "\" doesn't exist\n";
         exit(1);
@@ -201,17 +203,17 @@ function verifyCommandLineOptions($commandLineOptions): void {
         echo "documentation path \"" . $commandLineOptions["docs-path"] . "\" is not a directory\n";
         exit(1);
     }
-    echo "documentation path verified";
+    echo "documentation path verified\n";
 
     if (isset($commandLineOptions["history-path"])) {
+        echo "\n" . str_repeat(" ", strlen($output)) . "mod history file path ";
         if (!file_exists($commandLineOptions["history-path"])) {
-            echo "\n                                                 mod history file path \"" . $commandLineOptions["history-path"] . "\" doesn't exist\n";
+            echo "\"" . $commandLineOptions["history-path"] . "\" doesn't exist\n";
             exit(1);
         } else if (!is_file($commandLineOptions["history-path"])) {
-            echo "\n                                                 mod history file path \"" . $commandLineOptions["history-path"] . "\" is not a file\n";
+            echo "\"" . $commandLineOptions["history-path"] . "\" is not a file\n";
             exit(1);
         }
-        echo "\n                                                 mod history file path verified";
+        echo "verified\n";
     }
-    echo "\n";
 }
