@@ -78,13 +78,13 @@ COMMAND;
 
 echo timeStamp() . " - Retrieving commit authors and last commit date/time of modified files... \n";
 
-$fileCounter = 0;
 $modifiedFiles = [];
 
 $proc = popen($modifiedFilescommand, 'rb');
 while (($line = fgets($proc)) !== false) {
     processGitDiffLine(rtrim($line, "\n\r"), $modifiedFiles);
     if (! $runningInGithubActions) {
+        $fileCounter = max(count($modifiedFiles) - 1, 0);
         fwrite(
             STDERR,
             sprintf("\033[0G{$fileCounter} of {$numOfFilesWithDiff} files read...", "", "")
@@ -140,12 +140,10 @@ function timeStamp(): string {
 function processGitDiffLine($line, &$modifiedFiles): void {
     static $currentType = "";
     static $currentFile = "";
-    global $fileCounter;
 
     switch ($line) {
         case "filename:":
             $currentType = "filename";
-            $fileCounter++;
             return;
         case "modified:":
             $currentType = "modDateTime";
