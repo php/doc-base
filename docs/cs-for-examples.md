@@ -1,136 +1,145 @@
-GENERAL:
-
-References:  http://pear.php.net/manual/en/standards.php
-             http://www.php.net/manual/howto/
+# Coding standard for examples
 
 Examples need to be clear and simple, but should show the possibilities and
 usage of the functions used.  Only use OOP features where you would like to
 present them, use simple functions in other areas.
 
-Example guidelines:
+References:  http://pear.php.net/manual/en/standards.php
+             http://www.php.net/manual/howto/
 
-0. Requirements
+## Requirements
 
-   - Work with register_globals on or off
-   - When appropriate, use superglobals
-   - Never generate PHP errors (E_ALL|E_STRICT friendly)
-   - Be short and generic
-   - Follow the PEAR coding standards
+- When appropriate, use superglobals
+- Never generate PHP errors (`E_ALL|E_STRICT` friendly)
+- Be short and generic
+- Follow the PEAR coding standards
 
-1. Program listing roles  (<programlisting role="xxx">)
+## Program listing roles  (`<programlisting role="xxx">`)
    
-   PHP examples should always have programlisting role="php"  Only PHP
-   examples should have this role.  Possible roles are:
+PHP examples should always be in `<programlisting role="php">`. Only
+PHP examples should have this role.  Other possible roles are:
    
-   - c           (C code) 
-   - html        (100% XHTML)
-   - php         (Some PHP)
-   - shell       (commandline, bash, etc)
-   - sql         (SQL statements)
-   - apache-conf (Apache)
+ - c           (C code) 
+ - html        (100% XHTML)
+ - php         (Some PHP)
+ - shell       (commandline, bash, etc)
+ - sql         (SQL statements)
+ - apache-conf (Apache)
 
-2. Titles
+## Titles
 
-   When appropriate, it's encouraged to include the function name in
-   the title, for example:
+When appropriate, it's encouraged to include the function name in
+the title, for example:
+
+```xml
+<title>A <function>strlen</function> example</title>
+```
+
+## Code placement
+
+The contents start at column/row 0 in the example.  For example, this
+means your example's content will be flush against the `<![CDATA[` tag.
+
+## PHP tags
+
+Always use long PHP tags (`<?php`) and never short tags (`<?` or `<?=`).
+
+## CDATA
+
+Always use `<![CDATA[ ... ]]>` as this increases the readability of
+the examples.  For example, you literally write `<` instead of `&lt;`
+inside of CDATA.  Nothing in CDATA is parsed, it's taken literally.
+So, you cannot use links, dev-comments, `<function>`, etc.
+
+## Deprecated code
+
+Do not use aliases or deprecated syntax.
    
-   <title>A <function>strlen</function> example</title>
+## Use of newer PHP features
 
-3. Code placement
+If an example uses features, such as arguments specific to a newer
+version of PHP, add a comment that mentions this.  For example:
 
-   The contents start at column/row 0 in the example.  For example, this
-   means your example's content will be flush against the <![CDATA[ tag.
-
-4. PHP tags
-
-   Always use long php tags (<?php) and never short tags (<? or <?=).
-
-5. CDATA
-
-   Always use <![CDATA[ ... ]]> as this increases the readability of the
-   examples.  For example, you literally write < instead of &lt; inside
-   of CDATA.  Nothing in CDATA is parsed, it's taken literally.  So, you
-   cannot use links, dev-comments, <function>, etc.
-
-6. Deprecated code
-
-   Do not use aliases or deprecated syntax.
-   
-7. Use of newer PHP features
-
-   If an example uses features, such as arguments specific to a newer
-   version of PHP, add a comment that mentions this.  For example:
-   
+```php   
    // Second argument was added in PHP 4.1.0
    foo('bar', 'baz');
+```
    
-   If appropriate, show examples that work in older versions of PHP but
-   do not use reserved function names.  For example, a PHP 4.2.3 version
-   of file_get_contents() should not be named file_get_contents().
+If appropriate, show examples that work in older versions of PHP but
+do not use reserved function names.  For example, a PHP 4.2.3 version
+of `file_get_contents()` should not be named `file_get_contents()`.
 
-8. Use of booleans in examples
+## Use of booleans in examples
 
-   Do not use entities such as &true; in examples but instead write them
-   out as TRUE, FALSE, and/or NULL. (See point#5)
+Do not use entities such as `&true;` in examples but instead write them
+out as `TRUE`, `FALSE`, and/or `NULL`.
 
-9. Spacing
+## Spacing
 
-   Never use tabs, only use spaces.  Intention levels are four spaces 
-   and do not intent the first level of code.  For example:
+Never use tabs, only use spaces.  Intention levels are four spaces 
+and do not indent the first level of code.  For example:
    
-   Good:
-   -------------------------
-   <?php
+### Good:
+```php
+<?php
+$str = 'Hello World';
+function foo($str)
+{
+   return $str;
+}
+?>
+```
+   
+### Bad:
+
+```php
+<?php
    $str = 'Hello World';
-   function foo($str)
+   function foo($str) 
    {
        return $str;
    }
-   ?>
-   
-   Bad:
-   -------------------------
-   <?php
-       $str = 'Hello World';
-       function foo($str) 
-       {
-           return $str;
-       }
-   ?>
-10. IDs
+?>
+```
 
-    It is a good idea to add xml:id to the examples. IDs generate anchors and
-    make it possible to list them in an Example Listing Appendix in the future.
+## IDs
+
+It is a good idea to add xml:id to the examples. IDs generate anchors and
+make it possible to list them in an Example Listing Appendix in the future.
 
 
-ERROR HANDLING
+## Error handling:
 
 This section isn't yet complete but there are three main ways to
 implement error handling in the PHP manual:
 
-  a) Use of the 'or' operator.
+a) Use of the `or` operator.
   
-     This is okay for development code but not ideal for production as use
-     of 'or' is rather limiting.  An example use:
+This is okay for development code but not ideal for production as use
+of `or` is rather limiting.  An example use:
   
-     foobar($lname) or die(...);
+```php
+foobar($lname) or die(...);
+```
+
+b) A boolean check, along with braces
+  
+This allows additional expressions inside the braces but requires
+more code.  This is the preferred method.  An example use:
      
-  b) A boolean check, along with {braces}
-  
-     This allows additional expressions inside the {braces} but requires
-     more code.  This is the preferred method.  An example use:
-     
+```php
      if (!foobar($lname)) {
          ...
          exit;
      }
+```
      
-  d) trigger_error()
+c) `trigger_error()`
   
-     There is debate on whether to use trigger_error() in the examples fo for
-     now, do not use it (at least until the error handling docs are updated).
+There is debate on whether to use `trigger_error()` in the examples so for
+now, do not use it (at least until the error handling docs are updated).
 
-ABOUT VARIABLES/CONSTANTS/STRINGS:
+## About Variables/Constants/Strings
 
 1. Don't use variables which are not set in examples.
 
@@ -138,74 +147,84 @@ ABOUT VARIABLES/CONSTANTS/STRINGS:
 
 3. Use single quotes ' when appropriate.
 
-4. For output use echo, instead of print.
+4. For output use `echo`, instead of `print`.
 
-5. Lowercase html-tags.
+5. Lowercase HTML tags.
 
 6. Variables in strings:
 
-   Strings in strings
+* Strings in strings
 
-     This is of course debatable and subject to personal preference.  The
-     two main methods are inline or concatenation:
+This is of course debatable and subject to personal preference.  The two
+main methods are inline or concatenation:
+    
+```php
+echo "bar is $bar";
+echo "bar is {$bar}";
+```
+vs
+```php
+echo 'bar is ' . $bar;
+```
    
-     echo "bar is $bar";
-     echo "bar is {$bar}";
-     vs
-     echo 'bar is ' . $bar;
+All of the above methods are acceptable.
+
+* Arrays in strings
    
-     All of the above methods are acceptable.
-
-   Arrays in strings
-   
-     As constants aren't looked for in strings, the following is fine
-     but may confuse newbies so it's not to be used in examples:
+As constants aren't looked for in strings, the following is fine but
+may confuse newbies so it's not to be used in examples:
      
-     echo "an $array[key] key";
+```php
+echo "an $array[key] key";
+```
+
+Instead, consider these:
      
-     Instead, consider these:
-     
-     echo "an {$array['key']} key";
-     echo 'an ' . $array['key'] . ' key';
+```php
+echo "an {$array['key']} key";
+echo 'an ' . $array['key'] . ' key';
+```
 
+## How to write...
 
-HOWTO WRITE...
-
-A: CONTROL STRUCTURES
+### Control Structures
 
 See PEAR coding standards
 
-B: FUNCTIONS:
+### Functions
 
-1. FUNCTION NAMING:
+#### Function naming
 
 Procedural function names should be lowercase.  If multiple words are
-needed in the function name, use a _.  Example: foo_function();
+needed in the function name, use a `_`.  Example: `foo_function();`
 
 OOP function names should follow the PEAR Coding Standards which
-would be fooFunction().
+would be `fooFunction()`.
 
-2. FUNCTION CALLS
-3. FUNCTION DEFINITIONS
-
-See PEAR coding standards
-
-C: COMMENTS
-D: EXAMPLE URLS/EMAIL
+#### Function calls
+#### Function definitions
 
 See PEAR coding standards
 
-E: EXAMPLE PRINTOUTS
+### Comments
+### Example URLs/Emails
 
-For very short example printouts, use C++ style comment (//) on the
+See PEAR coding standards
+
+### Example output
+
+For very short example printouts, use C++ style comment (`//`) on the
 line where the output occurs, or in the description above the line:
 
+```php
 echo $var; // 32
+```
 
 For longer example printouts, there are a couple methods which are
 acceptable.  Medium sized output may be inline with the example
-itself through use of /* comments */, for example:
+itself through use of `/* comments */`, for example:
 
+```php
 <?php
 $arr = foo();
 print_r($arr);
@@ -220,10 +239,12 @@ Array
 )
 */
 ?>
+```
 
-For longer example printouts, use the <screen> container in conjunction
-with <![CDATA[...]]>
+For longer example printouts, use the `<screen>` container in conjunction
+with `<![CDATA[...]]>`
 
+```xml
  <refsect1 role="examples">
   &reftitle.examples;
   <example>
@@ -250,8 +271,4 @@ Array
    </screen>
   </example>
  </refsect1>
-
-
-COMPLETE EXAMPLE SKELETON
-
-See the HOWTO
+```
