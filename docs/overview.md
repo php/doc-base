@@ -1,4 +1,4 @@
-# The PHP Documentation
+# Overview of the build system
 
 The PHP documentation is built from XML files and render into PHP files
 that are available on the [php.net/manual](https://php.net/manual/en) pages.

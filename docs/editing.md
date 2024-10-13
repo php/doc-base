@@ -1,6 +1,5 @@
 # Editing manual sources
 
-## Introduction
 Before making any changes to the manual - either the English version or a
 translation, make sure you have read the [style guidelines](style.md)!
 
@@ -8,7 +7,7 @@ translation, make sure you have read the [style guidelines](style.md)!
 Simply open the files and edit them.
 
 ## Adding new documentation
-When adding new functions or methods, there are a few options.
+When adding new functions or methods, there are a few options:
 
 ### Option A: Generating stub using `gen_stub.php`
 This is the new preferred way to generate files for new extensions, classes, functions
@@ -46,7 +45,7 @@ $ cd phpdoc
 $ php configure.php --with-lang={LANG}
 ```
 If your language is English you can omit the `with-lang` argument. When the above
-outputs something like "All good. Saving .manual.xml… done." then you know it validates.
+outputs something like `"All good. Saving .manual.xml… done."` then you know it validates.
 You can commit your changes now.
 
 ## Commit changes

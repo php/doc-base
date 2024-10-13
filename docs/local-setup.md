@@ -43,7 +43,7 @@ already exist.
 
 The web version of the documentation with `make php` and the output will
 be placed in `output/php-web`. (See the [additional local web setup
-instructions](local-web-setup) for details on how to view those.)
+instructions](local-web-setup.md) for details on how to view those.)
 
 <a name="without-docker"></a>
 ## Building without make or Docker

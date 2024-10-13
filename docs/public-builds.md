@@ -12,4 +12,7 @@ for help. (The process is automated and monitored, so problems are
 generally dealt with promptly.)
 
 ## CHM builds
-Right now, nobody knows when or how the CHM builds are made.
+
+The CHM versions of the manual are currently built by [Yoshinari
+Takaoka](https://github.com/mumumu) on an irregular schedule, and are
+automatically made available for distribution when they are rebuilt.

@@ -24,6 +24,6 @@
     &false;             <constant>FALSE</constant>
     &php.ini;           <filename>php.ini</filename>
 
-Be sure to check out [global.ent](entities/global.ent) and
-language-snippets.ent (located within each language's repo) for
-more information for entities and URLs.
+Be sure to check out `entities/global.ent` (in the `doc-base` repo) and
+`language-snippets.ent` (located within each language's repo) for more
+information for entities and URLs.

@@ -2,7 +2,7 @@
 
 ## I'm about to document a new PHP extension. How should I start?
 Change your working directory to `phpdoc/doc-base/scripts/docgen/` and execute:
-```
+```sh
 php docgen.php -e simplexml -o outdir
 ```
 
@@ -11,7 +11,7 @@ It creates the skeletons that you edit, and then commit.
 Help is available with following command: `php docgen.php -h`.
 
 ## I created skeletons that contain a bunch of default text, should I commit it?
-No! Edit the files, to check the generated content and add more information,
+No! Edit the files, to check the generated content and add more information
 before committing. Thinking that it is okay to commit the skeleton files because
 you will soon come along and flesh them out might seem like a good idea. However,
 temporary often becomes permanent.
@@ -24,24 +24,24 @@ Use `<methodname>Class::method</methodname>`. Note that the case does not matter
 
 ## If a refentry should not emit versioning information, what should I do?
 Add the `role="noversion"` to its `<refentry>`. Example:
-```
+```xml
 <refentry xml:id="reserved.variables.argc" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" role="noversion">
 ```
 
 ## How do I add an external link to the documentation?
 All external links are added to `doc-base/entities/global.ent`. Markup looks as follows:
-```
+```xml
 <!ENTITY url.google "http://www.google.com/">
 ```
 Then you can use this syntax in the documentation:
-```
+```xml
 Check out <link xlink:href="&url.google;">Google</link>
 ```
 Be sure the file understands the `xlink` namespace, by using `xmlns:xlink="http://www.w3.org/1999/xlink"` in the document element.
 
 ## When adding a note, should I add a title?
 Typically titles are useful for notes, but it's not required.
-```
+```xml
 <note>
  <title>Foo</title>
  <para>Note contents are here.</para>
@@ -56,8 +56,12 @@ like added parameters, are documented within the changelog section for each page
 ## A parameter is optional, how is it documented?
 Like normal, except `methodparam` receives the `choice="opt"` attribute, and
 the `<initializer>` tag is used to signify the default value.
-```
-<methodparam choice="opt"><type>bool</type><parameter>httponly</parameter><initializer>false</initializer></methodparam>
+```xml
+<methodparam choice="opt">
+ <type>bool</type>
+ <parameter>httponly</parameter>
+ <initializer>false</initializer>
+</methodparam>
 ```
 
 ## I see example.outputs and example.outputs.similar entities, what's the difference?
@@ -70,7 +74,7 @@ This is done so translators can update one version of this text.
 
 ## How do I find missing documentation?
 Missing functions (no associated XML files) can be found like so (assuming a doc checkout, and PhD is installed):
-```
+```sh
 php doc-base/configure.php
 phd --docbook doc-base/.manual.xml --package PHP --format php
 php doc-base/scripts/check-missing-docs.php -d output/index.sqlite

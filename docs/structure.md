@@ -1,11 +1,10 @@
-# Manual sources structure
+# Documentation structure
 
-## Downloading the PHP Manual sources
-The PHP Manual sources are currently stored in our Git repositories.
+The PHP Manual sources are stored in Git repositories.
 
 To checkout the PHP Manual sources, follow the steps in [Setting up a documentation environment](local-setup.md)
 
-## Files structure
+## File structure
 **Note for translators:** if any of the source files don't exist in your translation, the English content will be used
 during the building process. This means that you *must not* place untranslated files in your translation tree. Otherwise,
 it will lead to a mess, confusion and may break some tools.
@@ -14,8 +13,8 @@ The structure of the manual sources is hopefully rather intuitive. The most
 complicated part is the documentation for extensions, which is also the biggest
 part of the manual as all functions are grouped into extensions.
 
-The documentation for extensions is located in `{LANG}/reference/extension_name/`.  For example,
-the calendar extension documentation exists in  `{LANG}/reference/calendar/`. There you'll find several files:
+The documentation for extensions is located in `reference/extension_name/`.  For example,
+the calendar extension documentation exists in  `reference/calendar/`. There you'll find several files:
 - *book.xml* - acts as the container for the extension and contains the preface. Other files (like examples.xml)
 are included from here.
 - *setup.xml* - includes setup, install and configuration documentation
@@ -37,9 +36,9 @@ And OO extensions (such as imagick) contain:
 Note: *classname* is the lowercased name of the class, not a literal file or directory name.
 
 There are some other important files:
-- *{LANG}/language-defs.ent* - contains local entities used by this language. Some common ones are
+- *language-defs.ent* - contains local entities used by this language. Some common ones are
   the main part titles, but you should also put entities used only by this language's files here.
-- *{LANG}/language-snippets.ent* - longer often used XML snippets translated to this language.
+- *language-snippets.ent* - longer often used XML snippets translated to this language.
   Including common warnings, notes, etc.
-- *{LANG}/translation.xml* - this file is used to store all central translation info, like a small
+- *translation.xml* - this file is used to store all central translation info, like a small
   intro text for translators and the persons list. This file is not present in the English tree.

@@ -4,8 +4,7 @@ Examples need to be clear and simple, but should show the possibilities and
 usage of the functions used.  Only use OOP features where you would like to
 present them, use simple functions in other areas.
 
-References:  http://pear.php.net/manual/en/standards.php
-             http://www.php.net/manual/howto/
+Examples should generally conform to the [PEAR coding standards][pear-cs].
 
 ## Requirements
 
@@ -272,3 +271,5 @@ Array
   </example>
  </refsect1>
 ```
+
+[pear-cs]: http://pear.php.net/manual/en/standards.php
