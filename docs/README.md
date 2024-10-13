@@ -32,5 +32,5 @@ This guide uses some terminology that you have to know. Don't worry, it's easy:
 
 You can report problems or make contributions to this guide by using the
 "Edit this page" or "Report a problem" links in the sidebar of each page
-at [the online version of this documentation](https://doc.php.net/tutorial/),
+at [the online version of this documentation](https://doc.php.net/guide/),
 or through [the GitHub repository](https://www.github.com/php/doc-base/).
