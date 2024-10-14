@@ -12,7 +12,7 @@ $ rm -rf en
 $ ln -s ../../output/php-web en
 ```
 
-Symlinking can also be done on Windows. Just make sure you run `cmd` *as Administrator*.
+Symlinking can also be done on Windows. Just make sure you run `cmd` as an *Administrator*.
 
 ```
 $ cd \your\path\to\web-php\manual\

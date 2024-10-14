@@ -8,4 +8,3 @@ how to contribute to the documentation and translations can be found in
 
 If you just want to read the documentation for PHP, look at:
 https://www.php.net/docs.php
-

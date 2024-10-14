@@ -15,8 +15,9 @@ Examples should generally conform to the [PEAR coding standards][pear-cs].
 
 ## Program listing roles  (`<programlisting role="xxx">`)
    
-PHP examples should always be in `<programlisting role="php">`. Only
-PHP examples should have this role.  Other possible roles are:
+PHP examples should always be in `<programlisting role="php">`.
+Only PHP examples should have this role.
+Other possible roles are:
    
  - c           (C code) 
  - html        (100% XHTML)
@@ -41,7 +42,8 @@ means your example's content will be flush against the `<![CDATA[` tag.
 
 ## PHP tags
 
-Always use long PHP tags (`<?php`) and never short tags (`<?` or `<?=`).
+The old short and alternative tags (`<?` and `<%`) are obsolete and
+should no longer be used in the documentation.
 
 ## CDATA
 
@@ -56,12 +58,21 @@ Do not use aliases or deprecated syntax.
    
 ## Use of newer PHP features
 
-If an example uses features, such as arguments specific to a newer
-version of PHP, add a comment that mentions this.  For example:
+If an example uses features specific to a newer version of PHP, such
+as new arguments that has been added, this should be made clear in the
+title of the example.
 
 ```php   
-   // Second argument was added in PHP 4.1.0
-   foo('bar', 'baz');
+<example>
+ <title><function>foo</function> with second argument added as of PHP 8.1.0<title>
+ <programlisting role="php">
+<![CDATA[
+<?php
+foo('bar', 'baz');
+?>
+]]>
+ </programlisting>
+</example>
 ```
    
 If appropriate, show examples that work in older versions of PHP but
@@ -71,11 +82,11 @@ of `file_get_contents()` should not be named `file_get_contents()`.
 ## Use of booleans in examples
 
 Do not use entities such as `&true;` in examples but instead write them
-out as `TRUE`, `FALSE`, and/or `NULL`.
+out as `true`, `false`, and/or `null`.
 
 ## Spacing
 
-Never use tabs, only use spaces.  Intention levels are four spaces 
+Never use tabs, only use spaces.  Indentation levels are four spaces 
 and do not indent the first level of code.  For example:
    
 ### Good:
@@ -195,10 +206,11 @@ See PEAR coding standards
 #### Function naming
 
 Procedural function names should be lowercase.  If multiple words are
-needed in the function name, use a `_`.  Example: `foo_function();`
+needed in the function name, use a `_` (also known as snake\_case).
+Example: `foo_function();`
 
-OOP function names should follow the PEAR Coding Standards which
-would be `fooFunction()`.
+OOP method names should follow the standard coding style which uses
+camelCase, such as `fooFunction()`.
 
 #### Function calls
 #### Function definitions
@@ -226,16 +238,18 @@ itself through use of `/* comments */`, for example:
 ```php
 <?php
 $arr = foo();
-print_r($arr);
+var_dump($arr);
 
 /* Outputs:
 
-Array 
-(
-    [0] => 'bread'
-    [1] => 'peanut butter'
-    [2] => 'jam'
-)
+array(3) {
+  [0]=>
+  string(5) "bread"
+  [1]=>
+  string(13) "peanut butter"
+  [2]=>
+  string(3) "jam"
+}
 */
 ?>
 ```
@@ -251,21 +265,22 @@ with `<![CDATA[...]]>`
    <programlisting role="php">
 <![CDATA[
 <?php
-$arr = bar();
-print_r($arr);
+$arr = foo();
+var_dump($arr);
 ?>
 ]]>
    </programlisting>
    &example.outputs;
    <screen>
 <![CDATA[
-Array
-(
-    [0] => 'a';
-    [1] => 'b';
-    [2] => 'c';
-    ...
-)
+array(3) {
+  [0]=>
+  string(1) "a"
+  [1]=>
+  string(1) "b"
+  [2]=>
+  string(1) "c"
+}
 ]]>
    </screen>
   </example>
