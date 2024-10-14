@@ -7,6 +7,7 @@
 ## Line lengths
 Please aim to keep lines in an XML file around 80 characters long or less.
 It is also best to start new sentences on new lines.
+These are also known as [Semantic Line Breaks](https://sembr.org).
 This aids in keeping *diffs* simple, which is particularly useful for translators.
 
 ## Whitespaces
