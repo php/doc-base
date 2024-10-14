@@ -191,7 +191,7 @@ function verifyCommandLineOptions($commandLineOptions): void {
     }
     echo "documentation path supplied\n";
     if (isset($commandLineOptions["history-path"])) {
-        echo str_repeat(" ", strlen($output)) . "mod history file path supplied\n";
+        printf("%*smod history file path supplied\n", strlen($output), " ");
     }
 
     $output = timeStamp() . " - Verifying command line arguments... ";
@@ -206,7 +206,7 @@ function verifyCommandLineOptions($commandLineOptions): void {
     echo "documentation path verified\n";
 
     if (isset($commandLineOptions["history-path"])) {
-        echo "\n" . str_repeat(" ", strlen($output)) . "mod history file path ";
+        printf("\n%*smod history file path ", strlen($output), " ");
         if (!file_exists($commandLineOptions["history-path"])) {
             echo "\"" . $commandLineOptions["history-path"] . "\" doesn't exist\n";
             exit(1);
