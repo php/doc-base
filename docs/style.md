@@ -67,7 +67,7 @@ PHP 8.3.0                | PHP 8.3, PHP 8.3.0RC2, PHP 8.0.0BETA, PHP 8.3.0PL1
 superglobals             | super globals, autoglobals
 web server               | webserver
 the [Foo Page][example]  | [click here][example], go [here][example]
-Linux                    | linux, *n*x, *nix, *nux, etc
+Linux                    | linux, \*n\*x, \*nix, \*nux, etc
 Unix                     | UNIX (it's a registered trademark)
 Windows                  | windows (when referring to Microsoft Windows)
 macOS                    | MacOS, Mac OS X
