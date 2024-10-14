@@ -97,7 +97,7 @@ $ php phd/render.php --docbook doc-base/.manual.xml --package PHP --format xhtml
 $ open output/php-chunked-xhtml/index.html
 ```
 
-To build the version for the website (with a [local web setup](local-web-setup)):
+To build the version for the website (with a [local web setup](local-web-setup.md)):
 
 ```sh
 $ php phd/render.php --docbook doc-base/.manual.xml --package PHP --format php
