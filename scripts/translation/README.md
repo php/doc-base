@@ -1,13 +1,17 @@
-# Some useful scripts for maintaining translation consistency of manual
+# Useful scripts for maintaining translation consistency of manual
 
 Some of these scripts only test some file contents or XML structure
 of translated files against their equivalents on `en/` directory.
-Others will try modify the translations in place, changing the
+Others will try to modify the translations in place, changing the
 translated files. Use with care.
 
 Not all translations are identical, or use the same conventions.
 So not all scripts will be of use for all translations. The
 assumptions of each script are described in each file.
+
+It's also possible to silence each alert indempendly. These scripts
+will output `--add-ignore` commands that, if executed, will omit
+the specific warming in future executions.
 
 The `lib/` directory contains common code and functionality
 across these scripts.
@@ -25,9 +29,9 @@ expected format.
 ## qaxml.a.php
 
 `qaxml.a.php` checks if all updated translated files have
-the same tag-attribute-value triples. Tag's attributes are extensively
+the same tag-attribute-value triplets. Tag's attributes are extensively
 utilized in manual for linking and XIncluding. Translated files with
-missing os mistyped attributes may cause build failing or missing
+missing or mistyped attributes may cause build failing or missing
 parts not copied by XIncludes.
 
 ## qaxml.e.php
@@ -40,7 +44,7 @@ may indicate mistyped or wrongly traduced parts.
 
 `qaxml.p.php` checks if all updated translated files have
 the same processing instructions as the original files. Unbalanced entities
-may cause compilation errors, as they are utilized on manual in the build
+may cause compilation errors, as they are utilized in the manual build
 process.
 
 ## qaxml.t.php
@@ -52,9 +56,9 @@ source texts and target translations may cause compilation errors.
 Usage: `php qaxml.t.php [--detail] [tag[,tag]]`
 
 `[tag[,tag]]` is a comma separated tag list to check their
-contents, as some tag's contents are expected *not* be translated.
+contents, as some tag contents are expected *not* be translated.
 
-`--detail` will also print line defintions of each mismatched tag,
+`--detail` will also print line definitions of each mismatched tag,
 to facilitate bitsecting.
 
 ## Suggested execution
@@ -101,8 +105,8 @@ php doc-base/scripts/translation/qaxml.t.php varname
 
 ## Maintainers with spaces
 
-The regex on `RevtagParser` was narrowed to not accept maintainer's names
-with spaces. This need to be confirmed on all active translations, or
+The regex on `RevtagParser` is narrowed to not accept maintainer names
+with spaces. This needs to be confirmed on all active translations, or
 the regex modified to accept spaces again.
 
 ## en/chmonly
