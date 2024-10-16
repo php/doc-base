@@ -157,7 +157,8 @@ now, do not use it (at least until the error handling docs are updated).
 
 3. Use single quotes ' when appropriate.
 
-4. For output use `echo`, instead of `print`.
+4. For output use `echo`, instead of `print`. Don't use unnecessary
+   string concatenation (`.`) with `echo`, use `,` instead.
 
 5. Lowercase HTML tags.
 
@@ -165,34 +166,38 @@ now, do not use it (at least until the error handling docs are updated).
 
 * Strings in strings
 
-This is of course debatable and subject to personal preference.  The two
-main methods are inline or concatenation:
-    
+It is acceptable to use either string interpolation or concatenation
+when composing strings, but `,` should be used to separate multiple
+expressions for `echo` is preferred to string concatenation.
+
 ```php
+$output = "bar is $bar";
 echo "bar is $bar";
+$output = "bar is {$bar}";
 echo "bar is {$bar}";
 ```
 vs
 ```php
-echo 'bar is ' . $bar;
+$output = 'bar is ' . $bar;
+echo 'bar is ', $bar;
 ```
    
-All of the above methods are acceptable.
-
 * Arrays in strings
    
 As constants aren't looked for in strings, the following is fine but
 may confuse newbies so it's not to be used in examples:
      
 ```php
+$variable = "an $array[key] key";
 echo "an $array[key] key";
 ```
 
 Instead, consider these:
      
 ```php
+$variable = "an {$array['key']} key";
 echo "an {$array['key']} key";
-echo 'an ' . $array['key'] . ' key';
+echo 'an ', $array['key'], ' key';
 ```
 
 ## How to write...
@@ -231,7 +236,7 @@ line where the output occurs, or in the description above the line:
 echo $var; // 32
 ```
 
-For longer example printouts, there are a couple methods which are
+For longer example printouts, there are, a couple methods which are
 acceptable.  Medium sized output may be inline with the example
 itself through use of `/* comments */`, for example:
 
