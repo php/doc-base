@@ -434,6 +434,7 @@
  <book xml:id="appendices">
   <title>&Appendices;</title>
   &appendices.history;
+  &appendices.migration84;
   &appendices.migration83;
   &appendices.migration82;
   &appendices.migration81;
