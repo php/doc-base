@@ -33,7 +33,7 @@ if ( $argc != 2 )
   [translation] must be a valid git checkout directory of a translation.
 
   Read more about revision comments and related functionality in the
-  PHP Documentation Howto: http://doc.php.net/tutorial/
+  PHP Documentation Howto: https://doc.php.net/guide/
 
 
 USAGE;
