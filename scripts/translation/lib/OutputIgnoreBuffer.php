@@ -75,28 +75,35 @@ class OutputIgnoreBuffer
         if ( count ( $this->texts ) > 0 )
              $this->printCount++;
 
-        $head = $this->filename . ':' . $this->hash( false ) . ':';
-        $mark = $head . $this->hash( true );
+        // footer
+
+        $markhead = $this->filename . ':' . $this->hash( false ) . ':';
+        $markfull = $markhead . $this->hash( true );
         $marks = OutputIgnoreArgv::cacheFile()->load( array() );
 
         if ( $this->args->showIgnore )
         {
-            if ( in_array( $mark , $marks ) )
+            // --add-ignore
+
+            if ( in_array( $markfull , $marks ) )
                 $this->texts = array();
             else
-                $this->args->pushAddIgnore( $this , $mark );
+                $this->args->pushAddIgnore( $this , $markfull );
 
-            // old marks
-            while ( in_array( $mark , $marks ) )
+            // remove duplicates
+
+            while ( in_array( $markfull , $marks ) )
             {
-                $key = array_search( $mark , $marks );
+                $key = array_search( $markfull , $marks );
                 unset( $marks[$key] );
             }
+
+            // --del-ignore
+
             foreach ( $marks as $mark )
                 if ( $mark != null )
-                    if ( str_starts_with( $mark , $head ) )
+                    if ( str_starts_with( $mark , $markhead ) )
                         $this->args->pushDelIgnore( $this , $mark );
-
         }
 
         $this->addLine( "\n" );
