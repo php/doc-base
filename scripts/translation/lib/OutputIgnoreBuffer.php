@@ -23,9 +23,10 @@ class OutputIgnoreBuffer
 {
     public int $printCount = 0;
 
-    private string $header = "";
     private string $filename = "";
-    private array $texts = array();
+    private string $header = "";
+    private array  $texts  = array();
+    private array  $footer = array();
 
     private OutputIgnoreArgv $args;
 
@@ -58,6 +59,11 @@ class OutputIgnoreBuffer
             $suffix = $sourceCount == 1 ? "" : " +{$sourceCount}";
         }
         $this->add( "{$prefix}{$text}{$suffix}\n" );
+    }
+
+    function addFooter( string $text )
+    {
+        $this->footer[] = $text;
     }
 
     function addLine()
@@ -112,8 +118,16 @@ class OutputIgnoreBuffer
             return;
 
         print $this->header;
+
         foreach( $this->texts as $text )
             print $text;
+
+        if ( count( $this->footer ) )
+        {
+            foreach( $this->footer as $text )
+                print $text;
+            print "\n";
+        }
     }
 
     private function hash( bool $withContents ) : string

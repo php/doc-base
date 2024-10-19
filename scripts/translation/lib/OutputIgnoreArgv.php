@@ -82,11 +82,11 @@ class OutputIgnoreArgv
 
     function pushAddIgnore( OutputIgnoreBuffer $output, string $mark )
     {
-        $output->add( "  php {$this->command} --add-ignore=$mark\n" );
+        $output->addFooter( "  php {$this->command} --add-ignore=$mark\n" );
     }
 
     function pushDelIgnore( OutputIgnoreBuffer $output, string $mark )
     {
-        $output->add( "  php {$this->command} --del-ignore=$mark\n" );
+        $output->addFooter( "  php {$this->command} --del-ignore=$mark\n" );
     }
 }
