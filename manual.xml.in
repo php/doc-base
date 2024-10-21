@@ -204,7 +204,7 @@
     &reference.dbase.book;
     &reference.ibase.book;
     &reference.ibm-db2.book;
-    &reference.mongodb.set;
+    &reference.mongodb.book;
     &reference.mysqlinfo.set;
     &reference.oci8.book;
     &reference.pgsql.book;
