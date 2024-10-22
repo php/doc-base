@@ -25,7 +25,7 @@ class OutputIgnoreBuffer
 
     private string $filename = "";
     private string $header = "";
-    private array  $texts  = array();
+    private array  $matter = array();
     private array  $footer = array();
 
     private OutputIgnoreArgv $args;
@@ -39,7 +39,7 @@ class OutputIgnoreBuffer
 
     function add( string $text )
     {
-        $this->texts[] = $text;
+        $this->matter[] = $text;
     }
 
     function addDiff( string $text , int $sourceCount , int $targetCount )
@@ -68,18 +68,15 @@ class OutputIgnoreBuffer
 
     function addLine()
     {
-        if ( count( $this->texts ) > 0 && end( $this->texts ) != "\n" )
+        if ( count( $this->matter ) > 0 && end( $this->matter ) != "\n" )
             $this->add( "\n" );
     }
 
     function print()
     {
-        if ( count( $this->texts ) == 0 )
+        if ( count( $this->matter ) == 0 )
             return;
-
-        $this->addLine( "\n" );
-        if ( count ( $this->texts ) > 0 )
-             $this->printCount++;
+        $this->printCount++;
 
         // footer
 
@@ -92,11 +89,11 @@ class OutputIgnoreBuffer
             // --add-ignore
 
             if ( in_array( $markfull , $marks ) )
-                $this->texts = array();
+                $this->matter = array();
             else
                 $this->args->pushAddIgnore( $this , $markfull );
 
-            // remove duplicates
+            // Avoid dupliocates on output
 
             while ( in_array( $markfull , $marks ) )
             {
@@ -112,29 +109,29 @@ class OutputIgnoreBuffer
                         $this->args->pushDelIgnore( $this , $mark );
         }
 
-        $this->addLine( "\n" );
-
-        if ( count( $this->texts ) == 0 )
+        if ( count( $this->matter ) == 0 && count( $this->footer ) == 0 )
             return;
 
         print $this->header;
 
-        foreach( $this->texts as $text )
+        foreach( $this->matter as $text )
+            print $text;
+
+        if ( count( $this->matter ) )
+            print "\n";
+
+        foreach( $this->footer as $text )
             print $text;
 
         if ( count( $this->footer ) )
-        {
-            foreach( $this->footer as $text )
-                print $text;
             print "\n";
-        }
     }
 
     private function hash( bool $withContents ) : string
     {
         $text = $this->header . $this->args->options;
         if ( $withContents )
-            $text .= implode( "" , $this->texts );
+            $text .= implode( "" , $this->matter );
         $text = str_replace( " " , "" , $text );
         $text = str_replace( "\n" , "" , $text );
         $text = str_replace( "\r" , "" , $text );
