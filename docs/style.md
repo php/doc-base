@@ -41,14 +41,19 @@ CORRECT: The optional second parameter may be used to specify tags that should n
 Example: `<entry>5.2.11, 5.3.1</entry>`
 
 ## General Grammar
+
 The PHP Manual should be written with particular attention to general
 American English grammar and spelling.
-The [serial (Oxford) comma](https://en.wikipedia.org/wiki/Serial_comma)
+
+- The [serial (Oxford) comma](https://en.wikipedia.org/wiki/Serial_comma)
 should be used in a series of three or more terms.
-Contractions should be used appropriately.
-Special attention should be applied to sentence construction when using
+
+- Contractions should be used appropriately.
+
+- Special attention should be applied to sentence construction when using
 prepositions (i.e., sentences should not end in prepositions).
-If a statement includes a conditional conjunction, the condition being
+
+- If a statement includes a conditional conjunction, the condition being
 met should come before the independent clause.
 The previous statement is an example of how a conditional conjuction
 should be formatted.
