@@ -48,6 +48,12 @@ should be used in a series of three or more terms.
 Contractions should be used appropriately.
 Special attention should be applied to sentence construction when using
 prepositions (i.e., sentences should not end in prepositions).
+If a statement includes a conditional conjunction, the condition being
+met should come before the independent clause.
+The previous statement is an example of how a conditional conjuction
+should be formatted.
+See [PR#1565](https://github.com/php/doc-en/pull/1565) for another
+example.
 
 ## PHP Manual Terms
 
