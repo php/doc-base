@@ -72,7 +72,7 @@ class OutputIgnoreBuffer
             $this->add( "\n" );
     }
 
-    function print()
+    function print( bool $useAlternatePrinting = false )
     {
         if ( count( $this->matter ) == 0 )
             return;
@@ -114,8 +114,11 @@ class OutputIgnoreBuffer
 
         print $this->header;
 
-        foreach( $this->matter as $text )
-            print $text;
+        if ( $useAlternatePrinting )
+            $this->printMatterAlternate();
+        else
+            foreach( $this->matter as $text )
+                print $text;
 
         if ( count( $this->matter ) )
             print "\n";
@@ -125,6 +128,29 @@ class OutputIgnoreBuffer
 
         if ( count( $this->footer ) )
             print "\n";
+    }
+
+    private function printMatterAlternate() : void
+    {
+        $add = array();
+        $del = array();
+        $rst = array();
+
+        foreach( $this->matter as $text )
+        {
+            if     ( $text[0] == '+' ) $add[] = $text;
+            elseif ( $text[0] == '-' ) $del[] = $text;
+            else                       $rst[] = $text;
+        }
+
+        for ( $idx = 0 ; $idx < count( $this->matter ) ; $idx++ )
+        {
+            if ( isset( $add[ $idx ] ) ) print $add[ $idx ];
+            if ( isset( $del[ $idx ] ) ) print $del[ $idx ];
+        }
+
+        foreach( $rst as $text )
+            print $text;
     }
 
     private function hash( bool $withContents ) : string

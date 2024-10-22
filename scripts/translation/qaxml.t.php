@@ -87,7 +87,7 @@ foreach ( $qalist as $qafile )
             foreach( $match as $tag => $v )
                 printTagUsageDetail( $source , $target , $tag , $output );
 
-        $output->print();
+        $output->print( true );
     }
 
     // Second check, by tag contents, inner XML
@@ -125,7 +125,7 @@ foreach ( $qalist as $qafile )
             foreach( $match as $tag => $v )
                 printTagUsageDetail( $source , $target , $tag , $output );
 
-        $output->print();
+        $output->print( true );
     }
 
     // Last check, simple tag count
@@ -163,7 +163,7 @@ foreach ( $qalist as $qafile )
             foreach( $match as $tag => $v )
                 printTagUsageDetail( $source , $target , $tag , $output );
 
-        $output->print();
+        $output->print( true );
     }
 }
 
