@@ -2,20 +2,20 @@
 <reference xml:id="ref.extname" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Extname &Functions;</title>
  <titleabbrev>Extname</titleabbrev>
- 
+
 <!-- Generally should not be used, only in rare cases where you find no other place for it.
  <partintro>
   <section xml:id="extname.foobar">
    &reftitle.foobar;
-   <para>
+   <simpara>
     Some text here.
-   </para>
+   </simpara>
   </section>
   </partintro>
 -->
- 
+
  &reference.extname.entities.functions;
- 
+
 </reference>
 <!-- Keep this comment at the end of the file
 Local variables:

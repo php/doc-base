@@ -2,6 +2,7 @@
 <chapter xml:id="extname.setup" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.setup;
 
+ <!-- Remove sections which are useless -->
  <!-- {{{ Requirements -->
  <section xml:id="extname.requirements">
   &reftitle.required;

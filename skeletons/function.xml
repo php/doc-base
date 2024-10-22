@@ -1,65 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<refentry xml:id="function.func-name" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+<refentry xml:id="function.function-name" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
-  <refname>func_name</refname>
-  <refpurpose>The func_name purpose</refpurpose>
+  <refname>function_name</refname>
+  <refpurpose>The function_name purpose</refpurpose>
  </refnamediv>
 
- <refsect1 role="description"><!-- {{{ -->
+ <refsect1 role="description">
   &reftitle.description;
   <methodsynopsis role="procedural">
    <!-- Example: All functions have this -->
-   <type>thereturned type</type><methodname>func_name</methodname>
+   <type>thereturned type</type><methodname>function_name</methodname>
    <!-- Example: Required parameter -->
    <methodparam><type>param1type</type><parameter>firstparameter</parameter></methodparam>
    <!-- Example: Optional parameter, also by reference -->
    <methodparam choice="opt"><type>int</type><parameter role="reference">secondparameter</parameter><initializer>defaultvalue</initializer></methodparam>
    <!-- Example: If no methodparams exist (void), use this -->
-   <void />
+   <void/>
   </methodsynopsis>
-  <para>
+  <simpara>
    The function description goes here.
-  </para>
- </refsect1><!-- }}} -->
+  </simpara>
+ </refsect1>
 
- <refsect1 role="parameters"><!-- {{{ -->
+ <!-- Mandatory -->
+ <refsect1 role="parameters">
   &reftitle.parameters;
   <variablelist>
    <varlistentry>
     <term><parameter>firstparameter</parameter></term>
     <listitem>
-     <para>
+     <simpara>
       Its description
-     </para>
+     </simpara>
     </listitem>
    </varlistentry>
    <varlistentry>
     <term><parameter>secondparameter</parameter></term>
     <listitem>
-     <para>
+     <simpara>
       Its description
-     </para>
+     </simpara>
     </listitem>
    </varlistentry>
   </variablelist>
- </refsect1><!-- }}} -->
+ </refsect1>
 
- <refsect1 role="returnvalues"><!-- {{{ -->
+ <!-- Mandatory -->
+ <refsect1 role="returnvalues">
   &reftitle.returnvalues;
-  <para>
-   What this function returns, first on success, then failure.  If simply
-   true on success and false on failure, just use &return.success; here.
-  </para>
- </refsect1><!-- }}} -->
+  <simpara>
+   What this function returns, first on success, then failure.
+   If simply true on success and false on failure, just use &return.success; here.
+  </simpara>
+ </refsect1>
 
- <refsect1 role="errors"><!-- {{{ -->
+ <refsect1 role="errors">
   &reftitle.errors;
-  <para>
-   When does this function issue E_* level errors, and/or throw exceptions.
-  </para>
- </refsect1><!-- }}} -->
+  <simpara>
+   When does this function issue <constant>E_*</constant> level errors, and/or throw exceptions.
+  </simpara>
+ </refsect1>
 
- <refsect1 role="changelog"><!-- {{{ -->
+ <refsect1 role="changelog">
   &reftitle.changelog;
   <informaltable>
    <tgroup cols="2">
@@ -79,16 +81,16 @@
     </tbody>
    </tgroup>
   </informaltable>
- </refsect1><!-- }}} -->
+ </refsect1>
 
- <refsect1 role="examples"><!-- {{{ -->
+ <refsect1 role="examples">
   &reftitle.examples;
-  <example xml:id="function-name.example.basic"><!-- {{{ -->
-   <title><function>function-name</function> example</title>
-   <para>
+  <example xml:id="function-name.example.basic">
+   <title><function>function_name</function> example</title>
+   <simpara>
      Any text that describes the purpose of the example, or what
-     goes on in the example should be here. (Inside the <example> tag, not out).
-   </para>
+     goes on in the example should be here. (Inside the example tag, not out).
+   </simpara>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -108,31 +110,31 @@ Use the PEAR Coding standards
 Use a screen like we did below
 ]]>
    </screen>
-  </example><!-- }}} -->
- </refsect1><!-- }}} -->
+  </example>
+ </refsect1>
 
- <refsect1 role="notes"><!-- {{{ -->
+ <refsect1 role="notes">
   &reftitle.notes;
   <caution>
-   <para>
+   <simpara>
     Any notes that don't fit anywhere else should go here.
     90% of the time, notes, warnings or cautions are better placed in the
     parameters section. Consider that before using this section!
-   </para>
+   </simpara>
   </caution>
   &note.language-construct;
   &note.not-bin-safe;
   &note.registerglobals;
- </refsect1><!-- }}} -->
+ </refsect1>
 
- <refsect1 role="seealso"><!-- {{{ -->
+ <refsect1 role="seealso">
   &reftitle.seealso;
   <simplelist>
    <member><function>somefunc</function></member>
    <member><function>another_func</function></member>
    <member>The <link linkend="something">something appendix</link></member>
   </simplelist>
- </refsect1><!-- }}} -->
+ </refsect1>
 
 </refentry>
 <!-- Keep this comment at the end of the file

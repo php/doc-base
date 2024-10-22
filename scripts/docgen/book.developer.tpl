@@ -39,9 +39,9 @@
 
  <preface xml:id="intro.{EXT_NAME_ID}">
   &reftitle.intro;
-  <para>
+  <simpara>
 
-  </para>
+  </simpara>
  </preface>
 
  &reference.{EXT_NAME_ID}.setup;

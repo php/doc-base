@@ -4,9 +4,9 @@
 
  <section xml:id="{EXT_NAME_ID}.requirements">
   &reftitle.required;
-  <para>
+  <simpara>
 
-  </para>
+  </simpara>
  </section>
 
  <section xml:id="{EXT_NAME_ID}.installation">
@@ -21,9 +21,9 @@
 
  <section xml:id="{EXT_NAME_ID}.resources">
   &reftitle.resources;
-  <para>
+  <simpara>
 
-  </para>
+  </simpara>
  </section>
 
 </chapter>

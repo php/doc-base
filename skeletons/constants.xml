@@ -3,37 +3,34 @@
  &reftitle.constants;
  &extension.constants;
 
- <!-- If the extension doesn't define any constants, use this entity -->
- <!-- &no.constants; -->
- <para>
-  <variablelist>
+ <!-- If the extension doesn't define any constants, delete the file -->
+ <variablelist>
 
-   <varlistentry>
-    <term>
-     <constant>CONSTANT_NAME</constant> 
-     (<type>itstype</type>)
-    </term>
-    <listitem>
-     <simpara>
-      The constant description.
-     </simpara>
-    </listitem>
-   </varlistentry>
+  <varlistentry>
+   <term>
+    <constant>CONSTANT_NAME</constant>
+    (<type>itstype</type>)
+   </term>
+   <listitem>
+    <simpara>
+     The constant description.
+    </simpara>
+   </listitem>
+  </varlistentry>
 
-   <varlistentry>
-    <term>
-     <constant>CONSTANT2_NAME</constant> 
-     (<type>itstype</type>)
-    </term>
-    <listitem>
-     <simpara>
-      The description.
-     </simpara>
-    </listitem>
-   </varlistentry>
+  <varlistentry>
+   <term>
+    <constant>CONSTANT2_NAME</constant>
+    (<type>itstype</type>)
+   </term>
+   <listitem>
+    <simpara>
+     The description.
+    </simpara>
+   </listitem>
+  </varlistentry>
 
-  </variablelist>
- </para>
+ </variablelist>
 </appendix>
 <!-- Keep this comment at the end of the file
 Local variables:

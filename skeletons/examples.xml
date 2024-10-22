@@ -9,27 +9,25 @@
   <para>
    A bunch of text
   </para>
-  <para>
-   <example>
-    <title>A title</title>
-    <para>
-     More optional text
-    </para>
-    <programlisting role="php" xml:id="extname.examples.uniqueidhere">
+  <example>
+   <title>A title</title>
+   <simpara>
+    More optional text
+   </simpara>
+   <programlisting role="php" xml:id="extname.examples.uniqueidhere">
 <![CDATA[
 <?php
 echo 'Hello World';
 ?>
 ]]>
-    </programlisting>
-    &example.outputs.similar;
-    <screen>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
 <![CDATA[
 Hello World
 ]]>
-    </screen>
-   </example>
-  </para>
+   </screen>
+  </example>
  </section>
 
 </chapter>
