@@ -4,14 +4,12 @@ Examples need to be clear and simple, but should show the possibilities and
 usage of the functions used.  Only use OOP features where you would like to
 present them, use simple functions in other areas.
 
-Examples should generally conform to the [PEAR coding standards][pear-cs].
-
 ## Requirements
 
 - When appropriate, use superglobals
 - Never generate PHP errors (`E_ALL|E_STRICT` friendly)
 - Be short and generic
-- Follow the PEAR coding standards
+- Follow the current [PHP-FIG PER Coding Style][per-cs]
 
 ## Program listing roles  (`<programlisting role="xxx">`)
    
@@ -200,15 +198,7 @@ echo "an {$array['key']} key";
 echo 'an ', $array['key'], ' key';
 ```
 
-## How to write...
-
-### Control Structures
-
-See PEAR coding standards
-
-### Functions
-
-#### Function naming
+## Function naming
 
 Procedural function names should be lowercase.  If multiple words are
 needed in the function name, use a `_` (also known as snake\_case).
@@ -217,17 +207,7 @@ Example: `foo_function();`
 OOP method names should follow the standard coding style which uses
 camelCase, such as `fooFunction()`.
 
-#### Function calls
-#### Function definitions
-
-See PEAR coding standards
-
-### Comments
-### Example URLs/Emails
-
-See PEAR coding standards
-
-### Example output
+## Example output
 
 For very short example printouts, use C++ style comment (`//`) on the
 line where the output occurs, or in the description above the line:
@@ -292,4 +272,4 @@ array(3) {
  </refsect1>
 ```
 
-[pear-cs]: http://pear.php.net/manual/en/standards.php
+[per-cs]: https://www.php-fig.org/per/coding-style/
