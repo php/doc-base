@@ -20,7 +20,7 @@ REFNAME:  Procedural refname goes after the OOP refname.
  <refsect1 role="description">
   &reftitle.description;
 <!-- IF OOP & PROCEDURAL.
-  <simpara>&style.oop;</para>
+  <simpara>&style.oop;</simpara>
 -->
 <!-- Use constructorsynopsis and destructorsynopsis rather than methodsynopsis for __construct and __destruct
      There is no return <type> for the constructorsynopsis/destructorsynopsis -->
@@ -44,7 +44,7 @@ REFNAME:  Procedural refname goes after the OOP refname.
 
 Procedural synopsis goes after OOP synopsis.
 
-  <simpara>&style.procedural;</para>
+  <simpara>&style.procedural;</simpara>
   <methodsynopsis role="procedural">
    [Fill in function's parameter details just like in
    function.xml/refentry/refsect1[@role=description]/methodsynopsis]

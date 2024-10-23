@@ -9,7 +9,7 @@
   &reftitle.description;
   <methodsynopsis role="procedural">
    <!-- Example: All functions have this -->
-   <type>thereturned type</type><methodname>function_name</methodname>
+   <type>the returned type</type><methodname>function_name</methodname>
    <!-- Example: Required parameter -->
    <methodparam><type>param1type</type><parameter>firstparameter</parameter></methodparam>
    <!-- Example: Optional parameter, also by reference -->

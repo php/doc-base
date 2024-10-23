@@ -64,7 +64,7 @@
      <xi:fallback/>
     </xi:include>
 
-    <!-- Edit the classname below -->
+    <!-- Edit the classname below and ClassName in the @role='ClassName' XPath query -->
     <!-- If has a constructor -->
     <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
     <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:constructorsynopsis[@role='ClassName'])">
@@ -108,6 +108,9 @@
    </variablelist>
   </section>
 
+  <!-- If properties are documented "as a method/procedural function", use this
+      <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:fieldsynopsis)" />
+  -->
   <section xml:id="error.props">
    &reftitle.properties;
    <variablelist>
