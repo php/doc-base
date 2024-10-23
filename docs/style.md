@@ -1,5 +1,13 @@
 # Style guidelines
 
+The style for the PHP manual has evolved over the years, and this tries
+to capture the current guidelines. Existing documentation may not closely
+adhere to these, but new additions and substantial changes should.
+
+When updating existing documentation, it is okay to not update
+conflicts with these style guidelines if it would cause too much work
+for translators.
+
 ## Technical requirements
 - All files **must** be encoded using UTF-8 (without BOM)
 - Use only Unix line endings (`\n`)
@@ -23,6 +31,14 @@ Lists, titles, and sentence fragments should not be punctuated with
 a period.
 Sentences need not have two spaces between them.
 Commas and apostrophes should be used appropriately.
+
+## Markup
+
+### Use `<para>` sparingly
+
+Use `<simpara>` in markup (similar to HTML's `<p>`) in favor of `<para>`
+(similar to HTML's `<div>`) when there are no block elements (such as
+`<example>` or `<itemizedlist>` in the paragraph.
 
 ## Personalization
 The PHP Manual is a technical document, and should be written so. The use of "you" is rampant in the manual,
