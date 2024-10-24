@@ -820,8 +820,8 @@ HTML;
         }
         $ll = strtolower( $lang );
         $kh = hash( 'sha256' , $key );
-        $d1 = "http://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=on";
-        $d2 = "http://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=off";
+        $d1 = "https://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=on";
+        $d2 = "https://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=off";
         $nm = "<a href='$d2'>{$en->name}</a> <a href='$d1'>[colored]</a>";
         if ( $en->syncStatus == FileStatusEnum::RevTagProblem )
             $nm = $en->name;
