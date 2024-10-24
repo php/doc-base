@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <book xml:id="book.extname" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
- <title>Extname</title>
- <titleabbrev>Extname...</titleabbrev>
- 
+ <title>Long title of extension</title>
+ <titleabbrev>Extname</titleabbrev>
+
  <!-- {{{ preface -->
  <preface xml:id="intro.extname">
   &reftitle.intro;
-  <para>
+  <simpara>
    Extension introduction.
-  </para>
+  </simpara>
  </preface>
  <!-- }}} -->
- 
+
  &reference.extname.setup;
  &reference.extname.constants;
  &reference.extname.reference;

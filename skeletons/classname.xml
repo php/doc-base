@@ -1,105 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpdoc:classref xml:id="class.classname"
- xmlns:phpdoc="http://php.net/ns/phpdoc"
- xmlns:xlink="http://www.w3.org/1999/xlink"
- xmlns:xi="http://www.w3.org/2001/XInclude"
- xmlns="http://docbook.org/ns/docbook">
+<reference xml:id="class.classname" role="class" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
  <title>The ClassName class</title>
  <titleabbrev>ClassName</titleabbrev>
  
  <partintro>
- 
-<!-- {{{ ClassName intro -->
+
+  <!-- {{{ ClassName intro -->
   <section xml:id="classname.intro">
    &reftitle.intro;
-   <para>
+   <simpara>
     Description of the class.
-   </para>
+   </simpara>
   </section>
-<!-- }}} -->
- 
+  <!-- }}} -->
+
   <section xml:id="classname.synopsis">
    &reftitle.classsynopsis;
- 
-<!-- {{{ Synopsis -->
-   <classsynopsis>
-    <ooclass><classname>ClassName</classname></ooclass>
- 
-<!-- {{{ Class synopsis -->
-    <classsynopsisinfo>
-     <ooclass>
-      <classname>ClassName</classname>
-     </ooclass>
- 
-<!-- If the class extends another one, use this
-     <ooclass>
-      <modifier>extends</modifier>
-      <classname>BaseClassName</classname>
-     </ooclass>
--->
- 
-<!-- If the class implements an interface, or two, use this (one oointerface element per interface)
-     <oointerface>
-      <interfacename>InterfaceName</interfacename>
-     </oointerface>
--->
-    </classsynopsisinfo>
-<!-- }}} -->
- 
-    <classsynopsisinfo role="comment">Properties</classsynopsisinfo>
-<!-- If the property is documented below (xml:id=classname.props) use this
+
+   <!-- {{{ Synopsis -->
+   <classsynopsis class="class">
+    <ooclass>
+     <classname>ClassName</classname>
+    </ooclass>
+
+    <!-- If the class extends another one, use this -->
+    <ooclass>
+     <modifier>extends</modifier>
+     <classname>ParentClass</classname>
+    </ooclass>
+
+    <oointerface>
+     <modifier>implements</modifier>
+     <interfacename>Interface1</interfacename>
+    </oointerface>
+
+    <oointerface>
+     <interfacename>Interface2</interfacename>
+    </oointerface>
+
+    <oointerface>
+     <interfacename>Interface3</interfacename>
+    </oointerface>
+
+    <classsynopsisinfo role="comment">&Constants;</classsynopsisinfo>
     <fieldsynopsis>
      <modifier>public</modifier>
-     <type>string</type>
-     <varname linkend="classname.props.name">name</varname>
+     <modifier>const</modifier>
+     <type>int</type>
+     <varname linkend="classname.constants.some-constant">ClassName::SOME_CONSTANT</varname>
     </fieldsynopsis>
--->
- 
-<!-- If properties are documented "as a method", use this
-    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:fieldsynopsis)" />
--->
 
-<!-- Edit the classname below -->
+    <classsynopsisinfo role="comment">&Properties;</classsynopsisinfo>
+    <fieldsynopsis>
+     <modifier>protected</modifier>
+     <type>string</type>
+     <varname linkend="classname.props.someproperty">SomeProperty</varname>
+     <initializer>""</initializer>
+    </fieldsynopsis>
+
+    <!-- Edit the parentclass below -->
+    <classsynopsisinfo role="comment">&InheritedProperties;</classsynopsisinfo>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.parentclass')/db:partintro/db:section/db:classsynopsis/db:fieldsynopsis[preceding-sibling::db:classsynopsisinfo[1][@role='comment' and text()='&Properties;']]))">
+     <xi:fallback/>
+    </xi:include>
+
+    <!-- Edit the classname below and ClassName in the @role='ClassName' XPath query -->
+    <!-- If has a constructor -->
     <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
-    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:constructorsynopsis[not(@role='procedural')])">
-     <xi:fallback />
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:constructorsynopsis[@role='ClassName'])">
+     <xi:fallback/>
     </xi:include>
-    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:destructorsynopsis[not(@role='procedural')])">
-     <xi:fallback />
+    <!-- If has a destructor -->
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:destructorsynopsis[@role='ClassName'])">
+     <xi:fallback/>
     </xi:include>
-    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[not(@role='procedural')])">
-     <xi:fallback />
+    <!-- If has methods -->
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='ClassName'])">
+     <xi:fallback/>
     </xi:include>
 
-<!-- If the class extends a class use this. Repeat the <xi:include> tag for all the parent classes in the event of multiple extensions; i.e. class XYZ extends class XY and class XY extends class X
-    <classsynopsisinfo role="comment">Inherited methods</classsynopsisinfo>
-    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.baseclassname')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[not(@role='procedural') and not(modifier='private')])" />
+    <!-- Edit the parentclass below -->
+    <!--
+        If the class extends a class use this.
+        Repeat the <xi:include> tag for all the parent classes in the event of multiple extensions;
+        i.e. class XYZ extends class XY and class XY extends class X
+    -->
+    <classsynopsisinfo role="comment">&InheritedMethods;</classsynopsisinfo>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.parentclass')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='ParentClass'])">
+     <xi:fallback/>
+    </xi:include>
    </classsynopsis>
--->
-<!-- }}} -->
- 
+   <!-- }}} -->
+
   </section>
- 
-<!-- {{{ ClassName properties
-  <section xml:id="classname.props">
-   &reftitle.properties;
+
+  <section xml:id="classname.constants">
+   &reftitle.constants;
    <variablelist>
-    <varlistentry xml:id="classname.props.name">
-     <term><varname>name</varname></term>
+    <varlistentry xml:id="classname.constants.some-constant">
+     <term><constant>ClassName::SOME_CONSTANT</constant></term>
      <listitem>
-      <para>Prop description</para>
+      <simpara>
+       Some description for the constant.
+      </simpara>
      </listitem>
     </varlistentry>
    </variablelist>
   </section>
--->
-<!-- }}} -->
+
+  <!-- If properties are documented "as a method/procedural function", use this
+      <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.classname')/db:refentry/db:refsect1[@role='description']/descendant::db:fieldsynopsis)" />
+  -->
+  <section xml:id="error.props">
+   &reftitle.properties;
+   <variablelist>
+    <varlistentry xml:id="error.props.someproperty">
+     <term><varname>someProperty</varname></term>
+     <listitem>
+      <simpara>
+       Description
+      </simpara>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </section>
  
  </partintro>
  
  &reference.extname.entities.classname;
  
-</phpdoc:classref>
+</reference>
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

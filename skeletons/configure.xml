@@ -5,13 +5,13 @@
  <!-- If the extension doesn't need to be installed (built-in extension) use this entity -->
  <!-- &no.install; -->
  <!-- There are various PECL related entities in language-snippets.ent -->
- <para>
+ <simpara>
   To enable extname support, configure PHP with 
   <option role="configure">theconfigoption</option>
- </para>
- <para>
+ </simpara>
+ <simpara>
   Windows users ...
- </para>
+ </simpara>
 </section>
 <!-- Keep this comment at the end of the file
 Local variables:

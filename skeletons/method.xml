@@ -20,11 +20,11 @@ REFNAME:  Procedural refname goes after the OOP refname.
  <refsect1 role="description">
   &reftitle.description;
 <!-- IF OOP & PROCEDURAL.
-  <para>&style.oop;</para>
+  <simpara>&style.oop;</simpara>
 -->
 <!-- Use constructorsynopsis and destructorsynopsis rather than methodsynopsis for __construct and __destruct
      There is no return <type> for the constructorsynopsis/destructorsynopsis -->
-  <methodsynopsis role="oop">
+  <methodsynopsis role="ClassName">
    <!-- Example: All methods have this. Don't use <void> for the return type, use <type>void</type> instead. -->
    <type>thereturned type</type><methodname>ClassName::methodName</methodname>
    <!-- Example: Required parameter -->
@@ -44,59 +44,54 @@ REFNAME:  Procedural refname goes after the OOP refname.
 
 Procedural synopsis goes after OOP synopsis.
 
-  <para>&style.procedural;</para>
+  <simpara>&style.procedural;</simpara>
   <methodsynopsis role="procedural">
    [Fill in function's parameter details just like in
    function.xml/refentry/refsect1[@role=description]/methodsynopsis]
   </methodsynopsis>
 -->
-  <para>
+  <simpara>
    The function description goes here.
-  </para>
+  </simpara>
  </refsect1>
 
+ <!-- Mandatory -->
  <refsect1 role="parameters">
   &reftitle.parameters;
   <variablelist>
    <varlistentry>
     <term><parameter>firstparameter</parameter></term>
     <listitem>
-     <para>
+     <simpara>
       Its description
-     </para>
+     </simpara>
     </listitem>
    </varlistentry>
    <varlistentry>
     <term><parameter>secondparameter</parameter></term>
     <listitem>
-     <para>
+     <simpara>
       Its description
-     </para>
+     </simpara>
     </listitem>
    </varlistentry>
   </variablelist>
  </refsect1>
 
+ <!-- Mandatory -->
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
-  <para>
-   What this function returns, first on success, then failure.  If simply
-   true on success and false on failure, just use &return.success; here.
-  </para>
+  <simpara>
+   What this function returns, first on success, then failure.
+   If simply true on success and false on failure, just use &return.success; here.
+  </simpara>
  </refsect1>
 
  <refsect1 role="errors">
   &reftitle.errors;
-  <para>
-   When does this function issue E_* level errors, and/or throw exceptions.
-  </para>
- </refsect1>
-
- <refsect1 role="unicode">
-  &reftitle.unicode;
-  <para>
-   Information specific to unicode, from the PHP 6 changes.
-  </para>
+  <simpara>
+   When does this function issue <constant>E_*</constant> level errors, and/or throw exceptions.
+  </simpara>
  </refsect1>
 
  <refsect1 role="changelog">
@@ -125,12 +120,12 @@ Procedural synopsis goes after OOP synopsis.
   &reftitle.examples;
   <example xml:id="classname.methodname.example.basic">
    <title><methodname>ClassName::methodName</methodname> example</title>
-   <para>
+   <simpara>
      Any text that describes the purpose of the example, or what
-     goes on in the example should be here. (Inside the <example> tag, not out).
-   </para>
+     goes on in the example should be here. (Inside the example tag, not out).
+   </simpara>
 <!-- IF OOP & PROCEDURAL
-   <para>&style.oop;</para>
+   <simpara>&style.oop;</simpara>
 -->
    <programlisting role="php">
 <![CDATA[
@@ -151,7 +146,7 @@ same task in both OOP and procedural PHP. Each of these demonstrations
 should be in their own program listings with the appropriate &style.*
 entity above it. The OOP way must be first.
 
-   <para>&style.procedural;</para>
+   <simpara>&style.procedural;</simpara>
    <programlisting role="php">
 <![CDATA[
 <?php
@@ -177,11 +172,11 @@ Use a screen like we did below
  <refsect1 role="notes">
   &reftitle.notes;
   <caution>
-   <para>
+   <simpara>
     Any notes that don't fit anywhere else should go here.
     90% of the time, notes, warnings or cautions are better placed in the
     parameters section. Consider that before using this section!
-   </para>
+   </simpara>
   </caution>
   &note.language-construct;
   &note.not-bin-safe;

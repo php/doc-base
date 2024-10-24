@@ -11,9 +11,9 @@
    {MODIFIERS}{RETURN_TYPE}<methodname>{FULL_METHOD_NAME}</methodname>
    {METHOD_PARAMETERS}
   </constructorsynopsis>
-  <para>
+  <simpara>
 
-  </para>
+  </simpara>
 
   &warn.undocumented.func;
 
@@ -29,9 +29,9 @@
       example, because there's also a procedural version of the method).
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
-  <para>
+  <simpara>
    
-  </para>
+  </simpara>
  </refsect1>
  -->
 

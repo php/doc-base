@@ -5,70 +5,67 @@
 
  <!-- If the extension doesn't define any ini options, use this entity -->
  <!-- &no.config; -->
- <para>
-  <table>
-   <title>Extname &ConfigureOptions;</title>
-   <tgroup cols="4">
-    <thead>
-     <row>
-      <entry>&Name;</entry>
-      <entry>&Default;</entry>
-      <entry>&Changeable;</entry>
-      <entry>&Changelog;</entry>
-     </row>
-    </thead>
-    <tbody>
-     <row>
-      <entry>theini_option</entry>
-      <entry>itsvalue</entry>
-      <entry>its INI_* value</entry>
-      <entry>version changes information</entry>
-     </row>
-     <row>
-      <entry>anotherini_option</entry>
-      <entry>itsvalue</entry>
-      <entry>its INI_* value</entry>
-      <entry></entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
+ <table>
+  <title>Extname &ConfigureOptions;</title>
+  <tgroup cols="4">
+   <thead>
+    <row>
+     <entry>&Name;</entry>
+     <entry>&Default;</entry>
+     <entry>&Changeable;</entry>
+     <entry>&Changelog;</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>theini_option</entry>
+     <entry>itsvalue</entry>
+     <entry>its INI_* value</entry>
+     <entry>version changes information</entry>
+    </row>
+    <row>
+     <entry>anotherini_option</entry>
+     <entry>itsvalue</entry>
+     <entry>its INI_* value</entry>
+     <entry></entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
 
+ <simpara>
   &ini.php.constants;
+ </simpara>
 
- </para>
+ <variablelist>
+  <!-- TODO This entity should be a <title> tag and be inside the <variablelist> tag. -->
+  &ini.descriptions.title;
 
- &ini.descriptions.title;
+  <varlistentry xml:id="ini.extname.theini-option">
+   <term>
+    <parameter>theini_option</parameter>
+    <type>thetype</type>
+   </term>
+   <listitem>
+    <simpara>
+     Fill in the description of theini-option.
+    </simpara>
+   </listitem>
+  </varlistentry>
 
- <para>
-  <variablelist>
+  <varlistentry xml:id="ini.extname.anotherini-option">
+   <term>
+    <parameter>anotherini_option</parameter>
+    <type>thetype</type>
+   </term>
+   <listitem>
+    <simpara>
+     Fill in the description of anotherini-option.
+    </simpara>
+   </listitem>
+  </varlistentry>
 
-   <varlistentry xml:id="ini.extname.theini-option">
-    <term>
-     <parameter>theini_option</parameter>
-     <type>thetype</type>
-    </term>
-    <listitem>
-     <para>
-      Fill in the description of theini-option.
-     </para>
-    </listitem>
-   </varlistentry>
-
-   <varlistentry xml:id="ini.extname.anotherini-option">
-    <term>
-     <parameter>anotherini_option</parameter>
-     <type>thetype</type>
-    </term>
-    <listitem>
-     <para>
-      Fill in the description of anotherini-option.
-     </para>
-    </listitem>
-   </varlistentry>
-
-  </variablelist>
- </para>
+ </variablelist>
 </section>
 <!-- Keep this comment at the end of the file
 Local variables:
