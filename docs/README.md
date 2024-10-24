@@ -8,7 +8,7 @@ actively translated into many languages. This guide is designed for
 people who work on the official PHP documentation.
 
 The manual is built from the documentation using a tool called
-[PhD](http://doc.php.net/phd.php). The [local setup](local-setup.md)
+[PhD](https://doc.php.net/phd.php). The [local setup](local-setup.md)
 chapter explains how to set up a local development environment.
 
 The manual is written to the [DocBook 5.2](https://tdg.docbook.org/tdg/5.2/)

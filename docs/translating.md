@@ -41,7 +41,7 @@ Otherwise, it needs to be synced.
 ## Updating translation of existing file
 Let's assume that you want to update the translation of `password_needs_rehash()`.
 One way to see which files require updating, and what has to be
-changed to sync with the English version, is to use the [doc.php.net tools](http://doc.php.net).
+changed to sync with the English version, is to use the [doc.php.net tools](https://doc.php.net).
 
 Choose your language from the right sidebar and then use the "Outdated files" tool.
 Filter files by directory or username (username used here comes from the `Mantainer`
