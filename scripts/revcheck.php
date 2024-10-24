@@ -442,7 +442,7 @@ function computeTranslatorStatus( $lang, $enFiles, $trFiles ) {
         $info->name = $translator["name"];
         $info->email = $translator["email"];
         $info->nick = $translator["nick"];
-        $info->vcs = $translator["vcs"];
+        $info->vcs = $translator["vcs"] ?? "";
 
         $translatorInfos[$info->nick] = $info;
     }
