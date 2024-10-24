@@ -886,7 +886,7 @@ CAT;
      * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
      */
     echo 'Please use Jing and the:' . PHP_EOL
-        . 'java -jar ./build/jing.jar /path/to/doc-base/docbook/docbook-v5.2-os/rng/docbook.rng /path/to/doc-base/.manual.xml' . PHP_EOL
+        . 'java -jar ./build/jing.jar /path/to/doc-base/docbook/docbook-v5.2-os/rng/docbookxi.rng /path/to/doc-base/.manual.xml' . PHP_EOL
         . 'command to check why the RelaxNG schema failed.' . PHP_EOL;
 
     // Exit normally when don't care about validation
