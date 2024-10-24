@@ -55,7 +55,7 @@ $oldfiles = []; //path, name, size
 
 $enFiles = populateFileTree( 'en' );
 $trFiles = populateFileTree( $lang );
-captureGitValues( 'en'  , $gitData );
+populateGitHashes( 'en'  , $gitData );
 
 computeSyncStatus( $enFiles , $trFiles , $gitData , $lang );
 $translators = computeTranslatorStatus( $lang, $enFiles, $trFiles );
@@ -91,7 +91,6 @@ class FileStatusInfo
     public $name;
     public $size;
     public $hash;
-    public $skip;
     public $days;
     public $adds;
     public $dels;
@@ -280,39 +279,57 @@ function parseRevisionTag( $filename , FileStatusInfo $file )
         $file->credits = '';
 }
 
-function captureGitValues( $lang , & $output )
+function populateGitHashes( $lang , & $output )
 {
+    $hash = "";
+    $cmsg = 0;
+    $sync = true;
+
     $cwd = getcwd();
     chdir( $lang );
     $fp = popen( "git --no-pager log --name-only" , "r" );
-    $hash = $additions = $deletions = $filename = null;
-    $skip = false;
     while ( ( $line = fgets( $fp ) ) !== false )
     {
         if ( substr( $line , 0 , 7 ) == "commit " )
         {
+            // New git log block
             $hash = trim( substr( $line , 7 ) );
-            $skip = false;
+            $cmsg = 0;
+            $sync = true;
             continue;
         }
-        if ( strpos( $line , 'Date:' ) === 0 )
+        if ( $line[0] != ' ' && strpos( $line , ': ' ) > false )
+        {
+            // Named headers
+            if ( str_starts_with( $line , 'Author: ' ) )
+                continue;
+            if ( str_starts_with( $line , 'Date: ' ) )
+                continue;
+            if ( str_starts_with( $line , 'Merge: ' ) )
+                continue;
+            fwrite( STDERR , "Unknown header line: $line\n" );
             continue;
+        }
         if ( trim( $line ) == "" )
             continue;
         if ( substr( $line , 0 , 4 ) == '    ' )
         {
-            if ( stristr( $line, '[skip-revcheck]' ) !== false )
-                $skip = true;
+            // Commit message
+            $cmsg++;
+            if ( str_starts_with( trim( $line ), '[skip-revcheck]' ) && $cmsg == 1 )
+                $sync = false;
             continue;
         }
-        if ( strpos( $line , ': ' ) > 0 )
-            continue;
-        $filename = trim( $line );
-        if ( isset( $output[$filename][$lang] ) )
-            continue;
+        $file = trim( $line );
 
-        $output[$filename][$lang]['hash'] = $hash;
-        $output[$filename][$lang]['skip'] = $skip;
+        // Record the relevant hashes:
+        // - last: the most recent commit hash
+        // - sync: the most recent non-skipped commit hash
+
+        if ( isset( $output[$file][$lang]['last'] ) == false )
+            $output[$file][$lang]['last'] = $hash;
+        if ( isset( $output[$file][$lang]['sync'] ) == false && $sync )
+            $output[$file][$lang]['sync'] = $hash;
     }
     pclose( $fp );
     chdir( $cwd );
@@ -333,62 +350,63 @@ function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
     }
     foreach( $enFiles as $filename => $enFile )
     {
+        $enLast = "";
+        $enSync = "";
         if ( isset( $gitData[ $filename ]['en'] ) )
         {
-            $enFile->hash = $gitData[ $filename ]['en']['hash'];
-            $enFile->skip = $gitData[ $filename ]['en']['skip'];
+            $enLast = $gitData[ $filename ]['en']['last'];
+            $enSync = $gitData[ $filename ]['en']['sync'];
+            $enFile->hash = $enLast;
         }
         else
             print "Warn: No hash for en/$filename<br/>";
 
         $trFile = isset( $trFiles[ $filename ] ) ? $trFiles[ $filename ] : null;
 
-        if ( $trFile == null ) // Untranslated
+        // Untranslated
+        // RevTagProblem
+
+        if ( $trFile == null )
         {
             $enFile->syncStatus = FileStatusEnum::Untranslated;
             continue;
         }
+
         if ( $trFile->syncStatus == FileStatusEnum::RevTagProblem )
+        {
+            $enFile->syncStatus = FileStatusEnum::RevTagProblem;
             continue;
+        }
 
         // TranslatedOk
-        // TranslatedOld
-        if ( strlen( $trFile->hash ) == 40 )
+
+        if ( $trFile->hash == $enLast || $trFile->hash == $enSync )
         {
-            if ( $enFile->hash == $trFile->hash )
-                $trFile->syncStatus = FileStatusEnum::TranslatedOk;
-            else
-            {
-                $trFile->syncStatus = FileStatusEnum::TranslatedOld;
-
-                $cwd = getcwd();
-                chdir( 'en' );
-                //adds,dels
-                $subject = `git diff --numstat $trFile->hash -- {$filename}`;
-                if ( $subject )
-                {
-                   preg_match('/(\d+)\s+(\d+)/', $subject, $matches);
-                   if ($matches)
-                       [, $enFile->adds, $enFile->dels] = $matches;
-                }
-                //days
-                $days = `git show --no-patch --format='%ct' $enFile->hash -- {$filename}`;
-                if ( $days != "" )
-                    $enFile->days = floor( ( time() - $days ) / 86400 );
-                chdir( $cwd );
-
-                if ( $enFile->skip )
-                {
-                    $cwd = getcwd();
-                    chdir( 'en' );
-                    $hashes = explode ( "\n" , `git log -2 --format=%H -- {$filename}` );
-                    chdir( $cwd );
-                    if ( $hashes[1] == $trFile->hash )
-                        $trFile->syncStatus = FileStatusEnum::TranslatedOk;
-                }
-            }
+            $trFile->syncStatus = FileStatusEnum::TranslatedOk;
+            continue;
         }
+
+        // TranslatedOld
         // TranslatedWip
+
+        $trFile->syncStatus = FileStatusEnum::TranslatedOld;
+
+        $cwd = getcwd();
+        chdir( 'en' );
+        //adds,dels
+        $subject = `git diff --numstat $trFile->hash -- {$filename}`;
+        if ( $subject )
+        {
+           preg_match('/(\d+)\s+(\d+)/', $subject, $matches);
+           if ($matches)
+               [, $enFile->adds, $enFile->dels] = $matches;
+        }
+        //days
+        $days = `git show --no-patch --format='%ct' $enFile->hash -- {$filename}`;
+        if ( $days != "" )
+            $enFile->days = floor( ( time() - $days ) / 86400 );
+        chdir( $cwd );
+
         if ( $trFile->completion != null && $trFile->completion != "ready" )
             $trFile->syncStatus = FileStatusEnum::TranslatedWip;
     }
