@@ -877,7 +877,7 @@ CAT;
     exit(0); // Tell the shell that this script finished successfully.
 } else {
     echo "failed.\n";
-    echo "\nThe document didn't validate, ";
+    echo "\nThe document didn't validate\n";
 
     /**
      * TODO: Integrate jing to explain schema violations as libxml is *useless*
@@ -885,9 +885,15 @@ CAT;
      * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
      * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
      */
-    echo 'Please use Jing and the:' . PHP_EOL
-        . 'java -jar ./build/jing.jar /path/to/doc-base/docbook/docbook-v5.2-os/rng/docbookxi.rng /path/to/doc-base/.manual.xml' . PHP_EOL
-        . 'command to check why the RelaxNG schema failed.' . PHP_EOL;
+    $output = shell_exec('java -jar ./docbook/jing.jar ./docbook/docbook-v5.2-os/rng/docbookxi.rng .manual.xml');
+    if ($output === null) {
+        echo "Command failed do you have Java installed?";
+    } else {
+        echo $output;
+    }
+    //echo 'Please use Jing and the:' . PHP_EOL
+    //    . 'java -jar ./build/jing.jar /path/to/doc-base/docbook/docbook-v5.2-os/rng/docbookxi.rng /path/to/doc-base/.manual.xml' . PHP_EOL
+    //    . 'command to check why the RelaxNG schema failed.' . PHP_EOL;
 
     // Exit normally when don't care about validation
     if ($ac["FORCE_DOM_SAVE"] == "yes") {
