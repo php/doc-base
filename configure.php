@@ -885,7 +885,7 @@ CAT;
      * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
      * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
      */
-    $output = shell_exec('java -jar ./docbook/jing.jar ./docbook/docbook-v5.2-os/rng/docbookxi.rng .manual.xml');
+    $output = shell_exec('java -jar ' . $srcdir . '/docbook/jing.jar ' . RNG_SCHEMA_FILE. ' ' . $acd['OUTPUT_FILENAME']);
     if ($output === null) {
         echo "Command failed do you have Java installed?";
     } else {
