@@ -19,16 +19,6 @@
 
 require_once __DIR__ . '/all.php';
 
- enum RevcheckStatus :string
-{
-    case Untranslated      = 'Untranslated';
-    case RevTagProblem     = 'RevTagProblem';
-    case TranslatedOk      = 'TranslatedOk';
-    case TranslatedOld     = 'TranslatedOld';
-    case TranslatedWip     = 'TranslatedWip';
-    case NotInEnTree       = 'NotInEnTree';
-}
-
 class RevcheckFileInfo
 {
     public string $file = ""; // from fs
