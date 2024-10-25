@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE set PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
-"./docbook/docbook-xml/docbook.dtd" [
+<!DOCTYPE PHPDOC [
 
 <!ENTITY % language-defs     SYSTEM "../@LANGDIR@/language-defs.ent">
 <!ENTITY % language-snippets SYSTEM "../@LANGDIR@/language-snippets.ent">
@@ -26,7 +25,7 @@
      en/install/windows/index.xml file to build this file -->
 
 
-<book id="install" lang="en">
+<book xmlns="http://docbook.org/ns/docbook" version="5.2" xml:id="install" xml:lang="en">
 <title>Installation on Windows systems</title>
   <para>
   Installing PHP on modern Microsoft Windows systems and recommended configuration with common web servers.

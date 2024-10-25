@@ -1,9 +1,5 @@
 <?xml version='1.0' encoding='@ENCODING@' ?>
-<!DOCTYPE set PUBLIC "-//OASIS//DTD DocBook XML V5.0//EN"
-"./docbook/docbook-xml/docbook.dtd" [
-
-<!-- $Revision$ -->
-
+<!DOCTYPE PHPDOC [
 <!-- Add translated specific definitions and snippets -->
 @TRANSLATION_ONLY_INCL_BEGIN@
 <!ENTITY % language-defs     SYSTEM "../@LANGDIR@/language-defs.ent">
@@ -37,7 +33,7 @@
 %frontpage.entities;
 ]>
 
-<set xmlns="http://docbook.org/ns/docbook" version="5.0" xml:id="index" xml:lang="@LANG@" xmlns:xlink="http://www.w3.org/1999/xlink">
+<set xmlns="http://docbook.org/ns/docbook" version="5.2" xml:id="index" xml:lang="@LANG@" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>&PHPManual;</title>
  &bookinfo;
 
