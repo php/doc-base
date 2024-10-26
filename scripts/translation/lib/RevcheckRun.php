@@ -27,14 +27,15 @@ class RevcheckRun
     public RevcheckFileList $sourceFiles;
     public RevcheckFileList $targetFiles;
 
-    // Separated lists
     public array $filesOk = [];
     public array $filesOld = [];
     public array $filesRevtagProblem = [];
     public array $filesUntranslated = [];
     public array $filesNotInEn = [];
     public array $filesWip = [];
+
     public array $qaList = [];
+    public RevcheckData $revData;
 
     function __construct( string $sourceDir , string $targetDir , bool $writeResults = true )
     {
@@ -54,14 +55,20 @@ class RevcheckRun
         // match and mix
         $this->calculateStatus();
 
+        // fs output
         if ( $writeResults )
+        {
             QaFileInfo::cacheSave( $this->qaList );
+            $this->saveRevcheckData();
+        }
     }
 
     private function calculateStatus()
     {
+        $this->revData = new RevcheckData;
+
         // All status are marked in source files,
-        // except notinen, that are marked on target.
+        // except NotInEnTree, that are marked on target.
 
         foreach( $this->sourceFiles->iterator() as $source )
         {
@@ -73,6 +80,7 @@ class RevcheckRun
             {
                 $source->status = RevcheckStatus::Untranslated;
                 $this->filesUntranslated[] = $source;
+                $this->addData( $source , null );
                 continue;
             }
 
@@ -82,49 +90,51 @@ class RevcheckRun
             {
                 $source->status = RevcheckStatus::RevTagProblem;
                 $this->filesRevtagProblem[] = $source;
+                $this->addData( $source , null );
                 continue;
             }
 
-            // Translation compares ok from multiple hashs. The head hash or the last non-skiped hash.
+            // Previous code compares uptodate on multiple hashs. The last hash or the last non-skipped hash.
             // See https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L374
             // and https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L392 .
 
-            $sourceHash = $source->head;
+            $sourceHsh1 = $source->head;
+            $sourceHsh2 = $source->diff;
             $targetHash = $target->revtag->revision;
-
-            if ( $targetHash == $source->diff )
-                $sourceHash = $source->diff;
 
             $daysOld = ( strtotime( "now" ) - $source->date ) / 86400;
             $daysOld = (int)$daysOld;
 
-            $qaInfo = new QaFileInfo( $sourceHash , $targetHash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
+            $qaInfo = new QaFileInfo( $sourceHsh1 , $targetHash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
             $this->qaList[ $source->file ] = $qaInfo;
 
             // TranslatedOk
 
-            if ( $target->revtag->status == "ready" && $sourceHash == $targetHash )
+            if ( $target->revtag->status == "ready" && ( $sourceHsh1 == $targetHash || $sourceHsh2 == $targetHash ) )
             {
                 $source->status = RevcheckStatus::TranslatedOk;
                 $this->filesOk[] = $source;
-                continue;
-            }
-
-            GitDiffParser::parseNumstatInto( $this->sourceDir , $source );
-
-            // TranslatedWip
-
-            if ( $target->revtag->status != "ready" )
-            {
-                $source->status = RevcheckStatus::TranslatedWip;
-                $this->filesWip[] = $source;
+                $this->addData( $source , $target->revtag );
                 continue;
             }
 
             // TranslatedOld
+            // TranslatedWip
 
-            $source->status = RevcheckStatus::TranslatedOld;
-            $this->filesOld[] = $source;
+            GitDiffParser::parseNumstatInto( $this->sourceDir , $source );
+
+            if ( $target->revtag->status == "ready" )
+            {
+                $source->status = RevcheckStatus::TranslatedOld;
+                $this->filesOld[] = $source;
+                $this->addData( $source , $target->revtag );
+            }
+            else
+            {
+                $source->status = RevcheckStatus::TranslatedWip;
+                $this->filesWip[] = $source;
+                $this->addData( $source , $target->revtag );
+            }
         }
 
         // NotInEnTree
@@ -136,7 +146,61 @@ class RevcheckRun
             {
                 $target->status = RevcheckStatus::NotInEnTree;
                 $this->filesNotInEn[] = $target;
+                $this->addData( $target );
             }
         }
+    }
+
+    private function addData( RevcheckFileInfo $info , RevtagInfo|null $revtag = null ) : void
+    {
+        $file = new RevcheckDataFile;
+
+        $file->path = dirname( $info->file );
+        $file->name = basename( $info->file );
+        $file->size = $info->size;
+        $file->days = floor( ( time() - $info->date ) / 86400 );
+        $file->status = $info->status;
+        $file->hashLast = $info->head;
+        $file->hashDiff = $info->diff;
+
+        $this->revData->addFile( $info->file , $file );
+
+        if ( $revtag != null )
+        {
+            $translator = $this->revData->getTranslator( $revtag->maintainer );
+
+            switch( $info->status )
+            {
+                case RevcheckStatus::TranslatedOk:
+                    $translator->filesUpdate++;
+                    break;
+                case RevcheckStatus::TranslatedOld:
+                    $translator->filesOld++;
+                    break;
+                default:
+                    $translator->filesWip++;
+                    break;
+            }
+        }
+    }
+
+    private function parseTranslationXml() : void
+    {
+        $xml = XmlUtil::loadFile( $this->targetDir . '/translation.xml' );
+        $persons = $xml->getElementsByTagName( 'person' );
+
+        foreach( $persons as $person )
+        {
+            $nick = $person->getAttribute( 'nick' );
+            $translator = $this->revData->getTranslator( $nick );
+            $translator->name = $person->getAttribute( 'name' );
+            $translator->email = $person->getAttribute( 'email' );
+            $translator->vcs = $person->getAttribute( 'vcs' ) ?? "";
+        }
+    }
+
+    private function saveRevcheckData()
+    {
+        $this->parseTranslationXml();
     }
 }

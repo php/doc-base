@@ -22,24 +22,42 @@
 
 enum RevcheckStatus : string
 {
-    case TranslatedOk   = 'TranslatedOk';
-    case TranslatedOld  = 'TranslatedOld';
-    case TranslatedWip  = 'TranslatedWip';
-    case Untranslated   = 'Untranslated';
-    case RevTagProblem  = 'RevTagProblem';
-    case NotInEnTree    = 'NotInEnTree';
+    case TranslatedOk  = 'TranslatedOk';
+    case TranslatedOld = 'TranslatedOld';
+    case TranslatedWip = 'TranslatedWip';
+    case Untranslated  = 'Untranslated';
+    case RevTagProblem = 'RevTagProblem';
+    case NotInEnTree   = 'NotInEnTree';
 }
 
 class RevcheckData
 {
-    public $translators = array(); // RevcheckDataTranslator
+    public $translators = array(); // nick, RevcheckDataTranslator
     public $fileSummary = array(); // RevcheckStatus, int
-    public $fileDetail  = array(); // RevcheckDataFile
+    public $fileDetail  = array(); // filename, RevcheckDataFile
 
     public function __construct()
     {
         foreach ( RevcheckStatus::cases() as $status )
-            $this->$fileSummary[ $tatus ] = 0;
+            $this->fileSummary[ $status->value ] = 0;
+    }
+
+    public function addFile( string $key , RevcheckDataFile $file )
+    {
+        $this->fileSummary[ $file->status->value ]++;
+        $this->fileDetail[ $key ] = $file;
+    }
+
+    public function getTranslator( string $nick )
+    {
+        $translator = $this->translators[ $nick ] ?? null;
+        if ( $translator == null )
+        {
+            $translator = new RevcheckDataTranslator();
+            $translator->nick = $nick;
+            $this->translators[ $nick ] = $translator;
+        }
+        return $translator;
     }
 }
 
@@ -48,10 +66,11 @@ class RevcheckDataTranslator
     public string $name;
     public string $email;
     public string $nick;
+    public string $vcs;
 
-    public int $filesUpdate;
-    public int $filesOld;
-    public int $filesWip;
+    public int $filesUpdate = 0;
+    public int $filesOld    = 0;
+    public int $filesWip    = 0;
 }
 
 class RevcheckDataFile
@@ -63,6 +82,6 @@ class RevcheckDataFile
 
     public RevcheckStatus $status;
 
-    public string $lastHash; // The most recent commit hash, skipped or not
-    public string $diffHash; // The most recent, non [skip-revcheck] commit hash
+    public string $hashLast; // The most recent commit hash, skipped or not
+    public string $hashDiff; // The most recent, non [skip-revcheck] commit hash
 }
