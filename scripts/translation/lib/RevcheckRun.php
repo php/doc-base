@@ -125,9 +125,18 @@ class RevcheckRun
 
             if ( $target->revtag->status == "ready" )
             {
+                if ( FIXED_SKIP_REVCHECK && $source->diff == "skip" && TestFixedHashMinusTwo( $source->file , $targetHash ) )
+                {
+                    $source->status = RevcheckStatus::TranslatedOk;
+                    $this->filesOk[] = $source;
+                    $this->addData( $source , $target->revtag );
+                }
+                else
+                {
                 $source->status = RevcheckStatus::TranslatedOld;
                 $this->filesOld[] = $source;
                 $this->addData( $source , $target->revtag );
+                }
             }
             else
             {
@@ -203,4 +212,17 @@ class RevcheckRun
     {
         $this->parseTranslationXml();
     }
+}
+
+function TestFixedHashMinusTwo($filename, $hash) :bool
+{
+    assert( FIXED_SKIP_REVCHECK ); // if deleted, delete entire funciont.
+
+    // See mentions of FIXED_SKIP_REVCHECK on all.php for an explanation
+
+    $cwd = getcwd();
+    chdir( 'en' );
+    $hashes = explode ( "\n" , `git log -2 --format=%H -- {$filename}` );
+    chdir( $cwd );
+    return ( $hashes[1] == $hash ); // $trFile->hash
 }
