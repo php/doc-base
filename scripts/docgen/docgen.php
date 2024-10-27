@@ -42,7 +42,6 @@ $TEMPLATE = array(
 /* Default files for extensions */
 $DOC_EXT = array(
 	'book.xml' 	         => 'book.tpl',
-	'book.developer.xml' => 'book.developer.tpl',
 	'setup.xml'          => 'setup.tpl',
 	'constants.xml'      => 'constants.tpl',
 	'configure.xml'      => 'configure.tpl',
@@ -812,13 +811,6 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 				}
 			}
 			$content = preg_replace('/\{VERSIONS\}/', rtrim($markup), $content);
-		break;
-
-		case 'book.developer.xml':
-			if ($OPTION['docbase'] && $OPTION['phpdoc']) {
-				$content = preg_replace('/\{PATH_TO_DOCBASE\}/', $OPTION['docbase'], $content);
-				$content = preg_replace('/\{PATH_TO_DOC\}/', $OPTION['phpdoc'], $content);
-			}
 		break;
 	}
 
