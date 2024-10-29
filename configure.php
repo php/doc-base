@@ -820,7 +820,11 @@ foreach ($xpath->query('//processing-instruction()') as $pi) {
         'phpdoc_error_ValueError_between_changelog' => error_section_value_error_between_changelog(...),
     };
     $data = explode(' ', $pi->data);
-    $node = $fn($dom, ...$data);
+    $raw_xml = $fn(...$data);
+
+    $localDom = new DOMDocument();
+    $localDom->loadXML($raw_xml);
+    $node = $dom->importNode($localDom->documentElement, true);
     $pi->parentNode->insertBefore($node, $pi);
 }
 
