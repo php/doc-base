@@ -798,7 +798,7 @@ if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
 }
 
 echo "Process PI nodes...\n";
-if (!$ac['LANG'] == 'en') {
+if ($ac['LANG'] != 'en') {
     if (file_exists($srcdir . '/pi_processing/langs/' . $ac['LANG'] . '.php')) {
         require_once $srcdir . '/pi_processing/langs/' . $ac['LANG'] . '.php';
     }
@@ -815,7 +815,6 @@ foreach ($xpath->query('//processing-instruction()') as $pi) {
         continue;
     }
 
-    var_dump($pi->target, $pi->data);
     $fn = match ($pi->target) {
         'phpdoc_error_ValueError_between' => error_section_value_error_between(...),
         'phpdoc_error_ValueError_between_changelog' => error_section_value_error_between_changelog(...),
