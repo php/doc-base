@@ -61,7 +61,6 @@
   &install.cloud.index;
   &install.fpm.index;
   &install.pecl;
-  &install.problems;
   &install.ini;
  </book>
 
