@@ -20,6 +20,8 @@
   +----------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/translation/lib/all.php';
+
 if ( $argc != 2 )
 {
     print <<<USAGE
@@ -40,449 +42,34 @@ USAGE;
     exit;
 }
 
-// Initialization
+fwrite( STDERR , "TODO\n" ); // notinen
+fwrite( STDERR , "TODO\n" ); // source|targetDir -> Lang
 
-set_time_limit( 0 );
-
-$root = getcwd();
 $lang = $argv[1];
+fwrite( STDERR , "TODO\n" ); // FAST
+//$data = new RevcheckRun( 'en' , $argv[1] );
+$data = unserialize( file_get_contents ( "FAST" ) );
+$data = $data->revData;
 
-$gitData = []; // filename lang hash
-
-$intro = "No intro available for the {$lang} translation of the manual.";
-
-$oldfiles = []; //path, name, size
-
-$enFiles = populateFileTree( 'en' );
-$trFiles = populateFileTree( $lang );
-captureGitValues( 'en'  , $gitData );
-
-computeSyncStatus( $enFiles , $trFiles , $gitData , $lang );
-$translators = computeTranslatorStatus( $lang, $enFiles, $trFiles );
-
-print_html_all( $enFiles , $trFiles , $translators, $lang );
-
-// Model
-class OldFilesInfo
-{
-    public $path;
-    public $name;
-    public $size;
-
-    public function getKey()
-    {
-        return trim( $this->path . '/' . $this->name , '/' );
-    }
-}
-
-class FileStatusEnum
-{
-    const Untranslated      = 'Untranslated';
-    const RevTagProblem     = 'RevTagProblem';
-    const TranslatedWip     = 'TranslatedWip';
-    const TranslatedOk      = 'TranslatedOk';
-    const TranslatedOld     = 'TranslatedOld';
-    const NotInEnTree       = 'NotInEnTree';
-}
-
-class FileStatusInfo
-{
-    public $path;
-    public $name;
-    public $size;
-    public $hash;
-    public $skip;
-    public $days;
-    public $adds;
-    public $dels;
-    public $syncStatus;
-    public $maintainer;
-    public $completion;
-    public $credits;
-
-    public function getKey()
-    {
-        return trim( $this->path . '/' . $this->name , '/' );
-    }
-}
-
-class TranslatorInfo
-{
-    public $name;
-    public $email;
-    public $nick;
-    public $vcs;
-
-    public $files_uptodate;
-    public $files_outdated;
-    public $files_wip;
-    public $files_sum;
-    public $files_other;
-
-    public function __construct() {
-        $this->files_uptodate = 0;
-        $this->files_outdated = 0;
-        $this->files_wip = 0;
-        $this->files_sum = 0;
-        $this->files_other = 0;
-    }
-
-    public static function getKey( $fileStatus ) {
-        switch ( $fileStatus ) {
-            case FileStatusEnum::RevTagProblem:
-            case FileStatusEnum::TranslatedOld:
-                return "files_outdated";
-                break;
-            case FileStatusEnum::TranslatedWip:
-                return "files_wip";
-                break;
-            case FileStatusEnum::TranslatedOk:
-                return "files_uptodate";
-                break;
-            default:
-                return "files_other";
-        }
-    }
-}
-
-function populateFileTree( $lang )
-{
-    $dir = new \DirectoryIterator( $lang );
-    if ( $dir === false )
-    {
-        print "$lang is not a directory.\n";
-        exit;
-    }
-    $cwd = getcwd();
-    $ret = array();
-    chdir( $lang );
-    populateFileTreeRecurse( $lang , "." , $ret );
-    chdir( $cwd );
-    return $ret;
-}
-
-function populateFileTreeRecurse( $lang , $path , & $output )
-{
-    global $oldfiles;
-    $dir = new DirectoryIterator( $path );
-    if ( $dir === false )
-    {
-        print "$path is not a directory.\n";
-        exit;
-    }
-    $todoPaths = [];
-    $trimPath = ltrim( $path , "./");
-    foreach( $dir as $entry )
-    {
-        $filename = $entry->getFilename();
-        if ( $filename[0] == '.' )
-            continue;
-        if ( substr( $filename , 0 , 9 ) == "entities." )
-            continue;
-        if ( $entry->isDir() )
-        {
-            $todoPaths[] = $path . '/' . $entry->getFilename();
-            continue;
-        }
-        if ( $entry->isFile() )
-        {
-            $ignoredFileNames = [
-                'README.md',
-                'translation.xml',
-                'readme.first',
-                'license.xml',
-                'extensions.xml',
-                'versions.xml',
-                'book.developer.xml',
-                'contributors.ent',
-                'contributors.xml',
-                'README',
-                'DO_NOT_TRANSLATE',
-                'rsusi.txt',
-                'missing-ids.xml',
-            ];
-
-            $ignoredDirectories = [
-                'chmonly',
-            ];
-
-            $ignoredFullPaths = [
-                'appendices/reserved.constants.xml',
-                'appendices/extensions.xml',
-                'reference/datetime/timezones.xml',
-            ];
-
-            if(
-                in_array($trimPath, $ignoredDirectories, true)
-                || in_array($filename, $ignoredFileNames, true)
-                || (strpos($filename, 'entities.') === 0)
-                || !in_array(substr($filename, -3), ['xml','ent'], true)
-                || (substr($filename, -13) === 'PHPEditBackup')
-                || (in_array($trimPath . '/' .$filename, $ignoredFullPaths, true))
-            ) {
-                continue;
-            }
-            $file = new FileStatusInfo;
-            $file->path = $trimPath;
-            $file->name = $filename;
-            $file->size = filesize( $path . '/' . $filename );
-            $file->syncStatus = null;
-            if ( $lang != 'en' )
-            {
-                parseRevisionTag( $entry->getPathname() , $file );
-                $path_en = '../en/' . $trimPath . '/' . $filename;
-                if( !is_file($path_en) ) //notinen
-                {
-                    $oldfile = new OldFilesInfo;
-                    $oldfile->path = $trimPath;
-                    $oldfile->name = $filename;
-                    $oldfile->size = $file->size < 1024 ? 1 : floor( $file->size / 1024 );
-                    $oldfiles[ $oldfile->getKey() ] = $oldfile;
-                 } else {
-                    $output[ $file->getKey() ] = $file;
-                 }
-             } else {
-                 $output[ $file->getKey() ] = $file;
-             }
-         }
-    }
-    sort( $todoPaths );
-    foreach( $todoPaths as $path )
-        populateFileTreeRecurse( $lang , $path , $output );
-}
-
-function parseRevisionTag( $filename , FileStatusInfo $file )
-{
-    $fp = fopen( $filename , "r" );
-    $contents = fread( $fp , 1024 );
-    fclose( $fp );
-
-    // No match before the preg
-    $match = array ();
-
-    $regex = "'<!--\s*EN-Revision:\s*(.+)\s*Maintainer:\s*(.+)\s*Status:\s*(.+)\s*-->'U";
-    if (preg_match ($regex , $contents , $match )) {
-        $file->hash = trim( $match[1] );
-        $file->maintainer = trim( $match[2] );
-        $file->completion = trim( $match[3] );
-    }
-    if ( $file->hash == null or strlen( $file->hash ) != 40 or
-         $file->maintainer == null or
-         $file->completion == null )
-         $file->syncStatus = FileStatusEnum::RevTagProblem;
-
-    $regex = "/<!--\s*CREDITS:\s*(.+)\s*-->/U";
-    $match = array();
-    preg_match ( $regex , $contents , $match );
-    if ( count( $match ) == 2 )
-        $file->credits = str_replace( ' ' , '' , trim( $match[1] ) );
-    else
-        $file->credits = '';
-}
-
-function captureGitValues( $lang , & $output )
-{
-    $cwd = getcwd();
-    chdir( $lang );
-    $fp = popen( "git --no-pager log --name-only" , "r" );
-    $hash = $additions = $deletions = $filename = null;
-    $skip = false;
-    while ( ( $line = fgets( $fp ) ) !== false )
-    {
-        if ( substr( $line , 0 , 7 ) == "commit " )
-        {
-            $hash = trim( substr( $line , 7 ) );
-            $skip = false;
-            continue;
-        }
-        if ( strpos( $line , 'Date:' ) === 0 )
-            continue;
-        if ( trim( $line ) == "" )
-            continue;
-        if ( substr( $line , 0 , 4 ) == '    ' )
-        {
-            if ( stristr( $line, '[skip-revcheck]' ) !== false )
-                $skip = true;
-            continue;
-        }
-        if ( strpos( $line , ': ' ) > 0 )
-            continue;
-        $filename = trim( $line );
-        if ( isset( $output[$filename][$lang] ) )
-            continue;
-
-        $output[$filename][$lang]['hash'] = $hash;
-        $output[$filename][$lang]['skip'] = $skip;
-    }
-    pclose( $fp );
-    chdir( $cwd );
-}
-
-function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
-{
-    foreach( $trFiles as $filename => $trFile )
-    {
-        // notinen
-        $path_en = 'en/' . $trFile->path . '/' . $trFile->name;
-        if( !is_file($path_en) )
-        {
-            $trFile->syncStatus = FileStatusEnum::NotInEnTree;
-            continue;
-        }
-
-    }
-    foreach( $enFiles as $filename => $enFile )
-    {
-        if ( isset( $gitData[ $filename ]['en'] ) )
-        {
-            $enFile->hash = $gitData[ $filename ]['en']['hash'];
-            $enFile->skip = $gitData[ $filename ]['en']['skip'];
-        }
-        else
-            print "Warn: No hash for en/$filename<br/>";
-
-        $trFile = isset( $trFiles[ $filename ] ) ? $trFiles[ $filename ] : null;
-
-        if ( $trFile == null ) // Untranslated
-        {
-            $enFile->syncStatus = FileStatusEnum::Untranslated;
-            continue;
-        }
-        if ( $trFile->syncStatus == FileStatusEnum::RevTagProblem )
-            continue;
-
-        // TranslatedOk
-        // TranslatedOld
-        if ( strlen( $trFile->hash ) == 40 )
-        {
-            if ( $enFile->hash == $trFile->hash )
-                $trFile->syncStatus = FileStatusEnum::TranslatedOk;
-            else
-            {
-                $trFile->syncStatus = FileStatusEnum::TranslatedOld;
-
-                $cwd = getcwd();
-                chdir( 'en' );
-                //adds,dels
-                $subject = `git diff --numstat $trFile->hash -- {$filename}`;
-                if ( $subject )
-                {
-                   preg_match('/(\d+)\s+(\d+)/', $subject, $matches);
-                   if ($matches)
-                       [, $enFile->adds, $enFile->dels] = $matches;
-                }
-                //days
-                $days = `git show --no-patch --format='%ct' $enFile->hash -- {$filename}`;
-                if ( $days != "" )
-                    $enFile->days = floor( ( time() - $days ) / 86400 );
-                chdir( $cwd );
-
-                if ( $enFile->skip )
-                {
-                    $cwd = getcwd();
-                    chdir( 'en' );
-                    $hashes = explode ( "\n" , `git log -2 --format=%H -- {$filename}` );
-                    chdir( $cwd );
-                    if ( $hashes[1] == $trFile->hash )
-                        $trFile->syncStatus = FileStatusEnum::TranslatedOk;
-                }
-            }
-        }
-        // TranslatedWip
-        if ( $trFile->completion != null && $trFile->completion != "ready" )
-            $trFile->syncStatus = FileStatusEnum::TranslatedWip;
-    }
-}
-
-function parse_attr_string ( $tags_attrs ) {
-    $tag_attrs_processed = array();
-
-    foreach($tags_attrs as $attrib_list) {
-        preg_match_all("!(.+)=\\s*([\"'])\\s*(.+)\\2!U", $attrib_list, $attribs);
-
-        $attrib_array = array();
-        foreach ($attribs[1] as $num => $attrname) {
-            $attrib_array[trim($attrname)] = trim($attribs[3][$num]);
-        }
-
-        $tag_attrs_processed[] = $attrib_array;
-    }
-
-    return $tag_attrs_processed;
-}
-
-function computeTranslatorStatus( $lang, $enFiles, $trFiles ) {
-    global $intro;
-    $translation_xml = getcwd() . "/" . $lang . "/translation.xml";
-    if (!file_exists($translation_xml)) {
-        return [];
-    }
-
-    $txml = join("", file($translation_xml));
-    $txml = preg_replace("/\\s+/", " ", $txml);
-
-    preg_match("!<intro>(.+)</intro>!s", $txml, $match);
-    $intro = trim($match[1]);
-
-    preg_match("!<\?xml(.+)\?>!U", $txml, $match);
-    $xmlinfo = parse_attr_string($match);
-    $output_charset = $xmlinfo[1]["encoding"];
-
-    $pattern = "!<person(.+)/\\s?>!U";
-    preg_match_all($pattern, $txml, $matches);
-    $translators = parse_attr_string($matches[1]);
-
-    $translatorInfos = [];
-    $unknownInfo = new TranslatorInfo();
-    $unknownInfo->nick = "unknown";
-    $translatorInfos["unknown"] = $unknownInfo;
-
-    foreach ($translators as $key => $translator) {
-        $info = new TranslatorInfo();
-        $info->name = $translator["name"];
-        $info->email = $translator["email"];
-        $info->nick = $translator["nick"];
-        $info->vcs = $translator["vcs"] ?? "";
-
-        $translatorInfos[$info->nick] = $info;
-    }
-
-    foreach( $enFiles as $key => $enFile ) {
-        $info_exists = false;
-        if (array_key_exists($enFile->getKey(), $trFiles)) {
-            $trFile = $trFiles[$enFile->getKey()];
-            $statusKey = TranslatorInfo::getKey($trFile->syncStatus);
-            if (array_key_exists($trFile->maintainer, $translatorInfos)) {
-                $translatorInfos[$trFile->maintainer]->$statusKey++;
-                $translatorInfos[$trFile->maintainer]->files_sum++;
-                $info_exists = true;
-            }
-        }
-        if (!$info_exists) {
-            $translatorInfos["unknown"]->$statusKey++;
-            $translatorInfos["unknown"]->files_sum++;
-        }
-    }
-
-    return $translatorInfos;
-}
+print_html_all( $data );
 
 // Output
 
-function print_html_all( $enFiles , $trFiles , $translators , $lang )
+function print_html_all( $data )
 {
-    print_html_header( $lang );
-    print_html_translators($translators , $enFiles, $trFiles);
-    print_html_files( $enFiles , $trFiles , $lang );
-    print_html_notinen();
-    print_html_misstags( $enFiles, $trFiles, $lang );
-    print_html_untranslated( $enFiles );
-    print_html_footer();
+    print_html_header( $data );
+    //print_html_translators($translators , $enFiles, $trFiles);
+    //print_html_files( $enFiles , $trFiles , $lang );
+    //print_html_notinen();
+    //print_html_misstags( $enFiles, $trFiles, $lang );
+    //print_html_untranslated( $enFiles );
+    //print_html_footer();
 }
 
-function print_html_header( $lang )
+function print_html_header( $data )
 {
-    $date = date("r");
+    $lang = $data->lang;
+    $date = $data->date;
     print <<<HTML
 <!DOCTYPE html>
 <html lang="en">
@@ -512,15 +99,12 @@ td { padding: 0.2em 0.3em; }
 <h1 style="margin: 0; padding: 0.5em;">Status of the translated PHP Manual</h1>
 <p style="font-size: small; margin: 0; padding: 1em;">Generated: $date / Language: $lang</p>
 </div>
-
 HTML;
 }
-
 
 function print_html_menu($href)
 {
     print <<<HTML
-
 <a id="$href"/>
 <p><a href="#intro">Introduction</a>
 | <a href="#translators">Translators</a>
