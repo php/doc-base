@@ -53,6 +53,7 @@ class RevcheckRun
         RevtagParser::parseInto( $targetDir , $this->targetFiles );
 
         // match and mix
+        $this->parseTranslationXml();
         $this->calculateStatus();
 
         // fs output
@@ -65,12 +66,9 @@ class RevcheckRun
 
     private function calculateStatus()
     {
-        $this->revData = new RevcheckData;
-        $this->revData->lang = $this->targetDir;
-        $this->revData->date = date("r");
-
-        // All status are marked in source files,
-        // except NotInEnTree, that are marked on target.
+        // Most of status are marked $sourceFiles,
+        // except NotInEnTree, that are marked on $targetFiles.
+        // $revData contains all status
 
         foreach( $this->sourceFiles->iterator() as $source )
         {
@@ -197,6 +195,10 @@ class RevcheckRun
 
     private function parseTranslationXml() : void
     {
+        $this->revData = new RevcheckData;
+        $this->revData->lang = $this->targetDir;
+        $this->revData->date = date("r");
+
         $xml = XmlUtil::loadFile( $this->targetDir . '/translation.xml' );
 
         $this->revData->intro =
@@ -216,7 +218,6 @@ class RevcheckRun
 
     private function saveRevcheckData()
     {
-        $this->parseTranslationXml();
         $json = json_encode( $this->revData , JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
         file_put_contents( __DIR__ . "/../../../.revcheck.json" , $json );
     }

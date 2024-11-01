@@ -48,6 +48,13 @@ fwrite( STDERR , "TODO\n" ); // source|targetDir -> Lang
 $lang = $argv[1];
 fwrite( STDERR , "TODO\n" ); // FAST
 //$data = new RevcheckRun( 'en' , $argv[1] );
+
+fwrite( STDERR , "TODO\n" ); // FAST
+if ( ! file_exists( "FAST" ) )
+{
+    $data = new RevcheckRun( 'en' , $argv[1] );
+    file_put_contents( "FAST" , serialize( $data ) );
+}
 $data = unserialize( file_get_contents ( "FAST" ) );
 $data = $data->revData;
 
@@ -58,7 +65,7 @@ print_html_all( $data );
 function print_html_all( $data )
 {
     print_html_header( $data );
-    //print_html_translators($translators , $enFiles, $trFiles);
+    print_html_translators( $data );
     //print_html_files( $enFiles , $trFiles , $lang );
     //print_html_notinen();
     //print_html_misstags( $enFiles, $trFiles, $lang );
@@ -117,14 +124,16 @@ function print_html_menu($href)
 HTML;
 }
 
-function print_html_translators( $translators , $enFiles, $trFiles )
+function print_html_translators( $data )
 {
-    global $intro, $oldfiles, $files_misstags, $notinen_count, $files_untranslated;
-    if (count($translators) === 0) return;
+    $translators = $data->translators;
+    if ( count( $translators ) == 0 )
+        return;
+
     print_html_menu("intro");
     print <<<HTML
 <table class="c">
- <tr><td>$intro</td></tr>
+ <tr><td>{$data->intro}</td></tr>
 </table>
 <p/>
 <table class="c">
@@ -136,83 +145,44 @@ function print_html_translators( $translators , $enFiles, $trFiles )
     <th colspan=4>Files maintained</th>
   </tr>
   <tr>
-    <th>upto-<br>date</th>
+    <th>upd</th>
     <th>old</th>
     <th>wip</th>
     <th>sum</th>
   </tr>
 HTML;
-    $files_uptodate = 0;
-    $files_outdated = 0;
-    $files_wip = 0;
-    $files_sum = 0;
 
-    foreach( $translators as $key => $person )
+    $totalOk = 0;
+    $totalOld = 0;
+    $totalWip = 0;
+
+    foreach( $translators as $person )
     {
-        if ($person->nick === "unknown") continue;
+        // Unknown or untracked on translations.xml
+        if ( $person->name == "" && $person->email == "" && $person->vcs == "" )
+            continue;
 
-       $files_uptodate += $person->files_uptodate;
-       $files_outdated += $person->files_outdated;
-       $files_wip += $person->files_wip;
-       $files_sum += $person->files_sum;
+        $totalOk  += $person->filesUpdate;
+        $totalOld += $person->filesOld;
+        $totalWip += $person->filesWip;
+
+        $personSum = $person->filesUpdate + $person->filesOld + $person->filesWip;
+
         print <<<HTML
-
 <tr>
   <td>{$person->name}</td>
   <td>{$person->email}</td>
   <td>{$person->nick}</td>
   <td class=c>{$person->vcs}</td>
-
-  <td class=c>{$person->files_uptodate}</td>
-  <td class=c>{$person->files_outdated}</td>
-  <td class=c>{$person->files_wip}</td>
-  <td class=c>{$person->files_sum}</td>
+  <td class=c>{$person->filesUpdate}</td>
+  <td class=c>{$person->filesOld}</td>
+  <td class=c>{$person->filesWip}</td>
+  <td class=c>{$personSum}</td>
 </tr>
-
 HTML;
-
     }
     print "</table>\n";
 
-//FILE SUMMARY
-    $count = 0;
-    $files_outdated = 0;
-    $files_sum = 0;
-    $files_uptodate = 0;
-    $files_misstags = 0;
-    $files_wip = 0;
-    foreach( $trFiles as $key => $tr )
-    {
-        if ( $tr->syncStatus == FileStatusEnum::TranslatedOld )
-            $files_outdated++;
-        if ( $tr->syncStatus == FileStatusEnum::TranslatedOk )
-            $files_uptodate++;
-        if ( $tr->syncStatus == FileStatusEnum::RevTagProblem )
-            $files_misstags++;
-        if ( $tr->syncStatus == FileStatusEnum::TranslatedWip )
-            $files_wip++;
-    }
-    $files_untranslated = 0;
-    foreach( $enFiles as $key => $en )
-    {
-        if ( $en->syncStatus == FileStatusEnum::Untranslated ) {
-            $files_untranslated++;
-        }
-        $count++;
-    }
-    $notinen_count = 0;
-    foreach( $oldfiles as $key => $en )
-    {
-        if ( $key == "{$en->path}/{$en->name}" ) {
-            $notinen_count++;
-        }
-    }
-    $files_uptodate_percent = number_format($files_uptodate * 100 / $count, 2 );
-    $files_outdated_percent = number_format($files_outdated * 100 / $count, 2 );
-    $files_wip_percent = number_format($files_wip * 100 / $count, 2 );
-    $files_untranslated_percent = number_format($files_untranslated * 100 / $count, 2 );
-    $notinen_count_percent = number_format($notinen_count * 100 / $count, 2 );
-    $files_misstags_percent = number_format($files_misstags * 100 / $count, 2 );
     print_html_menu("filesummary");
     print <<<HTML
 <table class="c">
@@ -221,41 +191,41 @@ HTML;
   <th>Number of files</th>
   <th>Percent of files</th>
 </tr>
+HTML;
+
+    $filesTotal = 0;
+    foreach ( $data->fileSummary as $count )
+        $filesTotal += $count;
+
+    foreach( RevcheckStatus::cases() as $key )
+    {
+        $label = "";
+        $count = $data->fileSummary[ $key->value ];
+        $perc = number_format( $count / $filesTotal * 100 , 2 ) . "%";
+        switch( $key )
+        {
+            case RevcheckStatus::TranslatedOk:  $label = "Up to date files"; break;
+            case RevcheckStatus::TranslatedOld: $label = "Outdated files"; break;
+            case RevcheckStatus::TranslatedWip: $label = "Work in progress"; break;
+            case RevcheckStatus::RevTagProblem: $label = "Revision tag missing/problem"; break;
+            case RevcheckStatus::NotInEnTree:   $label = "Not in EN tree"; break;
+            case RevcheckStatus::Untranslated:  $label = "Available for translation"; break;
+        }
+
+        print <<<HTML
 <tr>
-  <td>Up to date files</td>
-  <td>$files_uptodate</td>
-  <td>$files_uptodate_percent%</td>
+  <td>$label</td>
+  <td>$count</td>
+  <td>$perc</td>
 </tr>
+HTML;
+    }
+        print <<<HTML
 <tr>
-  <td>Outdated files</td>
-  <td>$files_outdated</td>
-  <td>$files_outdated_percent%</td>
+  <td><b>$label</b></td>
+  <td><b>$count</b></td>
+  <td><b>$perc</b></td>
 </tr>
-<tr>
-  <td>Work in progress</td>
-  <td>$files_wip</td>
-  <td>$files_wip_percent%</td>
-</tr>
-<tr>
-  <td>Files without revision number</td>
-  <td>$files_misstags</td>
-  <td>$files_misstags_percent%</td>
-</tr>
-<tr>
-  <td>Not in EN tree</td>
-  <td>$notinen_count</td>
-  <td>$notinen_count_percent%</td>
-</tr>
-<tr>
-  <td>Files available for translation</td>
-  <td>$files_untranslated</td>
-  <td>$files_untranslated_percent%</td>
-</tr>
-<tr>
-  <td class=b>Files total</td>
-  <td class=b>$count</td>
-  <td class=b>100%</td>
-</tr></table><p/>
 HTML;
 }
 

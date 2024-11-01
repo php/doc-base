@@ -25,9 +25,9 @@ enum RevcheckStatus : string
     case TranslatedOk  = 'TranslatedOk';
     case TranslatedOld = 'TranslatedOld';
     case TranslatedWip = 'TranslatedWip';
-    case Untranslated  = 'Untranslated';
     case RevTagProblem = 'RevTagProblem';
     case NotInEnTree   = 'NotInEnTree';
+    case Untranslated  = 'Untranslated';
 }
 
 class RevcheckData
@@ -66,10 +66,10 @@ class RevcheckData
 
 class RevcheckDataTranslator
 {
-    public string $name;
-    public string $email;
-    public string $nick;
-    public string $vcs;
+    public string $name  = "";
+    public string $email = "";
+    public string $nick  = "";
+    public string $vcs   = "";
 
     public int $filesUpdate = 0;
     public int $filesOld    = 0;
