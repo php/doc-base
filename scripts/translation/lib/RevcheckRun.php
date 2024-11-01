@@ -37,7 +37,7 @@ class RevcheckRun
     public array $qaList = [];
     public RevcheckData $revData;
 
-    function __construct( string $sourceDir , string $targetDir , bool $writeResults = true )
+    function __construct( string $sourceDir , string $targetDir , bool $writeResults = false )
     {
         $this->sourceDir = $sourceDir;
         $this->targetDir = $targetDir;
@@ -66,6 +66,8 @@ class RevcheckRun
     private function calculateStatus()
     {
         $this->revData = new RevcheckData;
+        $this->revData->lang = $this->targetDir;
+        $this->revData->date = date("r");
 
         // All status are marked in source files,
         // except NotInEnTree, that are marked on target.
@@ -133,9 +135,9 @@ class RevcheckRun
                 }
                 else
                 {
-                $source->status = RevcheckStatus::TranslatedOld;
-                $this->filesOld[] = $source;
-                $this->addData( $source , $target->revtag );
+                    $source->status = RevcheckStatus::TranslatedOld;
+                    $this->filesOld[] = $source;
+                    $this->addData( $source , $target->revtag );
                 }
             }
             else
@@ -196,8 +198,12 @@ class RevcheckRun
     private function parseTranslationXml() : void
     {
         $xml = XmlUtil::loadFile( $this->targetDir . '/translation.xml' );
-        $persons = $xml->getElementsByTagName( 'person' );
 
+        $this->revData->intro =
+            $xml->getElementsByTagName( 'intro' )[0]->textContent
+            ?? "No intro available for the {$lang} translation of the manual.";
+
+        $persons = $xml->getElementsByTagName( 'person' );
         foreach( $persons as $person )
         {
             $nick = $person->getAttribute( 'nick' );
@@ -211,6 +217,8 @@ class RevcheckRun
     private function saveRevcheckData()
     {
         $this->parseTranslationXml();
+        $json = json_encode( $this->revData , JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+        file_put_contents( __DIR__ . "/../../../.revcheck.json" , $json );
     }
 }
 

@@ -32,9 +32,12 @@ enum RevcheckStatus : string
 
 class RevcheckData
 {
-    public $translators = array(); // nick, RevcheckDataTranslator
-    public $fileSummary = array(); // RevcheckStatus, int
-    public $fileDetail  = array(); // filename, RevcheckDataFile
+    public string $lang = "";
+    public string $date = "";
+    public string $intro = "";
+    public $translators  = array(); // nick => RevcheckDataTranslator
+    public $fileSummary  = array(); // RevcheckStatus => int
+    public $fileDetail   = array(); // filename => RevcheckDataFile
 
     public function __construct()
     {
