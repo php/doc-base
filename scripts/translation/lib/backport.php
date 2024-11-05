@@ -31,7 +31,10 @@ changed to "misc", and so any status other than "ok" and "old"
 was added here.
 
 Also, NotInEnTree is missing on first case, and files
-in this situation goes uncounted... */
+in this situation goes uncounted...
+
+Also, RevTagProblem is counted towards as Old, but it
+is impossible to generate diffs with invalid hashes... */
 
 assert( STATUS_COUNT_MISMATCH || ! STATUS_COUNT_MISMATCH );
 

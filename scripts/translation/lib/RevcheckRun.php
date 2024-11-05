@@ -90,7 +90,7 @@ class RevcheckRun
             {
                 $source->status = RevcheckStatus::RevTagProblem;
                 $this->filesRevtagProblem[] = $source;
-                $this->addData( $source , null );
+                $this->addData( $source , $target->revtag );
                 continue;
             }
 
@@ -184,20 +184,27 @@ class RevcheckRun
 
             switch( $info->status )
             {
-                case RevcheckStatus::TranslatedOk:
+                case RevcheckStatus::TranslatedOk:  // ready and synced
                     $translator->countOk++;
                     break;
-                case RevcheckStatus::TranslatedOld:
+                case RevcheckStatus::TranslatedOld: // ready and outdated
                     $translator->countOld++;
                     break;
-//              default:                            // STATUS_COUNT_MISMATCH correct
-//                  $translator->countOther++;
-                case RevcheckStatus::NotInEnTree:   // STATUS_COUNT_MISMATCH backported behaviour
+                // STATUS_COUNT_MISMATCH count correct
+                // default:                            // all other cases
+                //     $translator->countOther++;
+
+                // STATUS_COUNT_MISMATCH backported behaviour
+                case RevcheckStatus::RevTagProblem:     // STATUS_COUNT_MISMATCH backported behaviour
+                    $translator->countOld++;            // RevTagProblem into Old (generated diff link fails)
                     break;
-                default:                            // STATUS_COUNT_MISMATCH backported behaviour
-                    if ( $revtag->status != "ready" );
-                        $translator->countOther++;
+                case RevcheckStatus::NotInEnTree:       // STATUS_COUNT_MISMATCH backported behaviour
+                    break;                              // Not counted, but files are listed anyways...
+                default:
+                    if ( $revtag->status != "ready" );  // STATUS_COUNT_MISMATCH backported behaviour
+                        $translator->countOther++;      // The exception of all cases, and also not ready.
                     break;
+                // STATUS_COUNT_MISMATCH backported behaviour
             }
         }
     }
