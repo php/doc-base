@@ -155,7 +155,7 @@ class RevcheckRun
             {
                 $target->status = RevcheckStatus::NotInEnTree;
                 $this->filesNotInEn[] = $target;
-                $this->addData( $target );
+                $this->addData( $target , $target->revtag );
             }
         }
     }
@@ -185,13 +185,18 @@ class RevcheckRun
             switch( $info->status )
             {
                 case RevcheckStatus::TranslatedOk:
-                    $translator->filesUpdate++;
+                    $translator->countOk++;
                     break;
                 case RevcheckStatus::TranslatedOld:
-                    $translator->filesOld++;
+                    $translator->countOld++;
                     break;
-                default:
-                    $translator->filesWip++;
+//              default:                            // STATUS_COUNT_MISMATCH correct
+//                  $translator->countOther++;
+                case RevcheckStatus::NotInEnTree:   // STATUS_COUNT_MISMATCH backported behaviour
+                    break;
+                default:                            // STATUS_COUNT_MISMATCH backported behaviour
+                    if ( $revtag->status != "ready" );
+                        $translator->countOther++;
                     break;
             }
         }

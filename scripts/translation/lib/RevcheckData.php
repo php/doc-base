@@ -71,9 +71,9 @@ class RevcheckDataTranslator
     public string $nick  = "";
     public string $vcs   = "";
 
-    public int $filesUpdate = 0;
-    public int $filesOld    = 0;
-    public int $filesWip    = 0;
+    public int $countOk    = 0;
+    public int $countOld   = 0;
+    public int $countOther = 0;
 }
 
 class RevcheckDataFile

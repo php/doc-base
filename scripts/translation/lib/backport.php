@@ -28,7 +28,10 @@ This causes a mismatchs between translators totals and file summary.
 
 To make the mismatch smaller, the "wip" column in Translators was
 changed to "misc", and so any status other than "ok" and "old"
-was added here. */
+was added here.
+
+Also, NotInEnTree is missing on first case, and files
+in this situation goes uncounted... */
 
 assert( STATUS_COUNT_MISMATCH || ! STATUS_COUNT_MISMATCH );
 

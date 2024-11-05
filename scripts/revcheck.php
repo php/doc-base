@@ -47,8 +47,9 @@ fwrite( STDERR , "TODO\n" ); // source|targetDir -> Lang
 
 $lang = $argv[1];
 fwrite( STDERR , "TODO\n" ); // FAST
-//$data = new RevcheckRun( 'en' , $argv[1] );
+//$data = new RevcheckRun( 'en' , $argv[1] )->revData;
 
+//TODO remove start
 fwrite( STDERR , "TODO\n" ); // FAST
 if ( ! file_exists( "FAST" ) )
 {
@@ -57,7 +58,9 @@ if ( ! file_exists( "FAST" ) )
 }
 $data = unserialize( file_get_contents ( "FAST" ) );
 $data = $data->revData;
+//TODO remove end
 
+//print_debug_list( $data ); die();
 print_html_all( $data );
 
 // Output
@@ -145,9 +148,9 @@ function print_html_translators( RevcheckData $data )
     <th colspan=4>Files maintained</th>
   </tr>
   <tr>
-    <th>upd</th>
+    <th>upto-<br/>date</th>   <!-- STATUS_COUNT_MISMATCH <th>ok</th> -->
     <th>old</th>
-    <th>wip</th>
+    <th>wip</th>              <!-- STATUS_COUNT_MISMATCH <th>misc</th> -->
     <th>sum</th>
   </tr>
 HTML;
@@ -158,7 +161,7 @@ HTML;
         if ( $person->name == "" && $person->email == "" && $person->vcs == "" )
             continue;
 
-        $personSum = $person->filesUpdate + $person->filesOld + $person->filesWip;
+        $personSum = $person->countOk + $person->countOld + $person->countOther;
 
         print <<<HTML
 <tr>
@@ -166,9 +169,9 @@ HTML;
   <td>{$person->email}</td>
   <td>{$person->nick}</td>
   <td class=c>{$person->vcs}</td>
-  <td class=c>{$person->filesUpdate}</td>
-  <td class=c>{$person->filesOld}</td>
-  <td class=c>{$person->filesWip}</td>
+  <td class=c>{$person->countOk}</td>
+  <td class=c>{$person->countOld}</td>
+  <td class=c>{$person->countOther}</td>
   <td class=c>{$personSum}</td>
 </tr>
 HTML;
@@ -254,7 +257,6 @@ HTML;
 
     $now = new DateTime( 'now' );
     $path = null;
-    asort( $data->fileDetail );
 
     foreach( $data->fileDetail as $key => $file )
     {
@@ -449,4 +451,13 @@ HTML;
          }
 print "</table><p/>";
     }
+}
+
+
+
+function print_debug_list( RevcheckData $data )
+{
+    foreach( $data->fileDetail as $key => $file )
+        print "f:$key m:{$file->maintainer} s:{$file->status->value}\n";
+    die();
 }
