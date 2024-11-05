@@ -70,10 +70,10 @@ function print_html_all( RevcheckData $data )
     print_html_header( $data );
     print_html_translators( $data );
     print_html_oldwip( $data );
-    //print_html_notinen();
-    //print_html_misstags( $enFiles, $trFiles, $lang );
-    //print_html_untranslated( $enFiles );
-    //print_html_footer();
+    print_html_notinen( $data );
+    print_html_revtag( $data );
+    print_html_untranslated( $data );
+    print_html_footer();
 }
 
 function print_html_header( RevcheckData $data )
@@ -121,7 +121,7 @@ function print_html_menu( string $href )
 | <a href="#filesummary">File summary</a>
 | <a href="#files">Outdated Files</a>
 | <a href="#notinen">Not in EN tree</a>
-| <a href="#misstags">Missing revision numbers</a>
+| <a href="#revtag">Missing or invalid revtag</a>
 | <a href="#untranslated">Untranslated files</a>
 </p><p/>
 HTML;
@@ -232,7 +232,6 @@ function print_html_oldwip( RevcheckData $data )
 
     $total =  $data->fileSummary[ RevcheckStatus::TranslatedOld->value ];
     $total += $data->fileSummary[ RevcheckStatus::TranslatedWip->value ];
-    $total += $data->fileSummary[ RevcheckStatus::RevTagProblem->value ];
     if ( $total == 0 )
     {
         print "<p>Hooray! There is no files to update, nice work!</p>\n\n";
@@ -264,7 +263,6 @@ HTML;
         {
             case RevcheckStatus::TranslatedOld:
             case RevcheckStatus::TranslatedWip:
-            case RevcheckStatus::RevTagProblem:
                 break;
             default:
                 continue 2;
@@ -285,8 +283,6 @@ HTML;
         $d2 = "https://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$file->hashRvtg}&amp;f=$key&amp;c=on";
 
         $nm = "<a href='$d1'>{$file->name}</a> <a href='$d2'>[colored]</a>";
-        if ( $file->status == RevcheckStatus::RevTagProblem ) // $file->hashRvtg empty or invalid
-            $nm = $file->name;
         $h1 = "<a href='https://github.com/php/doc-en/blob/{$file->hashLast}/$key'>{$file->hashLast}</a>";
         $h2 = "<a href='https://github.com/php/doc-en/blob/{$file->hashRvtg}/$key'>{$file->hashRvtg}</a>";
 
@@ -317,86 +313,129 @@ HTML;
     print "</table><p/>\n\n";
 }
 
-function print_html_misstags( $enFiles, $trFiles, $lang )
+function print_html_notinen( RevcheckData $data )
 {
-    print_html_menu("misstags");
+    print_html_menu("notinen");
 
-    GLOBAL $files_misstags;
-    if ($files_misstags == 0)
+    if ( $data->fileSummary[ RevcheckStatus::TranslatedWip->value ] == 0 )
     {
-        echo '<p>Good, all files contain revision numbers.</p>';
-    } else {
-        print <<<HTML
-<table class="c">
-<tr>
- <th rowspan="2">Files without EN-Revision number ($files_misstags files)</th>
- <th rowspan="2">Commit hash</th>
- <th colspan="3">Sizes in kB</th>
-</tr>
-<tr><th>en</th><th>$lang</th><th>diff</th></tr>
-HTML;
-
-        $last_path = null;
-        asort($trFiles);
-        foreach ($trFiles as $key => $tr)
-        {
-            if ( $tr->syncStatus != FileStatusEnum::RevTagProblem )
-               continue;
-
-            $en = $enFiles[ $key ];
-
-            if ( $last_path != $tr->path )
-            {
-                 $path = $tr->path == '' ? '/' : $tr->path;
-                 echo "<tr><th colspan='5'>$path</th></tr>";
-                 $last_path = $tr->path;
-            }
-             $diff = intval($en->size - $tr->size);
-             echo "<tr class='bgorange'><td>{$tr->name}</td><td>{$en->hash}</td><td>{$en->size}</td><td>{$tr->size}</td><td>$diff</td></tr>";
-        }
-        echo '</table>';
+        print "<p>Hooray! There is no files to update, nice work!</p>\n\n";
+        return;
     }
-}
 
-function print_html_untranslated($enFiles)
-{
-    global $files_untranslated;
-    $exists = false;
-    if (!$files_untranslated) return;
-    print_html_menu("untranslated");
     print <<<HTML
 <table class="c">
  <tr>
-  <th>Untranslated files ($files_untranslated files):</th>
-  <th>Commit hash</th>
+  <th> Files which is not present in source tree </th>
+  <th> Size kB </th>
+ </tr>
+HTML;
+    $header = null;
+    foreach ( $data->fileDetail as $file )
+    {
+        if ( $file->status != RevcheckStatus::NotInEnTree )
+            continue;
+
+        if ( $header !== $file->path )
+        {
+            $header = $file->path;
+            print " <tr><th colspan='2'>/$header</th></tr>";
+        }
+
+        $name = $file->name;
+        $size = round( $file->size / 1024 );
+
+        print <<<HTML
+ <tr class=bggray>
+  <td class="c">{$name}</td>
+  <td class="c">{$size}</td>
+ </tr>
+HTML;
+    }
+
+    print "</table><p/>\n\n";
+}
+
+function print_html_revtag( RevcheckData $data )
+{
+    print_html_menu("revtag");
+    if ( $data->fileSummary[ RevcheckStatus::RevTagProblem->value ] == 0 )
+    {
+        echo "<p>Good, all files contain valid revtags.</p>\n\n";
+        return;
+    }
+
+    echo <<<HTML
+<table class="c">
+<tr>
+ <th> Files with invalid or missing revision tags </th>
+ <th> Size kB </th>
+</tr>
+HTML;
+
+    $last_path = null;
+    foreach ( $data->fileDetail as $file )
+    {
+        if ( $file->status != RevcheckStatus::RevTagProblem )
+            continue;
+
+        if ( $last_path != $file->path )
+        {
+            $path = $file->path == '' ? '/' : $file->path;
+            echo "<tr><th colspan='2'>$path</th></tr>";
+            $last_path = $file->path;
+        }
+        $size = round( $file->size / 1024 );
+        echo "<tr class='bgorange'><td>{$file->name}</td><td>{$size}</td></tr>";
+    }
+    echo '</table>';
+}
+
+function print_html_untranslated( RevcheckData $data )
+{
+    print_html_menu("untranslated");
+    if ( $data->fileSummary[ RevcheckStatus::Untranslated->value ] == 0 )
+    {
+        echo "<p>No file left untranslated!</p>\n\n";
+        return;
+    }
+
+    print <<<HTML
+<table class="c">
+ <tr>
+  <th>Untranslated files</th>
+  <th>Last hash</th>
   <th>kb</th>
  </tr>
 HTML;
 
     $path = null;
-    asort($enFiles);
-    foreach( $enFiles as $key => $en )
+    foreach ( $data->fileDetail as $key => $file )
     {
-        if ( $en->syncStatus != FileStatusEnum::Untranslated )
+        if ( $file->status != RevcheckStatus::Untranslated )
             continue;
-        if ( $path !== $en->path )
+
+        if ( $path !== $file->path )
         {
-            $path = $en->path;
-            $path2 = $path == '' ? '/' : $path;
-            print " <tr><th colspan='3'>$path2</th></tr>";
+            $path = $file->path;
+            $header = $path == '' ? '/' : $path;
+            print " <tr><th colspan='3'>/$header</th></tr>";
         }
-        $size = $en->size < 1024 ? 1 : floor( $en->size / 1024 );
 
-    print <<<HTML
+        $name = $file->name;
+        $hash = $file->hashLast;
+        $href = "https://github.com/php/doc-en/blob/{$hash}/$key";
+        $size = round( $file->size / 1024 );
 
+        print <<<HTML
  <tr class="bgorange">
-  <td class="c"><a href="https://github.com/php/doc-en/blob/{$en->hash}/$key">$en->name</a></td>
-  <td class="c">$en->hash</td>
+  <td class="c"><a href="$href">$name</a></td>
+  <td class="c">$hash</td>
   <td class="c">$size</td>
  </tr>
 HTML;
     }
-    print "</table>\n";
+    print "</table>\n\n";
 }
 
 function print_html_footer()
@@ -418,42 +457,6 @@ function print_html_footer()
 </html>
 HTML;
 }
-function print_html_notinen()
-{
-    global $oldfiles, $notinen_count;
-    print_html_menu("notinen");
-    $exists = false;
-    if (!$notinen_count)
-    {
-         print "<p>Good, it seems that this translation doesn't contain any file which is not present in English tree.</p>\n";
-     } else {
-         print <<<HTML
-<table class="c">
- <tr>
-  <th>Files which is not present in English tree.  ($notinen_count files)</th>
-  <th>Size in kB</th>
- </tr>
-HTML;
-         $path = null;
-         foreach( $oldfiles as $key => $en )
-         {
-              if ( $path !== $en->path )
-              {
-                   $path = $en->path;
-                   print " <tr><th colspan='2'>/$path</th></tr>";
-              }
-              print <<<HTML
- <tr class=bggray>
-  <td class="c">$en->name</td>
-  <td class="c">$en->size</td>
- </tr>
-HTML;
-         }
-print "</table><p/>";
-    }
-}
-
-
 
 function print_debug_list( RevcheckData $data )
 {

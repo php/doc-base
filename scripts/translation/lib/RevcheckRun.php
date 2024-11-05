@@ -158,6 +158,8 @@ class RevcheckRun
                 $this->addData( $target , $target->revtag );
             }
         }
+
+        asort( $this->revData->fileDetail );
     }
 
     private function addData( RevcheckFileInfo $info , RevtagInfo|null $revtag = null ) : void
