@@ -176,6 +176,10 @@ class RevcheckRun
 
         if ( $revtag != null )
         {
+            $file->hashRvtg = $revtag->revision;
+            $file->maintainer = $revtag->maintainer;
+            $file->completion = $revtag->status;
+
             $translator = $this->revData->getTranslator( $revtag->maintainer );
 
             switch( $info->status )

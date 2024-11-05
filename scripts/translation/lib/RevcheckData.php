@@ -82,9 +82,14 @@ class RevcheckDataFile
     public string $name;
     public int    $size;
     public int    $days;
+    public int    $adds = 0;
+    public int    $dels = 0;
 
     public RevcheckStatus $status;
+    public string $maintainer = "";
+    public string $completion = "";
 
-    public string $hashLast; // The most recent commit hash, skipped or not
-    public string $hashDiff; // The most recent, non [skip-revcheck] commit hash
+    public string $hashLast;      // The most recent commit hash, skipped or not
+    public string $hashDiff;      // The most recent, non [skip-revcheck] commit hash
+    public string $hashRvtg = ""; // Revtag hash, if any
 }

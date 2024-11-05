@@ -62,18 +62,18 @@ print_html_all( $data );
 
 // Output
 
-function print_html_all( $data )
+function print_html_all( RevcheckData $data )
 {
     print_html_header( $data );
     print_html_translators( $data );
-    //print_html_files( $enFiles , $trFiles , $lang );
+    print_html_oldwip( $data );
     //print_html_notinen();
     //print_html_misstags( $enFiles, $trFiles, $lang );
     //print_html_untranslated( $enFiles );
     //print_html_footer();
 }
 
-function print_html_header( $data )
+function print_html_header( RevcheckData $data )
 {
     $lang = $data->lang;
     $date = $data->date;
@@ -109,7 +109,7 @@ td { padding: 0.2em 0.3em; }
 HTML;
 }
 
-function print_html_menu($href)
+function print_html_menu( string $href )
 {
     print <<<HTML
 <a id="$href"/>
@@ -124,7 +124,7 @@ function print_html_menu($href)
 HTML;
 }
 
-function print_html_translators( $data )
+function print_html_translators( RevcheckData $data )
 {
     $translators = $data->translators;
     if ( count( $translators ) == 0 )
@@ -152,19 +152,11 @@ function print_html_translators( $data )
   </tr>
 HTML;
 
-    $totalOk = 0;
-    $totalOld = 0;
-    $totalWip = 0;
-
     foreach( $translators as $person )
     {
         // Unknown or untracked on translations.xml
         if ( $person->name == "" && $person->email == "" && $person->vcs == "" )
             continue;
-
-        $totalOk  += $person->filesUpdate;
-        $totalOld += $person->filesOld;
-        $totalWip += $person->filesWip;
 
         $personSum = $person->filesUpdate + $person->filesOld + $person->filesWip;
 
@@ -220,13 +212,107 @@ HTML;
 </tr>
 HTML;
     }
-        print <<<HTML
+
+    print <<<HTML
 <tr>
-  <td><b>$label</b></td>
-  <td><b>$count</b></td>
-  <td><b>$perc</b></td>
+  <td><b>Files total</b></td>
+  <td><b>$filesTotal</b></td>
+  <td><b>100%</b></td>
 </tr>
+</table>
 HTML;
+}
+
+function print_html_oldwip( RevcheckData $data )
+{
+    print_html_menu("files");
+
+    $total =  $data->fileSummary[ RevcheckStatus::TranslatedOld->value ];
+    $total += $data->fileSummary[ RevcheckStatus::TranslatedWip->value ];
+    $total += $data->fileSummary[ RevcheckStatus::RevTagProblem->value ];
+    if ( $total == 0 )
+    {
+        print "<p>Hooray! There is no files to update, nice work!</p>\n\n";
+        return;
+    }
+
+    print <<<HTML
+<table>
+ <tr>
+  <th rowspan="2">Translated file</th>
+  <th rowspan="2">Changes</th>
+  <th colspan="2">Hash</th>
+  <th rowspan="2">Maintainer</th>
+  <th rowspan="2">Status</th>
+  <th rowspan="2">Days</th>
+ </tr>
+ <tr>
+  <th>en</th>
+  <th>{$data->lang}}</th>
+ </tr>\n
+HTML;
+
+    $now = new DateTime( 'now' );
+    $path = null;
+    asort( $data->fileDetail );
+
+    foreach( $data->fileDetail as $key => $file )
+    {
+        switch ( $file->status )
+        {
+            case RevcheckStatus::TranslatedOld:
+            case RevcheckStatus::TranslatedWip:
+            case RevcheckStatus::RevTagProblem:
+                break;
+            default:
+                continue 2;
+        }
+
+        if ( $path !== $file->path )
+        {
+            $path = $file->path;
+            $path2 = $path == '' ? '/' : $path;
+            print " <tr><th colspan='7' class='c'>$path2</th></tr>";
+        }
+
+        $ma = $file->maintainer;
+        $st = $file->completion;
+        $ll = strtolower( $data->lang );
+        $kh = hash( 'sha256' , $key );
+        $d1 = "https://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$file->hashRvtg}&amp;f=$key";
+        $d2 = "https://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$file->hashRvtg}&amp;f=$key&amp;c=on";
+
+        $nm = "<a href='$d1'>{$file->name}</a> <a href='$d2'>[colored]</a>";
+        if ( $file->status == RevcheckStatus::RevTagProblem ) // $file->hashRvtg empty or invalid
+            $nm = $file->name;
+        $h1 = "<a href='https://github.com/php/doc-en/blob/{$file->hashLast}/$key'>{$file->hashLast}</a>";
+        $h2 = "<a href='https://github.com/php/doc-en/blob/{$file->hashRvtg}/$key'>{$file->hashRvtg}</a>";
+
+        if ( $file->adds > 0 || $file->dels > 0 )
+            $ch = "<span style='color: darkgreen;'>+{$file->adds}</span> <span style='color: firebrick;'>-{$file->dels}</span>";
+        else
+            $ch = "<span></span>";
+
+        $bgdays = '';
+        if ( $file->days > 90 )
+            $bgdays = 'bgorange';
+
+        print <<<HTML
+ <tr class="bggray">
+  <td>$nm</td>
+  <td class="c">$ch</td>
+  <td class="oc">
+    <button class="btn copy" data-clipboard-text="{$file->hashLast}">Copy</button> $h1
+  </td>
+  <td class="o">$h2</td>
+  <td class="c">$ma</td>
+  <td class="c">$st</td>
+  <td class="c {$bgdays}">{$file->days}</td>
+ </tr>\n
+HTML;
+    }
+
+    print "</table><p/>\n\n";
 }
 
 function print_html_misstags( $enFiles, $trFiles, $lang )
@@ -330,86 +416,6 @@ function print_html_footer()
 </html>
 HTML;
 }
-
-function print_html_files( $enFiles , $trFiles , $lang )
-{
-        print_html_menu("files");
-        print <<<HTML
-<table>
- <tr>
-  <th rowspan="2">Translated file</th>
-  <th rowspan="2">Changes</th>
-  <th colspan="2">Hash</th>
-  <th rowspan="2">Maintainer</th>
-  <th rowspan="2">Status</th>
-  <th rowspan="2">Days</th>
- </tr>
- <tr>
-  <th>en</th>
-  <th>$lang</th>
- </tr>
-
-HTML;
-
-    $now = new DateTime( 'now' );
-    $path = null;
-    asort($trFiles);
-    foreach( $trFiles as $key => $tr )
-    {
-        if ( $tr->syncStatus == FileStatusEnum::TranslatedOk )
-            continue;
-        if ( $tr->syncStatus == FileStatusEnum::RevTagProblem )
-            continue;
-        if ( $tr->syncStatus == FileStatusEnum::NotInEnTree )
-            continue;
-        $en = $enFiles[ $key ];
-        if ( $en->syncStatus == FileStatusEnum::Untranslated )
-              continue;
-
-        if ( $path !== $en->path )
-        {
-            $path = $en->path;
-            $path2 = $path == '' ? '/' : $path;
-            print " <tr><th colspan='7' class='c'>$path2</th></tr>";
-        }
-        $ll = strtolower( $lang );
-        $kh = hash( 'sha256' , $key );
-        $d1 = "https://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=on";
-        $d2 = "https://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=off";
-        $nm = "<a href='$d2'>{$en->name}</a> <a href='$d1'>[colored]</a>";
-        if ( $en->syncStatus == FileStatusEnum::RevTagProblem )
-            $nm = $en->name;
-        $h1 = "<a href='https://github.com/php/doc-en/blob/{$en->hash}/$key'>{$en->hash}</a>";
-        $h2 = "<a href='https://github.com/php/doc-en/blob/{$tr->hash}/$key'>{$tr->hash}</a>";
-
-        $bgdays = '';
-        if ($en->days != null && $en->days > 90)
-            $bgdays = 'bgorange';
-
-        if ($en->adds != null)
-            $ch = "<span style='color: darkgreen;'>+{$en->adds}</span> <span style='color: firebrick;'>-{$en->dels}</span>";
-        else
-            $ch = "<span style='color: firebrick;'>no data</span>";
-
-        $ma = $tr->maintainer;
-        $st = $tr->completion;
-        print <<<HTML
- <tr class="bggray">
-  <td>$nm</td>
-  <td class="c">$ch</td>
-  <td class="oc">
-    <button class="btn copy" data-clipboard-text="{$en->hash}">Copy</button> $h1
-  </td>
-  <td class="o">$h2</td>
-  <td class="c">$ma</td>
-  <td class="c">$st</td>
-  <td class="c {$bgdays}">{$en->days}</td>
- </tr>
-HTML;
-    }
-print "</table><p/>\n";
-}
-
 function print_html_notinen()
 {
     global $oldfiles, $notinen_count;
