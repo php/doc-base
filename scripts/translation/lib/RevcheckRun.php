@@ -121,8 +121,6 @@ class RevcheckRun
             // TranslatedOld
             // TranslatedWip
 
-            GitDiffParser::parseNumstatInto( $this->sourceDir , $source );
-
             if ( $target->revtag->status == "ready" )
             {
                 if ( FIXED_SKIP_REVCHECK && $source->diff == "skip" && TestFixedHashMinusTwo( $source->file , $targetHash ) )
@@ -184,7 +182,7 @@ class RevcheckRun
 
             $translator = $this->revData->getTranslator( $revtag->maintainer );
 
-            switch( $info->status )
+            switch( $info->status ) // counts
             {
                 case RevcheckStatus::TranslatedOk:  // ready and synced
                     $translator->countOk++;
@@ -207,6 +205,13 @@ class RevcheckRun
                         $translator->countOther++;      // The exception of all cases, and also not ready.
                     break;
                 // STATUS_COUNT_MISMATCH backported behaviour
+            }
+
+            switch( $info->status ) // adds,dels
+            {
+                case RevcheckStatus::TranslatedOld:
+                case RevcheckStatus::TranslatedWip:
+                    GitDiffParser::parseAddsDels( $this->sourceDir , $file );
             }
         }
     }

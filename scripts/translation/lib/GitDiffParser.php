@@ -21,6 +21,28 @@ require_once __DIR__ . '/all.php';
 
 class GitDiffParser
 {
-    public static function parseNumstatInto( string $dir , RevcheckFileInfo $file )
-    {}
+    public static function parseAddsDels( string $chdir , RevcheckDataFile $file )
+    {
+        $cwd = getcwd();
+        chdir( $chdir );
+
+        $hash = $file->hashRvtg;
+        $name = $file->path == "" ? $file->name : $file->path . "/" . $file->name;
+
+        $hash = escapeshellarg( $hash );
+        $name = escapeshellarg( $name );
+
+        $output = `git diff --numstat $hash -- $name`;
+        if ( $output )
+        {
+            preg_match( '/(\d+)\s+(\d+)/' , $output , $matches );
+            if ( $matches )
+            {
+                $file->adds = $matches[1];
+                $file->dels = $matches[2];
+            }
+        }
+
+        chdir( $cwd );
+    }
 }

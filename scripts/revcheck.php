@@ -42,25 +42,10 @@ USAGE;
     exit;
 }
 
-fwrite( STDERR , "TODO\n" ); // notinen
-fwrite( STDERR , "TODO\n" ); // source|targetDir -> Lang
-
 $lang = $argv[1];
-fwrite( STDERR , "TODO\n" ); // FAST
-//$data = new RevcheckRun( 'en' , $argv[1] )->revData;
+$revc = new RevcheckRun( 'en' , $argv[1] );
+$data = $revc->revData;
 
-//TODO remove start
-fwrite( STDERR , "TODO\n" ); // FAST
-if ( ! file_exists( "FAST" ) )
-{
-    $data = new RevcheckRun( 'en' , $argv[1] );
-    file_put_contents( "FAST" , serialize( $data ) );
-}
-$data = unserialize( file_get_contents ( "FAST" ) );
-$data = $data->revData;
-//TODO remove end
-
-//print_debug_list( $data ); die();
 print_html_all( $data );
 
 // Output
@@ -250,7 +235,7 @@ function print_html_oldwip( RevcheckData $data )
  </tr>
  <tr>
   <th>en</th>
-  <th>{$data->lang}}</th>
+  <th>{$data->lang}</th>
  </tr>\n
 HTML;
 
@@ -319,7 +304,7 @@ function print_html_notinen( RevcheckData $data )
 
     if ( $data->fileSummary[ RevcheckStatus::TranslatedWip->value ] == 0 )
     {
-        print "<p>Hooray! There is no files to update, nice work!</p>\n\n";
+        print "<p>Good, it seems that this translation doesn't contain any file which is not present in source tree.</p>\n\n";
         return;
     }
 
@@ -339,7 +324,7 @@ HTML;
         if ( $header !== $file->path )
         {
             $header = $file->path;
-            print " <tr><th colspan='2'>/$header</th></tr>";
+            print " <tr><th colspan='2'>$header</th></tr>";
         }
 
         $name = $file->name;
@@ -419,7 +404,7 @@ HTML;
         {
             $path = $file->path;
             $header = $path == '' ? '/' : $path;
-            print " <tr><th colspan='3'>/$header</th></tr>";
+            print " <tr><th colspan='3'>$header</th></tr>";
         }
 
         $name = $file->name;
