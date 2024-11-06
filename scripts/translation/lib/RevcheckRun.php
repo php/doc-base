@@ -217,13 +217,13 @@ class RevcheckRun
         $this->revData->lang = $this->targetDir;
         $this->revData->date = date("r");
 
-        $xml = XmlUtil::loadFile( $this->targetDir . '/translation.xml' );
+        $dom = XmlUtil::loadFile( $this->targetDir . '/translation.xml' );
 
         $this->revData->intro =
-            $xml->getElementsByTagName( 'intro' )[0]->textContent
+            $dom->saveXML( $dom->getElementsByTagName( 'intro' )[0] )
             ?? "No intro available for the {$lang} translation of the manual.";
 
-        $persons = $xml->getElementsByTagName( 'person' );
+        $persons = $dom->getElementsByTagName( 'person' );
         foreach( $persons as $person )
         {
             $nick = $person->getAttribute( 'nick' );

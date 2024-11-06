@@ -9,11 +9,29 @@
 
 // Constants
 
+const IGNORE_CHMONLY_DIR = true;
+const IGNORE_EXTENSIONS_XML = true;
 const STATUS_COUNT_MISMATCH = true;
 const LOOSE_SKIP_REVCHECK = true;
 const FIXED_SKIP_REVCHECK = true;
 
 // Documentation
+
+/* # IGNORE_CHMONLY_DIR
+
+The chmonly/ dir contains files that appears to be
+translatable. See recent efforts to re-enabling
+CHM build: https://github.com/php/doc-base/pull/163
+*/
+
+/* # IGNORE_EXTENSIONS_XML
+
+The actual revcheck ignores any files called extensions.xml,
+but are at least two of translated files with this name.
+
+- appendices/migration56/extensions.xml
+- install/windows/legacy/extensions.xml
+*/
 
 /* # STATUS_COUNT_MISMATCH
 
@@ -31,13 +49,13 @@ changed to "misc", and so any status other than "ok" and "old"
 was added here.
 
 Also, NotInEnTree is missing on first case, and files
-in this situation goes uncounted...
+in this situation goes uncounted.
 
-Also, RevTagProblem is counted towards as Old, but it
-is impossible to generate diffs with invalid hashes... */
+Also, RevTagProblem is counted towards as Old, but files
+are show in revtag missing/problem list, and is
+impossible to generate diffs with invalid hashes... */
 
 assert( STATUS_COUNT_MISMATCH || ! STATUS_COUNT_MISMATCH );
-
 
 /* # LOOSE_SKIP_REVCHECK
 
