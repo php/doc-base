@@ -24,8 +24,6 @@ $outarg = new OutputIgnoreArgv( $argv );
 
 foreach ( $qalist as $qafile )
 {
-    if ( $qafile->file == "bookinfo.xml" )
-        continue;
     if ( $qafile->sourceHash != $qafile->targetHash )
         continue;
 
