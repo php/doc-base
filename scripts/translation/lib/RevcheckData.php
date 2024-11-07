@@ -62,6 +62,17 @@ class RevcheckData
         }
         return $translator;
     }
+
+    public function getSummaryLabels() : array
+    {
+        $ret[ RevcheckStatus::TranslatedOk->value  ] = "Up to date files";
+        $ret[ RevcheckStatus::TranslatedOld->value ] = "Outdated files";
+        $ret[ RevcheckStatus::TranslatedWip->value ] = "Work in progress";
+        $ret[ RevcheckStatus::RevTagProblem->value ] = "Revision tag missing/problem";
+        $ret[ RevcheckStatus::NotInEnTree->value   ] = "Not in EN tree";
+        $ret[ RevcheckStatus::Untranslated->value  ] = "Available for translation";
+        return $ret;
+    }
 }
 
 class RevcheckDataTranslator
