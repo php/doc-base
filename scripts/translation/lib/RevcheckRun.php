@@ -224,9 +224,16 @@ class RevcheckRun
 
         $dom = XmlUtil::loadFile( $this->targetDir . '/translation.xml' );
 
-        $this->revData->intro =
-            $dom->saveXML( $dom->getElementsByTagName( 'intro' )[0] )
-            ?? "No intro available for the {$lang} translation of the manual.";
+        $tag = $dom->getElementsByTagName( 'intro' )[0] ?? null;
+        if ( $tag == null )
+            $intro = "No intro available for the {$this->targetDir} translation of the manual.";
+        else
+        {
+            $intro = "";
+            foreach( $tag->childNodes as $node )
+                $intro .= $dom->saveXML( $node );
+        }
+        $this->revData->intro = $intro;
 
         $persons = $dom->getElementsByTagName( 'person' );
         foreach( $persons as $person )

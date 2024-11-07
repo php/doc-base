@@ -27,9 +27,11 @@ if ( count( $argv ) < 3 || in_array( '--help' , $argv ) || in_array( '-h' , $arg
 
 $timeStart = new \DateTime;
 $dbpath = $argv[1];
-$langs = explode( ',' , $argv[2] );
+$langs = array();
+for( $idx = 2 ; $idx < count( $argv ) ; $idx++ )
+    $langs[] = $argv[ $idx ];
 
-consolelog( "Creating revdata database $dbpath for languages: $argv[2]." );
+consolelog( "Creating revdata database $dbpath for languages: " . implode( ',', $langs ) . '.');
 
 $db = db_create( $dbpath );
 foreach( $langs as $lang )
