@@ -58,10 +58,10 @@ class RevcheckIgnore
             return true;
 
         if ( IGNORE_EXTENSIONS_XML )
-            if ( str_ends_with( $filename , '/extension.xml') ) // wrong
+            if ( str_ends_with( $filename , '/extensions.xml') ) // track/count backport
                 return true;
         if ( IGNORE_CHMONLY_DIR )
-            if ( str_starts_with( $filename , 'chmonly/') )     // possibly wrong
+            if ( str_starts_with( $filename , 'chmonly/') )      // track/count backport
                 return true;
 
         // Only in translations

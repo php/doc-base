@@ -47,8 +47,8 @@ class RevcheckData
 
     public function addFile( string $key , RevcheckDataFile $file )
     {
-        $this->fileSummary[ $file->status->value ]++;
         $this->fileDetail[ $key ] = $file;
+        $this->fileSummary[ $file->status->value ]++;
     }
 
     public function getTranslator( string $nick )

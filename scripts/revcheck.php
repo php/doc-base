@@ -302,7 +302,7 @@ function print_html_notinen( RevcheckData $data )
 {
     print_html_menu("notinen");
 
-    if ( $data->fileSummary[ RevcheckStatus::TranslatedWip->value ] == 0 )
+    if ( $data->fileSummary[ RevcheckStatus::NotInEnTree->value ] == 0 )
     {
         print "<p>Good, it seems that this translation doesn't contain any file which is not present in source tree.</p>\n\n";
         return;

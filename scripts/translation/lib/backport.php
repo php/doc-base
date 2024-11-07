@@ -27,10 +27,10 @@ CHM build: https://github.com/php/doc-base/pull/163
 /* # IGNORE_EXTENSIONS_XML
 
 The actual revcheck ignores any files called extensions.xml,
-but are at least two of translated files with this name.
+but are at least two of files with this name.
 
-- appendices/migration56/extensions.xml
-- install/windows/legacy/extensions.xml
+- appendices/migration56/extensions.xml (translatable)
+- install/windows/legacy/extensions.xml (deleted on en/, exists untracked on translations)
 */
 
 /* # STATUS_COUNT_MISMATCH

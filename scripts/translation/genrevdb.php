@@ -29,7 +29,7 @@ $timeStart = new \DateTime;
 $dbpath = $argv[1];
 $langs = explode( ',' , $argv[2] );
 
-consolelog( "Creating revdata database $dbpath for languages $argv[2]." );
+consolelog( "Creating revdata database $dbpath for languages: $argv[2]." );
 
 $db = db_create( $dbpath );
 foreach( $langs as $lang )
