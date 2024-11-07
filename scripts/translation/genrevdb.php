@@ -58,7 +58,7 @@ function generate( SQLite3 $db , string $lang )
 
     try
     {
-        consolelog( "Language $lang run" );
+        consolelog( "Language $lang started." );
 
         $revcheck = new RevcheckRun( 'en' , $lang );
         $data = $revcheck->revData;
@@ -109,7 +109,7 @@ function generate( SQLite3 $db , string $lang )
             );
 
         $db->exec( 'COMMIT TRANSACTION' );
-        consolelog_timed( "Language $lang done" );
+        consolelog_timed( "Language $lang finished." );
     }
     catch ( Exception $e )
     {
