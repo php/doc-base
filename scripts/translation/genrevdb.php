@@ -80,21 +80,20 @@ function generate( SQLite3 $db , string $lang )
                 );
 
         foreach( $data->fileDetail as $file )
-            if ( $translator->nick != "" )
-                db_insert( $db , "files", $data->lang
-                    , $file->path
-                    , $file->name
-                    , $file->size
-                    , $file->days
-                    , $file->adds
-                    , $file->dels
-                    , $file->status->value
-                    , $file->maintainer
-                    , $file->completion
-                    , $file->hashLast
-                    , $file->hashDiff
-                    , $file->hashRvtg
-                );
+            db_insert( $db , "files", $data->lang
+                , $file->path
+                , $file->name
+                , $file->size
+                , $file->days
+                , $file->adds
+                , $file->dels
+                , $file->status->value
+                , $file->maintainer
+                , $file->completion
+                , $file->hashLast
+                , $file->hashDiff
+                , $file->hashRvtg
+            );
 
         $filesTotal = 0;
         foreach( $data->fileSummary as $count )
