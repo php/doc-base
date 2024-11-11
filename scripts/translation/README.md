@@ -1,3 +1,4 @@
+
 # Useful scripts for maintaining translation consistency of manual
 
 Some of these scripts only test some file contents or XML structure
@@ -6,12 +7,13 @@ Others will try to modify the translations in place, changing the
 translated files. Use with care.
 
 Not all translations are identical, or use the same conventions.
-So not all scripts will be of use for all translations. The
-assumptions of each script are described in each file.
+Even two translators working on one language may havedifferent
+opinions on how much synchronization is wanted. So not all scripts
+will be of use for all translations.
 
-It's also possible to silence each alert indempendly. These scripts
-will output `--add-ignore` commands that, if executed, will omit
-the specific warming in future executions.
+Because of aboce, it's possible to silence each alert indempendly.
+These scripts will output `--add-ignore` commands that, if executed,
+will omit the specific warming in future executions.
 
 The `lib/` directory contains common code and functionality
 across these scripts.
@@ -32,18 +34,18 @@ expected format.
 the same tag-attribute-value triplets. Tag's attributes are extensively
 utilized in manual for linking and XIncluding. Translated files with
 missing or mistyped attributes may cause build failing or missing
-parts not copied by XIncludes.
+parts, not copied by XIncludes.
 
 ## qaxml.e.php
 
 `qaxml.e.php` checks if all updated translated files have
 the same external entities as the original files. Unbalanced entities
-may indicate mistyped or wrongly traduced parts.
+may indicate mistyped or wrongly translated parts.
 
 ## qaxml.p.php
 
 `qaxml.p.php` checks if all updated translated files have
-the same processing instructions as the original files. Unbalanced entities
+the same processing instructions as the original files. Unbalanced PIs
 may cause compilation errors, as they are utilized in the manual build
 process.
 
@@ -74,6 +76,7 @@ php doc-base/scripts/translation/qaxml.a.php
 php doc-base/scripts/translation/qaxml.e.php
 php doc-base/scripts/translation/qaxml.p.php
 php doc-base/scripts/translation/qaxml.t.php
+php doc-base/scripts/translation/qaxml.w.php
 ```
 Tags where is expected no translations:
 ```
@@ -101,15 +104,11 @@ php doc-base/scripts/translation/qaxml.t.php literal
 php doc-base/scripts/translation/qaxml.t.php varname
 ```
 
-# Migration
+## Initial alerts execution
 
-## Maintainers with spaces
+The first execution of these scripts may generate an inordinate amount of
+alerts. It's advised to initially run each command separately, and work the
+alerts on a case by case basis. After all interesting cases are observed,
+it's possible to rerun the command, and `grep` the output for `--add-ignore`
+lines, and to mass ignore the residual alerts.
 
-The regex on `RevtagParser` is narrowed to not accept maintainer names
-with spaces. This needs to be confirmed on all active translations, or
-the regex modified to accept spaces again.
-
-## en/chmonly
-
-`en/chmonly` is ignored on revcheck, but it appears translatable. If it's a
-`en/` only directory, this should be uncommented on RevcheckIgnore.

@@ -13,7 +13,7 @@
  *  +----------------------------------------------------------------------+
  *  | Authors:     André L F S Bacci <ae php.net>                          |
  *  +----------------------------------------------------------------------+
- *  | Description: Compare entities usage between XMLs.                    |
+ *  | Description: Checks for ws that may cause render trouble.            |
  *  +----------------------------------------------------------------------+
  */
 
@@ -24,40 +24,44 @@ $outarg = new OutputIgnoreArgv( $argv );
 
 foreach ( $qalist as $qafile )
 {
-    if ( $qafile->sourceHash != $qafile->targetHash )
-        continue;
-
     $source = $qafile->sourceDir . '/' . $qafile->file;
     $target = $qafile->targetDir . '/' . $qafile->file;
 
-    $s = XmlUtil::extractEntities( $source );
-    $t = XmlUtil::extractEntities( $target );
+    whitespaceCheckFile( $source );
+    whitespaceCheckFile( $target );
+}
 
-    if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
-        continue;
+function whitespaceCheckFile( string $filename )
+{
+    if ( file_exists( $filename ) == false )
+        return;
 
-    $output = new OutputIgnoreBuffer( $outarg , "qaxml.e: {$target}\n\n" , $target );
+    global $outarg;
+    $output = new OutputIgnoreBuffer( $outarg , "qaxml.w: {$filename}\n\n" , $filename );
 
-    $match = array();
-
-    foreach( $s as $v )
-        $match[$v] = array( 0 , 0 );
-    foreach( $t as $v )
-        $match[$v] = array( 0 , 0 );
-
-    foreach( $s as $v )
-        $match[$v][0] += 1;
-    foreach( $t as $v )
-        $match[$v][1] += 1;
-
-    foreach( $match as $k => $v )
+    $xml = XmlUtil::loadFile( $filename );
+    $tags = XmlUtil::listNodeType( $xml , XML_ELEMENT_NODE );
+    
+    foreach( $tags as $node )
     {
-        if ( $v[0] == $v[1] )
-            continue;
-
-        $output->add( "* &{$k}; -{$v[1]} +{$v[0]}\n" );
+        switch ( $node->nodeName )
+        {
+            case "classname":
+            case "constant":
+            case "function":
+            case "methodname":
+            case "varname":
+                $text = $node->nodeValue;
+                $trim = trim( $text );
+                if ( $text != $trim )
+                {
+                    $output->addLine();
+                    $output->add( "  {$node->nodeName} {$trim}\n" );
+                }
+                break;
+        }
     }
 
-    $output->addLine();
     $output->print();
 }
+

@@ -42,8 +42,6 @@ while ( count( $argv ) > 0 )
 
 foreach ( $qalist as $qafile )
 {
-    if ( $qafile->file == "bookinfo.xml" )
-        continue;
     if ( $qafile->sourceHash != $qafile->targetHash )
         continue;
 
