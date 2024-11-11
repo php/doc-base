@@ -57,10 +57,6 @@ class RevcheckIgnore
         if ( $filename == "reference/datetime/timezones.xml" )
             return true;
 
-        if ( IGNORE_EXTENSIONS_XML )
-            if ( str_ends_with( $filename , '/extensions.xml') ) // track/count backport
-                return true;
-
         // Only in translations
 
         if ( $filename == "translation.xml" )

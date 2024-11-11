@@ -9,29 +9,11 @@
 
 // Constants
 
-const IGNORE_CHMONLY_DIR = true;
-const IGNORE_EXTENSIONS_XML = true;
 const STATUS_COUNT_MISMATCH = true;
 const LOOSE_SKIP_REVCHECK = true;
 const FIXED_SKIP_REVCHECK = true;
 
 // Documentation
-
-/* # IGNORE_CHMONLY_DIR
-
-The chmonly/ dir contains files that appears to be
-translatable. See recent efforts to re-enabling
-CHM build: https://github.com/php/doc-base/pull/163
-*/
-
-/* # IGNORE_EXTENSIONS_XML
-
-The actual revcheck ignores any files called extensions.xml,
-but are at least two of files with this name.
-
-- appendices/migration56/extensions.xml (translatable)
-- install/windows/legacy/extensions.xml (deleted on en/, exists untracked on translations)
-*/
 
 /* # STATUS_COUNT_MISMATCH
 
