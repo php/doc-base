@@ -9,35 +9,10 @@
 
 // Constants
 
-const STATUS_COUNT_MISMATCH = true;
 const LOOSE_SKIP_REVCHECK = true;
 const FIXED_SKIP_REVCHECK = true;
 
 // Documentation
-
-/* # STATUS_COUNT_MISMATCH
-
-The actual revcheck counts "outdated" files in two different ways;
-
-- Only TranslatedOld:
-  https://github.com/php/doc-base/blob/747c53bf8ec72f27ac1a83ba91bcc390eea2e46a/scripts/revcheck.php#L603
-- TranslatedOld + RevTagProblem:
-  https://github.com/php/doc-base/blob/747c53bf8ec72f27ac1a83ba91bcc390eea2e46a/scripts/revcheck.php#L134
-
-This causes a mismatchs between translators totals and file summary.
-
-To make the mismatch smaller, the "wip" column in Translators was
-changed to "misc", and so any status other than "ok" and "old"
-was added here.
-
-Also, NotInEnTree is missing on first case, and files
-in this situation goes uncounted.
-
-Also, RevTagProblem is counted towards as Old, but files
-are show in revtag missing/problem list, and is
-impossible to generate diffs with invalid hashes... */
-
-assert( STATUS_COUNT_MISMATCH || ! STATUS_COUNT_MISMATCH );
 
 /* # LOOSE_SKIP_REVCHECK
 
