@@ -64,7 +64,7 @@ class RevcheckRun
             $this->saveRevcheckData();
         }
 
-        if ( $this->slowPathCount > 100 )
+        if ( $this->slowPathCount > 1000 )
             fprintf( STDERR , "Warn: Slow path called {$this->slowPathCount} times.\n" );
     }
 
