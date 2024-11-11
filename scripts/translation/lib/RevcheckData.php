@@ -17,9 +17,6 @@
  *  +----------------------------------------------------------------------+
  */
 
-// NOTE: This file MAY be used in more of one git repository in future.
-// If it is the case, please make note of this in *both* places.
-
 enum RevcheckStatus : string
 {
     case TranslatedOk  = 'TranslatedOk';

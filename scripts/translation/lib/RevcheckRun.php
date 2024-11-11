@@ -36,20 +36,21 @@ class RevcheckRun
 
     public array $qaList = [];
     public RevcheckData $revData;
+    private int $slowPathCount = 0;
 
     function __construct( string $sourceDir , string $targetDir , bool $writeResults = false )
     {
         $this->sourceDir = $sourceDir;
         $this->targetDir = $targetDir;
 
-        // load respective file tree
+        // Load respective file trees
         $this->sourceFiles = new RevcheckFileList( $sourceDir );
         $this->targetFiles = new RevcheckFileList( $targetDir );
 
-        // original files get info from version control
+        // Source files get info from version control
         GitLogParser::parseInto( $sourceDir , $this->sourceFiles );
 
-        // translated files get info from file contents
+        // Target files get info from revtags
         RevtagParser::parseInto( $targetDir , $this->targetFiles );
 
         // match and mix
@@ -62,6 +63,9 @@ class RevcheckRun
             QaFileInfo::cacheSave( $this->qaList );
             $this->saveRevcheckData();
         }
+
+        if ( $this->slowPathCount > 100 )
+            fprintf( STDERR , "Warn: Slow path called {$this->slowPathCount} times.\n" );
     }
 
     private function calculateStatus()
@@ -94,6 +98,8 @@ class RevcheckRun
                 continue;
             }
 
+            // TODO remove $(source|target)H* with QA simplification
+
             // Previous code compares uptodate on multiple hashs. The last hash or the last non-skipped hash.
             // See https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L374
             // and https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L392 .
@@ -110,7 +116,7 @@ class RevcheckRun
 
             // TranslatedOk
 
-            if ( $target->revtag->status == "ready" && ( $sourceHsh1 == $targetHash || $sourceHsh2 == $targetHash ) )
+            if ( $target->revtag->status == "ready" && $source->isSyncHash( $target->revtag->revision ) )
             {
                 $source->status = RevcheckStatus::TranslatedOk;
                 $this->filesOk[] = $source;
@@ -123,18 +129,9 @@ class RevcheckRun
 
             if ( $target->revtag->status == "ready" )
             {
-                if ( FIXED_SKIP_REVCHECK && $source->diff == "skip" && TestFixedHashMinusTwo( $source->file , $targetHash ) )
-                {
-                    $source->status = RevcheckStatus::TranslatedOk;
-                    $this->filesOk[] = $source;
-                    $this->addData( $source , $target->revtag );
-                }
-                else
-                {
-                    $source->status = RevcheckStatus::TranslatedOld;
-                    $this->filesOld[] = $source;
-                    $this->addData( $source , $target->revtag );
-                }
+                $source->status = RevcheckStatus::TranslatedOld;
+                $this->filesOld[] = $source;
+                $this->addData( $source , $target->revtag );
             }
             else
             {
@@ -160,7 +157,7 @@ class RevcheckRun
         asort( $this->revData->fileDetail );
     }
 
-    private function addData( RevcheckFileInfo $info , RevtagInfo|null $revtag = null ) : void
+    private function addData( RevcheckFileItem $info , RevtagInfo|null $revtag = null ) : void
     {
         $file = new RevcheckDataFile;
 
@@ -169,8 +166,8 @@ class RevcheckRun
         $file->size = $info->size;
         $file->days = floor( ( time() - $info->date ) / 86400 );
         $file->status = $info->status;
-        $file->hashLast = $info->head;
-        $file->hashDiff = $info->diff;
+        $file->hashLast = $info->hashLast;
+        $file->hashDiff = $info->hashDiff;
 
         $this->revData->addFile( $info->file , $file );
 
@@ -211,6 +208,7 @@ class RevcheckRun
             {
                 case RevcheckStatus::TranslatedOld:
                 case RevcheckStatus::TranslatedWip:
+                    $this->slowPathCount++;
                     GitDiffParser::parseAddsDels( $this->sourceDir , $file );
             }
         }
@@ -251,17 +249,4 @@ class RevcheckRun
         $json = json_encode( $this->revData , JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
         file_put_contents( __DIR__ . "/../../../.revcheck.json" , $json );
     }
-}
-
-function TestFixedHashMinusTwo($filename, $hash) :bool
-{
-    assert( FIXED_SKIP_REVCHECK ); // if deleted, delete entire funciont.
-
-    // See mentions of FIXED_SKIP_REVCHECK on all.php for an explanation
-
-    $cwd = getcwd();
-    chdir( 'en' );
-    $hashes = explode ( "\n" , `git log -2 --format=%H -- {$filename}` );
-    chdir( $cwd );
-    return ( $hashes[1] == $hash ); // $trFile->hash
 }
