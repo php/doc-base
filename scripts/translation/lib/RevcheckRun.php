@@ -27,16 +27,17 @@ class RevcheckRun
     public RevcheckFileList $sourceFiles;
     public RevcheckFileList $targetFiles;
 
-    // Separated lists
     public array $filesOk = [];
     public array $filesOld = [];
     public array $filesRevtagProblem = [];
     public array $filesUntranslated = [];
     public array $filesNotInEn = [];
     public array $filesWip = [];
-    public array $qaList = [];
 
-    function __construct( string $sourceDir , string $targetDir , bool $writeResults = true )
+    public array $qaList = [];
+    public RevcheckData $revData;
+
+    function __construct( string $sourceDir , string $targetDir , bool $writeResults = false )
     {
         $this->sourceDir = $sourceDir;
         $this->targetDir = $targetDir;
@@ -52,16 +53,22 @@ class RevcheckRun
         RevtagParser::parseInto( $targetDir , $this->targetFiles );
 
         // match and mix
+        $this->parseTranslationXml();
         $this->calculateStatus();
 
+        // fs output
         if ( $writeResults )
+        {
             QaFileInfo::cacheSave( $this->qaList );
+            $this->saveRevcheckData();
+        }
     }
 
     private function calculateStatus()
     {
-        // All status are marked in source files,
-        // except notinen, that are marked on target.
+        // Most of status are marked $sourceFiles,
+        // except NotInEnTree, that are marked on $targetFiles.
+        // $revData contains all status
 
         foreach( $this->sourceFiles->iterator() as $source )
         {
@@ -73,6 +80,7 @@ class RevcheckRun
             {
                 $source->status = RevcheckStatus::Untranslated;
                 $this->filesUntranslated[] = $source;
+                $this->addData( $source , null );
                 continue;
             }
 
@@ -82,49 +90,58 @@ class RevcheckRun
             {
                 $source->status = RevcheckStatus::RevTagProblem;
                 $this->filesRevtagProblem[] = $source;
+                $this->addData( $source , $target->revtag );
                 continue;
             }
 
-            // Translation compares ok from multiple hashs. The head hash or the last non-skiped hash.
+            // Previous code compares uptodate on multiple hashs. The last hash or the last non-skipped hash.
             // See https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L374
             // and https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L392 .
 
-            $sourceHash = $source->head;
+            $sourceHsh1 = $source->head;
+            $sourceHsh2 = $source->diff;
             $targetHash = $target->revtag->revision;
-
-            if ( $targetHash == $source->diff )
-                $sourceHash = $source->diff;
 
             $daysOld = ( strtotime( "now" ) - $source->date ) / 86400;
             $daysOld = (int)$daysOld;
 
-            $qaInfo = new QaFileInfo( $sourceHash , $targetHash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
+            $qaInfo = new QaFileInfo( $sourceHsh1 , $targetHash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
             $this->qaList[ $source->file ] = $qaInfo;
 
             // TranslatedOk
 
-            if ( $target->revtag->status == "ready" && $sourceHash == $targetHash )
+            if ( $target->revtag->status == "ready" && ( $sourceHsh1 == $targetHash || $sourceHsh2 == $targetHash ) )
             {
                 $source->status = RevcheckStatus::TranslatedOk;
                 $this->filesOk[] = $source;
-                continue;
-            }
-
-            GitDiffParser::parseNumstatInto( $this->sourceDir , $source );
-
-            // TranslatedWip
-
-            if ( $target->revtag->status != "ready" )
-            {
-                $source->status = RevcheckStatus::TranslatedWip;
-                $this->filesWip[] = $source;
+                $this->addData( $source , $target->revtag );
                 continue;
             }
 
             // TranslatedOld
+            // TranslatedWip
 
-            $source->status = RevcheckStatus::TranslatedOld;
-            $this->filesOld[] = $source;
+            if ( $target->revtag->status == "ready" )
+            {
+                if ( FIXED_SKIP_REVCHECK && $source->diff == "skip" && TestFixedHashMinusTwo( $source->file , $targetHash ) )
+                {
+                    $source->status = RevcheckStatus::TranslatedOk;
+                    $this->filesOk[] = $source;
+                    $this->addData( $source , $target->revtag );
+                }
+                else
+                {
+                    $source->status = RevcheckStatus::TranslatedOld;
+                    $this->filesOld[] = $source;
+                    $this->addData( $source , $target->revtag );
+                }
+            }
+            else
+            {
+                $source->status = RevcheckStatus::TranslatedWip;
+                $this->filesWip[] = $source;
+                $this->addData( $source , $target->revtag );
+            }
         }
 
         // NotInEnTree
@@ -136,7 +153,115 @@ class RevcheckRun
             {
                 $target->status = RevcheckStatus::NotInEnTree;
                 $this->filesNotInEn[] = $target;
+                $this->addData( $target , $target->revtag );
+            }
+        }
+
+        asort( $this->revData->fileDetail );
+    }
+
+    private function addData( RevcheckFileInfo $info , RevtagInfo|null $revtag = null ) : void
+    {
+        $file = new RevcheckDataFile;
+
+        $file->path = dirname( $info->file );
+        $file->name = basename( $info->file );
+        $file->size = $info->size;
+        $file->days = floor( ( time() - $info->date ) / 86400 );
+        $file->status = $info->status;
+        $file->hashLast = $info->head;
+        $file->hashDiff = $info->diff;
+
+        $this->revData->addFile( $info->file , $file );
+
+        if ( $revtag != null )
+        {
+            $file->hashRvtg = $revtag->revision;
+            $file->maintainer = $revtag->maintainer;
+            $file->completion = $revtag->status;
+
+            $translator = $this->revData->getTranslator( $revtag->maintainer );
+
+            switch( $info->status ) // counts
+            {
+                case RevcheckStatus::TranslatedOk:  // ready and synced
+                    $translator->countOk++;
+                    break;
+                case RevcheckStatus::TranslatedOld: // ready and outdated
+                    $translator->countOld++;
+                    break;
+                // STATUS_COUNT_MISMATCH count correct
+                // default:                            // all other cases
+                //     $translator->countOther++;
+
+                // STATUS_COUNT_MISMATCH backported behaviour
+                case RevcheckStatus::RevTagProblem:     // STATUS_COUNT_MISMATCH backported behaviour
+                    $translator->countOld++;            // RevTagProblem into Old (generated diff link fails)
+                    break;
+                case RevcheckStatus::NotInEnTree:       // STATUS_COUNT_MISMATCH backported behaviour
+                    break;                              // Not counted, but files are listed anyways...
+                default:
+                    if ( $revtag->status != "ready" );  // STATUS_COUNT_MISMATCH backported behaviour
+                        $translator->countOther++;      // The exception of all cases, and also not ready.
+                    break;
+                // STATUS_COUNT_MISMATCH backported behaviour
+            }
+
+            switch( $info->status ) // adds,dels
+            {
+                case RevcheckStatus::TranslatedOld:
+                case RevcheckStatus::TranslatedWip:
+                    GitDiffParser::parseAddsDels( $this->sourceDir , $file );
             }
         }
     }
+
+    private function parseTranslationXml() : void
+    {
+        $this->revData = new RevcheckData;
+        $this->revData->lang = $this->targetDir;
+        $this->revData->date = date("r");
+
+        $dom = XmlUtil::loadFile( $this->targetDir . '/translation.xml' );
+
+        $tag = $dom->getElementsByTagName( 'intro' )[0] ?? null;
+        if ( $tag == null )
+            $intro = "No intro available for the {$this->targetDir} translation of the manual.";
+        else
+        {
+            $intro = "";
+            foreach( $tag->childNodes as $node )
+                $intro .= $dom->saveXML( $node );
+        }
+        $this->revData->intro = $intro;
+
+        $persons = $dom->getElementsByTagName( 'person' );
+        foreach( $persons as $person )
+        {
+            $nick = $person->getAttribute( 'nick' );
+            $translator = $this->revData->getTranslator( $nick );
+            $translator->name = $person->getAttribute( 'name' );
+            $translator->email = $person->getAttribute( 'email' );
+            $translator->vcs = $person->getAttribute( 'vcs' ) ?? "";
+        }
+    }
+
+    private function saveRevcheckData()
+    {
+        $json = json_encode( $this->revData , JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+        file_put_contents( __DIR__ . "/../../../.revcheck.json" , $json );
+    }
+}
+
+function TestFixedHashMinusTwo($filename, $hash) :bool
+{
+    assert( FIXED_SKIP_REVCHECK ); // if deleted, delete entire funciont.
+
+    // See mentions of FIXED_SKIP_REVCHECK on all.php for an explanation
+
+    $cwd = getcwd();
+    chdir( 'en' );
+    $hashes = explode ( "\n" , `git log -2 --format=%H -- {$filename}` );
+    chdir( $cwd );
+    return ( $hashes[1] == $hash ); // $trFile->hash
 }
