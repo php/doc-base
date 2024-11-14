@@ -179,29 +179,17 @@ class RevcheckRun
 
             $translator = $this->revData->getTranslator( $revtag->maintainer );
 
-            switch( $info->status ) // counts
+            switch( $info->status )
             {
-                case RevcheckStatus::TranslatedOk:  // ready and synced
+                case RevcheckStatus::TranslatedOk:
                     $translator->countOk++;
                     break;
-                case RevcheckStatus::TranslatedOld: // ready and outdated
+                case RevcheckStatus::TranslatedOld:
                     $translator->countOld++;
                     break;
-                // STATUS_COUNT_MISMATCH count correct
-                // default:                            // all other cases
-                //     $translator->countOther++;
-
-                // STATUS_COUNT_MISMATCH backported behaviour
-                case RevcheckStatus::RevTagProblem:     // STATUS_COUNT_MISMATCH backported behaviour
-                    $translator->countOld++;            // RevTagProblem into Old (generated diff link fails)
-                    break;
-                case RevcheckStatus::NotInEnTree:       // STATUS_COUNT_MISMATCH backported behaviour
-                    break;                              // Not counted, but files are listed anyways...
                 default:
-                    if ( $revtag->status != "ready" );  // STATUS_COUNT_MISMATCH backported behaviour
-                        $translator->countOther++;      // The exception of all cases, and also not ready.
+                    $translator->countOther++;
                     break;
-                // STATUS_COUNT_MISMATCH backported behaviour
             }
 
             switch( $info->status ) // adds,dels
