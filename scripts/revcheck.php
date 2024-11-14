@@ -91,8 +91,8 @@ td { padding: 0.2em 0.3em; }
 <body>
 
 <div id="header" style="background-color: #9999CC;">
-<h1 style="margin: 0; padding: 0.5em;">Status of the translated PHP Manual</h1>
-<p style="font-size: small; margin: 0; padding: 1em;">Generated: $date / Language: $lang</p>
+<h1 style="margin: 0; padding: 0.5em;">Status of the PHP Manual $lang translation</h1>
+<p style="margin: 0; padding: 0 1em 1em 1em;">Generated: $date</p>
 </div>
 HTML;
 }
@@ -133,9 +133,9 @@ function print_html_translators( RevcheckData $data )
     <th colspan=4>Files maintained</th>
   </tr>
   <tr>
-    <th>upto-<br/>date</th>   <!-- STATUS_COUNT_MISMATCH <th>ok</th> -->
+    <th>ok</th>
     <th>old</th>
-    <th>wip</th>              <!-- STATUS_COUNT_MISMATCH <th>misc</th> -->
+    <th>misc</th>
     <th>sum</th>
   </tr>
 HTML;
