@@ -30,7 +30,7 @@ require_once __DIR__ . '/OutputIgnoreArgv.php';
 require_once __DIR__ . '/OutputIgnoreBuffer.php';
 require_once __DIR__ . '/QaFileInfo.php';
 require_once __DIR__ . '/RevcheckData.php';
-require_once __DIR__ . '/RevcheckFileInfo.php';
+require_once __DIR__ . '/RevcheckFileItem.php';
 require_once __DIR__ . '/RevcheckFileList.php';
 require_once __DIR__ . '/RevcheckIgnore.php';
 require_once __DIR__ . '/RevcheckRun.php';

@@ -26,10 +26,13 @@ class GitLogParser
         $cwd = getcwd();
         chdir( $lang );
         $fp = popen( "git log --name-only" , "r" );
+        chdir( $cwd );
+
         $hash = "";
         $date = "";
         $skip = false;
         $mcnt = 0;
+
         while ( ( $line = fgets( $fp ) ) !== false )
         {
             // new commit block
@@ -81,38 +84,9 @@ class GitLogParser
             if ( $info == null )
                 continue;
 
-            // Saves only the first commit hash of a file of git log,
-            // that is, the last commit hash in chronological order.
-
-            if ( $info->head == "" )
-            {
-                $info->head = $hash;
-                $info->date = $date;
-
-                if ( FIXED_SKIP_REVCHECK )
-                    if ( $skip )
-                        $info->diff = "skip";
-            }
-
-            if ( !FIXED_SKIP_REVCHECK )
-            {
-                // Also tracks the first commit hash of a file in git log
-                // that is *not* market with [skip-revcheck] (the diff hash)
-                // so it's possible to not bother translations with
-                // minutiae modifications.
-
-                if ( $skip )
-                    continue;
-
-                if ( $info->diff == "" )
-                {
-                    $info->diff = $hash;
-                    $info->date = $date;
-                }
-            }
+            $info->addGitLogData( $hash , $date , $skip );
         }
 
         pclose( $fp );
-        chdir( $cwd );
     }
 }

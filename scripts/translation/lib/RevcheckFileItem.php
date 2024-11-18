@@ -19,16 +19,21 @@
 
 require_once __DIR__ . '/all.php';
 
-class RevcheckFileInfo
+class RevcheckFileItem
 {
     public string $file = ""; // from fs
     public int    $size = 0 ; // from fs
     public string $head = ""; // from vcs, source only, head hash, may be skipped
     public string $diff = ""; // from vcs, source only, diff hash, no skips
     public int    $date = 0 ; // from vcs, source only, date of head or diff commit
+    public string $hashLast = ""; // derived by addGitLogData
+    public string $hashDiff = ""; // derived by addGitLogData, isSyncHash
 
     public RevcheckStatus  $status; // target only
     public RevtagInfo|null $revtag; // target only
+
+    private array $hashList;        // source only
+    private bool  $hashStop;        // source only
 
     function __construct( string $file , int $size )
     {
@@ -39,5 +44,38 @@ class RevcheckFileInfo
         $this->date = 0;
         $this->status = RevcheckStatus::Untranslated;
         $this->revtag = null;
+        $this->hashList = [];
+        $this->hashStop = false;
+    }
+
+    public function addGitLogData( string $hash , string $date , bool $skip ) : void
+    {
+        // Accumulates valid hashes for RevcheckStatus::TranslatedOk status.
+        // This includes topmost runs of [skip-revcheck] tags and one normal,
+        // unmarked hash. Stop after first normal hash is found.
+
+        if ( $this->hashStop )
+            return;
+
+        $this->hashList[] = $hash;
+
+        if ( $this->hashLast == "" )
+        {
+            $this->date = $date;
+            $this->hashLast = $hash;
+        }
+
+        if ( $skip )
+            $this->diffHash = $hash;
+        else
+            $this->hashStop = true;
+    }
+
+    public function isSyncHash( $hash )
+    {
+        $sync = in_array( $hash , $this->hashList );
+        if ( $sync )
+            $this->hashDiff = $hash;
+        return $sync;
     }
 }
