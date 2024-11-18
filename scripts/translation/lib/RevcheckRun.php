@@ -48,10 +48,10 @@ class RevcheckRun
         $this->targetFiles = new RevcheckFileList( $targetDir );
 
         // Source files get info from version control
-        GitLogParser::parseInto( $sourceDir , $this->sourceFiles );
+        GitLogParser::parseDir( $sourceDir , $this->sourceFiles );
 
         // Target files get info from revtags
-        RevtagParser::parseInto( $targetDir , $this->targetFiles );
+        RevtagParser::parseDir( $targetDir , $this->targetFiles );
 
         // match and mix
         $this->parseTranslationXml();
@@ -197,7 +197,7 @@ class RevcheckRun
                 case RevcheckStatus::TranslatedOld:
                 case RevcheckStatus::TranslatedWip:
                     $this->slowPathCount++;
-                    GitDiffParser::parseAddsDels( $this->sourceDir , $file );
+                    GitSlowUtils::parseAddsDels( $this->sourceDir , $file );
             }
         }
     }
