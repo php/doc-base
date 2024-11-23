@@ -774,29 +774,77 @@ if ($didLoad === false) {
 }
 echo "done.\n";
 
-echo "Running XInclude/XPointer... ";
-$status = $dom->xinclude();
-if ($status === -1) {
-    echo "failed.\n";
-} else {
-    /* For some dumb reason when no substitution are made it returns false instead of 0... */
-    $status = (int) $status;
-    echo "done. Performed $status XIncludes\n";
-}
-flush();
 
-if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
-{
-    $errors = libxml_get_errors();
-    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
-    if ( count( $errors ) > 0 )
+{   // XInclide/XPointer
+
+    echo "Running XInclude/XPointer... ";
+
+    // xinclides 1.1 capture
+
+    $beforeIdPaths = [];
+
+    $xpath = new DOMXPath( $dom );
+    $nodes = $xpath->query( "//*[@xml:id]" );
+
+    foreach( $nodes as $node )
     {
+        $id = $node->getAttribute( "xml:id" );
+        $path = $node->getNodePath();
+
+        if ( isset( $beforeIdPaths[ $id ] ) )
+        {
+            echo "failed.\nDuplicated xml:id '$id' before XInclude!\n";
+            errors_are_bad( 1 );
+        }
+        $beforeIdPaths[ $id ] = $path;
+    }
+
+    // main
+
+    $ret = $dom->xinclude();
+
+    $errors = libxml_get_errors();
+    libxml_clear_errors();
+
+    if ( $ret === -1 )
+        echo "failed.\n";
+    else
+    {
+        $countOk = (int) $ret;
+        $countErr = count( $errors );
+        echo "done. Performed $countOk XIncludes, $countErr failures.\n";
+    }
+
+    // failures
+
+    if ( $countErr && ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' ) )
+    {
+        // Always report failures on doc-en.
+        // Failures on doc-en are fatal.
+
+        $output = $ac['STDERR_TO_STDOUT'] == 'yes' ? STDOUT : STDERR;
         fprintf( $output , "\n");
+
         foreach( $errors as $error )
             fprintf( $output , "{$error->message}\n");
+
         if ( $ac['LANG'] == 'en' )
-            errors_are_bad(1);
+            errors_are_bad( 1 );
     }
+
+    // xinclides 1.1 fix up
+
+    $nodes = $xpath->query( "//*[@xml:id]" );
+    foreach( $nodes as $node )
+    {
+        $id = $node->getAttribute( "xml:id" );
+        $path = $node->getNodePath();
+
+        if ( $beforeIdPaths[ $id ] != $path )
+            $node->removeAttribute( "xml:id" );
+    }
+
+    flush();
 }
 
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
