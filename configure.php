@@ -19,9 +19,11 @@
   +----------------------------------------------------------------------+
 */
 
-error_reporting(-1);
-$cvs_id = '$Id$';
+ini_set( 'display_errors' , 1 );
+ini_set( 'display_startup_errors' , 1 );
+error_reporting( E_ALL );
 
+$cvs_id = '$Id$';
 echo "configure.php: $cvs_id\n";
 
 const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
@@ -779,72 +781,137 @@ echo "done.\n";
 
     echo "Running XInclude/XPointer... ";
 
-    // XInclude 1.1 capture
+    // Always report failures on doc-en.
+    // Translations can --disable-xpointer-reporting.
+    // Failures on doc-en are fatal.
 
-    $beforeIdPaths = [];
-
+    $report = $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en';
+    $print = $ac['STDERR_TO_STDOUT'] == 'yes' ? STDOUT : STDERR;
+    $fatal = $ac['LANG'] == 'en';
     $xpath = new DOMXPath( $dom );
-    $nodes = $xpath->query( "//*[@xml:id]" );
 
+    // pre run id capture
+
+    $prevIdPath = [];
+
+    $nodes = $xpath->query( "//*[@xml:id]" );
     foreach( $nodes as $node )
     {
         $id = $node->getAttribute( "xml:id" );
         $path = $node->getNodePath();
-
-        if ( isset( $beforeIdPaths[ $id ] ) )
+        if ( isset( $prevIdPath[ $id ] ) )
         {
             echo "failed.\nDuplicated xml:id '$id' before XInclude!\n";
             errors_are_bad( 1 );
         }
-        $beforeIdPaths[ $id ] = $path;
+        $prevIdPath[ $id ] = $path;
     }
 
-    // main
+    // automatic xi:fallback
+
+    $nodes = $xpath->query( "//*[local-name()='include']" );
+    foreach( $nodes as $node )
+    {
+        $target = $node->getAttribute( "xpointer" );
+        $failback = null;
+
+        $elements = $node->getElementsByTagName( "fallback" );
+        if ( count( $elements ) > 0 )
+        {
+            $failback = $elements[0];
+        }
+        else
+        {
+            $failback = $node->ownerDocument->createElementNS( "http://www.w3.org/2001/XInclude" , "fallback" );
+            //$failback = $node->ownerDocument->createElement( "xi:fallback" );
+            $node->append( $failback );
+        }
+
+        $comment = $failback->ownerDocument->createComment( "xi:fallback $target" );
+        $failback->append( $comment );
+
+        unset( $failback ); // otherwise core dumps on PHP 8.1.2-1ubuntu2.19
+        unset( $comment );  // otherwise core dumps on PHP 8.1.2-1ubuntu2.19
+    }
+
+    // run
 
     $ret = $dom->xinclude();
 
     $errors = libxml_get_errors();
     libxml_clear_errors();
 
-    if ( $ret === -1 )
-        echo "failed.\n";
-    else
-    {
-        $countOk = (int) $ret;
-        $countErr = count( $errors );
-        echo "done. Performed $countOk XIncludes, $countErr failures.\n";
-    }
+    $status = $ret === -1 ? "failed" : "done";
+    $countOk = $ret === -1 ? 0 : (int) $ret;
+    $countErr = count( $errors );
+    echo "$status. Performed $countOk XIncludes, $countErr failures.\n";
 
     // failures
 
-    if ( count( $errors ) && ( $ac['LANG'] == 'en' || $ac['XPOINTER_REPORTING'] == 'yes' ) )
+    if ( $report )
     {
-        // Always report failures on doc-en, translations can --disable-xpointer-reporting
-        // Failures on doc-en are fatal.
-
-        $output = $ac['STDERR_TO_STDOUT'] == 'yes' ? STDOUT : STDERR;
-        fprintf( $output , "\n");
+        // xi:include failures
 
         foreach( $errors as $error )
-            fprintf( $output , "{$error->message}\n");
+            fprintf( $print , "\n" . rtrim( $error->message ) . "\n");
 
-        if ( $ac['LANG'] == 'en' )
+        if ( $fatal && count( $errors ) )
             errors_are_bad( 1 );
+
+        // xi:failback failures
+
+        $count = 0;
+        $nodes = $xpath->query( "//comment()" );
+
+        foreach( $nodes as $node )
+        {
+            $payload = $node->data;
+            if ( str_starts_with( $payload , "xi:fallback" ) )
+            {
+                $count++;
+                $path = getNodePathWithIds( $node->parentNode );
+                fprintf( $print , "\nFailed xi:include at:        $path\n");
+
+                if ( trim( $payload) != "xi:fallback" )
+                {
+                    $payload = trim( substr( $payload , 12 ) );
+                    fprintf( $print , "Failed xi:include target is: $payload\n");
+                }
+            }
+        }
+
+        if ( $count > 0 )
+        {
+            fprintf( $print , "\n");
+            if ( $fatal )
+                errors_are_bad( 1 );
+        }
     }
 
-    // XInclude 1.1 fixup
+    // post run id fixup
 
     $nodes = $xpath->query( "//*[@xml:id]" );
     foreach( $nodes as $node )
     {
         $id = $node->getAttribute( "xml:id" );
         $path = $node->getNodePath();
-
-        if ( $beforeIdPaths[ $id ] != $path )
+        if ( $prevIdPath[ $id ] != $path )
             $node->removeAttribute( "xml:id" );
     }
 
     flush();
+}
+
+function getNodePathWithIds( DOMNode|null $node ) : string
+{
+    if ( $node == null || $node->nodeType == XML_DOCUMENT_NODE )
+        return "";
+    $path = getNodePathWithIds( $node->parentNode );
+    $path .= "/{$node->nodeName}";
+    $id = $node->getAttribute( "xml:id" );
+    if ( $id != "" )
+        $path .= "($id)";
+    return $path;
 }
 
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
