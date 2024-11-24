@@ -26,9 +26,13 @@ class GitLogParser
         $cwd = getcwd();
         chdir( $lang );
         $fp = popen( "git log --name-only" , "r" );
+        chdir( $cwd );
+
         $hash = "";
         $date = "";
         $skip = false;
+        $mcnt = 0;
+
         while ( ( $line = fgets( $fp ) ) !== false )
         {
             // new commit block
@@ -37,6 +41,7 @@ class GitLogParser
                 $hash = trim( substr( $line , 7 ) );
                 $date = "";
                 $skip = false;
+                $mcnt = 0;
                 continue;
             }
             // datetime of commit
@@ -46,20 +51,31 @@ class GitLogParser
                 $date = strtotime( $line );
                 continue;
             }
-            // other headers
-            if ( strpos( $line , ': ' ) > 0 )
-                continue;
             // empty lines
             if ( trim( $line ) == "" )
                 continue;
             // commit message
             if ( str_starts_with( $line , '    ' ) )
             {
-                // commits with this mark are ignored
-                if ( stristr( $line, '[skip-revcheck]' ) !== false )
-                    $skip = true;
+                if ( LOOSE_SKIP_REVCHECK ) // See below, and https://github.com/php/doc-base/pull/132
+                {
+                    // commits with [skip-revcheck] anywhere commit message flags skip
+                    if ( str_contains( $line, '[skip-revcheck]' ) )
+                        $skip = true;
+                }
+                else
+                {
+                    $mcnt++;
+                    // [skip-revcheck] at start of first line of commit message flags a skip
+                    if ( $mcnt == 1 && str_starts_with( trim( $line ) , '[skip-revcheck]' ) )
+                        $skip = true;
+                }
                 continue;
             }
+            // other headers
+            if ( strpos( $line , ': ' ) > 0 )
+                continue;
+
             // otherwise, a filename
             $filename = trim( $line );
             $info = $list->get( $filename );
@@ -68,26 +84,9 @@ class GitLogParser
             if ( $info == null )
                 continue;
 
-            // the head commit
-            if ( $info->head == "" )
-            {
-                $info->head = $hash;
-                $info->date = $date;
-            }
-
-            // after, only tracks non skipped commits
-            if ( $skip )
-                continue;
-
-            // the diff commit
-            if ( $info->diff == "" )
-            {
-                $info->diff = $hash;
-                $info->date = $date;
-            }
+            $info->addGitLogData( $hash , $date , $skip );
         }
 
         pclose( $fp );
-        chdir( $cwd );
     }
 }

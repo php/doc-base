@@ -1,13 +1,14 @@
 <?php
 define("DEBUG", 0);
-$BUILDDIR = "https://www.mumumu.org/chm";
+$BUILDDIR = "http://www.mumumu.org/chm";
 $TMPDIR = sys_get_temp_dir();
 $CHMDIR = "/local/mirrors/phpweb/distributions/manual";
 
 $chminfo = "$BUILDDIR/build.log";
-fetch($chminfo, tempnam(sys_get_temp_dir(), "chm"));
+$tmpfilename = tempnam(sys_get_temp_dir(), "chm");
+fetch($chminfo, $tmpfilename);
 
-$chms = file($chminfo, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+$chms = file($tmpfilename, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 if (!$chms) {
     err("No chm info\n");
     return 1;

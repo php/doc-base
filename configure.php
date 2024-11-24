@@ -24,6 +24,10 @@ $cvs_id = '$Id$';
 
 echo "configure.php: $cvs_id\n";
 
+const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
+const RNG_SCHEMA_FILE = RNG_SCHEMA_DIR . 'docbook.rng';
+const RNG_SCHEMA_XINCLUDE_FILE = RNG_SCHEMA_DIR . 'docbookxi.rng';
+
 function usage() // {{{
 {
     global $acd;
@@ -631,8 +635,6 @@ if ($ac["GENERATE"] != "no") {
 // Notice how doing it this way results in generating less than half as many files.
 $infiles = array(
     'manual.xml.in',
-    'install-unix.xml.in',
-    'install-win.xml.in',
     'scripts/file-entities.php.in',
 );
 
@@ -800,7 +802,7 @@ if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
 flush();
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
-    $dom->validate(); // we don't care if the validation works or not
+    $dom->relaxNGValidate(RNG_SCHEMA_FILE); // we don't care if the validation works or not
     $node = $dom->getElementById($ac['PARTIAL']);
     if (!$node) {
         echo "failed.\n";
@@ -838,7 +840,11 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
 } // }}}
 
 $mxml = $ac["OUTPUT_FILENAME"];
-if ($dom->validate()) {
+
+/* TODO: For some reason libxml does not validate the RelaxNG schema unless reloading the document in full */
+$dom->save($mxml);
+$dom->load($mxml, $LIBXML_OPTS);
+if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
     printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
     flush();
@@ -870,26 +876,23 @@ CAT;
     exit(0); // Tell the shell that this script finished successfully.
 } else {
     echo "failed.\n";
-    echo "\nThe document didn't validate, ";
+    echo "\nThe document didn't validate\n";
 
-    // Allow the .manual.xml file to be created, even if it is not valid.
-    if ($ac['FORCE_DOM_SAVE'] == 'yes') {
-        printf("writing %s anyway, and ", basename($ac["OUTPUT_FILENAME"]));
-        $dom->save($mxml);
-    }
-
-    if ($ac['DETAILED_ERRORMSG'] == 'yes') {
-        echo "trying to figure out what went wrong...\n";
-        echo "(This could take awhile. If you experience segfaults here, try again with --disable-xml-details)\n";
-        libxml_clear_errors(); // Clear the errors, they contain incorrect filename&line
-
-        $dom->load("{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}", $LIBXML_OPTS | LIBXML_DTDVALID);
-        print_xml_errors();
+    /**
+     * TODO: Integrate jing to explain schema violations as libxml is *useless*
+     * And this is not going to change for a while as the maintainer of libxml2 even acknowledges:
+     * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
+     * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
+     */
+    $output = shell_exec('java -jar ' . $srcdir . '/docbook/jing.jar ' . RNG_SCHEMA_FILE. ' ' . $acd['OUTPUT_FILENAME']);
+    if ($output === null) {
+        echo "Command failed do you have Java installed?";
     } else {
-        echo "here are the errors I got:\n";
-        echo "(If this isn't enough information, try again with --enable-xml-details)\n";
-        print_xml_errors(false);
+        echo $output;
     }
+    //echo 'Please use Jing and the:' . PHP_EOL
+    //    . 'java -jar ./build/jing.jar /path/to/doc-base/docbook/docbook-v5.2-os/rng/docbookxi.rng /path/to/doc-base/.manual.xml' . PHP_EOL
+    //    . 'command to check why the RelaxNG schema failed.' . PHP_EOL;
 
     // Exit normally when don't care about validation
     if ($ac["FORCE_DOM_SAVE"] == "yes") {

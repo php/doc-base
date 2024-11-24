@@ -85,7 +85,7 @@
 <!ENTITY url.expat "https://libexpat.github.io/">
 <!ENTITY url.expat.rpm "https://sourceforge.net/projects/expat/">
 <!ENTITY url.expect "http://expect.nist.gov/">
-<!ENTITY url.exsltlib "http://xmlsoft.org/XSLT/EXSLT/index.html">
+<!ENTITY url.exsltlib "https://gitlab.gnome.org/GNOME/libxslt/-/wikis/home">
 <!ENTITY url.ezweb "http://www.au.kddi.com/english/service/ezweb/index.html">
 <!ENTITY url.fann.lib "http://leenissen.dk/fann/wp/">
 <!ENTITY url.fann.github "https://github.com/bukka/php-fann">
@@ -111,7 +111,9 @@
 <!ENTITY url.gmagick.imagemagickdiff.faq "http://www.graphicsmagick.org/FAQ.html#how-does-graphicsmagick-differ-from-imagemagick">
 <!ENTITY url.gmp "http://gmplib.org/#DOWNLOAD">
 <!ENTITY url.gnochm "http://gnochm.sourceforge.net/">
+<!ENTITY url.gnu.autoconf "https://www.gnu.org/software/autoconf/autoconf.html">
 <!ENTITY url.gnu.configure "http://www.airs.com/ian/configure/">
+<!ENTITY url.gnu.make "https://www.gnu.org/software/make/make.html">
 <!ENTITY url.gnupg "http://www.gnupg.org/">
 <!ENTITY url.gpgme "http://www.gnupg.org/related_software/gpgme/">
 <!ENTITY url.hash.nist-hash-functions "https://csrc.nist.gov/projects/hash-functions">
@@ -159,11 +161,13 @@
 <!ENTITY url.imap.book "http://oreilly.com/catalog/9780596000127/">
 <!ENTITY url.imode "http://www.nttdocomo.com/services/imode/">
 <!ENTITY url.informix.connectionstring "https://www.ibm.com/docs/en/informix-servers/14.10?topic=sources-connection-string-keywords-that-make-connection">
-<!ENTITY url.informix.csdk "https://www.ibm.com/products/informix/developer-tools/">
+<!ENTITY url.informix.csdk "https://www.ibm.com/support/pages/download-informix-products">
 <!ENTITY url.informix.dsn "https://www.ibm.com/docs/en/informix-servers/14.10?topic=guide-configure-data-sources">
 <!ENTITY url.ingres.downloads "http://esd.ingres.com/">
 <!ENTITY url.ingres.peclext "http://esd.ingres.com/product/drivers/PHP/">
 <!ENTITY url.ingres.wiki "http://community.ingres.com/wiki/">
+<!ENTITY url.install.unix.pax-mprotect "https://en.wikibooks.org/wiki/Grsecurity/Appendix/Grsecurity_and_PaX_Configuration_Options#Restrict_mprotect()">
+<!ENTITY url.install.unix.w-x-violation "https://en.wikipedia.org/wiki/W^X">
 <!ENTITY url.install.windows.stepbystep "https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2">
 <!ENTITY url.installkits "http://wikipedia.org/wiki/List_of_AMP_packages">
 <!ENTITY url.iodbc "http://www.iodbc.org/">
@@ -191,9 +195,9 @@
 <!ENTITY url.libiconv "http://www.gnu.org/software/libiconv/">
 <!ENTITY url.liblzf "http://oldhome.schmorp.de/marc/liblzf.html">
 <!ENTITY url.libsodium "https://libsodium.org/">
-<!ENTITY url.libxml "http://www.xmlsoft.org/">
-<!ENTITY url.libxml.errorcodes "http://www.xmlsoft.org/html/libxml-xmlerror.html">
-<!ENTITY url.libxslt "http://xmlsoft.org/XSLT/">
+<!ENTITY url.libxml "https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home">
+<!ENTITY url.libxml.errorcodes "https://gnome.pages.gitlab.gnome.org/libxml2/devhelp/libxml2-xmlerror.html">
+<!ENTITY url.libxslt "https://gitlab.gnome.org/GNOME/libxslt/-/wikis/home">
 <!ENTITY url.libssh2 "http://libssh2.org/">
 <!ENTITY url.libpng "http://www.libpng.org/pub/png/libpng.html">
 <!ENTITY url.libradius "http://www.freebsd.org/cgi/man.cgi?query=libradius">
@@ -247,11 +251,11 @@
 <!ENTITY url.mongodb.doctrine-odm "https://github.com/doctrine/mongodb-odm">
 <!ENTITY url.mongodb.drivers "https://www.mongodb.com/docs/drivers/">
 <!ENTITY url.mongodb.specs "https://github.com/mongodb/specifications">
-<!ENTITY url.mongodb.specs.extendedjson "https://github.com/mongodb/specifications/blob/master/source/extended-json.rst">
-<!ENTITY url.mongodb.crud "https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst">
-<!ENTITY url.mongodb.serverselection "https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.rst">
-<!ENTITY url.mongodb.sdam "https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst">
-<!ENTITY url.mongodb.sdam-monitoring "https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring-monitoring.rst">
+<!ENTITY url.mongodb.specs.extendedjson "https://github.com/mongodb/specifications/blob/master/source/extended-json/extended-json.md">
+<!ENTITY url.mongodb.crud "https://github.com/mongodb/specifications/blob/master/source/crud/crud.md">
+<!ENTITY url.mongodb.serverselection "https://github.com/mongodb/specifications/blob/master/source/server-selection/server-selection.md">
+<!ENTITY url.mongodb.sdam "https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.md">
+<!ENTITY url.mongodb.sdam-monitoring "https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring-logging-and-monitoring.md">
 <!ENTITY url.mongodb.docs.regex "https://www.mongodb.com/docs/manual/reference/operator/query/regex/">
 <!ENTITY url.mongodb.docs.bson "https://www.mongodb.com/docs/manual/reference/bson-types/">
 <!ENTITY url.mongodb.docs.collation "https://www.mongodb.com/docs/upcoming/reference/collation/">
@@ -340,7 +344,7 @@
 <!ENTITY url.pecl "https://pecl.php.net/">
 <!ENTITY url.pecl.package "https://pecl.php.net/package/">
 <!ENTITY url.pecl.vcs "https://svn.php.net/viewvc/pecl/">
-<!ENTITY url.pecl.windows.releases "https://windows.php.net/downloads/pecl/releases/">
+<!ENTITY url.pecl.windows.releases "https://downloads.php.net/~windows/pecl/releases/">
 <!ENTITY url.pecl.submit "https://pecl.php.net/package-new.php">
 <!-- linking to specific pecl packages is done like so: &url.pecl.package;package_name -->
 <!ENTITY url.pecl.package.get "https://pecl.php.net/get/">
@@ -354,7 +358,7 @@
 <!ENTITY url.php.bugs.howtoreport "https://bugs.php.net/how-to-report.php">
 <!ENTITY url.php.doc.downloads "https://www.php.net/download-docs.php">
 <!ENTITY url.php.docs "https://www.php.net/docs.php">
-<!ENTITY url.php.dochowto "http://doc.php.net/tutorial/">
+<!ENTITY url.php.dochowto "https://doc.php.net/guide/">
 <!ENTITY url.php.downloads "https://www.php.net/downloads.php">
 <!ENTITY url.php.git.mirror "https://github.com/php/">
 <!ENTITY url.php.win.downloads "https://windows.php.net/download/">
@@ -396,6 +400,7 @@
 <!ENTITY url.random.xoshiro "https://prng.di.unimi.it/">
 <!ENTITY url.random.gamma-section "https://dl.acm.org/doi/10.1145/3503512">
 <!ENTITY url.rar "http://www.rarlabs.com/">
+<!ENTITY url.re2c "https://re2c.org/">
 <!ENTITY url.readline "http://cnswww.cns.cwru.edu/~chet/readline/rltop.html">
 <!ENTITY url.readline.windows "http://mingweditline.sourceforge.net/">
 <!ENTITY url.recode "http://directory.fsf.org/All_GNU_Packages/recode.html">
@@ -494,6 +499,7 @@
 <!ENTITY url.wiki.quicksort "http://en.wikipedia.org/wiki/Quicksort">
 <!ENTITY url.wiki.windows.build.howto "https://wiki.php.net/internals/windows/stepbystepbuild">
 <!ENTITY url.wincmd "http://www.ghisler.com/">
+<!ENTITY url.win32service.kb914392 "https://www.betaarchive.com/wiki/index.php?title=Microsoft_KB_Archive/914392">
 <!ENTITY url.winhelp "http://msdn.microsoft.com/library/en-us/htmlhelp/html/vsconhh1start.asp">
 <!ENTITY url.winrar "http://www.rarlab.com/">
 <!ENTITY url.winzip "http://www.winzip.com/">
@@ -546,7 +552,6 @@
 <!ENTITY book.applied.cryptography 'Applied Cryptography by Schneier (ISBN 0-471-11709-9)'>
 <!ENTITY book.programming.classics "Programming Classics: Implementing the World's Best Algorithms by Oliver (ISBN 0-131-00413-1)">
 
-<!ENTITY email.harald                'harald.radi@nme.at'>
 <!ENTITY email.php.install           'php-install@lists.php.net'>
 <!ENTITY email.php.install.subscribe 'php-install+subscribe@lists.php.net'>
 <!ENTITY email.php.doc               'phpdoc@lists.php.net'>
@@ -612,5 +617,45 @@
 <!ENTITY httpd.conf '<filename xmlns="http://docbook.org/ns/docbook">httpd.conf</filename>'>
 <!ENTITY htaccess '<filename xmlns="http://docbook.org/ns/docbook">.htaccess</filename>'>
 
+<!-- Acronyms -->
+<!ENTITY api '<acronym xmlns="http://docbook.org/ns/docbook">API</acronym>'>
+<!ENTITY ascii '<acronym xmlns="http://docbook.org/ns/docbook">ASCII</acronym>'>
+<!ENTITY ca '<acronym xmlns="http://docbook.org/ns/docbook">CA</acronym>'>
+<!ENTITY cgi '<acronym xmlns="http://docbook.org/ns/docbook">CGI</acronym>'>
 <!ENTITY cli '<acronym xmlns="http://docbook.org/ns/docbook">CLI</acronym>'>
 <!ENTITY cli.sapi '<acronym xmlns="http://docbook.org/ns/docbook">CLI</acronym> <acronym xmlns="http://docbook.org/ns/docbook">SAPI</acronym>'>
+<!ENTITY curl '<acronym xmlns="http://docbook.org/ns/docbook">cURL</acronym>'>
+<!ENTITY der '<acronym xmlns="http://docbook.org/ns/docbook">DER</acronym>'>
+<!ENTITY dns '<acronym xmlns="http://docbook.org/ns/docbook">DNS</acronym>'>
+<!ENTITY dom '<acronym xmlns="http://docbook.org/ns/docbook">DOM</acronym>'>
+<!ENTITY fpm '<acronym xmlns="http://docbook.org/ns/docbook">FPM</acronym>'>
+<!ENTITY ftp '<acronym xmlns="http://docbook.org/ns/docbook">FTP</acronym>'>
+<!ENTITY ftps '<acronym xmlns="http://docbook.org/ns/docbook">FTPS</acronym>'>
+<!ENTITY hmac '<acronym xmlns="http://docbook.org/ns/docbook">HMAC</acronym>'>
+<!ENTITY html '<acronym xmlns="http://docbook.org/ns/docbook">HTML</acronym>'>
+<!ENTITY http '<acronym xmlns="http://docbook.org/ns/docbook">HTTP</acronym>'>
+<!ENTITY https '<acronym xmlns="http://docbook.org/ns/docbook">HTTPS</acronym>'>
+<!ENTITY hsts '<acronym xmlns="http://docbook.org/ns/docbook">HSTS</acronym>'>
+<!ENTITY ip '<acronym xmlns="http://docbook.org/ns/docbook">IP</acronym>'>
+<!ENTITY ipv4 '<acronym xmlns="http://docbook.org/ns/docbook">IPv4</acronym>'>
+<!ENTITY ipv6 '<acronym xmlns="http://docbook.org/ns/docbook">IPv6</acronym>'>
+<!ENTITY json '<acronym xmlns="http://docbook.org/ns/docbook">JSON</acronym>'>
+<!ENTITY ldap '<acronym xmlns="http://docbook.org/ns/docbook">LDAP</acronym>'>
+<!ENTITY pdo '<acronym xmlns="http://docbook.org/ns/docbook">PDO</acronym>'>
+<!ENTITY pem '<acronym xmlns="http://docbook.org/ns/docbook">PEM</acronym>'>
+<!ENTITY phar '<acronym xmlns="http://docbook.org/ns/docbook">Phar</acronym>'>
+<!ENTITY php '<acronym xmlns="http://docbook.org/ns/docbook">PHP</acronym>'>
+<!ENTITY pop3 '<acronym xmlns="http://docbook.org/ns/docbook">POP3</acronym>'>
+<!ENTITY rtsp '<acronym xmlns="http://docbook.org/ns/docbook">RTSP</acronym>'>
+<!ENTITY sapi '<acronym xmlns="http://docbook.org/ns/docbook">SAPI</acronym>'>
+<!ENTITY sftp '<acronym xmlns="http://docbook.org/ns/docbook">SFTP</acronym>'>
+<!ENTITY smtp '<acronym xmlns="http://docbook.org/ns/docbook">SMTP</acronym>'>
+<!ENTITY spl '<acronym xmlns="http://docbook.org/ns/docbook">SPL</acronym>'>
+<!ENTITY ssh '<acronym xmlns="http://docbook.org/ns/docbook">SSH</acronym>'>
+<!ENTITY ssl '<acronym xmlns="http://docbook.org/ns/docbook">SSL</acronym>'>
+<!ENTITY tcp '<acronym xmlns="http://docbook.org/ns/docbook">TCP</acronym>'>
+<!ENTITY tls '<acronym xmlns="http://docbook.org/ns/docbook">TLS</acronym>'>
+<!ENTITY udp '<acronym xmlns="http://docbook.org/ns/docbook">UDP</acronym>'>
+<!ENTITY uri '<acronym xmlns="http://docbook.org/ns/docbook">URI</acronym>'>
+<!ENTITY url '<acronym xmlns="http://docbook.org/ns/docbook">URL</acronym>'>
+<!ENTITY xml '<acronym xmlns="http://docbook.org/ns/docbook">XML</acronym>'>

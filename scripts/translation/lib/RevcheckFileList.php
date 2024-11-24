@@ -28,7 +28,7 @@ class RevcheckFileList
         $this->loadTree( $lang );
     }
 
-    function get( $file ): RevcheckFileInfo|null
+    function get( $file ): RevcheckFileItem|null
     {
         return $this->list[ $file ] ?? null;
     }
@@ -70,7 +70,7 @@ class RevcheckFileList
 
             if ( RevcheckIgnore::ignore( $key ) )
                 continue;
-            $file = new RevcheckFileInfo( $key , $entry->getSize() );
+            $file = new RevcheckFileItem( $key , $entry->getSize() );
             $this->list[ $key ] = $file;
         }
 

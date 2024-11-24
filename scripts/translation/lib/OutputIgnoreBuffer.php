@@ -23,9 +23,10 @@ class OutputIgnoreBuffer
 {
     public int $printCount = 0;
 
-    private string $header = "";
     private string $filename = "";
-    private array $texts = array();
+    private string $header = "";
+    private array  $matter = array();
+    private array  $footer = array();
 
     private OutputIgnoreArgv $args;
 
@@ -38,7 +39,7 @@ class OutputIgnoreBuffer
 
     function add( string $text )
     {
-        $this->texts[] = $text;
+        $this->matter[] = $text;
     }
 
     function addDiff( string $text , int $sourceCount , int $targetCount )
@@ -60,52 +61,95 @@ class OutputIgnoreBuffer
         $this->add( "{$prefix}{$text}{$suffix}\n" );
     }
 
+    function addFooter( string $text )
+    {
+        $this->footer[] = $text;
+    }
+
     function addLine()
     {
-        if ( count( $this->texts ) > 0 && end( $this->texts ) != "\n" )
+        if ( count( $this->matter ) > 0 && end( $this->matter ) != "\n" )
             $this->add( "\n" );
     }
 
-    function print()
+    function print( bool $useAlternatePrinting = false )
     {
-        if ( count( $this->texts ) == 0 )
+        if ( count( $this->matter ) == 0 )
             return;
+        $this->printCount++;
 
-        $this->addLine( "\n" );
-        if ( count ( $this->texts ) > 0 )
-             $this->printCount++;
+        // footer
 
-        $head = $this->filename . ':' . $this->hash( false ) . ':';
-        $mark = $head . $this->hash( true );
+        $markhead = $this->filename . ':' . $this->hash( false ) . ':';
+        $markfull = $markhead . $this->hash( true );
         $marks = OutputIgnoreArgv::cacheFile()->load( array() );
 
         if ( $this->args->showIgnore )
         {
-            if ( in_array( $mark , $marks ) )
-                $this->texts = array();
-            else
-                $this->args->pushAddIgnore( $this , $mark );
+            // --add-ignore
 
-            // old marks
-            while ( in_array( $mark , $marks ) )
+            if ( in_array( $markfull , $marks ) )
+                $this->matter = array();
+            else
+                $this->args->pushAddIgnore( $this , $markfull );
+
+            // Avoid dupliocates on output
+
+            while ( in_array( $markfull , $marks ) )
             {
-                $key = array_search( $mark , $marks );
+                $key = array_search( $markfull , $marks );
                 unset( $marks[$key] );
             }
+
+            // --del-ignore
+
             foreach ( $marks as $mark )
                 if ( $mark != null )
-                    if ( str_starts_with( $mark , $head ) )
+                    if ( str_starts_with( $mark , $markhead ) )
                         $this->args->pushDelIgnore( $this , $mark );
-
         }
 
-        $this->addLine( "\n" );
-
-        if ( count( $this->texts ) == 0 )
+        if ( count( $this->matter ) == 0 && count( $this->footer ) == 0 )
             return;
 
         print $this->header;
-        foreach( $this->texts as $text )
+
+        if ( $useAlternatePrinting )
+            $this->printMatterAlternate();
+        else
+            foreach( $this->matter as $text )
+                print $text;
+
+        if ( count( $this->matter ) )
+            print "\n";
+
+        foreach( $this->footer as $text )
+            print $text;
+
+        if ( count( $this->footer ) )
+            print "\n";
+    }
+
+    private function printMatterAlternate() : void
+    {
+        $add = array();
+        $del = array();
+        $rst = array();
+
+        foreach( $this->matter as $text )
+        {
+            if     ( $text[0] == '+' ) $add[] = $text;
+            elseif ( $text[0] == '-' ) $del[] = $text;
+            else                       $rst[] = $text;
+        }
+
+        for ( $idx = 0 ; $idx < count( $this->matter ) ; $idx++ )
+        {
+            if ( isset( $add[ $idx ] ) ) print $add[ $idx ];
+            if ( isset( $del[ $idx ] ) ) print $del[ $idx ];
+        }
+
+        foreach( $rst as $text )
             print $text;
     }
 
@@ -113,7 +157,7 @@ class OutputIgnoreBuffer
     {
         $text = $this->header . $this->args->options;
         if ( $withContents )
-            $text .= implode( "" , $this->texts );
+            $text .= implode( "" , $this->matter );
         $text = str_replace( " " , "" , $text );
         $text = str_replace( "\n" , "" , $text );
         $text = str_replace( "\r" , "" , $text );
