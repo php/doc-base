@@ -775,11 +775,11 @@ if ($didLoad === false) {
 echo "done.\n";
 
 
-{   // XInclide/XPointer
+{   // XInclude/XPointer
 
     echo "Running XInclude/XPointer... ";
 
-    // xinclides 1.1 capture
+    // XInclude 1.1 capture
 
     $beforeIdPaths = [];
 
@@ -817,9 +817,9 @@ echo "done.\n";
 
     // failures
 
-    if ( $countErr && ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' ) )
+    if ( count( $errors ) && ( $ac['LANG'] == 'en' || $ac['XPOINTER_REPORTING'] == 'yes' ) )
     {
-        // Always report failures on doc-en.
+        // Always report failures on doc-en, translations can --disable-xpointer-reporting
         // Failures on doc-en are fatal.
 
         $output = $ac['STDERR_TO_STDOUT'] == 'yes' ? STDOUT : STDERR;
@@ -832,7 +832,7 @@ echo "done.\n";
             errors_are_bad( 1 );
     }
 
-    // xinclides 1.1 fix up
+    // XInclude 1.1 fixup
 
     $nodes = $xpath->query( "//*[@xml:id]" );
     foreach( $nodes as $node )
