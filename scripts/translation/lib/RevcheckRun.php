@@ -208,7 +208,11 @@ class RevcheckRun
         $this->revData->lang = $this->targetDir;
         $this->revData->date = date("r");
 
-        $dom = XmlUtil::loadFile( $this->targetDir . '/translation.xml' );
+        $transfile = $this->targetDir . '/translation.xml';
+        if ( ! file_exists( $transfile ) )
+            throw new \Exception("Missing translation.xml file." );
+
+        $dom = XmlUtil::loadFile( $transfile );
 
         $tag = $dom->getElementsByTagName( 'intro' )[0] ?? null;
         if ( $tag == null )
