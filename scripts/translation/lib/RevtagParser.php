@@ -30,7 +30,7 @@ class RevtagInfo
 
 class RevtagParser
 {
-    static function parseInto( string $lang , RevcheckFileList & $list )
+    static function parseDir( string $lang , RevcheckFileList $list )
     {
         foreach( $list->iterator() as $entry )
             $entry->revtag = RevtagParser::parseFile( $lang . '/' . $entry->file );
