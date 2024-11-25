@@ -23,8 +23,6 @@ class RevcheckFileItem
 {
     public string $file = ""; // from fs
     public int    $size = 0 ; // from fs
-    public string $head = ""; // from vcs, source only, head hash, may be skipped
-    public string $diff = ""; // from vcs, source only, diff hash, no skips
     public int    $date = 0 ; // from vcs, source only, date of head or diff commit
     public string $hashLast = ""; // derived by addGitLogData
     public string $hashDiff = ""; // derived by addGitLogData, isSyncHash
@@ -39,8 +37,6 @@ class RevcheckFileItem
     {
         $this->file = $file;
         $this->size = $size;
-        $this->head = "";
-        $this->diff = "";
         $this->date = 0;
         $this->status = RevcheckStatus::Untranslated;
         $this->revtag = null;
@@ -71,7 +67,7 @@ class RevcheckFileItem
             $this->hashStop = true;
     }
 
-    public function isSyncHash( $hash )
+    public function isSyncHash( $hash ) : bool
     {
         $sync = in_array( $hash , $this->hashList );
         if ( $sync )
