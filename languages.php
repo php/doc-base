@@ -48,7 +48,7 @@ usage: [--clone] [--undo] [--pull] [--mark] [--quiet]
 Options that operates on local repositories:
 
    --clone      Clone a sibling language repo, if not exists
-   --undo       Reset, restore and clean up local changes
+   --undo       Restore and clean up repositories to a pristine state
    --pull       Executes git pull
    --mark       Creates/deletes marking files
    --quiet      Set this option on git commands
@@ -60,7 +60,7 @@ Options that output simple listings:
 
 Options that select more languages to operate:
 
-   --rev        Include all languages with revcheck flag
+   --rev        Include languages with revcheck flag
    --all        Include all languages
 
 
@@ -182,7 +182,7 @@ function langAddAll()
 function langAddRev()
 {
     foreach( Conf::$knowLangs as $lang )
-        if ( $lang->revcheck )
+        if ( $lang->manual || $lang->revcheck )
             Conf::$langs[ $lang->code ] = $lang;
 }
 
@@ -226,13 +226,13 @@ function gitUndo( Lang $lang )
     else
         echo "undo  {$lang->code}\n";
 
-    $cmd = array( 'git' , '-C' , $lang->path , 'reset' , Conf::$quiet );
+    $cmd = array( 'git' , '-C' , $lang->path , 'restore' , Conf::$quiet , '.' );
     cmdExecute( $cmd );
 
     $cmd = array( 'git' , '-C' , $lang->path , 'clean' , Conf::$quiet , '-f' , '-d' );
     cmdExecute( $cmd );
 
-    $cmd = array( 'git' , '-C' , $lang->path , 'checkout' , Conf::$quiet , '.' );
+    $cmd = array( 'git' , '-C' , $lang->path , 'clean' , '--quiet' , '-fdx' );
     cmdExecute( $cmd );
 }
 
@@ -276,29 +276,28 @@ function dirMark()
     if ( Conf::$mark == false )
         return;
 
-    // TODO: Check if these markings are ok
-
     foreach( Conf::$langs as $lang )
     {
-        // Flag lang dir to build manual or not
-
-        $path = "{$lang->path}/BUILDMAN";
         $text = $lang->label;
 
-        if ( $lang->manual && ! file_exists( $path ) )
-            file_put_contents( $path , $text );
+        if ( $lang->manual ) // Flags langDir as manual build
+        {
+            $path = "{$lang->path}/BUILDMAN";
 
-        if ( ! $lang->manual && file_exists( $path ) )
-            unlink( $path );
+            if ( $lang->manual && ! file_exists( $path ) )
+                file_put_contents( $path , $text );
+            if ( ! $lang->manual && file_exists( $path ) )
+                unlink( $path );
+        }
 
-        // Flag lang dir to generate revcheck or not
+        if ( $lang->manual ) // Flags langDir as genrevdb.php
+        {
+            $path = "{$lang->path}/BUILDREV";
 
-        $path = "{$lang->path}/BUILDREV";
-
-        if ( $lang->revcheck && ! file_exists( $path ) )
-            file_put_contents( $path , $text );
-
-        if ( ! $lang->revcheck && file_exists( $path ) )
-            unlink( $path );
+            if ( $lang->revcheck && ! file_exists( $path ) )
+                file_put_contents( $path , $text );
+            if ( ! $lang->revcheck && file_exists( $path ) )
+                unlink( $path );
+        }
     }
 }
