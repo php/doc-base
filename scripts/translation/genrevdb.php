@@ -112,8 +112,8 @@ function generate( SQLite3 $db , string $lang )
     }
     catch ( Exception $e )
     {
-        $db->exec( 'ROLLBACK TRANSACTION' );
         consolelog( "Throw: " . $e->getMessage() );
+        $db->exec( 'ROLLBACK TRANSACTION' );
         exit;
     }
 }
