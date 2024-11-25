@@ -74,11 +74,24 @@ foreach ( $qalist as $qafile )
         print "\n";
 }
 
-function extractTriple( array $list )
+function extractTriple(array $list)
 {
     $ret = array();
-    foreach( $list as $elem )
-        foreach( $elem->attributes as $attrib )
-            $ret[] = "{$elem->nodeName} {$attrib->nodeName} {$attrib->nodeValue}";
+    try {
+        foreach ($list as $elem) {
+            if ($elem->hasAttributes()) {
+                foreach ($elem->attributes as $attrib) {
+                    $ret[] = sprintf(
+                        "%s %s %s",
+                        $elem->nodeName,
+                        $attrib->nodeName,
+                        $attrib->nodeValue
+                    );
+                }
+            }
+        }
+    } catch (Exception $e) {
+        throw new Exception("Error extracting attributes: " . $e->getMessage());
+    }
     return $ret;
 }
