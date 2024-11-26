@@ -62,6 +62,7 @@ Options that select more languages to operate:
 
    --rev        Include languages with revcheck flag
    --all        Include all languages
+   --base       Include doc-base repo
 
 
 USAGE;
@@ -121,9 +122,11 @@ function run()
             case "--list-csv": Conf::$listCsv = true; break;
             case "--list-ssv": Conf::$listSsv = true; break;
 
-            case "--rev": langAddRev(); break;
-            case "--all": langAddAll(); break;
-            default:      langAdd( $arg ); break;
+            case "--all":   langAddAll(); break;
+            case "--rev":   langAddRev(); break;
+            case "--base":  langDocbase(); break;
+
+            default:        langAdd( $arg ); break;
         }
     }
 
@@ -186,6 +189,13 @@ function langAddRev()
             Conf::$langs[ $lang->code ] = $lang;
 }
 
+function langDocbase()
+{
+    $code = basename( __DIR__ );
+    $lang = new Lang( $code , false , false , "" , "" );
+    Conf::$langs[ $lang->code ] = $lang;
+}
+
 function gitAll()
 {
     foreach( Conf::$langs as $lang )
@@ -199,6 +209,8 @@ function gitAll()
 function gitClone( Lang $lang )
 {
     if ( Conf::$clone == false )
+        return;
+    if ( $lang->cloneUrl == "" )
         return;
 
     if ( file_exists( $lang->path ) )
