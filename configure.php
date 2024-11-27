@@ -790,21 +790,21 @@ echo "done.\n";
     $fatal = $ac['LANG'] == 'en';
     $xpath = new DOMXPath( $dom );
 
-    // pre run id capture
+    // pre xinclude() run id capture
 
-    $prevIdPath = [];
+    $listIdPath = [];
 
     $nodes = $xpath->query( "//*[@xml:id]" );
     foreach( $nodes as $node )
     {
         $id = $node->getAttribute( "xml:id" );
         $path = $node->getNodePath();
-        if ( isset( $prevIdPath[ $id ] ) )
+        if ( isset( $listIdPath[ $id ] ) )
         {
             echo "failed.\nDuplicated xml:id '$id' before XInclude!\n";
             errors_are_bad( 1 );
         }
-        $prevIdPath[ $id ] = $path;
+        $listIdPath[ $id ] = $path;
     }
 
     // automatic xi:fallback
@@ -870,13 +870,10 @@ echo "done.\n";
             {
                 $count++;
                 $path = getNodePathWithIds( $node->parentNode );
-                fprintf( $print , "\nFailed xi:include at:        $path\n");
+                fprintf( $print , "\nFailed xi:include location:   $path\n");
 
-                if ( trim( $payload) != "xi:fallback" )
-                {
-                    $payload = trim( substr( $payload , 12 ) );
-                    fprintf( $print , "Failed xi:include target is: $payload\n");
-                }
+                $payload = trim( substr( $payload , 12 ) );
+                fprintf( $print , "Failed xi:include target is:  $payload\n");
             }
         }
 
@@ -891,12 +888,27 @@ echo "done.\n";
     // post run id fixup
 
     $nodes = $xpath->query( "//*[@xml:id]" );
+
+    $count = [];
+    foreach( $nodes as $node )
+    {
+        $id = $node->getAttribute( "xml:id" );
+        isset( $count[$id] ) ? $count[$id]++ : $count[$id] = 1;
+    }
+
     foreach( $nodes as $node )
     {
         $id = $node->getAttribute( "xml:id" );
         $path = $node->getNodePath();
-        if ( $prevIdPath[ $id ] != $path )
+
+        // Delete ids with unknown (newer?) paths,
+        // but do not overdelete if all paths changed.
+
+        if ( $listIdPath[ $id ] != $path && $count[ $id ] > 1 )
+        {
             $node->removeAttribute( "xml:id" );
+            $count[ $id ]--;
+        }
     }
 
     flush();
