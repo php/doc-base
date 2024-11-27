@@ -48,10 +48,10 @@ class RevcheckRun
         $this->targetFiles = new RevcheckFileList( $targetDir );
 
         // Source files get info from version control
-        GitLogParser::parseInto( $sourceDir , $this->sourceFiles );
+        GitLogParser::parseDir( $sourceDir , $this->sourceFiles );
 
         // Target files get info from revtags
-        RevtagParser::parseInto( $targetDir , $this->targetFiles );
+        RevtagParser::parseDir( $targetDir , $this->targetFiles );
 
         // match and mix
         $this->parseTranslationXml();
@@ -98,21 +98,18 @@ class RevcheckRun
                 continue;
             }
 
-            // TODO remove $(source|target)H* with QA simplification
-
-            // Previous code compares uptodate on multiple hashs. The last hash or the last non-skipped hash.
-            // See https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L374
-            // and https://github.com/php/doc-base/blob/090ff07aa03c3e4ad7320a4ace9ffb6d5ede722f/scripts/revcheck.php#L392 .
-
-            $sourceHsh1 = $source->head;
-            $sourceHsh2 = $source->diff;
-            $targetHash = $target->revtag->revision;
-
             $daysOld = ( strtotime( "now" ) - $source->date ) / 86400;
             $daysOld = (int)$daysOld;
 
-            $qaInfo = new QaFileInfo( $sourceHsh1 , $targetHash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
-            $this->qaList[ $source->file ] = $qaInfo;
+            // TODO Make QA related state detect changes and autogenerate
+            // TODO Move all QA related code outside of RevcheckRun
+            {
+                $sourceHash = $source->isSyncHash( $target->revtag->revision ) ? $source->hashDiff : $source->hashLast;
+                $targetHash = $target->revtag->revision;
+
+                $qaInfo = new QaFileInfo( $sourceHash , $targetHash , $this->sourceDir , $this->targetDir , $source->file , $daysOld );
+                $this->qaList[ $source->file ] = $qaInfo;
+            }
 
             // TranslatedOk
 
@@ -197,7 +194,7 @@ class RevcheckRun
                 case RevcheckStatus::TranslatedOld:
                 case RevcheckStatus::TranslatedWip:
                     $this->slowPathCount++;
-                    GitDiffParser::parseAddsDels( $this->sourceDir , $file );
+                    GitSlowUtils::parseAddsDels( $this->sourceDir , $file );
             }
         }
     }

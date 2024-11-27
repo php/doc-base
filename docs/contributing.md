@@ -6,6 +6,7 @@ or by fixing one by [submitting a pull request](#submit-a-pull-request).
 As all the repositories are hosted on GitHub,
 you will need a GitHub account to do either of these.
 
+<a name="report-a-bug"></a>
 ## Report a Bug
 
 If you have found a bug on any of the PHP documentation pages,
@@ -18,6 +19,7 @@ you can file a bug report by doing the following:
 - add all necessary details to the description textarea
 - click the "Submit new issue" button to file your bug report
 
+<a name="submit-a-pull-request"></a>
 ## Submit a Pull Request
 
 There are two ways to make changes to the documentation:
@@ -25,6 +27,7 @@ There are two ways to make changes to the documentation:
 - make [more complex changes](#more-complex-changes--building-the-php-documentation)
  and validate/build the documentation locally on your computer
 
+<a name="minor-changes"></a>
 ## Minor changes
 
 To make trivial changes (typos, shorter wording changes or adding/removing short segments)
@@ -45,6 +48,7 @@ The repository will run a few basic checks on the changes
 (e.g. whether the XML markup is valid, whether trailing whitespaces are stripped, etc.)
 and your PR is ready to be discussed with and merged by the maintainers.
 
+<a name="more-complex-changes--building-the-php-documentation"></a>
 ## More Complex Changes / Building the PHP documentation
 
 To build and view the documentation after making more extensive changes
@@ -59,10 +63,12 @@ If you'd like to know more about what each repository is
 and/or how PHP's documentation is built please refer to
 the [overview](overview.md).
 
+<a name="make-changes-to-the-documentation"></a>
 ### Make changes to the documentation
 
 [Make your changes](editing.md) keeping in mind the [style guidelines](style.md).
 
+<a name="commit-changes-and-open-a-pr"></a>
 ### Commit changes and open a PR
 
 - commit your changes

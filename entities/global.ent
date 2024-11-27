@@ -45,6 +45,7 @@
 <!ENTITY url.cldr.locale "http://www.unicode.org/cldr/">
 <!ENTITY url.cloud.ec2 "http://aws.amazon.com/ec2/">
 <!ENTITY url.cloud.ec2.sdk "http://aws.amazon.com/sdkforphp/">
+<!ENTITY url.composer "https://getcomposer.org/">
 <!ENTITY url.comspecs "https://docs.microsoft.com/windows/desktop/com/component-object-model--com--portal">
 <!ENTITY url.com.visible "https://docs.microsoft.com/dotnet/api/system.runtime.interopservices.comvisibleattribute">
 <!ENTITY url.connectionstrings "http://www.connectionstrings.com/">
@@ -327,6 +328,9 @@
 <!ENTITY url.oracle.taf.dbmsservice "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-C11449DC-EEDE-4BB8-9D2C-0A45198C1928">
 <!ENTITY url.oracle.taf.clientconfig "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-8F532535-C401-4B51-BE0B-04FD74BB0621">
 <!ENTITY url.oreilly.cjk-inf "https://resources.oreilly.com/examples/9781565922242/blob/master/doc/cjk.inf">
+<!ENTITY url.packagist "https://packagist.org">
+<!-- linking to specific packagist packages is done like so: &url.packagist.package;package_name -->
+<!ENTITY url.packagist.package "https://packagist.org/packages/">
 <!ENTITY url.password.compat "https://github.com/ircmaxell/password_compat">
 <!ENTITY url.pcre.changelog "http://www.pcre.org/original/changelog.txt">
 <!ENTITY url.pcre.man "http://www.pcre.org/pcre.txt">
@@ -403,7 +407,7 @@
 <!ENTITY url.rec-xml "http://www.w3.org/TR/1998/REC-xml-19980210">
 <!ENTITY url.relaxng "http://www.relaxng.org/">
 <!-- linking to specific rfcs is done like so: &url.rfc;xxxx so for example &url.rfc;2042 -->
-<!ENTITY url.rfc  'http://www.faqs.org/rfcs/rfc'>
+<!ENTITY url.rfc "https://datatracker.ietf.org/doc/html/rfc">
 <!ENTITY url.rnp "https://www.rnpgp.org/">
 <!ENTITY url.iana.system-names 'http://www.iana.org/assignments/operating-system-names'>
 <!ENTITY url.rpmfind "http://www.rpmfind.net/">
@@ -557,6 +561,8 @@
 
 <!ENTITY link.superglobals '<link xmlns="http://docbook.org/ns/docbook" linkend="language.variables.predefined">superglobals</link>'>
 <!ENTITY link.autoload '<link xmlns="http://docbook.org/ns/docbook" linkend="language.oop5.autoload">__autoload</link>'>
+
+<!ENTITY link.composer '<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pecl;">Composer</link>'>
 
 <!ENTITY link.pecl '<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pecl;">PECL</link>'>
 
