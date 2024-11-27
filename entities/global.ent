@@ -562,7 +562,7 @@
 <!ENTITY link.superglobals '<link xmlns="http://docbook.org/ns/docbook" linkend="language.variables.predefined">superglobals</link>'>
 <!ENTITY link.autoload '<link xmlns="http://docbook.org/ns/docbook" linkend="language.oop5.autoload">__autoload</link>'>
 
-<!ENTITY link.composer '<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pecl;">Composer</link>'>
+<!ENTITY link.composer '<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.composer;">Composer</link>'>
 
 <!ENTITY link.pecl '<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pecl;">PECL</link>'>
 
