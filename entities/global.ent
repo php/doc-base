@@ -76,6 +76,11 @@
 <!ENTITY url.spec.dom3.document "http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-i-Document">
 <!ENTITY url.spec.dom3.node "http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-1950641247">
 <!ENTITY url.spec.dom3.nodelist "http://www.w3.org/TR/2003/WD-DOM-Level-3-Core-20030226/DOM3-Core.html#core-ID-536297177">
+<!ENTITY url.spec.dom.living.base "https://dom.spec.whatwg.org/">
+<!ENTITY url.spec.dom.living.node "&url.spec.dom.living.base;#interface-node">
+<!ENTITY url.spec.dom.living.attr "&url.spec.dom.living.base;#interface-attr">
+<!ENTITY url.spec.dom.living.characterdata "&url.spec.dom.living.base;#interface-characterdata">
+<!ENTITY url.spec.dom.living.comment "&url.spec.dom.living.base;#interface-comment">
 <!ENTITY url.spec.html401.accept-charset "http://www.w3.org/TR/REC-html40/interact/forms.html#adef-accept-charset">
 <!ENTITY url.eio.libeio "http://software.schmorp.de/pkg/libeio.html">
 <!ENTITY url.email.book "https://www.oreilly.com/library/view/programming-internet-email/9780596802585/">
