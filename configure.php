@@ -782,6 +782,7 @@ do {
         // For some dumb reason when no substitution are made it returns false instead of 0...
         $status = (int) $status;
         $statusCount += $status;
+        echo "included $status\n...";
     }
 } while ($status !== -1 && $status > 0);
 if ($status === -1) {
