@@ -775,13 +775,19 @@ if ($didLoad === false) {
 echo "done.\n";
 
 echo "Running XInclude/XPointer... ";
-$status = $dom->xinclude();
+$statusCount = 0;
+do {
+    $status = $dom->xinclude();
+    if ($status !== -1) {
+        // For some dumb reason when no substitution are made it returns false instead of 0...
+        $status = (int) $status;
+        $statusCount += $status;
+    }
+} while ($status !== -1 && $status > 0);
 if ($status === -1) {
     echo "failed.\n";
 } else {
-    /* For some dumb reason when no substitution are made it returns false instead of 0... */
-    $status = (int) $status;
-    echo "done. Performed $status XIncludes\n";
+    echo "done. Performed $statusCount XIncludes\n";
 }
 flush();
 
