@@ -799,6 +799,38 @@ if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
     }
 }
 
+{   # Automatic xi:include / xi:fallback fixups
+
+    $xpath = new DOMXPath( $dom );
+    $nodes = $xpath->query( "//*[local-name()='include']" );
+    foreach( $nodes as $node )
+    {
+        $fixup = null;
+        $parent = $node->parentNode;
+        $tagName = $parent->nodeName;
+        switch( $tagName )
+        {
+            case "refentry":
+                $fixup = "";
+                break;
+            case "refsect1":
+                $fixup = "<title></title>";
+                break;
+            default:
+                echo "Unknown parent element, validation may fail: $tagName\n";
+                continue;
+        }
+        if ( $fixup != "" )
+        {
+            $other = new DOMDocument( '1.0' , 'utf8' );
+            $other->loadXML( $fixup );
+            $insert = $dom->importNode( $other->documentElement , true );
+            $node->parentNode->insertBefore( $insert , $node );
+        }
+        $node->parentNode->removeChild( $node );
+    }
+}
+
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
 flush();
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
