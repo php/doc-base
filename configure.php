@@ -790,21 +790,33 @@ echo "done.\n";
     $fatal = $ac['LANG'] == 'en';
     $xpath = new DOMXPath( $dom );
 
-    // pre xinclude() run id capture
+    // xinclude by xml:id pre run
 
-    $listIdPath = [];
-
-    $nodes = $xpath->query( "//*[@xml:id]" );
-    foreach( $nodes as $node )
+    $nodes = $xpath->query( "//*[xiparent]" );
+    if ( $nodes->length > 0 )
     {
-        $id = $node->getAttribute( "xml:id" );
-        $path = $node->getNodePath();
-        if ( isset( $listIdPath[ $id ] ) )
-        {
-            echo "failed.\nDuplicated xml:id '$id' before XInclude!\n";
-            errors_are_bad( 1 );
-        }
-        $listIdPath[ $id ] = $path;
+        echo "XML contains elements with 'xiparent' attribute. XInclude by xml:id will fail.\n";
+        exit(-1);
+    }
+
+    $stx = chr( 1 ); // invalid attribute chars
+    $etx = chr( 2 ); // cannot be used in text
+
+    $nodes = $xpath->query( "//*[@xpointer]" );
+    foreach( $nodes as $xinclude )
+    {
+        $id = $xinclude->getAttribute( "xpointer" );
+        $target = $dom->getElementById( $id );
+        if ( $target == null )
+            continue;
+        $parent = $target->parentNode;
+        if ( $parent->nodeType != XML_ELEMENT_NODE )
+            continue;
+        // creates an 'xiparent' attribute on parent of xi:include xpointer target,
+        // so these targered elements are not to be changed on later fixup.
+        $mark = $parent->getAttribute( "xiparent" );
+        $mark .= "{$stx}{$id}{$etx}";
+        $parent->setAttribute( "xiparent" , $mark );
     }
 
     // automatic xi:fallback
@@ -816,16 +828,13 @@ echo "done.\n";
         $failback = null;
 
         $elements = $node->getElementsByTagName( "fallback" );
-        if ( count( $elements ) > 0 )
-        {
-            $failback = $elements[0];
-        }
-        else
+        if ( count( $elements ) == 0 )
         {
             $failback = $node->ownerDocument->createElementNS( "http://www.w3.org/2001/XInclude" , "fallback" );
-            //$failback = $node->ownerDocument->createElement( "xi:fallback" );
             $node->append( $failback );
         }
+        else
+            $failback = $elements[0];
 
         $comment = $failback->ownerDocument->createComment( "xi:fallback $target" );
         $failback->append( $comment );
@@ -842,54 +851,40 @@ echo "done.\n";
     libxml_clear_errors();
 
     $status = $ret === -1 ? "failed" : "done";
-    $countOk = $ret === -1 ? 0 : (int) $ret;
-    $countErr = count( $errors );
-    echo "$status. Performed $countOk XIncludes, $countErr failures.\n";
+    $intret = $ret === -1 ? 0 : (int) $ret;
+    echo "$status. Performed $intret XIncludes.\n";
 
     // failures
 
     if ( $report )
     {
-        // xi:include failures
-
         foreach( $errors as $error )
-            fprintf( $print , "\n" . rtrim( $error->message ) . "\n");
+            fprintf( $print , "  Failed xi:include at line:   %s\n" , $error->line );
 
-        if ( $fatal && count( $errors ) )
-            errors_are_bad( 1 );
-
-        // xi:failback failures
-
-        $count = 0;
         $nodes = $xpath->query( "//comment()" );
-
         foreach( $nodes as $node )
         {
             $payload = $node->data;
-            if ( str_starts_with( $payload , "xi:fallback" ) )
+            if ( str_starts_with( $payload , "xi:fallback " ) )
             {
-                $count++;
-                $path = getNodePathWithIds( $node->parentNode );
-                fprintf( $print , "\nFailed xi:include location:   $path\n");
-
                 $payload = trim( substr( $payload , 12 ) );
-                fprintf( $print , "Failed xi:include target is:  $payload\n");
+                fprintf( $print , "  Used xi:fallback for target: $payload\n" );
             }
         }
 
-        if ( $count > 0 )
+        if ( count( $errors ) > 0 )
         {
-            fprintf( $print , "\n");
+            fprintf( $print , "\n\n");
             if ( $fatal )
                 errors_are_bad( 1 );
         }
     }
 
-    // post run id fixup
+    // xinclude by xml:id post run fixup
 
     $nodes = $xpath->query( "//*[@xml:id]" );
+    $count = []; // id : count
 
-    $count = [];
     foreach( $nodes as $node )
     {
         $id = $node->getAttribute( "xml:id" );
@@ -898,18 +893,42 @@ echo "done.\n";
 
     foreach( $nodes as $node )
     {
+        $parent = $node->parentNode;
+        if ( $parent->nodeType != XML_ELEMENT_NODE )
+            continue;
+
         $id = $node->getAttribute( "xml:id" );
-        $path = $node->getNodePath();
-
-        // Delete ids with unknown (newer?) paths,
-        // but do not overdelete if all paths changed.
-
-        if ( $listIdPath[ $id ] != $path && $count[ $id ] > 1 )
+        $mark = "$stx" . $id . $etx;
+        $list = $parent->getAttribute( "xiparent" );
+        if ( str_contains( $list , $mark ) )
         {
-            $node->removeAttribute( "xml:id" );
-            $count[ $id ]--;
+            if ( $count[ $id ] > 1 )
+            {
+                $node->removeAttribute( "xml:id" );
+                $count[ $id ]--;
+            }
+            else
+                echo "\tStrange, xml:id was to be over deleted: $id\n";
         }
     }
+
+    $list = array();
+    $nodes = $xpath->query( "//*[@xml:id]" );
+    foreach( $nodes as $node )
+    {
+        $id = $node->getAttribute( "xml:id" );
+        if ( in_array( $id , $list ) )
+        {
+            // may happen while migratating xpointers from xpaths to xml:ids
+            echo "  Random removing duplicated xml:id: $id\n";
+            $node->removeAttribute( "xml:id" );
+        }
+        $list[] = $id;
+    }
+
+    $nodes = $xpath->query( "//*[@xiparent]" );
+    foreach( $nodes as $node )
+        $node->removeAttribute( "xiparent" );
 
     flush();
 }
