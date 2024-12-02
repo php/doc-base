@@ -178,8 +178,8 @@ function checkSectionErrors(string $path): array
     $pageHasNoReturnSection = false;
     $content = file_get_contents($path);
 
-    /* Skip class definitions */
-    if (preg_match('#<reference xml:id="(.+)" role="class"#', $content)) {
+    /* Skip class or enum definitions */
+    if (preg_match('#<reference xml:id="(.+)" role="(class|enum)"#', $content)) {
         return [];
     }
     /* Skip Exception classes definitions */
