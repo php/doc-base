@@ -816,8 +816,8 @@ if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
 
 if ( $ac['LANG'] != 'en' )
 {
-    // XInclude failures are soft erros on translations, so replace
-    // residual XInclude tags on translations to keep then building.
+    // XInclude failures are soft errors on translations, so remove
+    // residual XInclude tags on translations to keep them building.
 
     $explain = false;
 
@@ -844,7 +844,7 @@ if ( $ac['LANG'] != 'en' )
 //              $fixup = "<varlistentry><term>></term><listitem><simpara></simpara></listitem></varlistentry>";
 //              break;
             default:
-                echo "Unknown parent element at XInclude failure: $tagName\n";
+                echo "Unknown parent element of failed XInclude: $tagName\n";
                 $explain = true;
                 continue 2;
         }
@@ -863,8 +863,9 @@ if ( $ac['LANG'] != 'en' )
         echo <<<MSG
 \nIf you are seeing this message on a translation, this means that
 XInclude/XPointers failures reported above are so many or unknown,
-so that configure.php cannot patch the translated manual in a consistent
-state. Please report this issue on the doc-base repository.\n\n
+that configure.php cannot patch the translated manual into a validating
+state. Please report any "Unknown parent" messages on the doc-base
+repository, and focus on fixing XInclude/XPointers failures above.\n\n
 MSG;
         exit(-1); // stop here, do not let more messages further confuse the matter
     }
