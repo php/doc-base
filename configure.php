@@ -775,13 +775,28 @@ if ($didLoad === false) {
 echo "done.\n";
 
 echo "Running XInclude/XPointer... ";
-$status = $dom->xinclude();
-if ($status === -1) {
+$total = 0;
+$maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
+for( $run = 0 ; $run < $maxrun ; $run++ )
+{
+    if ( $run > 0 )
+        echo "$run ";
+    libxml_clear_errors();
+    $status = (int) $dom->xinclude();
+    if ( $status <= 0 )
+        break;
+    $total += $status;
+    if ( $maxrun > 1 && $run + 1 >= $maxrun )
+    {
+        echo "Recursive XInclude is too deep.\n";
+        errors_are_bad(-1);
+    }
+}
+
+if ($total == 0) {
     echo "failed.\n";
 } else {
-    /* For some dumb reason when no substitution are made it returns false instead of 0... */
-    $status = (int) $status;
-    echo "done. Performed $status XIncludes\n";
+    echo "done. Performed $total XIncludes.\n";
 }
 flush();
 
@@ -796,6 +811,38 @@ if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
             fprintf( $output , "{$error->message}\n");
         if ( $ac['LANG'] == 'en' )
             errors_are_bad(1);
+    }
+}
+
+{   # Automatic xi:include / xi:fallback fixups
+
+    $xpath = new DOMXPath( $dom );
+    $nodes = $xpath->query( "//*[local-name()='include']" );
+    foreach( $nodes as $node )
+    {
+        $fixup = null;
+        $parent = $node->parentNode;
+        $tagName = $parent->nodeName;
+        switch( $tagName )
+        {
+            case "refentry":
+                $fixup = "";
+                break;
+            case "refsect1":
+                $fixup = "<title></title>";
+                break;
+            default:
+                echo "Unknown parent element, validation may fail: $tagName\n";
+                continue 2;
+        }
+        if ( $fixup != "" )
+        {
+            $other = new DOMDocument( '1.0' , 'utf8' );
+            $other->loadXML( $fixup );
+            $insert = $dom->importNode( $other->documentElement , true );
+            $node->parentNode->insertBefore( $insert , $node );
+        }
+        $node->parentNode->removeChild( $node );
     }
 }
 
