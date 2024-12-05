@@ -814,10 +814,16 @@ if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
     }
 }
 
-{   # Automatic xi:include / xi:fallback fixups
+if ( $ac['LANG'] != 'en' )
+{
+    // XInclude failures are soft errors on translations, so remove
+    // residual XInclude tags on translations to keep them building.
+
+    $explain = false;
 
     $xpath = new DOMXPath( $dom );
-    $nodes = $xpath->query( "//*[local-name()='include']" );
+    $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
+    $nodes = $xpath->query( "//xi:include" );
     foreach( $nodes as $node )
     {
         $fixup = null;
@@ -831,8 +837,15 @@ if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
             case "refsect1":
                 $fixup = "<title></title>";
                 break;
+            case "tbody":
+                $fixup = "<row><entry></entry></row>";
+                break;
+//          case "variablelist":
+//              $fixup = "<varlistentry><term>></term><listitem><simpara></simpara></listitem></varlistentry>";
+//              break;
             default:
-                echo "Unknown parent element, validation may fail: $tagName\n";
+                echo "Unknown parent element of failed XInclude: $tagName\n";
+                $explain = true;
                 continue 2;
         }
         if ( $fixup != "" )
@@ -843,6 +856,18 @@ if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
             $node->parentNode->insertBefore( $insert , $node );
         }
         $node->parentNode->removeChild( $node );
+    }
+
+    if ( $explain )
+    {
+        echo <<<MSG
+\nIf you are seeing this message on a translation, this means that
+XInclude/XPointers failures reported above are so many or unknown,
+that configure.php cannot patch the translated manual into a validating
+state. Please report any "Unknown parent" messages on the doc-base
+repository, and focus on fixing XInclude/XPointers failures above.\n\n
+MSG;
+        exit(-1); // stop here, do not let more messages further confuse the matter
     }
 }
 
