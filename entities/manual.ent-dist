@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf8" ?>
+<!-- $Revision:$ -->
+<!--
+    This is a "manual" XML Entity file.
+    See doc-base/script/entities.php for details.
+
+    Place here only small entities that are expected to be
+    translated and/or replaced in any part of the manual.
+-->
+<entities xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<!-- <entity name="ent.name">XML fragment</entity> -->
+
+</entities>

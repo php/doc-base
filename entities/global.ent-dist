@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf8" ?>
+<!--
+    This is a "global" XML Entity file.
+    See doc-base/script/entities.php for details.
+
+    Place here only small entities that are expected NOT
+    being replaced or translated in any part of the manual.
+
+    DO NOT COPY OR TRANSLATE THIS FILE.
+
+    If you want/need to translate some entity placed here,
+    open an issue on doc-base or doc-en repository, so the
+    translatable entity is moved to manual.ent.
+-->
+<entities xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<!-- <entity name="ent.name">XML fragment</entity> -->
+
+</entities>
