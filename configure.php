@@ -739,8 +739,9 @@ if ($ac['HISTORY_FILE'] === 'yes') {
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
 
-if ( true ) # file-entities.php
-{
+{   # file-entities.php
+
+    $cmd = array();
     $cmd[] = $ac['PHP'];
     $cmd[] = __DIR__ . "/scripts/file-entities.php";
     if ( $ac["LANG"] != "en" )
