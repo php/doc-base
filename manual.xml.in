@@ -11,6 +11,11 @@
 %language-snippets;
 @TRANSLATION_ONLY_INCL_END@
 
+<!-- Entities collected by entities.php -->
+<!ENTITY % manual-entities SYSTEM "./.entities.ent">
+%manual-entities;
+
+
 <!-- Fallback to English definitions and snippets (in case of missing translation) -->
 <!ENTITY % language-defs.default     SYSTEM "../@EN_DIR@/language-defs.ent">
 <!ENTITY % language-snippets.default SYSTEM "../@EN_DIR@/language-snippets.ent">
@@ -57,7 +62,6 @@
   &install.cloud.index;
   &install.fpm.index;
   &install.pecl;
-  &install.composer;
   &install.ini;
  </book>
 

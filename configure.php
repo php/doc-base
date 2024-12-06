@@ -736,8 +736,17 @@ if ($ac['HISTORY_FILE'] === 'yes') {
 
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
-$redir = ($ac['quiet'] == 'yes') ? ' > ' . (is_windows() ? 'nul' : '/dev/null') : '';
+{
+    $cmd[] = escapeshellarg( $ac['PHP'] );
+    $cmd[] = escapeshellarg( __DIR__ . '/scripts/entities.php' );
+    $cmd[] = escapeshellarg( $ac['ROOTDIR'] . '/en/entities' );
+    if ( $ac['LANG'] != 'en' )
+        $cmd[] = escapeshellarg( $ac['ROOTDIR'] . '/' . $ac['LANG'] . '/entities' );
+    $cmd = implode( ' ' , $cmd );
+    passthru( $cmd );
+}
 
+$redir = ($ac['quiet'] == 'yes') ? ' > ' . (is_windows() ? 'nul' : '/dev/null') : '';
 quietechorun("\"{$ac['PHP']}\" -q \"{$ac['basedir']}/scripts/file-entities.php\"{$redir}");
 
 
