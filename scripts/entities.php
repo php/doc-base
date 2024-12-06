@@ -324,7 +324,8 @@ function loadXml( string $path , string $text , bool $expectedReplaced )
 
     if ( trim( $text ) == "" )
     {
-        fwrite( STDERR , "\n  Empty entity (should it be in remove.ent?): '$path' \n" );
+        if ( ! PARTIAL_IMPL )
+            fwrite( STDERR , "\n  Empty entity (should it be in remove.ent?): '$path' \n" );
         Entities::put( $path , $name , $text );
         return;
     }
