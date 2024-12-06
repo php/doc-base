@@ -787,8 +787,11 @@ if ( ! dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
     errors_are_bad(1);
 }
 else
+{
+    // So that file/line/column makes sense on error messages
+    dom_saveload( $dom , __DIR__ . "/temp/manual.xml" );
     echo "done.\n";
-
+}
 
 echo "Running XInclude/XPointer... ";
 
@@ -861,8 +864,6 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
     {
         echo "$run ";
         $status = (int) $dom->xinclude();
-
-xinclude_report(); die(x);
 
         if ( $status <= 0 )
         {
