@@ -20,6 +20,7 @@
 */
 
 error_reporting(-1);
+ob_implicit_flush();
 $cvs_id = '$Id$';
 
 echo "configure.php: $cvs_id\n";
@@ -757,22 +758,37 @@ checkvalue($ac["GENERATE"]);
 checking('whether to save an invalid .manual.xml');
 checkvalue($ac['FORCE_DOM_SAVE']);
 
-echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
-flush();
-
 $dom = new DOMDocument();
 
-// realpath() is important: omitting it causes severe performance degradation
-// and doubled memory usage on Windows.
-$didLoad = $dom->load(realpath("{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}"), $LIBXML_OPTS);
+function dom_load( DOMDocument $dom , string $filename ) : bool
+{
+    global $LIBXML_OPTS;
+    $filename = realpath( $filename );
+    return $dom->load( $filename , $LIBXML_OPTS );
+}
 
-// Check if the XML was simply broken, if so then just bail out
-if ($didLoad === false) {
+function dom_save( DOMDocument $dom , string $filename )
+{
+    $dom->save( $filename );
+}
+
+function dom_saveload( DOMDocument $dom , string $filename )
+{
+    dom_save( $dom , $filename );
+    dom_load( $dom , $filename );
+}
+
+echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
+
+if ( ! dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+{
     echo "failed.\n";
     print_xml_errors();
     errors_are_bad(1);
 }
-echo "done.\n";
+else
+    echo "done.\n";
+
 
 echo "Running XInclude/XPointer... ";
 
@@ -845,8 +861,13 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
     {
         echo "$run ";
         $status = (int) $dom->xinclude();
+
+xinclude_report(); die(x);
+
         if ( $status <= 0 )
+        {
             return $total;
+        }
         $total += $status;
         libxml_clear_errors();
     }
