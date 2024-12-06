@@ -902,9 +902,9 @@ function xinclude_residual( DOMDocument $dom )
             case "tbody":
                 $fixup = "<row><entry></entry></row>";
                 break;
-//          case "variablelist":
-//              $fixup = "<varlistentry><term>></term><listitem><simpara></simpara></listitem></varlistentry>";
-//              break;
+            case "variablelist":
+                $fixup = "<varlistentry><term>></term><listitem><simpara></simpara></listitem></varlistentry>";
+                break;
             default:
                 echo "Unknown parent of failed XInclude: $tagName\n";
                 $explain = true;
