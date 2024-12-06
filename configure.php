@@ -798,7 +798,7 @@ function xinclude_run_byid( DOMDocument $dom )
         $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
         $xincludes = $xpath->query( "//xi:include" );
 
-        $progress = false;
+        $changed = false;
         foreach( $xincludes as $xinclude )
         {
             $xpointer = $xinclude->getAttribute( "xpointer" );
@@ -825,13 +825,12 @@ function xinclude_run_byid( DOMDocument $dom )
             $xinclude->parentNode->insertBefore( $insert , $xinclude ); // add
             $xinclude->parentNode->removeChild( $xinclude );            // del
 
-            $progress = true;
             $total++;
+            $changed = true;
+            libxml_clear_errors();
         }
 
-        if ( $progress )
-            continue;
-        else
+        if ( ! $changed )
             return $total;
     }
     echo "XInclude nested too deeply (xml:id).\n";
@@ -845,11 +844,11 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
     for( $run = 0 ; $run < $maxrun ; $run++ )
     {
         echo "$run ";
-        libxml_clear_errors();
         $status = (int) $dom->xinclude();
         if ( $status <= 0 )
             return $total;
         $total += $status;
+        libxml_clear_errors();
     }
     echo "XInclude nested too deeply (xpointer).\n";
     errors_are_bad( -1 );
@@ -866,11 +865,33 @@ function xinclude_report()
     $errors = libxml_get_errors();
     libxml_clear_errors();
 
-    if ( count( $errors ) > 0 && $report )
+    if ( ! $report )
+        return;
+
+    $count = 0;
+    $prefix = realpath( __DIR__ );
+
+    foreach( $errors as $error )
     {
-        fprintf( $output , "\n\n");
-        foreach( $errors as $error )
-            fprintf( $output , rtrim( $error->message ) . "\n\n" );
+        $msg  = $error->message;
+        $file = $error->file;
+        $line = $error->line;
+        $clmn = $error->column;
+
+        $msg = rtrim( $msg );
+        if ( str_starts_with( $file , $prefix ) )
+            $file = substr( $file , strlen( $prefix ) + 1 );
+
+        if ( $count == 0 )
+            fprintf( $output , "\n" );
+
+        fprintf( $output , "[{$file} {$line}:{$clmn}] $msg\n" );
+        $count++;
+    }
+
+    if ( $count > 0 )
+    {
+        fprintf( $output , "\n" );
         if ( $fatal )
             errors_are_bad( 1 );
     }
