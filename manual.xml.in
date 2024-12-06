@@ -12,7 +12,7 @@
 @TRANSLATION_ONLY_INCL_END@
 
 <!-- Entities collected by entities.php -->
-<!ENTITY % manual-entities SYSTEM "./.entities.ent">
+<!ENTITY % manual-entities SYSTEM "./temp/entities.ent">
 %manual-entities;
 
 

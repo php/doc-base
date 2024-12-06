@@ -737,13 +737,18 @@ if ($ac['HISTORY_FILE'] === 'yes') {
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
 {
-    $cmd[] = escapeshellarg( $ac['PHP'] );
-    $cmd[] = escapeshellarg( __DIR__ . '/scripts/entities.php' );
-    $cmd[] = escapeshellarg( $ac['ROOTDIR'] . '/en/entities' );
+    $cmd[] = $ac['PHP'];
+    $cmd[] = __DIR__ . '/scripts/entities.php';
     if ( $ac['LANG'] != 'en' )
-        $cmd[] = escapeshellarg( $ac['ROOTDIR'] . '/' . $ac['LANG'] . '/entities' );
+        $cmd[] = 'en';
+    $cmd[] = $ac['LANG'];
+    foreach( $cmd as & $esc )
+        $esc = escapeshellarg( $esc );
     $cmd = implode( ' ' , $cmd );
-    passthru( $cmd );
+    $ret = 0;
+    passthru( $cmd , $ret );
+    if ( $ret != 0 )
+        errors_are_bad( $ret );
 }
 
 $redir = ($ac['quiet'] == 'yes') ? ' > ' . (is_windows() ? 'nul' : '/dev/null') : '';
