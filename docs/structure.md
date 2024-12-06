@@ -42,3 +42,27 @@ There are some other important files:
   Including common warnings, notes, etc.
 - *translation.xml* - this file is used to store all central translation info, like a small
   intro text for translators and the persons list. This file is not present in the English tree.
+
+## `xml:id` structure
+
+The PHP Manual is a complex document that uses a lot of `xml:id` for anchoring,
+linking and XInclude purposes, so some care is necessary when dealing with
+them. The pseudo-types of `xml:id` used in manual are:
+
+* **Structural IDs**. IDs that are defined in structural level DocBook
+elements, like <chapter>`, `<section>`, etc.
+
+* **XInclude IDs**. IDs that are defined in some other elements, to be targeted
+by `<xi:include>` functionality.
+
+Structural IDs use the `id.id` pattern, while XInclude IDs use the
+`structural.id..local.ṕath` pattern. That is, Structural IDs only use one dot
+as separator, while XInclude IDs are composed of the one existing Structural ID
+as prefix, an `..` separator, and a local path suffix.
+
+No `xml:id` can be defined twice in source XMLs. Yet, it is possible that
+XInclude functionality generates duplicated IDs while building manuals, as
+libxml2 does *not* implement XIncludes 1.1. The `configure.php` script strips
+these generated duplicated IDs automatically, but manual editors should strive
+to avoid generated duplicated IDs by using XInclude that `xpointer`to XInclude
+IDs instead of proper XPointer/XPaths.
