@@ -12,26 +12,26 @@
 +----------------------------------------------------------------------+
 | Authors:     André L F S Bacci <ae php.net>                          |
 +----------------------------------------------------------------------+
-| Description: Split old style .ent file into individual files.        |
+| Description: Split old DTD .ent file into individual XML files.      |
 +----------------------------------------------------------------------+
 
-See `entities.php` source for detailed rationale.
+See `entities.php` for detailed rationale.
 
-Use this for spliting `language-snippets-ent` or other "big" entities
-files into individual .xml files.
+Use this for spliting `language-snippets-ent` and possible other DTD
+entities files into individual .xml files.
 
-After spliting, add the new directory entities/ with they contents,
-and remove `language-snippets-ent`, in one go.
+After spliting, add generated files under doc-lang/entities/ , and
+the original file, in one go.
 
-After all old style .ent files are split or converted, this script can
+After all DTD .ent files are split or converted, this script can
 be removed. */
 
 ini_set( 'display_errors' , 1 );
 ini_set( 'display_startup_errors' , 1 );
 error_reporting( E_ALL );
 
-if ( count( $argv ) < 4 )
-     die(" Syntax: php $argv[0] infile outdir [hash user]\n" );
+if ( count( $argv ) < 3 )
+     die("  Syntax: php $argv[0] infile outdir [hash user]\n" );
 
 $infile = $argv[1];
 $outdir = $argv[2];
@@ -75,7 +75,7 @@ foreach( $entities as $name => $text )
 {
     $file = "$outdir/$name.xml";
     if ( file_exists( $file ) )
-        exit( "Name colision: $file\n" );
+        echo( "Entity name colision, OVERWROTE: $file\n" );
 }
 
 // Write
@@ -83,13 +83,39 @@ foreach( $entities as $name => $text )
 foreach( $entities as $name => $text )
 {
     $file = "$outdir/$name.xml";
-
-    $header = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
+    $header = "";
 
     if ( $hash != "" )
         $header .= "<!-- EN-Revision: $hash Maintainer: $user Status: ready --><!-- CREDITS: $user -->\n";
 
     file_put_contents( $file , $header . $text );
+}
+
+// Test
+
+$dom = new DOMDocument();
+$dom->recover = true;
+$dom->resolveExternals = false;
+libxml_use_internal_errors( true );
+
+foreach( $entities as $name => $text )
+{
+    $file = "$outdir/$name.xml";
+
+    $text = file_get_contents( $file );
+    $text = "<frag>$text</frag>";
+
+    $dom->loadXML( $text );
+    $err = libxml_get_errors();
+    libxml_clear_errors();
+
+    foreach( $err as $e )
+    {
+        $msg = trim( $e->message );
+        if ( str_starts_with( $msg , "Entity '" ) && str_ends_with( $msg , "' not defined" ) )
+            continue;
+        die( "Failed to load $file\n" );
+    }
 }
 
 $total = count( $entities );

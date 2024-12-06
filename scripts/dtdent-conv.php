@@ -12,10 +12,10 @@
 +----------------------------------------------------------------------+
 | Authors:     André L F S Bacci <ae php.net>                          |
 +----------------------------------------------------------------------+
-| Description: Convert old style .ent into new style .ent XML bundle.  |
+| Description: Convert DTD Entities files into XML Entities files.     |
 +----------------------------------------------------------------------+
 
-See `entities.php` source for detailed rationale.
+See `entities.php` for detailed rationale.
 
 Use this for converting bundled entities files that use <!ENTITY> into
 XML version used by `entities.php`.
@@ -58,7 +58,7 @@ while ( true )
     $name = substr( $content , $pos1 , $pos2 - $pos1 - 1 );
     $text = substr( $content , $pos2 , $pos3 - $pos2 );
 
-    // weird &ugly; ass, namespace corret, DOMDocumentFragment -> DOMNodeList (ampunstand intended)
+    // weird &ugly; ass, namespace correct, DOMDocumentFragment -> DOMNodeList (ampunstand intended)
 
     $name = trim( $name );
     $text = str_replace( "&" , "&amp;" , $text );
@@ -80,5 +80,5 @@ while ( true )
     $text = $dom->saveXML( $dom->getElementsByTagName( "entity" )[0] );
     $text = str_replace( "&amp;" , "&" , $text );
 
-    echo "$text\n";
+    echo "\n$text\n";
 }
