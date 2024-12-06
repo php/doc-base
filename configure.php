@@ -16,6 +16,7 @@
   | Authors:    Dave Barr <dave@php.net>                                 |
   |             Hannes Magnusson <bjori@php.net>                         |
   |             Gwynne Raskind <gwynne@php.net>                          |
+  |             André L F S Bacci <gwynne@php.net>                       |
   +----------------------------------------------------------------------+
 */
 
@@ -780,17 +781,20 @@ function dom_saveload( DOMDocument $dom , string $filename )
 
 echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
 
-if ( ! dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+{
+    if ( ! file_exists(  __DIR__ . "/temp" ) )
+        mkdir( __DIR__ . "/temp" , true ); //TODO remove after #200, aldo clean up flush(), header
+
+    // Correct file/line/column on error messages
+    dom_saveload( $dom , __DIR__ . "/temp/manual.xml" );
+    echo "done.\n";
+}
+else
 {
     echo "failed.\n";
     print_xml_errors();
     errors_are_bad(1);
-}
-else
-{
-    // So that file/line/column makes sense on error messages
-    dom_saveload( $dom , __DIR__ . "/temp/manual.xml" );
-    echo "done.\n";
 }
 
 echo "Running XInclude/XPointer... ";
@@ -893,12 +897,20 @@ function xinclude_report()
     $count = 0;
     $prefix = realpath( __DIR__ );
 
+    $prevLine = -1;
+    $prevClmn = -1;
+
     foreach( $errors as $error )
     {
         $msg  = $error->message;
         $file = $error->file;
         $line = $error->line;
         $clmn = $error->column;
+
+        if ( $prevLine == $line && $prevClmn == $clmn )
+            continue; // XPointer failures double reports sometimes
+        $prevLine = $line;
+        $prevClmn = $clmn;
 
         $msg = rtrim( $msg );
         if ( str_starts_with( $file , $prefix ) )
