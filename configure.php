@@ -134,16 +134,6 @@ function abspath($path) // {{{
     return str_replace('\\', '/', function_exists('realpath') ? realpath($path) : $path);
 } // }}}
 
-function quietechorun($e) // {{{
-{
-    // enclose in "" on Windows for PHP < 5.3
-    if (is_windows() && phpversion() < '5.3') {
-        $e = '"'.$e.'"';
-    }
-
-    passthru($e);
-} // }}}
-
 function find_file($file_array) // {{{
 {
     $paths = explode(PATH_SEPARATOR, getenv('PATH'));
@@ -325,6 +315,19 @@ function getFileModificationHistory(): array {
     }
 
     return $history_file;
+}
+
+if ( true ) # Initial clean up
+{
+    $dir = escapeshellarg( __DIR__ );
+    $cmd = "git -C $dir clean temp -fdx --quiet";
+    $ret = 0;
+    passthru( $cmd , $ret );
+    if ( $ret != 0 )
+    {
+        echo "doc-base/temp clean up FAILED.\n";
+        exit( 1 );
+    }
 }
 
 $srcdir  = dirname(__FILE__);
@@ -635,7 +638,6 @@ if ($ac["GENERATE"] != "no") {
 // Notice how doing it this way results in generating less than half as many files.
 $infiles = array(
     'manual.xml.in',
-    'scripts/file-entities.php.in',
 );
 
 // Show local repository status to facilitate debug
@@ -736,9 +738,26 @@ if ($ac['HISTORY_FILE'] === 'yes') {
 
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
-$redir = ($ac['quiet'] == 'yes') ? ' > ' . (is_windows() ? 'nul' : '/dev/null') : '';
 
-quietechorun("\"{$ac['PHP']}\" -q \"{$ac['basedir']}/scripts/file-entities.php\"{$redir}");
+if ( true ) # file-entities.php
+{
+    $cmd[] = $ac['PHP'];
+    $cmd[] = __DIR__ . "/scripts/file-entities.php";
+    if ( $ac["LANG"] != "en" )
+        $cmd[] = $ac["LANG"];
+    if ( $ac['CHMENABLED'] == 'yes' )
+        $cmd[] = '--chmonly';
+    foreach ( $cmd as & $part )
+        $part = escapeshellarg( $part );
+    $ret = 0;
+    $cmd = implode( ' ' , $cmd );
+    passthru( $cmd , $ret );
+    if ( $ret != 0 )
+    {
+        echo "doc-base/scripts/file-entities.php FAILED.\n";
+        exit( 1 );
+    }
+}
 
 
 checking("for if we should generate a simplified file");

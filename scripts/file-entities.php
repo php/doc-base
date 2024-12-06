@@ -1,323 +1,327 @@
-<?php // vim: ts=4 sw=4 et tw=78 fdm=marker
-/*
-  +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2023 The PHP Group                                |
-  +----------------------------------------------------------------------+
-  | This source file is subject to version 3.01 of the PHP license,      |
-  | that is bundled with this package in the file LICENSE, and is        |
-  | available through the world-wide-web at the following url:           |
-  | https://www.php.net/license/3_01.txt.                                |
-  | If you did not receive a copy of the PHP license and are unable to   |
-  | obtain it through the world-wide-web, please send a note to          |
-  | license@php.net, so we can mail you a copy immediately.              |
-  +----------------------------------------------------------------------+
-  | Authors:    Hartmut Holzgraefe <hholzgra@php.net>                    |
-  |             Gabor Hojtsy <goba@php.net>                              |
-  +----------------------------------------------------------------------+
-  
-  $Id$
+<?php /*
++----------------------------------------------------------------------+
+| Copyright (c) 1997-2023 The PHP Group                                |
++----------------------------------------------------------------------+
+| This source file is subject to version 3.01 of the PHP license,      |
+| that is bundled with this package in the file LICENSE, and is        |
+| available through the world-wide-web at the following url:           |
+| https://www.php.net/license/3_01.txt.                                |
+| If you did not receive a copy of the PHP license and are unable to   |
+| obtain it through the world-wide-web, please send a note to          |
+| license@php.net, so we can mail you a copy immediately.              |
++----------------------------------------------------------------------+
+| Authors:    Hartmut Holzgraefe <hholzgra@php.net>                    |
+|             Gabor Hojtsy <goba@php.net>                              |
+|             André L F S Bacci <ae@php.net>                           |
++----------------------------------------------------------------------+
+
+# Description
+
+This script creates various "file entities", that is, antities and files
+that define DTD <!ENTITY name SYSTEM path>, named and composed of:
+
+- dir.dir.file : pulls in a dir/dir/file.xml file
+- dir.dif.entities.dir : pulls in a entity list for dir/dir/dir/*.xml
+
+In the original file-entities.php.in, the files are created at:
+
+- doc-base/entities/file-entities.ent
+- doc-en/reference/entities.*.xml
+
+In new idempotent mode, files are created at:
+
+- doc-base/temp/file-entites.ent
+- doc-base/temp/file-entites.dir.dir.ent
+
+# TODO
+
+- Leave it running in idempotent mode for a few months, before erasing
+  the const BACKPORT, that exists only to ease debugging the old style
+  build.
+
+- Istead of creating ~thousand doc-base/temp/file-entites.*.ent files,
+  output an XML bundled file (per github.com/php/doc-base/pull/183)
+  so it would be possible to detect accidental overwriting of structural
+  entities. The file contents moved to/as <!ENTITY> text.
+  PS: This will NOT work, and also will break ALL manuals, see
+  comments on PR 183 mentioned above.
+
 */
 
-/**
- *
- * Create phpdoc/entities/file-entities.ent with respect
- * to all the specialities needed:
- *
- *  . CHM only appendix integration
- *  . Special install part (temporary)
- *  . Reserved constant part (temporary)
- *  . Translated language files with English ones as fallbacks
- *  . Global function index
- *  . additional extension documentation from PECL
- *  . additional extension documentation from standalone extensions
- *
- * Also take in account, that if XSLT style sheets are used,
- * special file:/// prefixed path values are needed.
- *
- */
+const BACKPORT = false; // TODO remove, see above.
 
+// Setup
 
-// Always flush output
-ob_implicit_flush();
-// This script runs for a long time
-set_time_limit(0);
+ini_set( 'display_errors' , 1 );
+ini_set( 'display_startup_errors' , 1 );
+error_reporting( E_ALL );
+set_time_limit( 0 );
 
-// ......:ARGUMENT PARSING:.....................................................
+// Usage
 
-$not_windows = (0 < strcasecmp('WIN',PHP_OS));
+$root = realpath( __DIR__ . "/../.." );
+$lang = "";
+$chmonly = false;
+$debug = false;
 
-// The dir for PHP. If the cygwin wasn't compiled on Cygwin, the path needs to be stripped.
-$out_dir = ($not_windows  || !strcasecmp('CYGWIN',php_uname()))? '@WORKDIR@' : abs_path(strip_cygdrive('@WORKDIR@'));
-$src_dir = ($not_windows  || !strcasecmp('CYGWIN',php_uname()))? '@SRCDIR@'  : abs_path(strip_cygdrive('@SRCDIR@'));
-$base_dir = ($not_windows || !strcasecmp('CYGWIN',php_uname()))? '@BASEDIR@' : abs_path(strip_cygdrive('@BASEDIR@'));
-$root_dir = ($not_windows || !strcasecmp('CYGWIN',php_uname()))? '@ROOTDIR@' : abs_path(strip_cygdrive('@ROOTDIR@'));
-$only_dir = ($not_windows || !strcasecmp('CYGWIN',php_uname()))? '@ONLYDIR@' : abs_path(strip_cygdrive('@ONLYDIR@'));
-
-// The language encoding to use
-$encoding = '@ENCODING@';
-
-
-// ......:ENTITY CREATION:......................................................
-
-// Put all the file entities into $entities
-$entities = array();
-file_entities($only_dir ?: "$root_dir/en", "$root_dir/@LANGDIR@", "$root_dir/en", $entities);
-
-// Open file for appending and write out all entitities
-$fp = fopen("$base_dir/entities/file-entities.ent", "w");
-if (!$fp) {
-    die("ERROR: Failed to open $base_dir/entities/file-entities.ent for writing\n");
+array_shift( $argv );
+foreach( $argv as $arg )
+{
+    if ( $arg == "--chmonly" )
+    {
+        $chmonly = true;
+        continue;
+    }
+    if ( $arg == "--debug" )
+    {
+        $debug = true;
+        continue;
+    }
+    $lang = $arg;
 }
 
-echo "Creating file {$base_dir}/entities/file-entities.ent... ";
+// Main
 
-// File header
-fputs($fp, "<!-- DON'T TOUCH - AUTOGENERATED BY file-entities.php -->\n\n");
+echo "Creating file-entities.ent... ";
 
-// The global function index page is special
-fputs(
-   $fp,
-   "<!-- global function index file -->\n" .
-   entstr("global.function-index", "$out_dir/funcindex.xml") . "\n"
-);
+$entities = []; // See pushEntity()
 
-// Write out all other entities
-$entities = array_unique($entities);
-foreach ($entities as $entity) {
-    fputs($fp, $entity);
+generate_file_entities( $root , "en" );
+generate_list_entities( $root , "en" );
+
+if ( $lang != "" )
+    generate_file_entities( $root , $lang );
+
+pushEntity( "global.function-index", path: realpath( __DIR__ . "/.." ) . "/funcindex.xml" );
+
+if ( ! $chmonly )
+    foreach( $entities as $ent )
+        if ( str_starts_with( $ent->name , "chmonly." ) )
+            $ent->path = '';
+
+$outfile = __DIR__ . "/../temp/file-entities.ent";
+touch( $outfile );
+$outfile = realpath( $outfile );
+
+$file = fopen( $outfile , "w" );
+if ( ! $file )
+{
+    echo "Failed to open $outfile\n.";
+    die(-1);
 }
-fclose($fp);
 
+fputs( $file , "<!-- DON'T TOUCH - AUTOGENERATED BY file-entities.php -->\n\n" );
+
+if ( BACKPORT )
+    fputs( $file , "\n" );
+
+if ( BACKPORT )
+    asort( $entities );
+else
+    ksort( $entities );
+
+foreach ( $entities as $ent )
+    writeEntity( $file , $ent );
+
+fclose( $file );
 echo "done\n";
-// Here is the end of the code
 exit;
 
-// ......:FUNCTION DECLARATIONS:................................................
 
-/**
- * Generate absolute path from a relative path, taking accout
- * the current wokring directory.
- *
- * @param string $path Relative path
- * @return string Absolute path generated
- */
-function abs_path($path) {
 
-    // This is already an absolute path (begins with / or a drive letter)
-    if (preg_match("!^(/|\\w:)!", $path)) { return $path; }
-
-    // Get directory parts
-
-    $absdir  = str_replace("\\", "/", getcwd());
-    $absdirs = explode("/", preg_replace("!/scripts$!", "", $absdir));
-    $dirs    = explode("/", $path);
-
-    // Generate array representation of absolute path
-    foreach ($dirs as $dir) {
-        if (empty($dir) or $dir == ".") continue;
-        else if ($dir == "..") array_pop($absdirs);
-        else array_push($absdirs, $dir);
-    }
-
-    // Return with string
-    return join("/", $absdirs);
-}
-
-/**
- * Create file entities, and put them into the array passed as the
- * last argument (passed by reference).
- *
- * @param string $work_dir English files' directory
- * @param string $trans_dir Translation's directory
- * @param string $orig_dir Original directory
- * @param array $entities Entities string array
- * @return boolean Success signal
- */
-function file_entities($work_dir, $trans_dir, $orig_dir, &$entities, $prefix=false) {
-    static $arBroken = null;
-    if ($arBroken === null) {
-        $brokenFilePath = $trans_dir . '/broken-files.txt';
-        if ('@USE_BROKEN_TRANSLATION_FILENAME@' == 'yes' && file_exists($brokenFilePath)) {
-            $arBroken = array_map('trim', file($brokenFilePath));
-            for ($n = 0; $n < count($arBroken); $n++) {
-                $arBroken[$n] = $trans_dir . '/' . $arBroken[$n];
-            }
-            $arBroken = array_flip($arBroken);
-        } else {
-            $arBroken = array();
-        }
-    }
-    // Compute translated version's path
-    $trans_path = str_replace($orig_dir, $trans_dir, $work_dir);
-    
-    // Try to open English working directory
-    $dh = opendir($work_dir);
-    if (!$dh) { 
-        return FALSE; 
-    }
-
-    // If the working directory is a reference functions directory,
-    // then start to generate a entities.<dirname>.xml file for that folder.
-    if (strpos($work_dir, "reference") !== false || preg_match("!/macros$!", $work_dir)) {
-        // Start new functions file with empty entity set
-        $function_entities = array();
-
-        // Create ..reference/<extname>/entities.<dirname>.xml where <dirname>
-        // is "functions" for instance
-        $functions_file = sprintf("%s/entities.%s.xml", dirname($work_dir), basename($work_dir));
-        touch($functions_file);
-
-        // Get relative file path to original directory, and form an entity
-        $functions_file_entity = str_replace("$orig_dir/", "", dirname($work_dir). "/entities." .basename($work_dir));
-        $functions_file_entity = fname2entname($functions_file_entity, $prefix);
-        $entities[] = entstr($functions_file_entity, $functions_file);
-		//var_dump($functions_file_entity);exit;
-    }
-
-    // While we can read that directory
-    while (($file = readdir($dh)) !== FALSE) {
-        // If file name begins with . skip it
-        if ($file[0] == ".") { continue; }
-
-        // If we found a directory, and it's name is not
-        // .svn, recursively go into it, and generate entities
-        if (is_dir($work_dir . "/" . $file)) {
-            if ($file == ".svn") { continue; }
-            file_entities($work_dir . "/" . $file, $trans_dir, $orig_dir, $entities, $prefix);
-        }
-
-        // If the file name ends in ".xml"
-        if (preg_match("!\\.xml$!", $file)) {
-            
-            // Get relative file name and get entity name for it
-            $name = str_replace(
-                "$orig_dir/",
-                "",
-                $work_dir . "/" . preg_replace("!\\.xml$!", "", $file)
-            );
-            $name = fname2entname($name, $prefix);
-
-            // If this is a functions directory, collect it into
-            // the special $function_entities array
-            if (isset($function_entities)) {
-                $function_entities[] = "&$name";
-            }
-            
-            // If we have a translated file, use it, otherwise fall back to English
-            $transfile = "$trans_path/$file";
-            if (!isset($arBroken[$transfile]) && file_exists($transfile)) {
-                $path = $transfile;
-            } else {
-                $path = "$work_dir/$file";
-            }
-
-            // Append to entities array
-            $entities[] = entstr($name, $path);
-
-        } // end of "if xml file"
-    } // end of readdir loop
-    
-    // Close directory
-    closedir($dh);
-
-    // If we created a function entities list, write it out
-    if (isset($function_entities)) {
-        
-        // Sort by name
-        sort($function_entities);
-        
-        // Write out all entities with newlines
-        $fp = fopen($functions_file, "w");
-        foreach ($function_entities as $entity) {
-            fputs($fp, "$entity;\n");
-        }
-        fclose($fp);
-    }
-
-    // Find all files available in the translation but not in the original English tree
-    if ($orig_dir != $trans_dir && file_exists($trans_path) && is_dir($trans_path)) {
-
-        // Open translation path
-        $dh = @opendir($trans_path);
-
-        if ($dh) {
-
-            while (($file = readdir($dh)) !== FALSE) {
-                if ($file[0] =="." || $file == "CVS") { continue; }
-                if (is_dir($trans_path."/".$file)) { continue; }
-                
-                // If this is an XML file
-                if (preg_match("!\\.xml$!",$file)) {
-                    
-                    // Generate relative file path and entity name out of it
-                    $name = str_replace(
-                        "$orig_dir/",
-                        "",
-                        $work_dir . "/" . preg_replace("!\\.xml$!", "", $file)
-                    );
-                    $name = fname2entname($name, $prefix);
-                    
-                    // If the file found is not in the English dir, append to entities list
-                    if (!file_exists("$work_dir/$file")) {
-                        $path = "$trans_path/$file";
-                        $entities[] = entstr($name, $path);
-                    }
-
-                } // if this is an XML file end
-
-            } // readdir iteration end
-            closedir($dh);
-        }
-    }
-    
-} // end of funciton file_entities()
-
-/**
- * Convert a file name (with path) to an entity name.
- *
- * Converts: _ => - and / => .
- *
- * @param string $fname File name
- * @return string Entity name
- */
-function fname2entname($fname, $prefix=false)
+class Entity
 {
-    $ent = str_replace("_", "-", str_replace("/", ".", $fname));
-    if ($prefix && !strstr($ent, $prefix)) {
-        $ent = "$prefix.$ent";
-    }
-    // If we are running out of a sparse checkout, don't put "trunk" in entity
-    if (substr($ent, 0, 5) == 'trunk') {
-        $ent = substr($ent, 6);
-    }
-    return $ent;
+    function __construct( public string $name , public string $text , public string $path ) {}
 }
 
-/**
- * Return entity string with the given entityname and filename.
- * 
- * @param string $entname Entity name
- * @param string $filename Name of file
- * @return string Entity declaration string
- */
-function entstr($entname, $filename)
+function pushEntity( string $name , string $text = '' , string $path = '' )
 {
-    // If we have no file, than this is not a system entity
-    if ($filename == "") {
-        return sprintf("<!ENTITY %-40s        ''>\n", $entname);
-    } else {
-        return sprintf("<!ENTITY %-40s SYSTEM 'file:///%s'>\n", $entname, str_replace(array("\\", ' '), array("/", '%20'), $filename));
-   }
+    global $entities;
+
+    $name = str_replace( '_' , '-' , $name );
+    $ent = new Entity( $name , $text , $path );
+    $entities[ $name ] = $ent;
+
+    if ( ( $text == "" && $path == "" ) || ( $text != "" && $path != "" ) )
+    {
+        echo "Something went wrong on file-entities.php.\n";
+        exit(-1);
+    }
 }
 
-/**
- * Return windows style path for cygwin.
- * 
- * @param string $path Orginal path
- * @return string windows style path
- */
-function strip_cygdrive($path){
-    return preg_replace(array('!^/cygdrive/(\w)/!', '@^/home/.+$@'), array('\1:/', strtr(dirname(dirname(__FILE__)), '\\', '/')), $path);
+function generate_file_entities( string $root , string $lang )
+{
+    $path = "$root/$lang";
+    $test = realpath( $path );
+    if ( $test === false || is_dir( $path ) == false )
+    {
+        echo "Language directory not found: $path\n.";
+        exit(-1);
+    }
+    $path = $test;
+
+    file_entities_recurse( $path , array() );
 }
 
+function file_entities_recurse( string $langroot , array $dirs )
+{
+    $dir = rtrim( "$langroot/" . implode( '/' , $dirs ) , "/" );
+    $files = scandir( $dir );
+    $subdirs = [];
 
+    foreach( $files as $file )
+    {
+        if ( $file == "" )
+            continue;
+        if ( $file[0] == "." )
+            continue;
+        if ( $file == "entities" && count( $dirs ) == 0 )
+            continue;
+
+        $path = "$dir/$file";
+
+        if ( is_dir ( $path ) )
+        {
+            $subdirs[] = $file;
+            continue;
+        }
+        if ( str_ends_with( $file , ".xml" ) )
+        {
+            $name = implode( '.' , $dirs ) . "." . basename( $file , ".xml" );
+            $name = trim( $name , "." );
+            pushEntity( $name , path: $path );
+        }
+    }
+
+    foreach( $subdirs as $subdir )
+    {
+        $recurse = $dirs;
+        $recurse[] = $subdir;
+        file_entities_recurse( $langroot , $recurse );
+    }
+}
+
+function generate_list_entities( string $root , string $lang )
+{
+    $path = "$root/$lang";
+    $test = realpath( $path );
+    if ( $test === false || is_dir( $path ) == false )
+    {
+        echo "Language directory not found: $path\n.";
+        exit(-1);
+    }
+    $path = $test;
+
+    if ( BACKPORT ) // Spurious file generated outside reference/
+        pushEntity( "language.predefined.entities.weakreference", path: "$root/$lang/language/predefined/entities.weakreference.xml" );
+
+    $dirs = array( "reference" );
+    list_entities_recurse( $path , $dirs );
+}
+
+function list_entities_recurse( string $root , array $dirs )
+{
+    $list = array();
+
+    $dir = rtrim( "$root/" . implode( '/' , $dirs ) , "/" );
+    $files = scandir( $dir );
+    $subdirs = [];
+
+    foreach( $files as $file )
+    {
+        if ( $file == "" )
+            continue;
+        if ( $file[0] == "." )
+            continue;
+        if ( BACKPORT && str_starts_with( $file , "entities.") )
+            continue;
+
+        $path = "$dir/$file";
+
+        if ( is_dir ( $path ) )
+        {
+            $subdirs[] = $file;
+            continue;
+        }
+
+        if ( str_ends_with( $file , ".xml" ) )
+        {
+            $name = implode( '.' , $dirs ) . "." . basename( $file , ".xml" );
+            $name = trim( $name , "." );
+            $name = str_replace( '_' , '-' , $name );
+            $list[ $name ] = "&{$name};";
+        }
+    }
+    ksort( $list );
+
+    // The entity file names collected on
+    //
+    //   doc-lang/reference/apache/functions
+    //
+    // generate an entity named
+    //
+    //   reference.apache.ENTITIES.functions
+    //
+    // that is saved on parent directory, with filename
+    //
+    //   doc-lang/reference/apache/ENTITIES.functions.xml
+    //
+    // new style has the files saved as
+    //
+    //   doc-base/temp/file-entities.reference.apache.functions.ent
+    //
+    // and in a far future, may only outputs: (see doc-base PR 183)
+    //
+    //   doc-base/temp/file-entities.xml
+
+    $copy = $dirs;
+    $last = array_pop( $copy );
+    $copy[] = "entities";
+    $copy[] = $last;
+
+    $name = implode( "." , $copy );
+
+    if ( BACKPORT )
+        $path = "$dir/../entities.$last.xml";
+    else
+        $path = __DIR__ . "/../temp/file-entities." . implode( '.' , $dirs ) . ".ent";
+
+    $contents = implode( "\n" , $list );
+    if ( $contents != "" )
+    {
+        file_put_contents( $path , $contents );
+        $path = realpath( $path );
+        pushEntity( $name , path: $path );
+    }
+
+    foreach( $subdirs as $subdir )
+    {
+        $recurse = $dirs;
+        $recurse[] = $subdir;
+        list_entities_recurse( $root , $recurse );
+    }
+}
+
+function writeEntity( $file , Entity $ent )
+{
+    $name = $ent->name;
+    $text = $ent->text;
+    $path = $ent->path;
+
+    if ( BACKPORT )
+    {
+        if ( $path == "" )
+            $line = sprintf("<!ENTITY %-40s        ''>\n" , $name ); // was on original, possibly unused
+        else
+            $line = sprintf("<!ENTITY %-40s SYSTEM 'file:///%s'>\n" , $name , $path );
+    }
+    else
+    {
+        if ( $path == "" )
+            $line = "<!ENTITY $name '$text'>\n";
+        else
+            $line = "<!ENTITY $name SYSTEM '$path'>\n";
+    }
+
+    fwrite( $file , $line );
+}
