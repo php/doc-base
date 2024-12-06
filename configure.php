@@ -775,46 +775,108 @@ if ($didLoad === false) {
 echo "done.\n";
 
 echo "Running XInclude/XPointer... ";
-$total = 0;
-$maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
-for( $run = 0 ; $run < $maxrun ; $run++ )
-{
-    if ( $run > 0 )
-        echo "$run ";
-    libxml_clear_errors();
-    $status = (int) $dom->xinclude();
-    if ( $status <= 0 )
-        break;
-    $total += $status;
-    if ( $maxrun > 1 && $run + 1 >= $maxrun )
-    {
-        echo "Recursive XInclude is too deep.\n";
-        errors_are_bad(-1);
-    }
-}
 
-if ($total == 0) {
+$total  = xinclude_run_byid( $dom );
+$total += xinclude_run_xpointer( $dom );
+
+if ( $total == 0 )
     echo "failed.\n";
-} else {
+else
     echo "done. Performed $total XIncludes.\n";
-}
-flush();
 
-if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
+xinclude_report();
+xinclude_residual( $dom );
+
+function xinclude_run_byid( DOMDocument $dom )
 {
-    $errors = libxml_get_errors();
-    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
-    if ( count( $errors ) > 0 )
+    $total = 0;
+    $maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
+    for( $run = 0 ; $run < $maxrun ; $run++ )
     {
-        fprintf( $output , "\n");
+        echo "$run ";
+        $xpath = new DOMXPath( $dom );
+        $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
+        $xincludes = $xpath->query( "//xi:include" );
+
+        $progress = false;
+        foreach( $xincludes as $xinclude )
+        {
+            $xpointer = $xinclude->getAttribute( "xpointer" );
+            $target = $xinclude->ownerDocument->getElementById( $xpointer );
+
+            if ( $target == null )
+                continue;
+
+            $other = new DOMDocument( '1.0' , 'utf8' );
+            $frags = $other->createDocumentFragment();
+            $other->append( $frags );
+            $frags->append( $other->importNode( $target , true ) ); // dup add
+
+            // "attributes in xml: namespace are not copied"
+
+            $oxpth = new DOMXPath( $other );
+            $attribs = $oxpth->query( "//@*" );
+
+            foreach( $attribs as $attrib )
+                if ( $attrib->prefix == "xml" )
+                    $attrib->parentNode->removeAttribute( $attrib->nodeName );
+
+            $insert = $dom->importNode( $frags , true );                // dup
+            $xinclude->parentNode->insertBefore( $insert , $xinclude ); // add
+            $xinclude->parentNode->removeChild( $xinclude );            // del
+
+            $progress = true;
+            $total++;
+        }
+
+        if ( $progress )
+            continue;
+        else
+            return $total;
+    }
+    echo "XInclude nested too deeply (xml:id).\n";
+    errors_are_bad( -1 );
+}
+
+function xinclude_run_xpointer( DOMDocument $dom ) : int
+{
+    $total = 0;
+    $maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
+    for( $run = 0 ; $run < $maxrun ; $run++ )
+    {
+        echo "$run ";
+        libxml_clear_errors();
+        $status = (int) $dom->xinclude();
+        if ( $status <= 0 )
+            return $total;
+        $total += $status;
+    }
+    echo "XInclude nested too deeply (xpointer).\n";
+    errors_are_bad( -1 );
+}
+
+function xinclude_report()
+{
+    global $ac;
+
+    $report = $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en';
+    $output = $ac['STDERR_TO_STDOUT'] == 'yes' ? STDOUT : STDERR;
+    $fatal  = $ac['LANG'] == 'en';
+
+    $errors = libxml_get_errors();
+    libxml_clear_errors();
+
+    if ( count( $errors ) > 0 && $report )
+    {
+        fprintf( $output , "\n\n");
         foreach( $errors as $error )
-            fprintf( $output , "{$error->message}\n");
-        if ( $ac['LANG'] == 'en' )
-            errors_are_bad(1);
+            fprintf( $output , rtrim( $error->message ) . "\n\n" );
+        if ( $fatal )
+            errors_are_bad( 1 );
     }
 }
 
-if ( $ac['LANG'] != 'en' )
+function xinclude_residual( DOMDocument $dom )
 {
     // XInclude failures are soft errors on translations, so remove
     // residual XInclude tags on translations to keep them building.
@@ -844,7 +906,7 @@ if ( $ac['LANG'] != 'en' )
 //              $fixup = "<varlistentry><term>></term><listitem><simpara></simpara></listitem></varlistentry>";
 //              break;
             default:
-                echo "Unknown parent element of failed XInclude: $tagName\n";
+                echo "Unknown parent of failed XInclude: $tagName\n";
                 $explain = true;
                 continue 2;
         }
@@ -868,6 +930,23 @@ state. Please report any "Unknown parent" messages on the doc-base
 repository, and focus on fixing XInclude/XPointers failures above.\n\n
 MSG;
         exit(-1); // stop here, do not let more messages further confuse the matter
+    }
+
+    // XInclude by xml:id never duplicates xml:id, horever, also using
+    // XInclude by XPath/XPointer may start causing duplications
+    // (see docs/structure.md). Crude and ugly fixup ahead, beware!
+
+    $list = array();
+    $nodes = $xpath->query( "//*[@xml:id]" );
+    foreach( $nodes as $node )
+    {
+        $id = $node->getAttribute( "xml:id" );
+        if ( isset( $list[ $id ] ) )
+        {
+            echo "  Random removing duplicated xml:id: $id\n";
+            $node->removeAttribute( "xml:id" );
+        }
+        $list[ $id ] = $id;
     }
 }
 
@@ -973,4 +1052,3 @@ CAT;
 
     errors_are_bad(1); // Tell the shell that this script finished with an error.
 }
-?>
