@@ -665,10 +665,6 @@ if ($ac['SEGFAULT_ERROR'] === 'yes') {
     libxml_use_internal_errors(true);
 }
 
-$compact = defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0;
-$big_lines = defined('LIBXML_BIGLINES') ? LIBXML_BIGLINES : 0;
-$LIBXML_OPTS = LIBXML_NOENT | $big_lines | $compact;
-
 if ($ac['VERSION_FILES'] === 'yes') {
     $dom = new DOMDocument;
     $dom->preserveWhiteSpace = false;
@@ -748,22 +744,39 @@ checkvalue($ac["GENERATE"]);
 checking('whether to save an invalid .manual.xml');
 checkvalue($ac['FORCE_DOM_SAVE']);
 
-echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
-flush();
 
 $dom = new DOMDocument();
 
-// realpath() is important: omitting it causes severe performance degradation
-// and doubled memory usage on Windows.
-$didLoad = $dom->load(realpath("{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}"), $LIBXML_OPTS);
+function dom_load( DOMDocument $dom , string $filename ) : bool
+{
+    $filename = realpath( $filename );
+    $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
+    return $dom->load( $filename , $options );
+}
 
-// Check if the XML was simply broken, if so then just bail out
-if ($didLoad === false) {
+function dom_saveload( DOMDocument $dom , string $filename = "" )
+{
+    if ( $filename == "" )
+        $filename = __DIR__ . "/temp/manual.xml";
+
+    $dom->save( $filename );
+    dom_load( $dom , $filename );
+}
+
+echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
+
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+{
+    dom_saveload( $dom ); // correct file/line/column on error messages
+    echo "done.\n";
+}
+else
+{
     echo "failed.\n";
     print_xml_errors();
     errors_are_bad(1);
 }
-echo "done.\n";
+
 
 echo "Running XInclude/XPointer... ";
 $total = 0;
@@ -905,8 +918,8 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
 $mxml = $ac["OUTPUT_FILENAME"];
 
 /* TODO: For some reason libxml does not validate the RelaxNG schema unless reloading the document in full */
-$dom->save($mxml);
-$dom->load($mxml, $LIBXML_OPTS);
+dom_saveload( $dom );
+$dom->save( $mxml ); // non idempotent historical path
 if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
     printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
