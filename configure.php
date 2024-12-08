@@ -19,10 +19,12 @@
   +----------------------------------------------------------------------+
 */
 
-error_reporting(-1);
-$cvs_id = '$Id$';
+ini_set( 'display_errors' , 1 );
+ini_set( 'display_startup_errors' , 1 );
+error_reporting( E_ALL );
+ob_implicit_flush();
 
-echo "configure.php: $cvs_id\n";
+echo "configure.php on PHP " . phpversion() . "\n\n";
 
 const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
 const RNG_SCHEMA_FILE = RNG_SCHEMA_DIR . 'docbook.rng';
@@ -101,7 +103,6 @@ function checking($for) // {{{
 
     if ($ac['quiet'] != 'yes') {
         echo "Checking {$for}... ";
-        flush();
     }
 } // }}}
 
@@ -347,16 +348,6 @@ if (getenv('GITHUB_ACTIONS') !== 'true' && basename($rootdir) === 'doc-base') {
 $cygwin_php_bat = "{$srcdir}/../phpdoc-tools/php.bat";
 $php_bin_names = array('php', 'php5', 'cli/php', 'php.exe', 'php5.exe', 'php-cli.exe', 'php-cgi.exe');
 // }}}
-
-// Reject old PHP installations {{{
-if (phpversion() < 5) {
-    echo "PHP 5 or above is required. Version detected: " . phpversion() . "\n";
-    exit(100);
-} else {
-    echo "PHP version: " . phpversion() . "\n";
-} // }}}
-
-echo "\n";
 
 $acd = array( // {{{
     'srcdir' => $srcdir,
@@ -872,7 +863,7 @@ MSG;
 }
 
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
-flush();
+
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
     $dom->relaxNGValidate(RNG_SCHEMA_FILE); // we don't care if the validation works or not
     $node = $dom->getElementById($ac['PARTIAL']);
@@ -919,7 +910,6 @@ $dom->load($mxml, $LIBXML_OPTS);
 if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
     printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
-    flush();
     $dom->save($mxml);
 
     echo "done.\n";
