@@ -202,40 +202,44 @@ function make_scripts_executable($filename) // {{{
     }
 } // }}}
 
-// Loop through and print out all XML validation errors {{{
-function print_xml_errors($details = true) {
+function print_xml_errors()
+{
     global $ac;
+    $report = $ac['LANG'] == 'en' || $ac['XPOINTER_REPORTING'] == 'yes';
+    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR ;
+
     $errors = libxml_get_errors();
-    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
-    if ($errors && count($errors) > 0) {
-        foreach($errors as $err) {
-                if ($ac['LANG'] != 'en' &&                 // translations
-                    $ac['XPOINTER_REPORTING'] != 'yes' &&  // can disable
-                    strncmp($err->message, 'XPointer evaluation failed:', 27) == 0) {
-                    continue;
-                }
-                $errmsg = wordwrap(" " . trim($err->message), 80, "\n ");
-                if ($details && $err->file) {
-                    $file = file(urldecode($err->file)); // libxml appears to urlencode() its errors strings
-                    if (isset($file[$err->line])) {
-                        $line = rtrim($file[$err->line - 1]);
-                        $padding = str_repeat("-", $err->column) . "^";
-                        fprintf($output, "\nERROR (%s:%s:%s)\n%s\n%s\n%s\n", $err->file, $err->line, $err->column, $line, $padding, $errmsg);
-                    } else {
-                        fprintf($output, "\nERROR (%s:unknown)\n%s\n", $err->file, $errmsg);
-                    }
-                } else {
-                    fprintf($output, "%s\n", $errmsg);
-                }
-                // Error too severe, stopping
-                if ($err->level === LIBXML_ERR_FATAL) {
-                    fprintf($output, "\n\nPrevious errors too severe. Stopping here.\n\n");
-                    break;
-                }
-        }
-    }
     libxml_clear_errors();
-} // }}}
+
+    $filePrefix = "file:///";
+    $tempPrefix = realpath( __DIR__ . "/temp" ) . "/";
+    $rootPrefix = realpath( __DIR__ . "/.." ) . "/";
+
+    if ( count( $errors ) > 0 )
+        fprintf( $output , "\n" );
+
+    foreach( $errors as $error )
+    {
+        $mssg = rtrim( $error->message );
+        $file = $error->file;
+        $line = $error->line;
+        $clmn = $error->column;
+
+        if ( str_starts_with( $mssg , 'XPointer evaluation failed:' ) && ! $report )
+            continue; //
+
+        if ( str_starts_with( $file , $filePrefix ) )
+            $file = substr( $file , strlen( $filePrefix ) );
+        if ( str_starts_with( $file , $tempPrefix ) )
+            $file = substr( $file , strlen( $tempPrefix ) );
+        if ( str_starts_with( $file , $rootPrefix ) )
+            $file = substr( $file , strlen( $rootPrefix ) );
+
+        $prefix = $error->level === LIBXML_ERR_FATAL ? "FATAL" : "ERROR";
+
+        fwrite( $output , "[$prefix $file {$line}:{$clmn}] {$mssg}\n" );
+    }
+}
 
 function find_xml_files($path) // {{{
 {
@@ -918,12 +922,12 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
 $mxml = $ac["OUTPUT_FILENAME"];
 
 /* TODO: For some reason libxml does not validate the RelaxNG schema unless reloading the document in full */
-dom_saveload( $dom );
-$dom->save( $mxml ); // non idempotent historical path
+dom_saveload( $dom );   // idempotent path
+$dom->save($mxml);      // non idempotent, historical path
 if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
     printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
-    $dom->save($mxml);
+    $dom->save($mxml); // save it again... does validations changes somethnig?
 
     echo "done.\n";
     echo "All you have to do now is run 'phd -d {$mxml}'\n";
