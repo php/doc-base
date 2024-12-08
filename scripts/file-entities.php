@@ -18,7 +18,7 @@
 # Description
 
 This script creates various "file entities", that is, antities and files
-that define DTD <!ENTITY name SYSTEM path>, named and composed of:
+that define DTD <!ENTITY name SYSTEM 'path'>, named and composed of:
 
 - dir.dir.file : pulls in a dir/dir/file.xml file
 - dir.dif.entities.dir : pulls in a entity list for dir/dir/dir/*.xml
@@ -35,16 +35,16 @@ In new idempotent mode, files are created at:
 
 # TODO
 
-- Leave it running in idempotent mode for a few months, before erasing
-  the const BACKPORT, that exists only to ease debugging the old style
-  build.
+1. Leave this running in new idempotent mode for a few months, before
+erasing the const BACKPORT, that exists only to replicate the old
+style build.
 
-- Istead of creating ~thousand doc-base/temp/file-entites.*.ent files,
-  output an XML bundled file (per github.com/php/doc-base/pull/183)
-  so it would be possible to detect accidental overwriting of structural
-  entities. The file contents moved to/as <!ENTITY> text.
-  PS: This will NOT work, and also will break ALL manuals, see
-  comments on PR 183 mentioned above.
+2. Istead of creating ~thousand doc-base/temp/file-entites.*.ent files,
+output an solid XML grouped file (per github.com/php/doc-base/pull/183)
+so it would be possible to detect accidental overwriting of structural
+entities, the "list of entities" moved to/as normal entity text. PS: This
+will NOT work, with libxml recusing to load .manuxal.xml.in because of an
+"Detected an entity reference loop", that does not exist. Sigh.
 
 */
 
@@ -280,16 +280,18 @@ function list_entities_recurse( string $root , array $dirs )
     $copy[] = $last;
 
     $name = implode( "." , $copy );
+    $text = implode( "\n" , $list );
 
-    if ( BACKPORT )
-        $path = "$dir/../entities.$last.xml";
-    else
-        $path = __DIR__ . "/../temp/file-entities." . implode( '.' , $dirs ) . ".ent";
-
-    $contents = implode( "\n" , $list );
-    if ( $contents != "" )
+    if ( $text != "" )
     {
-        file_put_contents( $path , $contents );
+        // pushEntity( $name , text: $text ); // See TODO item 2
+
+        if ( BACKPORT )
+            $path = "$dir/../entities.$last.xml";
+        else
+            $path = __DIR__ . "/../temp/file-entities." . implode( '.' , $dirs ) . ".ent";
+
+        file_put_contents( $path , $text );
         $path = realpath( $path );
         pushEntity( $name , path: $path );
     }
