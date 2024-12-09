@@ -98,20 +98,21 @@ if ( count( $argv ) < 2 || in_array( '--help' , $argv ) || in_array( '-h' , $arg
 $filename = Entities::rotateOutputFile(); // idempotent
 
 $langs = [];
-$normal = true; // Normal configure.php mode
+$normal = true;
+$debug = false;
 
 for( $idx = 1 ; $idx < count( $argv ) ; $idx++ )
     if ( $argv[$idx] == "--debug" )
         $normal = false;
     else
         $langs[] = $argv[$idx];
-
 $debug = ! $normal;
 
 if ( $normal )
     print "Creating .entities.ent...";
 else
     print "Creating .entities.ent in debug mode.\n";
+$debug = ! $normal;
 
 loadEnt( __DIR__ . "/../global.ent"  , global: true , warnMissing: true );
 foreach( $langs as $lang )
@@ -120,6 +121,7 @@ foreach( $langs as $lang )
     loadEnt( __DIR__ . "/../../$lang/manual.ent" , translate: true , warnMissing: true );
     loadEnt( __DIR__ . "/../../$lang/remove.ent" , remove: true );
     loadDir( $langs , $lang );
+    Entities::$debugUnique = false;
 }
 
 Entities::writeOutputFile();
@@ -132,6 +134,8 @@ if ( Entities::$countReplacedGlobal > 0 )
     echo ", " , Entities::$countReplacedGlobal , " global replaced";
 if ( Entities::$countReplacedRemove  > 0 )
     echo ", " , Entities::$countReplacedRemove , " remove replaced";
+if ( Entities::$countDuplicated  > 0 )
+    echo ", " , Entities::$countDuplicated , " duplicated (first language)";
 echo ".\n";
 
 exit;
@@ -146,19 +150,23 @@ class EntityData
 
 class Entities
 {
-    public static int $countUnstranslated = 0;
-    public static int $countReplacedGlobal = 0;
-    public static int $countReplacedRemove = 0;
-    public static int $countTotalGenerated = 0;
-
     private static string $filename = __DIR__ . "/../temp/entities.ent"; // idempotent
 
     private static array $entities = [];    // All entities, bi duplications
     private static array $global = [];      // Entities expected not replaced
     private static array $replace = [];     // Entities expected replaced / translated
     private static array $remove = [];      // Entities expected not replaced and not used
+    private static array $unique = [];      // For detecting duplicated global+en entities
     private static array $count = [];       // Name / Count
     private static array $slow = [];        // External entities, slow, uncontrolled file overwrites
+
+    public static bool $debugUnique = true; // Start on unique mode, disable on second language
+
+    public static int $countUnstranslated = 0;
+    public static int $countReplacedGlobal = 0;
+    public static int $countReplacedRemove = 0;
+    public static int $countTotalGenerated = 0;
+    public static int $countDuplicated = 0;
 
     static function put( string $path , string $name , string $text , bool $global = false , bool $replace = false , bool $remove = false )
     {
@@ -174,10 +182,22 @@ class Entities
         if ( $remove )
             Entities::$remove[ $name ] = $name;
 
-        if ( ! isset( Entities::$count[$name] ) )
+        if ( ! isset( Entities::$count[ $name ] ) )
             Entities::$count[$name] = 1;
         else
             Entities::$count[$name]++;
+
+        if ( Entities::$debugUnique )
+        {
+            if ( isset( Entities::$unique[ $name ] ) )
+            {
+                Entities::$countDuplicated++;
+                if ( Entities::$countDuplicated == 1 )
+                    fwrite( STDERR , "\n" );
+                fwrite( STDERR , "\n  Duplicated entity: $name\n" );
+            }
+            Entities::$unique[ $name ] = $entity;
+        }
     }
 
     static function slow( string $path )
