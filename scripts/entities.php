@@ -36,41 +36,42 @@ fragment need to be annotated with default namespace, even if the
 
 # Output
 
-This script collects grouped and individual entity files (detailed
-below), at some expected relative paths, and generates an
-.entities.ent file, in a sibling position to manual.xml.in.
+This script collects grouped and individual XML Entity files
+(detailed below), at some expected relative paths, and generates an
+doc-base/temp/entities.ent file with their respective DTD Entities.
 
-The output file .entities.ent has no duplications, so collection
-order is important to keep the necessary operational semantics. Here,
-newer loaded entities takes priority (overwrites) over previous one.
-Note that this is the reverse of <!ENTITY> convention, where
-duplicated entity names are ignored. The priority order used here
-is important to allow detecting cases where "constant" entities
-are being overwriten, or if translatable entities are missing
-translations.
+The output file has no duplications, so collection order is important
+to keep the necessary operational semantics. Here, latter loaded entities
+takes priority (overrides) an previous defined one. Note that this is the
+reverse of DTD <!ENTITY> convention, where duplicated entity names are
+ignored. The priority order used here is important to allow detecting
+cases where global entities are being overwritten, or if expected
+translatable entities are missing translations.
 
 # Individual XML Entities, or `.xml` files at `entities/`
 
 As explained above, the individual entity contents are not really
 valid XML *documents*, they are only at most valid XML *fragments*.
+More technically, these XML files are really well-balanced texts, per
+https://www.w3.org/TR/xml-fragment/#defn-well-balanced .
 
 Yet, individual entities are stored in entities/ as .xml files, for
-two reasons: first, text editors in general can highlights XML syntax,
-even for XML fragments, and second, this allows normal revision tracking
+two reasons: first, text editors in general can highlights XML syntax in
+well-balanced texts; and second, this allows normal revision tracking
 per file, without requiring weird changes on `revcheck.php`. Note that
 is *invalid* to place XML declaration in these fragment files, at least
-in files that are invalid XML documents (on multi node rooted ones).
+in files that are invalid XML documents (on multi-node rooted ones).
 
 # Grouped entities files, file tracked
 
 For very small textual entities, down to simple text words or single
-tag elements, that may never change, individual entity tracking is
+tag elements that may never change, individual entity tracking is
 an overkill. This script also loads grouped XML Entities files, at
 some expected locations, with specific semantics.
 
 These grouped files are really normal XML files, correctly annotated
-with XML namespaces used on manual, so any individual exported entity
-have correct anc clean XML namespace annotations. These grouped entity
+with XML namespaces used on manuals, so any individual exported entity
+has correct and clean XML namespace annotations. These grouped entity
 files are tracked normally by revcheck, but are not directly included
 in manual.xml.in, as they only participate in general entity loading,
 described above.
@@ -98,16 +99,14 @@ $filename = Entities::rotateOutputFile(); // idempotent
 
 $langs = [];
 $normal = true; // Normal configure.php mode
-$debug = false; // Detailed console mode
 
 for( $idx = 1 ; $idx < count( $argv ) ; $idx++ )
     if ( $argv[$idx] == "--debug" )
-    {
         $normal = false;
-        $debug = true;
-    }
     else
         $langs[] = $argv[$idx];
+
+$debug = ! $normal;
 
 if ( $normal )
     print "Creating .entities.ent...";
@@ -154,12 +153,12 @@ class Entities
 
     private static string $filename = __DIR__ . "/../temp/entities.ent"; // idempotent
 
-    private static array $entities = [];    // All entities, overwriten
+    private static array $entities = [];    // All entities, bi duplications
     private static array $global = [];      // Entities expected not replaced
     private static array $replace = [];     // Entities expected replaced / translated
     private static array $remove = [];      // Entities expected not replaced and not used
     private static array $count = [];       // Name / Count
-    private static array $slow = [];        // External entities, slow, uncontroled overwrite
+    private static array $slow = [];        // External entities, slow, uncontrolled file overwrites
 
     static function put( string $path , string $name , string $text , bool $global = false , bool $replace = false , bool $remove = false )
     {
@@ -184,7 +183,7 @@ class Entities
     static function slow( string $path )
     {
         if ( isset( $slow[$path] ) )
-            fwrite( STDERR , "Unexpected physical file ovewrite: $path\n" );
+            fwrite( STDERR , "Unexpected file overwrite: $path\n" );
         $slow[ $path ] = $path;
     }
 
