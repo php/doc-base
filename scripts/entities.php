@@ -193,8 +193,8 @@ class Entities
             {
                 Entities::$countDuplicated++;
                 if ( Entities::$countDuplicated == 1 )
-                    fwrite( STDERR , "\n" );
-                fwrite( STDERR , "\n  Duplicated entity: $name\n" );
+                    fwrite( STDERR , "\n\n" );
+                fwrite( STDERR , "  Duplicated entity: $name\n" );
             }
             Entities::$unique[ $name ] = $entity;
         }
