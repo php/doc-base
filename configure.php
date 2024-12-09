@@ -226,7 +226,7 @@ function print_xml_errors()
         $clmn = $error->column;
 
         if ( str_starts_with( $mssg , 'XPointer evaluation failed:' ) && ! $report )
-            continue; //
+            continue; // Translations can omit these, to focus on fatal errors
 
         if ( str_starts_with( $file , $filePrefix ) )
             $file = substr( $file , strlen( $filePrefix ) );
@@ -235,7 +235,7 @@ function print_xml_errors()
         if ( str_starts_with( $file , $rootPrefix ) )
             $file = substr( $file , strlen( $rootPrefix ) );
 
-        $prefix = $error->level === LIBXML_ERR_FATAL ? "FATAL" : "ERROR";
+        $prefix = $error->level === LIBXML_ERR_FATAL ? "FATAL" : "error";
 
         fwrite( $output , "[$prefix $file {$line}:{$clmn}] {$mssg}\n" );
     }
@@ -926,10 +926,7 @@ dom_saveload( $dom );   // idempotent path
 $dom->save($mxml);      // non idempotent, historical path
 if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
-    printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
-    $dom->save($mxml); // save it again... does validations changes somethnig?
-
-    echo "done.\n";
+    printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
     echo "All you have to do now is run 'phd -d {$mxml}'\n";
     echo "If the script hangs here, you can abort with ^C.\n";
     echo <<<CAT
