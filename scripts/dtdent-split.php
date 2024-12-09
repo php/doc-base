@@ -83,9 +83,10 @@ foreach( $entities as $name => $text )
 foreach( $entities as $name => $text )
 {
     $file = "$outdir/$name.xml";
-    $header = "";
 
-    if ( $hash != "" )
+    if ( $hash == "" )
+        $header = '<!-- $Revision$ -->';
+    else
         $header .= "<!-- EN-Revision: $hash Maintainer: $user Status: ready --><!-- CREDITS: $user -->\n";
 
     file_put_contents( $file , $header . $text );
