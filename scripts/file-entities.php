@@ -56,6 +56,7 @@ ini_set( 'display_errors' , 1 );
 ini_set( 'display_startup_errors' , 1 );
 error_reporting( E_ALL );
 set_time_limit( 0 );
+ob_implicit_flush();
 
 // Usage
 
@@ -139,6 +140,7 @@ function pushEntity( string $name , string $text = '' , string $path = '' )
     global $entities;
 
     $name = str_replace( '_' , '-' , $name );
+    $path = str_replace( '\\' , '/' , $path );
     $ent = new Entity( $name , $text , $path );
     $entities[ $name ] = $ent;
 
@@ -146,6 +148,39 @@ function pushEntity( string $name , string $text = '' , string $path = '' )
     {
         echo "Something went wrong on file-entities.php.\n";
         exit(-1);
+    }
+
+    // While https://github.com/php/doc-en/pull/4288 is not
+    // replicated on on all languages, let's sleeping dogs lies
+
+    $marks = ['!','@','#'];
+    $parts = explode( '.' , $name );
+    foreach( $parts as & $part )
+        if ( strtolower( $part ) == 'pdo' )
+            $part = array_shift( $marks );
+
+    $mixin = implode( '.' , $parts );
+    $l1 = ['pdo','PDO'];
+    $l2 = ['pdo','PDO'];
+    $l3 = ['pdo','PDO'];
+
+    if ( str_contains( $mixin , '!' ) )
+    {
+        //echo "\n\n$mixin\n";
+        foreach( $l1 as $s1 )
+            foreach( $l2 as $s2 )
+                foreach( $l3 as $s3 )
+                {
+                    $tmp = $mixin;
+                    $tmp = str_replace( '!' , $s1 , $tmp );
+                    $tmp = str_replace( '@' , $s2 , $tmp );
+                    $tmp = str_replace( '#' , $s3 , $tmp );
+                    //echo "$tmp\n";
+
+                    $ent = new Entity( $tmp , $text , $path );
+                    $entities[ $tmp ] = $ent;
+                }
+        //echo "\n";
     }
 }
 
