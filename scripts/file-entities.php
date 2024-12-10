@@ -150,6 +150,9 @@ function pushEntity( string $name , string $text = '' , string $path = '' )
         exit(-1);
     }
 
+    if ( DIRECTORY_SEPARATOR == '/' )
+        return;
+
     // While https://github.com/php/doc-en/pull/4288 is not
     // replicated on on all languages, let's sleeping dogs lies
 
