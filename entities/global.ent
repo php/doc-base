@@ -325,7 +325,7 @@
 <!ENTITY url.openssl.config "https://www.openssl.org/docs/manmaster/man5/config.html">
 <!ENTITY url.oracle.instant.client "https://www.oracle.com/database/technologies/instant-client.html">
 <!ENTITY url.oracle.oic.connect "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-E5358DEA-D619-4B7B-A799-3D2F802500F1">
-<!ENTITY url.oracle.drcp.configure "https://docs.oracle.com/en/database/oracle/oracle-database/23/jjdbc/database-resident-connection-pooling.html#GUID-83F56464-2D37-4339-9D88-464CF1D89438">
+<!ENTITY url.oracle.drcp.configure "https://docs.oracle.com/en/database/oracle/oracle-database/23/jjdbc/database-resident-connection-pooling.html">
 <!ENTITY url.oracle.drcp.whitepaper "https://www.oracle.com/technetwork/topics/php/whatsnew/php-scalability-ha-twp-128842.pdf">
 <!ENTITY url.oracle.taf.ociguide "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-F7817CD2-4A2C-4D37-BD36-56DBABD4725F">
 <!ENTITY url.oracle.taf.rac "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-DEF850F6-27E9-428E-B8FC-530230D78AD2">
