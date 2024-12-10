@@ -19,10 +19,12 @@
   +----------------------------------------------------------------------+
 */
 
-error_reporting(-1);
-$cvs_id = '$Id$';
+ini_set( 'display_errors' , 1 );
+ini_set( 'display_startup_errors' , 1 );
+error_reporting( E_ALL );
+ob_implicit_flush();
 
-echo "configure.php: $cvs_id\n";
+echo "configure.php on PHP " . phpversion() . "\n\n";
 
 const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
 const RNG_SCHEMA_FILE = RNG_SCHEMA_DIR . 'docbook.rng';
@@ -101,7 +103,6 @@ function checking($for) // {{{
 
     if ($ac['quiet'] != 'yes') {
         echo "Checking {$for}... ";
-        flush();
     }
 } // }}}
 
@@ -191,40 +192,44 @@ function make_scripts_executable($filename) // {{{
     }
 } // }}}
 
-// Loop through and print out all XML validation errors {{{
-function print_xml_errors($details = true) {
+function print_xml_errors()
+{
     global $ac;
+    $report = $ac['LANG'] == 'en' || $ac['XPOINTER_REPORTING'] == 'yes';
+    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR ;
+
     $errors = libxml_get_errors();
-    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
-    if ($errors && count($errors) > 0) {
-        foreach($errors as $err) {
-                if ($ac['LANG'] != 'en' &&                 // translations
-                    $ac['XPOINTER_REPORTING'] != 'yes' &&  // can disable
-                    strncmp($err->message, 'XPointer evaluation failed:', 27) == 0) {
-                    continue;
-                }
-                $errmsg = wordwrap(" " . trim($err->message), 80, "\n ");
-                if ($details && $err->file) {
-                    $file = file(urldecode($err->file)); // libxml appears to urlencode() its errors strings
-                    if (isset($file[$err->line])) {
-                        $line = rtrim($file[$err->line - 1]);
-                        $padding = str_repeat("-", $err->column) . "^";
-                        fprintf($output, "\nERROR (%s:%s:%s)\n%s\n%s\n%s\n", $err->file, $err->line, $err->column, $line, $padding, $errmsg);
-                    } else {
-                        fprintf($output, "\nERROR (%s:unknown)\n%s\n", $err->file, $errmsg);
-                    }
-                } else {
-                    fprintf($output, "%s\n", $errmsg);
-                }
-                // Error too severe, stopping
-                if ($err->level === LIBXML_ERR_FATAL) {
-                    fprintf($output, "\n\nPrevious errors too severe. Stopping here.\n\n");
-                    break;
-                }
-        }
-    }
     libxml_clear_errors();
-} // }}}
+
+    $filePrefix = "file:///";
+    $tempPrefix = realpath( __DIR__ . "/temp" ) . "/";
+    $rootPrefix = realpath( __DIR__ . "/.." ) . "/";
+
+    if ( count( $errors ) > 0 )
+        fprintf( $output , "\n" );
+
+    foreach( $errors as $error )
+    {
+        $mssg = rtrim( $error->message );
+        $file = $error->file;
+        $line = $error->line;
+        $clmn = $error->column;
+
+        if ( str_starts_with( $mssg , 'XPointer evaluation failed:' ) && ! $report )
+            continue; // Translations can omit these, to focus on fatal errors
+
+        if ( str_starts_with( $file , $filePrefix ) )
+            $file = substr( $file , strlen( $filePrefix ) );
+        if ( str_starts_with( $file , $tempPrefix ) )
+            $file = substr( $file , strlen( $tempPrefix ) );
+        if ( str_starts_with( $file , $rootPrefix ) )
+            $file = substr( $file , strlen( $rootPrefix ) );
+
+        $prefix = $error->level === LIBXML_ERR_FATAL ? "FATAL" : "error";
+
+        fwrite( $output , "[$prefix $file {$line}:{$clmn}] {$mssg}\n" );
+    }
+}
 
 function find_xml_files($path) // {{{
 {
@@ -350,16 +355,6 @@ if (getenv('GITHUB_ACTIONS') !== 'true' && basename($rootdir) === 'doc-base') {
 $cygwin_php_bat = "{$srcdir}/../phpdoc-tools/php.bat";
 $php_bin_names = array('php', 'php5', 'cli/php', 'php.exe', 'php5.exe', 'php-cli.exe', 'php-cgi.exe');
 // }}}
-
-// Reject old PHP installations {{{
-if (phpversion() < 5) {
-    echo "PHP 5 or above is required. Version detected: " . phpversion() . "\n";
-    exit(100);
-} else {
-    echo "PHP version: " . phpversion() . "\n";
-} // }}}
-
-echo "\n";
 
 $acd = array( // {{{
     'srcdir' => $srcdir,
@@ -676,10 +671,6 @@ if ($ac['SEGFAULT_ERROR'] === 'yes') {
     libxml_use_internal_errors(true);
 }
 
-$compact = defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0;
-$big_lines = defined('LIBXML_BIGLINES') ? LIBXML_BIGLINES : 0;
-$LIBXML_OPTS = LIBXML_NOENT | $big_lines | $compact;
-
 if ($ac['VERSION_FILES'] === 'yes') {
     $dom = new DOMDocument;
     $dom->preserveWhiteSpace = false;
@@ -777,22 +768,39 @@ checkvalue($ac["GENERATE"]);
 checking('whether to save an invalid .manual.xml');
 checkvalue($ac['FORCE_DOM_SAVE']);
 
-echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
-flush();
 
 $dom = new DOMDocument();
 
-// realpath() is important: omitting it causes severe performance degradation
-// and doubled memory usage on Windows.
-$didLoad = $dom->load(realpath("{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}"), $LIBXML_OPTS);
+function dom_load( DOMDocument $dom , string $filename ) : bool
+{
+    $filename = realpath( $filename );
+    $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
+    return $dom->load( $filename , $options );
+}
 
-// Check if the XML was simply broken, if so then just bail out
-if ($didLoad === false) {
+function dom_saveload( DOMDocument $dom , string $filename = "" )
+{
+    if ( $filename == "" )
+        $filename = __DIR__ . "/temp/manual.xml";
+
+    $dom->save( $filename );
+    dom_load( $dom , $filename );
+}
+
+echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
+
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+{
+    dom_saveload( $dom ); // correct file/line/column on error messages
+    echo "done.\n";
+}
+else
+{
     echo "failed.\n";
     print_xml_errors();
     errors_are_bad(1);
 }
-echo "done.\n";
+
 
 echo "Running XInclude/XPointer... ";
 $total = 0;
@@ -892,7 +900,7 @@ MSG;
 }
 
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
-flush();
+
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
     $dom->relaxNGValidate(RNG_SCHEMA_FILE); // we don't care if the validation works or not
     $node = $dom->getElementById($ac['PARTIAL']);
@@ -934,15 +942,11 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
 $mxml = $ac["OUTPUT_FILENAME"];
 
 /* TODO: For some reason libxml does not validate the RelaxNG schema unless reloading the document in full */
-$dom->save($mxml);
-$dom->load($mxml, $LIBXML_OPTS);
+dom_saveload( $dom );   // idempotent path
+$dom->save($mxml);      // non idempotent, historical path
 if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
-    printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
-    flush();
-    $dom->save($mxml);
-
-    echo "done.\n";
+    printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
     echo "All you have to do now is run 'phd -d {$mxml}'\n";
     echo "If the script hangs here, you can abort with ^C.\n";
     echo <<<CAT
