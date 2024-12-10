@@ -4,8 +4,9 @@
 manual.xml
 version.xml
 sources.xml
-entities/file-entities.ent
-temp/
 # File use to generate entities by configure script
 fileModHistory.php
-scripts/file-entities.php
+
+
+# A plece for all temporary or generated files (idempotent build)
+temp/
