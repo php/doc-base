@@ -643,16 +643,20 @@ $repos['en']        = "{$ac['rootdir']}/{$ac['EN_DIR']}";
 $repos[$ac['LANG']] = "{$ac['rootdir']}/{$ac['LANG']}";
 $repos = array_unique($repos);
 
-foreach ($repos as $name => $path)
+$output = "";
+foreach ( $repos as $name => $path )
 {
-    $driveSwitch = is_windows() ? '/d' : '';
-    $output = str_pad( "$name:" , 10 );
-    $output .= `cd $driveSwitch $path && git rev-parse HEAD`;
-    $output .= `cd $driveSwitch $path && git status -s`;
-    $output .= `cd $driveSwitch $path && git for-each-ref --format="%(push:track)" refs/heads`;
-    echo trim($output) . "\n";
+    $path = escapeshellarg( $path );
+    $branch = trim( `git -C $path rev-parse --abbrev-ref HEAD` );
+    $branch = $branch == "master" ? "" : " (branch $branch)";
+    $output .= str_pad( "$name:" , 10 );
+    $output .= rtrim( `git -C $path rev-parse HEAD`  ?? "" ) . "$branch\n";
+    $output .= rtrim( `git -C $path status -s` ?? "" ) . "\n";
+    $output .= rtrim( `git -C $path for-each-ref --format="%(push:track)" refs/heads` ?? "" ) . "\n";
 }
-echo "\n";
+while( str_contains( $output , "\n\n" ) )
+    $output = str_replace( "\n\n" , "\n" , $output );
+echo "\n" , trim( $output ) . "\n\n";
 
 foreach ($infiles as $in) {
     $in = chop("{$ac['basedir']}/{$in}");
