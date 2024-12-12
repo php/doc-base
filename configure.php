@@ -779,13 +779,15 @@ function dom_load( DOMDocument $dom , string $filename ) : bool
     return $dom->load( $filename , $options );
 }
 
-function dom_saveload( DOMDocument $dom , string $filename = "" )
+function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
 {
     if ( $filename == "" )
         $filename = __DIR__ . "/temp/manual.xml";
 
     $dom->save( $filename );
     dom_load( $dom , $filename );
+
+    return $filename;
 }
 
 echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
@@ -863,7 +865,7 @@ function xinclude_run_byid( DOMDocument $dom )
             return $total;
     }
     echo "XInclude nested too deeply (xml:id).\n";
-    errors_are_bad( -1 );
+    errors_are_bad( 1 );
 }
 
 function xinclude_run_xpointer( DOMDocument $dom ) : int
@@ -883,7 +885,7 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
         libxml_clear_errors();
     }
     echo "XInclude nested too deeply (xpointer).\n";
-    errors_are_bad( -1 );
+    errors_are_bad( 1 );
 }
 
 function xinclude_report()
@@ -990,7 +992,7 @@ that configure.php cannot patch the translated manual into a validating
 state. Please report any "Unknown parent" messages on the doc-base
 repository, and focus on fixing XInclude/XPointers failures above.\n\n
 MSG;
-        exit(-1); // stop here, do not let more messages further confuse the matter
+        exit(1); // stop here, do not let more messages further confuse the matter
     }
 
     // XInclude by xml:id never duplicates xml:id, horever, also using
@@ -1004,7 +1006,8 @@ MSG;
         $id = $node->getAttribute( "xml:id" );
         if ( isset( $list[ $id ] ) )
         {
-            echo "  Random removing duplicated xml:id: $id\n";
+            if ( ! str_contains( $id , '..' ) )
+                echo "  Random removing duplicated xml:id: $id\n";
             $node->removeAttribute( "xml:id" );
         }
         $list[ $id ] = $id;
