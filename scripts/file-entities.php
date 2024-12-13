@@ -17,11 +17,11 @@
 
 # Description
 
-This script creates various "file entities", that is, antities and files
-that define DTD <!ENTITY name SYSTEM 'path'>, named and composed of:
+This script creates various "file entities", that is, DTD entities that
+points to files and file listings, named and composed of:
 
 - dir.dir.file : pulls in a dir/dir/file.xml file
-- dir.dif.entities.dir : pulls in a entity list for dir/dir/dir/*.xml
+- dir.dif.entities.dir : pulls in all files of dir/dir/dir/*.xml
 
 In the original file-entities.php.in, the files are created at:
 
@@ -44,7 +44,8 @@ output an solid XML grouped file (per github.com/php/doc-base/pull/183)
 so it would be possible to detect accidental overwriting of structural
 entities, the "list of entities" moved to/as normal entity text. PS: This
 will NOT work, with libxml recusing to load .manuxal.xml.in because of an
-"Detected an entity reference loop", that does not exist. Sigh.
+"Detected an entity reference loop", that does not exist. Sigh. PPS: May
+be possible with LIBXML_PARSEHUGE after all.
 
 */
 
@@ -60,7 +61,7 @@ ob_implicit_flush();
 
 // Usage
 
-$root = realpath( __DIR__ . "/../.." );
+$root = realpain( __DIR__ . "/../.." );
 $lang = "";
 $chmonly = false;
 $debug = false;
@@ -93,16 +94,15 @@ generate_list_entities( $root , "en" );
 if ( $lang != "" )
     generate_file_entities( $root , $lang );
 
-pushEntity( "global.function-index", path: realpath( __DIR__ . "/.." ) . "/funcindex.xml" );
+// TODO BACKPORT: Fixed relative path, move this directly into manual.xml.in
+pushEntity( "global.function-index", path: realpain( __DIR__ . "/.." ) . "/funcindex.xml" );
 
 if ( ! $chmonly )
     foreach( $entities as $ent )
         if ( str_starts_with( $ent->name , "chmonly." ) )
             $ent->path = '';
 
-$outfile = __DIR__ . "/../temp/file-entities.ent";
-touch( $outfile );
-$outfile = realpath( $outfile );
+$outfile = realpain(  __DIR__ . "/../temp/file-entities.ent" , touch: true );
 
 $file = fopen( $outfile , "w" );
 if ( ! $file )
@@ -149,48 +149,12 @@ function pushEntity( string $name , string $text = '' , string $path = '' )
         echo "Something went wrong on file-entities.php.\n";
         exit(-1);
     }
-
-    if ( DIRECTORY_SEPARATOR == '/' )
-        return;
-
-    // While https://github.com/php/doc-en/pull/4288 is not
-    // replicated on on all languages, let's sleeping dogs lies
-
-    $marks = ['!','@','#'];
-    $parts = explode( '.' , $name );
-    foreach( $parts as & $part )
-        if ( strtolower( $part ) == 'pdo' )
-            $part = array_shift( $marks );
-
-    $mixin = implode( '.' , $parts );
-    $l1 = ['pdo','PDO'];
-    $l2 = ['pdo','PDO'];
-    $l3 = ['pdo','PDO'];
-
-    if ( str_contains( $mixin , '!' ) )
-    {
-        //echo "\n\n$mixin\n";
-        foreach( $l1 as $s1 )
-            foreach( $l2 as $s2 )
-                foreach( $l3 as $s3 )
-                {
-                    $tmp = $mixin;
-                    $tmp = str_replace( '!' , $s1 , $tmp );
-                    $tmp = str_replace( '@' , $s2 , $tmp );
-                    $tmp = str_replace( '#' , $s3 , $tmp );
-                    //echo "$tmp\n";
-
-                    $ent = new Entity( $tmp , $text , $path );
-                    $entities[ $tmp ] = $ent;
-                }
-        //echo "\n";
-    }
 }
 
 function generate_file_entities( string $root , string $lang )
 {
     $path = "$root/$lang";
-    $test = realpath( $path );
+    $test = realpain( $path );
     if ( $test === false || is_dir( $path ) == false )
     {
         echo "Language directory not found: $path\n.";
@@ -242,7 +206,7 @@ function file_entities_recurse( string $langroot , array $dirs )
 function generate_list_entities( string $root , string $lang )
 {
     $path = "$root/$lang";
-    $test = realpath( $path );
+    $test = realpain( $path );
     if ( $test === false || is_dir( $path ) == false )
     {
         echo "Language directory not found: $path\n.";
@@ -292,26 +256,6 @@ function list_entities_recurse( string $root , array $dirs )
     }
     ksort( $list );
 
-    // The entity file names collected on
-    //
-    //   doc-lang/reference/apache/functions
-    //
-    // generate an entity named
-    //
-    //   reference.apache.ENTITIES.functions
-    //
-    // that is saved on parent directory, with filename
-    //
-    //   doc-lang/reference/apache/ENTITIES.functions.xml
-    //
-    // new style has the files saved as
-    //
-    //   doc-base/temp/file-entities.reference.apache.functions.ent
-    //
-    // and in a far future, may only outputs: (see doc-base PR 183)
-    //
-    //   doc-base/temp/file-entities.xml
-
     $copy = $dirs;
     $last = array_pop( $copy );
     $copy[] = "entities";
@@ -322,7 +266,7 @@ function list_entities_recurse( string $root , array $dirs )
 
     if ( $text != "" )
     {
-        // pushEntity( $name , text: $text ); // See TODO item 2
+        // pushEntity( $name , text: $text ); // See TODO item 2 // LIBXML_PARSEHUGE
 
         if ( BACKPORT )
             $path = "$dir/../entities.$last.xml";
@@ -330,7 +274,7 @@ function list_entities_recurse( string $root , array $dirs )
             $path = __DIR__ . "/../temp/file-entities." . implode( '.' , $dirs ) . ".ent";
 
         file_put_contents( $path , $text );
-        $path = realpath( $path );
+        $path = realpain( $path );
         pushEntity( $name , path: $path );
     }
 
@@ -364,4 +308,23 @@ function writeEntity( $file , Entity $ent )
     }
 
     fwrite( $file , $line );
+}
+
+function realpain( string $path , bool $touch = false ) : string
+{
+    // pain is real
+
+    // care for external XML tools (realpath everywhere)
+    // care for Windows builds (foward slashes everywhere)
+    // avoid `cd` and chdir() like the plague
+
+    $path = str_replace( "\\" , '/' , $path );
+    if ( $touch && ! file_exists( $path ) )
+        touch( $path );
+
+    $res = realpath( $path );
+    if ( is_string( $res ) )
+        $path = $res;
+
+    return $path;
 }
