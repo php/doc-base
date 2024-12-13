@@ -180,7 +180,7 @@ function findINI($fname) {/*{{{*/
     $data = file_get_contents($fname);
     //$re = '/PHP_INI_ENTRY\("([^"]+)",\s+"([^"]+)",\s+([A-Z_]),/';
     $re = '/(PHP_INI_ENTRY|PHP_INI_ENTRY_EX|PHP_INI_BOOLEAN)\(([^)]+)/';
-    preg_match_all($re, $data, &$matches);
+    preg_match_all($re, $data, $matches);
     $re2 = '/"([^"]+)",\s*"([^"]+)",\s*([A-Z_]+)/';
 
     foreach ($matches[2] as $match) {
