@@ -1,10 +1,13 @@
-<!-- -*- SGML -*-
+<!--
+    Temporary entities to avoid breaking translations.
+-->
+<!ENTITY reference.pdo-cubrid.entities.PDO "&reference.pdo-cubrid.entities.pdo-overloaded;">
+<!ENTITY reference.pdo-pgsql.entities.PDO "&reference.pdo-pgsql.entities.pdo-overloaded;">
+<!ENTITY reference.pdo-sqlite.entities.PDO "&reference.pdo-sqlite.entities.pdo-overloaded;">
 
- $Id$
-
- Contains global "macros" for all the XML documents.
-
- -->
+<!--
+    Contains global "macros" for all the XML documents.
+-->
 <!ENTITY url.7zip "http://www.7-zip.org/">
 <!ENTITY url.adabas "http://www.adabas.com/">
 <!ENTITY url.adobe.acrobat "http://www.adobe.com/products/acrobat/readstep2.html">
