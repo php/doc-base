@@ -964,7 +964,7 @@ function xinclude_residual( DOMDocument $dom )
                 $fixup = "";
                 break;
             case "refsect1":
-                $fixup = "<title></title><note><simpara>[failed xi:xinclude]</simpara></note>";
+                $fixup = "<title>_</title><simpara>%failed xi:xinclude%</simpara>";
                 break;
             case "tbody":
                 $fixup = "<row><entry></entry></row>";
