@@ -964,7 +964,7 @@ function xinclude_residual( DOMDocument $dom )
                 $fixup = "";
                 break;
             case "refsect1":
-                $fixup = "<title></title>";
+                $fixup = "<title></title><note><simpara>[failed xi:xinclude]</simpara></note>";
                 break;
             case "tbody":
                 $fixup = "<row><entry></entry></row>";
@@ -980,9 +980,12 @@ function xinclude_residual( DOMDocument $dom )
         if ( $fixup != "" )
         {
             $other = new DOMDocument( '1.0' , 'utf8' );
-            $other->loadXML( $fixup );
-            $insert = $dom->importNode( $other->documentElement , true );
-            $node->parentNode->insertBefore( $insert , $node );
+            $other->loadXML( "<f>$fixup</f>" );
+            foreach( $other->documentElement->childNodes as $otherNode )
+            {
+                $imported = $dom->importNode( $otherNode , true );
+                $node->parentNode->insertBefore( $imported , $node );
+            }
         }
         $node->parentNode->removeChild( $node );
     }
