@@ -182,6 +182,7 @@
    &reference.password.book;
    &reference.rnp.book;
    &reference.sodium.book;
+   &reference.xpass.book;
   </set>
 
   <set xml:id="refs.database">
