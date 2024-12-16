@@ -1,39 +1,36 @@
-<?xml version='1.0' encoding='@ENCODING@' ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE PHPDOC [
-<!-- Add translated specific definitions and snippets -->
-@TRANSLATION_ONLY_INCL_BEGIN@
-<!ENTITY % language-defs     SYSTEM "../@LANGDIR@/language-defs.ent">
-<!ENTITY % language-snippets SYSTEM "../@LANGDIR@/language-snippets.ent">
-<!ENTITY % extensions        SYSTEM "../@LANGDIR@/extensions.ent">
 
-%language-defs;
-%extensions;
-%language-snippets;
-@TRANSLATION_ONLY_INCL_END@
+<!-- Parameter entities used to configure manual.xml -->
+<!ENTITY % configure         SYSTEM "./temp/manual.conf">
+%configure;
 
-<!-- Fallback to English definitions and snippets (in case of missing translation) -->
-<!ENTITY % language-defs.default     SYSTEM "../@EN_DIR@/language-defs.ent">
-<!ENTITY % language-snippets.default SYSTEM "../@EN_DIR@/language-snippets.ent">
-<!ENTITY % extensions.default        SYSTEM "../@EN_DIR@/extensions.ent">
+<!-- Translation layer, if any -->
+<!ENTITY % translation-defs          SYSTEM "../%LANGDIR;/language-defs.ent">
+<!ENTITY % translation-snippets      SYSTEM "../%LANGDIR;/language-snippets.ent">
+<!ENTITY % translation-extensions    SYSTEM "../%LANGDIR;/extensions.ent">
+%translation-defs;
+%translation-snippets;
+%translation-extensions;
 
+<!-- English manual (also works as fallback layer for incomplete translations) -->
+<!ENTITY % language-defs.default     SYSTEM "../en/language-defs.ent">
+<!ENTITY % language-snippets.default SYSTEM "../en/language-snippets.ent">
+<!ENTITY % extensions.default        SYSTEM "../en/extensions.ent">
 %language-defs.default;
 %extensions.default;
 %language-snippets.default;
 
-<!-- All global entities for the XML files -->
-<!ENTITY % global.entities  SYSTEM "./entities/global.ent">
-
-<!-- These are language independent -->
-<!ENTITY % frontpage.entities SYSTEM "../@EN_DIR@/contributors.ent">
+<!-- Language independent entities, and language dependent file entities -->
+<!ENTITY % global.entities    SYSTEM "./entities/global.ent">
+<!ENTITY % frontpage.entities SYSTEM "../en/contributors.ent">
 <!ENTITY % file.entities      SYSTEM "./temp/file-entities.ent">
-
-<!-- Include all external DTD parts defined previously -->
 %global.entities;
 %file.entities;
 %frontpage.entities;
 ]>
 
-<set xmlns="http://docbook.org/ns/docbook" version="5.2" xml:id="index" xml:lang="@LANG@" xmlns:xlink="http://www.w3.org/1999/xlink">
+<set xmlns="http://docbook.org/ns/docbook" version="5.2" xml:id="index" xml:lang="&LANG;" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>&PHPManual;</title>
  &bookinfo;
 
@@ -465,15 +462,7 @@
    </appendix>
  </book>
 
- @CHMONLY_INCL_BEGIN@
- <book xml:id="chmonly">
-  <title>&CHMEdition;</title>
-  &chmonly.aboutchm;
-  &chmonly.usingchm;
-  &chmonly.search;
-  &chmonly.integration;
- </book>
- @CHMONLY_INCL_END@
+ &manual.chmonly;
 
 </set>
 
