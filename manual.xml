@@ -6,9 +6,6 @@
 %configure;
 
 <!-- Translation layer, if any -->
-<!ENTITY % translation-defs          SYSTEM "../%LANGDIR;/language-defs.ent">
-<!ENTITY % translation-snippets      SYSTEM "../%LANGDIR;/language-snippets.ent">
-<!ENTITY % translation-extensions    SYSTEM "../%LANGDIR;/extensions.ent">
 %translation-defs;
 %translation-snippets;
 %translation-extensions;
