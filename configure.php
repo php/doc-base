@@ -700,14 +700,20 @@ function xml_configure()
 
     if ( $lang == 'en' )
     {
-        realpain( __DIR__ . "/temp/empty" , mkdir: true );
-        realpain( __DIR__ . "/temp/empty/language-defs.ent" , touch: true );
-        realpain( __DIR__ . "/temp/empty/language-snippets.ent" , touch: true );
-        realpain( __DIR__ . "/temp/empty/extensions.ent" , touch: true );
-        $conf[] = "<!ENTITY % LANGDIR '$base/empty'>";
+        realpain( __DIR__ . "/temp/empty" , touch: true );
+        $trans1 = realpain( __DIR__ . "/temp/empty" );
+        $trans2 = realpain( __DIR__ . "/temp/empty" );
+        $trans3 = realpain( __DIR__ . "/temp/empty" );
     }
     else
-        $conf[] = "<!ENTITY % LANGDIR '$lang'>";
+    {
+        $trans1 = realpain( __DIR__ . "/../$lang/language-defs.ent" );
+        $trans2 = realpain( __DIR__ . "/../$lang/language-snippets.ent" );
+        $trans3 = realpain( __DIR__ . "/../$lang/extensions.ent" );
+    }
+    $conf[] = "<!ENTITY % translation-defs       SYSTEM '$trans1'>";
+    $conf[] = "<!ENTITY % translation-snippets   SYSTEM '$trans2'>";
+    $conf[] = "<!ENTITY % translation-extensions SYSTEM '$trans3'>";
 
     if ( $ac['CHMENABLED'] == 'yes' )
         $conf[] = "<!ENTITY manual.chmonly SYSTEM './chm/manual.chm.xml'>";
