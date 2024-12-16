@@ -27,6 +27,17 @@ ob_implicit_flush();
 
 echo "configure.php on PHP " . phpversion() . "\n\n";
 
+// init_argv()
+// init_checks()
+// init_clean()
+// xml_configure()
+// xml_parse()
+// xml_xinclude()
+// xml_validate()
+// phd_sources()
+// phd_version()
+// php_history()
+
 const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
 const RNG_SCHEMA_FILE = RNG_SCHEMA_DIR . 'docbook.rng';
 const RNG_SCHEMA_XINCLUDE_FILE = RNG_SCHEMA_DIR . 'docbookxi.rng';
@@ -80,6 +91,29 @@ Package-specific:
 
 HELPCHUNK;
 } // }}}
+
+function realpain( string $path , bool $touch = false , bool $mkdir = false ) : string
+{
+    // pain is real
+
+    // care for external XML tools (realpath() everywhere)
+    // care for Windows builds (foward slashes everywhere)
+    // avoid `cd` and chdir() like the plague
+
+    $path = str_replace( "\\" , '/' , $path );
+
+    if ( $mkdir && ! file_exists( $path ) )
+        mkdir( $path , recursive: true );
+
+    if ( $touch && ! file_exists( $path ) )
+        touch( $path );
+
+    $res = realpath( $path );
+    if ( is_string( $res ) )
+        $path = $res;
+
+    return $path;
+}
 
 function errbox($msg) {
     $len = strlen($msg)+4;
@@ -251,7 +285,7 @@ function generate_sources_file() // {{{
     echo 'Iterating over files for sources info... ';
     $en_dir = "{$ac['rootdir']}/{$ac['EN_DIR']}";
     $source_langs = array(
-        array('base', $ac['srcdir'], array('manual.xml.in', 'funcindex.xml')),
+        array('base', $ac['srcdir'], array('manual.xml', 'funcindex.xml')),
         array('en', $en_dir, find_xml_files($en_dir)),
     );
     if ($ac['LANG'] !== 'en') {
@@ -630,12 +664,6 @@ if ($ac["GENERATE"] != "no") {
 }
 
 
-// We shouldn't be globbing for this. autoconf requires you to tell it which files to use, we should do the same
-// Notice how doing it this way results in generating less than half as many files.
-$infiles = array(
-    'manual.xml.in',
-);
-
 // Show local repository status to facilitate debug
 
 $repos = array();
@@ -659,18 +687,44 @@ while( str_contains( $output , "\n\n" ) )
     $output = str_replace( "\n\n" , "\n" , $output );
 echo "\n" , trim( $output ) . "\n\n";
 
-foreach ($infiles as $in) {
-    $in = chop("{$ac['basedir']}/{$in}");
 
-    $out = substr($in, 0, -3);
-    echo "Generating {$out}... ";
-    if (generate_output_file($in, $out, $ac)) {
-        echo "done\n";
-    } else {
-        echo "fail\n";
-        errors_are_bad(117);
+xml_configure();
+function xml_configure()
+{
+    global $ac;
+    $lang = $ac["LANG"];
+    $conf = [];
+
+    $conf[] = "<!ENTITY LANG '$lang'>";
+
+    if ( $lang == 'en' )
+    {
+        realpain( __DIR__ . "/temp/empty" , touch: true );
+        $trans1 = realpain( __DIR__ . "/temp/empty" );
+        $trans2 = realpain( __DIR__ . "/temp/empty" );
+        $trans3 = realpain( __DIR__ . "/temp/empty" );
     }
+    else
+    {
+        $trans1 = realpain( __DIR__ . "/../$lang/language-defs.ent" );
+        $trans2 = realpain( __DIR__ . "/../$lang/language-snippets.ent" );
+        $trans3 = realpain( __DIR__ . "/../$lang/extensions.ent" );
+    }
+    $conf[] = "<!ENTITY % translation-defs       SYSTEM '$trans1'>";
+    $conf[] = "<!ENTITY % translation-snippets   SYSTEM '$trans2'>";
+    $conf[] = "<!ENTITY % translation-extensions SYSTEM '$trans3'>";
+
+    if ( $ac['CHMENABLED'] == 'yes' )
+    {
+        $chmpath = realpain( __DIR__ . "/chm/manual.chm.xml" );
+        $conf[] = "<!ENTITY manual.chmonly SYSTEM '$chmpath'>";
+    }
+    else
+        $conf[] = "<!ENTITY manual.chmonly ''>";
+
+    file_put_contents( __DIR__ . "/temp/manual.conf" , implode( "\n" , $conf ) );
 }
+
 
 if ($ac['SEGFAULT_ERROR'] === 'yes') {
     libxml_use_internal_errors(true);
