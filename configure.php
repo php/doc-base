@@ -251,7 +251,7 @@ function generate_sources_file() // {{{
     echo 'Iterating over files for sources info... ';
     $en_dir = "{$ac['rootdir']}/{$ac['EN_DIR']}";
     $source_langs = array(
-        array('base', $ac['srcdir'], array('manual.xml.in', 'funcindex.xml')),
+        array('base', $ac['srcdir'], array('manual.xml', 'funcindex.xml')),
         array('en', $en_dir, find_xml_files($en_dir)),
     );
     if ($ac['LANG'] !== 'en') {
@@ -630,12 +630,6 @@ if ($ac["GENERATE"] != "no") {
 }
 
 
-// We shouldn't be globbing for this. autoconf requires you to tell it which files to use, we should do the same
-// Notice how doing it this way results in generating less than half as many files.
-$infiles = array(
-    'manual.xml.in',
-);
-
 // Show local repository status to facilitate debug
 
 $repos = array();
@@ -659,18 +653,6 @@ while( str_contains( $output , "\n\n" ) )
     $output = str_replace( "\n\n" , "\n" , $output );
 echo "\n" , trim( $output ) . "\n\n";
 
-foreach ($infiles as $in) {
-    $in = chop("{$ac['basedir']}/{$in}");
-
-    $out = substr($in, 0, -3);
-    echo "Generating {$out}... ";
-    if (generate_output_file($in, $out, $ac)) {
-        echo "done\n";
-    } else {
-        echo "fail\n";
-        errors_are_bad(117);
-    }
-}
 
 if ($ac['SEGFAULT_ERROR'] === 'yes') {
     libxml_use_internal_errors(true);
