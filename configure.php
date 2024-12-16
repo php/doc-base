@@ -693,7 +693,6 @@ function xml_configure()
 {
     global $ac;
     $lang = $ac["LANG"];
-    $base = basename( __DIR__ );
     $conf = [];
 
     $conf[] = "<!ENTITY LANG '$lang'>";
@@ -716,7 +715,10 @@ function xml_configure()
     $conf[] = "<!ENTITY % translation-extensions SYSTEM '$trans3'>";
 
     if ( $ac['CHMENABLED'] == 'yes' )
-        $conf[] = "<!ENTITY manual.chmonly SYSTEM './chm/manual.chm.xml'>";
+    {
+        $chmpath = realpain( __DIR__ . "/chm/manual.chm.xml" );
+        $conf[] = "<!ENTITY manual.chmonly SYSTEM '$chmpath'>";
+    }
     else
         $conf[] = "<!ENTITY manual.chmonly ''>";
 
