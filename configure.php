@@ -27,6 +27,17 @@ ob_implicit_flush();
 
 echo "configure.php on PHP " . phpversion() . "\n\n";
 
+// init_argv()
+// init_checks()
+// init_clean()
+// xml_configure()
+// xml_parse()
+// xml_xinclude()
+// xml_validate()
+// phd_sources()
+// phd_version()
+// php_history()
+
 const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
 const RNG_SCHEMA_FILE = RNG_SCHEMA_DIR . 'docbook.rng';
 const RNG_SCHEMA_XINCLUDE_FILE = RNG_SCHEMA_DIR . 'docbookxi.rng';
@@ -80,6 +91,29 @@ Package-specific:
 
 HELPCHUNK;
 } // }}}
+
+function realpain( string $path , bool $touch = false , bool $mkdir = false ) : string
+{
+    // pain is real
+
+    // care for external XML tools (realpath() everywhere)
+    // care for Windows builds (foward slashes everywhere)
+    // avoid `cd` and chdir() like the plague
+
+    $path = str_replace( "\\" , '/' , $path );
+
+    if ( $mkdir && ! file_exists( $path ) )
+        mkdir( $path , recursive: true );
+
+    if ( $touch && ! file_exists( $path ) )
+        touch( $path );
+
+    $res = realpath( $path );
+    if ( is_string( $res ) )
+        $path = $res;
+
+    return $path;
+}
 
 function errbox($msg) {
     $len = strlen($msg)+4;
@@ -652,6 +686,36 @@ foreach ( $repos as $name => $path )
 while( str_contains( $output , "\n\n" ) )
     $output = str_replace( "\n\n" , "\n" , $output );
 echo "\n" , trim( $output ) . "\n\n";
+
+
+xml_configure();
+function xml_configure()
+{
+    global $ac;
+    $lang = $ac["LANG"];
+    $base = basename( __DIR__ );
+    $conf = [];
+
+    $conf[] = "<!ENTITY LANG '$lang'>";
+
+    if ( $lang == 'en' )
+    {
+        realpain( __DIR__ . "/temp/empty" , mkdir: true );
+        realpain( __DIR__ . "/temp/empty/language-defs.ent" , touch: true );
+        realpain( __DIR__ . "/temp/empty/language-snippets.ent" , touch: true );
+        realpain( __DIR__ . "/temp/empty/extensions.ent" , touch: true );
+        $conf[] = "<!ENTITY % LANGDIR '$base/empty'>";
+    }
+    else
+        $conf[] = "<!ENTITY % LANGDIR '$lang'>";
+
+    if ( $ac['CHMENABLED'] == 'yes' )
+        $conf[] = "<!ENTITY manual.chmonly SYSTEM './chm/manual.chm.xml'>";
+    else
+        $conf[] = "<!ENTITY manual.chmonly ''>";
+
+    file_put_contents( __DIR__ . "/temp/manual.conf" , implode( "\n" , $conf ) );
+}
 
 
 if ($ac['SEGFAULT_ERROR'] === 'yes') {
