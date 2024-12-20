@@ -18,7 +18,7 @@
 # Description
 
 This script creates various "file entities", that is, DTD entities that
-points to files and file listings, named and composed of:
+point to files and file listings, named and composed of:
 
 - dir.dir.file : pulls in a dir/dir/file.xml file
 - dir.dif.entities.dir : pulls in all files of dir/dir/dir/*.xml
