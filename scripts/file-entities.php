@@ -323,7 +323,7 @@ function realpain( string $path , bool $touch = false ) : string
         touch( $path );
 
     $res = realpath( $path );
-    if ( is_string( $res ) )
+    if ($res !== false)
         $path = $res;
 
     return $path;
