@@ -53,8 +53,8 @@ function print_usage_exit( $cmd )
 function setup( string & $prefix , string & $suffix , string & $extra )
 {
     // Undefined entities generate TWO different error messages on libxml
-    // -
-    // - Extra content at the end of the document (entity outside elements)
+    // - "Entity '?' not defined" (for entity inside elements)
+    // - "Extra content at the end of the document" (entity outside elements)
 
     $inside = "<x>&ZZZ;</x>";
     $outside = "<x/>&ZZZ;";
@@ -69,7 +69,6 @@ function setup( string & $prefix , string & $suffix , string & $extra )
     $message = libxml_get_errors()[0]->message;
     $message = str_replace( "ZZZ" , "\f" , $message );
     [ $prefix , $suffix ] = explode( "\f" , $message );
-
     libxml_clear_errors();
 
     $doc->loadXML( $outside );
