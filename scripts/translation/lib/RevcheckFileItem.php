@@ -19,6 +19,7 @@
 
 require_once __DIR__ . '/all.php';
 
+#[\AllowDynamicProperties]
 class RevcheckFileItem
 {
     public string $file = ""; // from fs
