@@ -426,7 +426,7 @@
 <!ENTITY url.sed "http://www.gnu.org/software/sed/sed.html">
 <!ENTITY url.setlocale.lang.win32 "http://msdn.microsoft.com/en-us/library/39cwe7zf.aspx">
 <!ENTITY url.setlocale.country.win32 "http://msdn.microsoft.com/en-us/library/cdax410z.aspx">
-<!ENTITY url.session-fixation "http://www.acros.si/papers/session_fixation.pdf">
+<!ENTITY url.session-fixation "https://acrossecurity.com/papers/session_fixation.pdf">
 <!ENTITY url.session-save-handler "https://github.com/php/php-src/blob/master/ext/session/tests/save_handler.inc">
 <!ENTITY url.sleepycat "http://www.sleepycat.com/">
 <!ENTITY url.smart.questions "http://www.catb.org/~esr/faqs/smart-questions.html">
