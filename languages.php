@@ -101,6 +101,7 @@ class Lang
         , public string $path = "" )
     {
         $this->path = realpath( __DIR__ . '/..' ) . "/{$code}";
+        $this->path = str_replace( "\\" , '/' , $this->path );
     }
 }
 
