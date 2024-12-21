@@ -54,7 +54,7 @@ class QaFileInfo
         foreach( $itens as $item )
         {
             $line = array( $item->sourceHash , $item->targetHash , $item->sourceDir , $item->targetDir , $item->file , $item->days );
-            fputcsv( $fp , $line, ",", "\"", "\\" );
+            fputcsv( $fp , $line, escape: "" );
         }
         fclose($fp);
     }
