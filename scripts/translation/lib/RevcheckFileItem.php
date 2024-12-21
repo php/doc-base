@@ -62,7 +62,7 @@ class RevcheckFileItem
         }
 
         if ( $skip )
-            $this->diffHash = $hash;
+            $this->hashDiff = $hash;
         else
             $this->hashStop = true;
     }
