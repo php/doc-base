@@ -73,6 +73,7 @@ function setup( string & $prefix , string & $suffix , string & $extra )
 
     $doc->loadXML( $outside );
     $extra = libxml_get_errors()[0]->message;
+    libxml_clear_errors();
 }
 
 function testFile( string $filename , bool $fragment = false )
@@ -100,8 +101,9 @@ function testFile( string $filename , bool $fragment = false )
         $message = $error->message;
         if ( str_starts_with( $message , $prefix ) && str_ends_with( $message , $suffix ) )
             continue;
-        if ( $message == $extra )
-            continue;
+
+        //if ( $message == $extra ) // Disabled as unnecessary. Also, this indicates that some
+        //    continue;             // some entity reference is used at an unusual position.
 
         $lin = $error->line;
         $col = $error->column;
