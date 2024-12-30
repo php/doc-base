@@ -314,11 +314,10 @@ function realpain( string $path , bool $touch = false ) : string
 {
     // pain is real
 
-    // care for external XML tools (realpath everywhere)
+    // care for external XML tools (realpath() everywhere)
     // care for Windows builds (foward slashes everywhere)
     // avoid `cd` and chdir() like the plague
 
-    $path = str_replace( "\\" , '/' , $path );
     if ( $touch && ! file_exists( $path ) )
         touch( $path );
 
@@ -328,4 +327,3 @@ function realpain( string $path , bool $touch = false ) : string
 
     return $path;
 }
-
