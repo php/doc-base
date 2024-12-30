@@ -66,13 +66,13 @@ function setup( string & $prefix , string & $suffix , string & $extra )
     libxml_use_internal_errors( true );
 
     $doc->loadXML( $inside );
-    $message = libxml_get_errors()[0]->message;
+    $message = trim( libxml_get_errors()[0]->message );
     $message = str_replace( "ZZZ" , "\f" , $message );
     [ $prefix , $suffix ] = explode( "\f" , $message );
     libxml_clear_errors();
 
     $doc->loadXML( $outside );
-    $extra = libxml_get_errors()[0]->message;
+    $extra = trim( libxml_get_errors()[0]->message );
     libxml_clear_errors();
 }
 
@@ -98,18 +98,24 @@ function testFile( string $filename , bool $fragment = false )
 
     foreach( $errors as $error )
     {
-        $message = $error->message;
+        $message = trim( $error->message );
+        $hintFragDir = false;
+
         if ( str_starts_with( $message , $prefix ) && str_ends_with( $message , $suffix ) )
             continue;
-
         //if ( $message == $extra ) // Disabled as unnecessary. Also, this indicates that some
         //    continue;             // some entity reference is used at an unusual position.
+        if ( $message == $extra )
+            $hintFragDir = true;
 
         $lin = $error->line;
         $col = $error->column;
         echo "Broken XML file:\n";
         echo "  Path:  $filename [$lin,$col]\n";
         echo "  Error: $message\n";
+        if ( $hintFragDir )
+            echo "  Hint:  Dir is marked with .xmlfragmentdir on doc-en? If not, check entity references.\n";
+        echo "\n";
         return;
     }
 }
