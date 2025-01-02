@@ -734,7 +734,6 @@ if ($ac['HISTORY_FILE'] === 'yes') {
 
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
-
 {   # file-entities.php
 
     $cmd = array();
@@ -755,7 +754,6 @@ globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
         exit( 1 );
     }
 }
-
 
 checking("for if we should generate a simplified file");
 if ($ac["GENERATE"] != "no") {
