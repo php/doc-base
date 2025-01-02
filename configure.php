@@ -16,13 +16,16 @@
   | Authors:    Dave Barr <dave@php.net>                                 |
   |             Hannes Magnusson <bjori@php.net>                         |
   |             Gwynne Raskind <gwynne@php.net>                          |
+  |             André L F S Bacci <gwynne@php.net>                       |
   +----------------------------------------------------------------------+
 */
 
-error_reporting(-1);
-$cvs_id = '$Id$';
+ini_set( 'display_errors' , 1 );
+ini_set( 'display_startup_errors' , 1 );
+error_reporting( E_ALL );
+ob_implicit_flush();
 
-echo "configure.php: $cvs_id\n";
+echo "configure.php on PHP " . phpversion() . "\n\n";
 
 const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
 const RNG_SCHEMA_FILE = RNG_SCHEMA_DIR . 'docbook.rng';
@@ -101,7 +104,6 @@ function checking($for) // {{{
 
     if ($ac['quiet'] != 'yes') {
         echo "Checking {$for}... ";
-        flush();
     }
 } // }}}
 
@@ -132,16 +134,6 @@ function abspath($path) // {{{
         return '';
     }
     return str_replace('\\', '/', function_exists('realpath') ? realpath($path) : $path);
-} // }}}
-
-function quietechorun($e) // {{{
-{
-    // enclose in "" on Windows for PHP < 5.3
-    if (is_windows() && phpversion() < '5.3') {
-        $e = '"'.$e.'"';
-    }
-
-    passthru($e);
 } // }}}
 
 function find_file($file_array) // {{{
@@ -201,40 +193,44 @@ function make_scripts_executable($filename) // {{{
     }
 } // }}}
 
-// Loop through and print out all XML validation errors {{{
-function print_xml_errors($details = true) {
+function print_xml_errors()
+{
     global $ac;
+    $report = $ac['LANG'] == 'en' || $ac['XPOINTER_REPORTING'] == 'yes';
+    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR ;
+
     $errors = libxml_get_errors();
-    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
-    if ($errors && count($errors) > 0) {
-        foreach($errors as $err) {
-                if ($ac['LANG'] != 'en' &&                 // translations
-                    $ac['XPOINTER_REPORTING'] != 'yes' &&  // can disable
-                    strncmp($err->message, 'XPointer evaluation failed:', 27) == 0) {
-                    continue;
-                }
-                $errmsg = wordwrap(" " . trim($err->message), 80, "\n ");
-                if ($details && $err->file) {
-                    $file = file(urldecode($err->file)); // libxml appears to urlencode() its errors strings
-                    if (isset($file[$err->line])) {
-                        $line = rtrim($file[$err->line - 1]);
-                        $padding = str_repeat("-", $err->column) . "^";
-                        fprintf($output, "\nERROR (%s:%s:%s)\n%s\n%s\n%s\n", $err->file, $err->line, $err->column, $line, $padding, $errmsg);
-                    } else {
-                        fprintf($output, "\nERROR (%s:unknown)\n%s\n", $err->file, $errmsg);
-                    }
-                } else {
-                    fprintf($output, "%s\n", $errmsg);
-                }
-                // Error too severe, stopping
-                if ($err->level === LIBXML_ERR_FATAL) {
-                    fprintf($output, "\n\nPrevious errors too severe. Stopping here.\n\n");
-                    break;
-                }
-        }
-    }
     libxml_clear_errors();
-} // }}}
+
+    $filePrefix = "file:///";
+    $tempPrefix = realpath( __DIR__ . "/temp" ) . "/";
+    $rootPrefix = realpath( __DIR__ . "/.." ) . "/";
+
+    if ( count( $errors ) > 0 )
+        fprintf( $output , "\n" );
+
+    foreach( $errors as $error )
+    {
+        $mssg = rtrim( $error->message );
+        $file = $error->file;
+        $line = $error->line;
+        $clmn = $error->column;
+
+        if ( str_starts_with( $mssg , 'XPointer evaluation failed:' ) && ! $report )
+            continue; // Translations can omit these, to focus on fatal errors
+
+        if ( str_starts_with( $file , $filePrefix ) )
+            $file = substr( $file , strlen( $filePrefix ) );
+        if ( str_starts_with( $file , $tempPrefix ) )
+            $file = substr( $file , strlen( $tempPrefix ) );
+        if ( str_starts_with( $file , $rootPrefix ) )
+            $file = substr( $file , strlen( $rootPrefix ) );
+
+        $prefix = $error->level === LIBXML_ERR_FATAL ? "FATAL" : "error";
+
+        fwrite( $output , "[$prefix $file {$line}:{$clmn}] {$mssg}\n" );
+    }
+}
 
 function find_xml_files($path) // {{{
 {
@@ -327,6 +323,19 @@ function getFileModificationHistory(): array {
     return $history_file;
 }
 
+if ( true ) # Initial clean up
+{
+    $dir = escapeshellarg( __DIR__ );
+    $cmd = "git -C $dir clean temp -fdx --quiet";
+    $ret = 0;
+    passthru( $cmd , $ret );
+    if ( $ret != 0 )
+    {
+        echo "doc-base/temp clean up FAILED.\n";
+        exit( 1 );
+    }
+}
+
 $srcdir  = dirname(__FILE__);
 $workdir = $srcdir;
 $basedir = $srcdir;
@@ -347,16 +356,6 @@ if (getenv('GITHUB_ACTIONS') !== 'true' && basename($rootdir) === 'doc-base') {
 $cygwin_php_bat = "{$srcdir}/../phpdoc-tools/php.bat";
 $php_bin_names = array('php', 'php5', 'cli/php', 'php.exe', 'php5.exe', 'php-cli.exe', 'php-cgi.exe');
 // }}}
-
-// Reject old PHP installations {{{
-if (phpversion() < 5) {
-    echo "PHP 5 or above is required. Version detected: " . phpversion() . "\n";
-    exit(100);
-} else {
-    echo "PHP version: " . phpversion() . "\n";
-} // }}}
-
-echo "\n";
 
 $acd = array( // {{{
     'srcdir' => $srcdir,
@@ -635,7 +634,6 @@ if ($ac["GENERATE"] != "no") {
 // Notice how doing it this way results in generating less than half as many files.
 $infiles = array(
     'manual.xml.in',
-    'scripts/file-entities.php.in',
 );
 
 // Show local repository status to facilitate debug
@@ -646,16 +644,20 @@ $repos['en']        = "{$ac['rootdir']}/{$ac['EN_DIR']}";
 $repos[$ac['LANG']] = "{$ac['rootdir']}/{$ac['LANG']}";
 $repos = array_unique($repos);
 
-foreach ($repos as $name => $path)
+$output = "";
+foreach ( $repos as $name => $path )
 {
-    $driveSwitch = is_windows() ? '/d' : '';
-    $output = str_pad( "$name:" , 10 );
-    $output .= `cd $driveSwitch $path && git rev-parse HEAD`;
-    $output .= `cd $driveSwitch $path && git status -s`;
-    $output .= `cd $driveSwitch $path && git for-each-ref --format="%(push:track)" refs/heads`;
-    echo trim($output) . "\n";
+    $path = escapeshellarg( $path );
+    $branch = trim( `git -C $path rev-parse --abbrev-ref HEAD` );
+    $branch = $branch == "master" ? "" : " (branch $branch)";
+    $output .= str_pad( "$name:" , 10 );
+    $output .= rtrim( `git -C $path rev-parse HEAD`  ?? "" ) . "$branch\n";
+    $output .= rtrim( `git -C $path status -s` ?? "" ) . "\n";
+    $output .= rtrim( `git -C $path for-each-ref --format="%(push:track)" refs/heads` ?? "" ) . "\n";
 }
-echo "\n";
+while( str_contains( $output , "\n\n" ) )
+    $output = str_replace( "\n\n" , "\n" , $output );
+echo "\n" , trim( $output ) . "\n\n";
 
 foreach ($infiles as $in) {
     $in = chop("{$ac['basedir']}/{$in}");
@@ -673,10 +675,6 @@ foreach ($infiles as $in) {
 if ($ac['SEGFAULT_ERROR'] === 'yes') {
     libxml_use_internal_errors(true);
 }
-
-$compact = defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0;
-$big_lines = defined('LIBXML_BIGLINES') ? LIBXML_BIGLINES : 0;
-$LIBXML_OPTS = LIBXML_NOENT | $big_lines | $compact;
 
 if ($ac['VERSION_FILES'] === 'yes') {
     $dom = new DOMDocument;
@@ -736,24 +734,26 @@ if ($ac['HISTORY_FILE'] === 'yes') {
 
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
-{
+{   # file-entities.php
+
+    $cmd = array();
     $cmd[] = $ac['PHP'];
-    $cmd[] = __DIR__ . '/scripts/entities.php';
-    if ( $ac['LANG'] != 'en' )
-        $cmd[] = 'en';
-    $cmd[] = $ac['LANG'];
-    foreach( $cmd as & $esc )
-        $esc = escapeshellarg( $esc );
-    $cmd = implode( ' ' , $cmd );
+    $cmd[] = __DIR__ . "/scripts/file-entities.php";
+    if ( $ac["LANG"] != "en" )
+        $cmd[] = $ac["LANG"];
+    if ( $ac['CHMENABLED'] == 'yes' )
+        $cmd[] = '--chmonly';
+    foreach ( $cmd as & $part )
+        $part = escapeshellarg( $part );
     $ret = 0;
+    $cmd = implode( ' ' , $cmd );
     passthru( $cmd , $ret );
     if ( $ret != 0 )
-        errors_are_bad( $ret );
+    {
+        echo "doc-base/scripts/file-entities.php FAILED.\n";
+        exit( 1 );
+    }
 }
-
-$redir = ($ac['quiet'] == 'yes') ? ' > ' . (is_windows() ? 'nul' : '/dev/null') : '';
-quietechorun("\"{$ac['PHP']}\" -q \"{$ac['basedir']}/scripts/file-entities.php\"{$redir}");
-
 
 checking("for if we should generate a simplified file");
 if ($ac["GENERATE"] != "no") {
@@ -771,64 +771,177 @@ checkvalue($ac["GENERATE"]);
 checking('whether to save an invalid .manual.xml');
 checkvalue($ac['FORCE_DOM_SAVE']);
 
-echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
-flush();
 
 $dom = new DOMDocument();
 
-// realpath() is important: omitting it causes severe performance degradation
-// and doubled memory usage on Windows.
-$didLoad = $dom->load(realpath("{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}"), $LIBXML_OPTS);
+function dom_load( DOMDocument $dom , string $filename ) : bool
+{
+    $filename = realpath( $filename );
+    $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
+    return $dom->load( $filename , $options );
+}
 
-// Check if the XML was simply broken, if so then just bail out
-if ($didLoad === false) {
+function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
+{
+    if ( $filename == "" )
+        $filename = __DIR__ . "/temp/manual.xml";
+
+    $dom->save( $filename );
+    dom_load( $dom , $filename );
+
+    return $filename;
+}
+
+echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
+
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+{
+    dom_saveload( $dom ); // correct file/line/column on error messages
+    echo "done.\n";
+}
+else
+{
     echo "failed.\n";
     print_xml_errors();
     errors_are_bad(1);
 }
-echo "done.\n";
+
 
 echo "Running XInclude/XPointer... ";
-$total = 0;
-$maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
-for( $run = 0 ; $run < $maxrun ; $run++ )
-{
-    if ( $run > 0 )
-        echo "$run ";
-    libxml_clear_errors();
-    $status = (int) $dom->xinclude();
-    if ( $status <= 0 )
-        break;
-    $total += $status;
-    if ( $maxrun > 1 && $run + 1 >= $maxrun )
-    {
-        echo "Recursive XInclude is too deep.\n";
-        errors_are_bad(-1);
-    }
-}
 
-if ($total == 0) {
+$total  = xinclude_run_byid( $dom );
+$total += xinclude_run_xpointer( $dom );
+
+if ( $total == 0 )
     echo "failed.\n";
-} else {
+else
     echo "done. Performed $total XIncludes.\n";
-}
-flush();
 
-if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
+xinclude_report();
+xinclude_residual( $dom );
+
+function xinclude_run_byid( DOMDocument $dom )
 {
-    $errors = libxml_get_errors();
-    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
-    if ( count( $errors ) > 0 )
+    $total = 0;
+    $maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
+    for( $run = 0 ; $run < $maxrun ; $run++ )
     {
-        fprintf( $output , "\n");
-        foreach( $errors as $error )
-            fprintf( $output , "{$error->message}\n");
-        if ( $ac['LANG'] == 'en' )
-            errors_are_bad(1);
+        echo "$run ";
+        $xpath = new DOMXPath( $dom );
+        $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
+        $xincludes = $xpath->query( "//xi:include" );
+
+        $changed = false;
+        foreach( $xincludes as $xinclude )
+        {
+            $xpointer = $xinclude->getAttribute( "xpointer" );
+            $target = $xinclude->ownerDocument->getElementById( $xpointer );
+
+            if ( $target == null )
+                continue;
+
+            $other = new DOMDocument( '1.0' , 'utf8' );
+            $frags = $other->createDocumentFragment();
+            $other->append( $frags );
+            $frags->append( $other->importNode( $target , true ) ); // dup add
+
+            // "attributes in xml: namespace are not copied"
+
+            $oxpth = new DOMXPath( $other );
+            $attribs = $oxpth->query( "//@*" );
+
+            foreach( $attribs as $attrib )
+                if ( $attrib->prefix == "xml" )
+                    $attrib->parentNode->removeAttribute( $attrib->nodeName );
+
+            $insert = $dom->importNode( $frags , true );                // dup
+            $xinclude->parentNode->insertBefore( $insert , $xinclude ); // add
+            $xinclude->parentNode->removeChild( $xinclude );            // del
+
+            $total++;
+            $changed = true;
+            libxml_clear_errors();
+        }
+
+        if ( ! $changed )
+            return $total;
+    }
+    echo "XInclude nested too deeply (xml:id).\n";
+    errors_are_bad( 1 );
+}
+
+function xinclude_run_xpointer( DOMDocument $dom ) : int
+{
+    $total = 0;
+    $maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
+    for( $run = 0 ; $run < $maxrun ; $run++ )
+    {
+        echo "$run ";
+        $status = (int) $dom->xinclude();
+
+        if ( $status <= 0 )
+        {
+            return $total;
+        }
+        $total += $status;
+        libxml_clear_errors();
+    }
+    echo "XInclude nested too deeply (xpointer).\n";
+    errors_are_bad( 1 );
+}
+
+function xinclude_report()
+{
+    global $ac;
+
+    $report = $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en';
+    $output = $ac['STDERR_TO_STDOUT'] == 'yes' ? STDOUT : STDERR;
+    $fatal  = $ac['LANG'] == 'en';
+
+    $errors = libxml_get_errors();
+    libxml_clear_errors();
+
+    if ( ! $report )
+        return;
+
+    $count = 0;
+    $prefix = realpath( __DIR__ );
+
+    $prevLine = -1;
+    $prevClmn = -1;
+
+    foreach( $errors as $error )
+    {
+        $msg  = $error->message;
+        $file = $error->file;
+        $line = $error->line;
+        $clmn = $error->column;
+
+        if ( $prevLine == $line && $prevClmn == $clmn )
+            continue; // XPointer failures double reports sometimes
+        $prevLine = $line;
+        $prevClmn = $clmn;
+
+        $msg = rtrim( $msg );
+        if ( str_starts_with( $file , $prefix ) )
+            $file = substr( $file , strlen( $prefix ) + 1 );
+
+        if ( $count == 0 )
+            fprintf( $output , "\n" );
+
+        fprintf( $output , "[{$file} {$line}:{$clmn}] $msg\n" );
+        $count++;
+    }
+
+    if ( $count > 0 )
+    {
+        fprintf( $output , "\n" );
+        if ( $fatal )
+            errors_are_bad( 1 );
     }
 }
 
-if ( $ac['LANG'] != 'en' )
+function xinclude_residual( DOMDocument $dom )
 {
     // XInclude failures are soft errors on translations, so remove
     // residual XInclude tags on translations to keep them building.
@@ -849,25 +962,28 @@ if ( $ac['LANG'] != 'en' )
                 $fixup = "";
                 break;
             case "refsect1":
-                $fixup = "<title></title>";
+                $fixup = "<title>_</title><simpara>_</simpara>"; // https://github.com/php/phd/issues/181
                 break;
             case "tbody":
                 $fixup = "<row><entry></entry></row>";
                 break;
-//          case "variablelist":
-//              $fixup = "<varlistentry><term>></term><listitem><simpara></simpara></listitem></varlistentry>";
-//              break;
+            case "variablelist":
+                $fixup = "<varlistentry><term></term><listitem><simpara></simpara></listitem></varlistentry>";
+                break;
             default:
-                echo "Unknown parent element of failed XInclude: $tagName\n";
+                echo "Unknown parent of failed XInclude: $tagName\n";
                 $explain = true;
                 continue 2;
         }
         if ( $fixup != "" )
         {
             $other = new DOMDocument( '1.0' , 'utf8' );
-            $other->loadXML( $fixup );
-            $insert = $dom->importNode( $other->documentElement , true );
-            $node->parentNode->insertBefore( $insert , $node );
+            $other->loadXML( "<f>$fixup</f>" );
+            foreach( $other->documentElement->childNodes as $otherNode )
+            {
+                $imported = $dom->importNode( $otherNode , true );
+                $node->parentNode->insertBefore( $imported , $node );
+            }
         }
         $node->parentNode->removeChild( $node );
     }
@@ -881,12 +997,30 @@ that configure.php cannot patch the translated manual into a validating
 state. Please report any "Unknown parent" messages on the doc-base
 repository, and focus on fixing XInclude/XPointers failures above.\n\n
 MSG;
-        exit(-1); // stop here, do not let more messages further confuse the matter
+        exit(1); // stop here, do not let more messages further confuse the matter
+    }
+
+    // XInclude by xml:id never duplicates xml:id, horever, also using
+    // XInclude by XPath/XPointer may start causing duplications
+    // (see docs/structure.md). Crude and ugly fixup ahead, beware!
+
+    $list = array();
+    $nodes = $xpath->query( "//*[@xml:id]" );
+    foreach( $nodes as $node )
+    {
+        $id = $node->getAttribute( "xml:id" );
+        if ( isset( $list[ $id ] ) )
+        {
+            if ( ! str_contains( $id , '..' ) )
+                echo "  Random removing duplicated xml:id: $id\n";
+            $node->removeAttribute( "xml:id" );
+        }
+        $list[ $id ] = $id;
     }
 }
 
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
-flush();
+
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
     $dom->relaxNGValidate(RNG_SCHEMA_FILE); // we don't care if the validation works or not
     $node = $dom->getElementById($ac['PARTIAL']);
@@ -928,15 +1062,11 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
 $mxml = $ac["OUTPUT_FILENAME"];
 
 /* TODO: For some reason libxml does not validate the RelaxNG schema unless reloading the document in full */
-$dom->save($mxml);
-$dom->load($mxml, $LIBXML_OPTS);
+dom_saveload( $dom );   // idempotent path
+$dom->save($mxml);      // non idempotent, historical path
 if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
-    printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
-    flush();
-    $dom->save($mxml);
-
-    echo "done.\n";
+    printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
     echo "All you have to do now is run 'phd -d {$mxml}'\n";
     echo "If the script hangs here, you can abort with ^C.\n";
     echo <<<CAT
@@ -987,4 +1117,3 @@ CAT;
 
     errors_are_bad(1); // Tell the shell that this script finished with an error.
 }
-?>

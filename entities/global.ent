@@ -1,10 +1,13 @@
-<!-- -*- SGML -*-
+<!--
+    Temporary entities to avoid breaking translations.
+-->
+<!ENTITY reference.pdo-cubrid.entities.PDO "&reference.pdo-cubrid.entities.pdo-overloaded;">
+<!ENTITY reference.pdo-pgsql.entities.PDO "&reference.pdo-pgsql.entities.pdo-overloaded;">
+<!ENTITY reference.pdo-sqlite.entities.PDO "&reference.pdo-sqlite.entities.pdo-overloaded;">
 
- $Id$
-
- Contains global "macros" for all the XML documents.
-
- -->
+<!--
+    Contains global "macros" for all the XML documents.
+-->
 <!ENTITY url.7zip "http://www.7-zip.org/">
 <!ENTITY url.adabas "http://www.adabas.com/">
 <!ENTITY url.adobe.acrobat "http://www.adobe.com/products/acrobat/readstep2.html">
@@ -325,7 +328,7 @@
 <!ENTITY url.openssl.config "https://www.openssl.org/docs/manmaster/man5/config.html">
 <!ENTITY url.oracle.instant.client "https://www.oracle.com/database/technologies/instant-client.html">
 <!ENTITY url.oracle.oic.connect "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-E5358DEA-D619-4B7B-A799-3D2F802500F1">
-<!ENTITY url.oracle.drcp.configure "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-82FF6896-F57E-41CF-89F7-755F3BC9C924">
+<!ENTITY url.oracle.drcp.configure "https://docs.oracle.com/en/database/oracle/oracle-database/23/jjdbc/database-resident-connection-pooling.html">
 <!ENTITY url.oracle.drcp.whitepaper "https://www.oracle.com/technetwork/topics/php/whatsnew/php-scalability-ha-twp-128842.pdf">
 <!ENTITY url.oracle.taf.ociguide "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-F7817CD2-4A2C-4D37-BD36-56DBABD4725F">
 <!ENTITY url.oracle.taf.rac "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-DEF850F6-27E9-428E-B8FC-530230D78AD2">
@@ -423,7 +426,7 @@
 <!ENTITY url.sed "http://www.gnu.org/software/sed/sed.html">
 <!ENTITY url.setlocale.lang.win32 "http://msdn.microsoft.com/en-us/library/39cwe7zf.aspx">
 <!ENTITY url.setlocale.country.win32 "http://msdn.microsoft.com/en-us/library/cdax410z.aspx">
-<!ENTITY url.session-fixation "http://www.acros.si/papers/session_fixation.pdf">
+<!ENTITY url.session-fixation "https://acrossecurity.com/papers/session_fixation.pdf">
 <!ENTITY url.session-save-handler "https://github.com/php/php-src/blob/master/ext/session/tests/save_handler.inc">
 <!ENTITY url.sleepycat "http://www.sleepycat.com/">
 <!ENTITY url.smart.questions "http://www.catb.org/~esr/faqs/smart-questions.html">

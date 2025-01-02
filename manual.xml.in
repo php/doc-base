@@ -30,7 +30,7 @@
 
 <!-- These are language independent -->
 <!ENTITY % frontpage.entities SYSTEM "../@EN_DIR@/contributors.ent">
-<!ENTITY % file.entities      SYSTEM "./entities/file-entities.ent">
+<!ENTITY % file.entities      SYSTEM "./temp/file-entities.ent">
 
 <!-- Include all external DTD parts defined previously -->
 %global.entities;
@@ -186,6 +186,7 @@
    &reference.password.book;
    &reference.rnp.book;
    &reference.sodium.book;
+   &reference.xpass.book;
   </set>
 
   <set xml:id="refs.database">

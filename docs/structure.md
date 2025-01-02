@@ -5,6 +5,7 @@ The PHP Manual sources are stored in Git repositories.
 To checkout the PHP Manual sources, follow the steps in [Setting up a documentation environment](local-setup.md)
 
 ## File structure
+
 **Note for translators:** if any of the source files don't exist in your translation, the English content will be used
 during the building process. This means that you *must not* place untranslated files in your translation tree. Otherwise,
 it will lead to a mess, confusion and may break some tools.
@@ -42,3 +43,19 @@ There are some other important files:
   Including common warnings, notes, etc.
 - *translation.xml* - this file is used to store all central translation info, like a small
   intro text for translators and the persons list. This file is not present in the English tree.
+
+## `xml:id` structure
+
+The PHP is complex, and uses `xml:id` extensively. For chunking,
+linking and XInclude purposes. So some care is necessary to avoid
+collisions. There are two pseudo-types of IDs used in manuals.
+
+* **Structural IDs:** IDs that are present on structural elements of
+DocBook XML (like `<chapter>`, `<section>` and so on);
+
+* **XInclude IDs:** IDs that are used as target of XIncludes.
+
+Structural IDs are in the pattern `id.id`, while XInclude IDs use the
+pattern `structural.id..local.name`. That is, Structural IDs, the
+name parts are separated with a single dot, while XInclude IDs start
+with an Structural ID, an `..` separator, and a local path suffix.
