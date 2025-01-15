@@ -16,8 +16,8 @@
 # Description
 
 This command line utility test if an file is valid standalone XML file,
-ignoring undefined entities. If an directory is informed, the test is
-applied in all .xml files in directory and sub directories.
+accepting undefined entities references. If an directory is informed,
+the test is applied in all .xml files in directory and sub directories.
 
 This tool also cares for directories marked with .xmlfragmentdir, so
 theses files are tested in relaxed semantics for XML fragments.       */
@@ -122,7 +122,7 @@ function testFile( string $filename , bool $fragment = false )
 
 function testDir( string $dir )
 {
-    $dir = realpain( $dir );
+    $dir = realpath( $dir );
     $files = scandir( $dir );
     $fragment = false;
     $subdirs = [];
@@ -137,7 +137,7 @@ function testDir( string $dir )
         if ( $file[0] == "." )
             continue;
 
-        $fullpath = realpain( "$dir/$file" );
+        $fullpath = realpath( "$dir/$file" );
 
         if ( is_dir ( $fullpath ) )
         {
@@ -151,27 +151,4 @@ function testDir( string $dir )
 
     foreach( $subdirs as $dir )
         testDir( $dir );
-}
-
-function realpain( string $path , bool $touch = false , bool $mkdir = false ) : string
-{
-    // pain is real
-
-    // care for external XML tools (realpath() everywhere)
-    // care for Windows builds (foward slashes everywhere)
-    // avoid `cd` and chdir() like the plague
-
-    $path = str_replace( "\\" , '/' , $path );
-
-    if ( $mkdir && ! file_exists( $path ) )
-        mkdir( $path , recursive: true );
-
-    if ( $touch && ! file_exists( $path ) )
-        touch( $path );
-
-    $res = realpath( $path );
-    if ( is_string( $res ) )
-        $path = $res;
-
-    return $path;
 }
