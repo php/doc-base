@@ -33,16 +33,6 @@ In new idempotent mode, files are created at:
 - doc-base/temp/file-entites.ent
 - doc-base/temp/file-entites.dir.dir.ent
 
-# TODO
-
-2. Istead of creating ~thousand doc-base/temp/file-entites.*.ent files,
-output an solid XML grouped file (per github.com/php/doc-base/pull/183)
-so it would be possible to detect accidental overwriting of structural
-entities, the "list of entities" moved to/as normal entity text. PS: This
-will NOT work, with libxml recusing to load .manuxal.xml.in because of an
-"Detected an entity reference loop", that does not exist. Sigh. PPS: May
-be possible with LIBXML_PARSEHUGE after all.
-
 */
 
 // Setup
@@ -266,14 +256,15 @@ function list_entities_recurse( string $root , array $dirs )
     $text = implode( "\n" , $list );
 
     if ( $text != "" )
-    {
-        // pushEntity( $name , text: $text ); // See TODO item 2 // LIBXML_PARSEHUGE
+        pushEntity( $name , text: $text );
 
-        $path = __DIR__ . "/../temp/file-entities." . implode( '.' , $dirs ) . ".ent";
-        file_put_contents( $path , $text );
-        $path = realpain( $path );
-        pushEntity( $name , path: $path );
-    }
+//  Old style, pre LIBXML_PARSEHUGE, "directory" entity as external file
+//
+//        $path = __DIR__ . "/../temp/file-entities." . implode( '.' , $dirs ) . ".ent";
+//        file_put_contents( $path , $text );
+//        $path = realpain( $path );
+//        pushEntity( $name , path: $path );
+//
 
     foreach( $subdirs as $subdir )
     {
