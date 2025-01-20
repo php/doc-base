@@ -677,11 +677,11 @@ foreach ( $repos as $name => $path )
 {
     $path = escapeshellarg( $path );
     $branch = trim( `git -C $path rev-parse --abbrev-ref HEAD` );
-    $branch = $branch == "master" ? "" : " (branch $branch)";
+    $suffix = $branch == "master" ? "" : " (branch $branch)";
     $output .= str_pad( "$name:" , 10 );
-    $output .= rtrim( `git -C $path rev-parse HEAD`  ?? "" ) . "$branch\n";
+    $output .= rtrim( `git -C $path rev-parse HEAD`  ?? "" ) . "$suffix ";
+    $output .= rtrim( `git -C $path for-each-ref --format="%(push:track)" refs/heads/$branch` ?? "" ) . "\n";
     $output .= rtrim( `git -C $path status -s` ?? "" ) . "\n";
-    $output .= rtrim( `git -C $path for-each-ref --format="%(push:track)" refs/heads` ?? "" ) . "\n";
 }
 while( str_contains( $output , "\n\n" ) )
     $output = str_replace( "\n\n" , "\n" , $output );
