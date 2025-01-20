@@ -80,7 +80,8 @@ foreach( $argv as $arg )
 
 echo "Creating file-entities.ent... ";
 
-$entities = []; // See pushEntity()
+$entities = [];
+$mixedCase = [];
 
 generate_file_entities( $root , "en" );
 generate_list_entities( $root , "en" );
@@ -125,6 +126,7 @@ class Entity
 function pushEntity( string $name , string $text = '' , string $path = '' )
 {
     global $entities;
+    global $mixedCase;
 
     $name = str_replace( '_' , '-' , $name );
     $path = str_replace( '\\' , '/' , $path );
@@ -134,8 +136,25 @@ function pushEntity( string $name , string $text = '' , string $path = '' )
     if ( ( $text == "" && $path == "" ) || ( $text != "" && $path != "" ) )
     {
         echo "Something went wrong on file-entities.php.\n";
-        exit(-1);
+        exit( 1 );
     }
+
+    $lname = strtolower( $name );
+    if ( isset( $mixedCase[ $lname ] ) && $mixedCase[ $lname ] != $name )
+    {
+        echo "\n\n";
+        echo "BROKEN BUILD on case insensitive file systems!\n";
+        echo "Detected distinct file entities only by case:\n";
+        echo " - {$mixedCase[ $lname ]}\n";
+        echo " - $name \n";
+        echo "This will PERMANENTLY BRICK manual build on Windows machines!\n";
+        echo "Avoid committing this on repository, and if it's already committed,\n";
+        echo "revert and send a heads up on mailinst how to fix the issue.\n\n";
+        echo "See https://github.com/php/doc-en/pull/4330#issuecomment-2557306828";
+        echo "\n\n";
+        exit( 1 );
+    }
+    $mixedCase[ $lname ] = $name;
 }
 
 function generate_file_entities( string $root , string $lang )
@@ -145,7 +164,7 @@ function generate_file_entities( string $root , string $lang )
     if ( $test === false || is_dir( $path ) == false )
     {
         echo "Language directory not found: $path\n.";
-        exit(-1);
+        exit( 1 );
     }
     $path = $test;
 
@@ -197,7 +216,7 @@ function generate_list_entities( string $root , string $lang )
     if ( $test === false || is_dir( $path ) == false )
     {
         echo "Language directory not found: $path\n.";
-        exit(-1);
+        exit( 1 );
     }
     $path = $test;
 
