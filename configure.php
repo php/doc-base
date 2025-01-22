@@ -829,17 +829,9 @@ checkvalue($ac['FORCE_DOM_SAVE']);
 
 function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
 {
-    static $documentURI = "";
-    if ( $baseURI != "" )
-        $documentURI = $baseURI;
-
     $filename = realpath( $filename );
     $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
-    $ret = $dom->load( $filename , $options );
-
-    if ( $documentURI != "" )
-        $dom->documentURI = $documentURI;
-    return $ret;
+    return $dom->load( $filename , $options );
 }
 
 function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
@@ -855,9 +847,8 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
 
 echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
 $dom = new DOMDocument();
-$docpath = "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}";
 
-if ( dom_load( $dom , $docpath , $docpath ) )
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
 {
     dom_saveload( $dom ); // correct file/line/column on error messages
     echo "done.\n";
