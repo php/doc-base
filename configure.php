@@ -594,6 +594,7 @@ if ($ac["LANG"] == "en") {
     $ac["TRANSLATION_ONLY_INCL_END"] = "-->";
 }
 checkvalue($ac['LANG']);
+file_put_contents( realpain( __DIR__ . "/temp/lang" , $ac['LANG'] ) );
 
 checking("whether the language is supported");
 $LANGDIR = "{$ac['rootdir']}/{$ac['LANG']}";
@@ -798,8 +799,9 @@ echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
 
 if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
 {
+    echo "1 ";
     dom_saveload( $dom ); // correct file/line/column on error messages
-    echo "done.\n";
+    echo "2 done.\n";
 }
 else
 {
