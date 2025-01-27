@@ -19,14 +19,14 @@ Compare attributes usage between two XML leaf/fragment files.         */
 
 require_once __DIR__ . '/libqa/all.php';
 
+$ignore = new OutputIgnore( $argv ); // always first, may exit.
 $oklist = SyncFileList::load();
-$ignore = new OutputIgnore( $argv );
 
 foreach ( $oklist as $file )
 {
     $source = $file->sourceDir . '/' . $file->file;
     $target = $file->targetDir . '/' . $file->file;
-    $output = new OutputBuffer( "qaxml.a" , $file->file , $ignore );
+    $output = new OutputBuffer( "# qaxml.a" , $target , $ignore );
 
     [ $s , $e ] = XmlFrag::loadXmlFragmentFile( $source );
     [ $t , $e ] = XmlFrag::loadXmlFragmentFile( $target );
