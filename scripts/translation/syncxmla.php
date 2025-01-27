@@ -57,13 +57,10 @@ foreach ( $oklist as $file )
         if ( $v[0] == $v[1] )
             continue;
 
-        $output->addDiff( $k , $v[1] , $v[0] );
+        $output->addDiff( $k , $v[0] , $v[1] );
     }
 
     $output->print();
-
-die(b);
-
 }
 
 function extractTriple( array $list )

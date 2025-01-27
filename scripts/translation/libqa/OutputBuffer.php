@@ -30,6 +30,9 @@ class OutputBuffer
 
     function __construct( string $header , string $filename , OutputIgnore $ignore )
     {
+        if ( str_starts_with( $filename , "./" ) )
+            $filename = substr( $filename , 2 );
+
         $this->header = $header . ": " . $filename . "\n\n";
         $this->filename = $filename;
         $this->ignore = $ignore;

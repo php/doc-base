@@ -41,7 +41,6 @@ class OutputIgnore
                 {
                     $list[] = $line;
                     $this->saveIgnores( $list );
-                    $file->save( $list );
                 }
                 exit;
             }
@@ -60,7 +59,7 @@ class OutputIgnore
                 if ( $dels == 0 )
                     print "Ignore mark not found.\n";
                 else
-                    $file->saveIgnores( $list );
+                    $this->saveIgnores( $list );
                 exit;
             }
 
@@ -94,18 +93,15 @@ class OutputIgnore
 
         $prefix = "{$filename}:{$hashHeader}:";
         $ignore = "{$filename}:{$hashHeader}:{$hashMatter}";
-        $addign = escapeshellarg( "--add-ignore=$ignore" );
-        $delign = escapeshellarg( "--del-ignore=$ignore" );
-
         $marks = $this->loadIgnores();
 
-        // --add-ignore
+        // --add-ignore command
 
         if ( in_array( $ignore , $marks ) )
-            $ret = true;
-        else
-            if ( $this->showIgnore )
-                $output->addFooter( "  php {$this->argv0} $addign\n" );
+            $ret = true;                        // is already ignored
+        else                                    //
+            if ( $this->showIgnore )            // show add command
+                $output->addFooter( "  php {$this->argv0} --add-ignore=$ignore\n" );
 
         // Remove valid ignores, leaves outdated ones for listing
 
@@ -115,13 +111,13 @@ class OutputIgnore
             unset( $marks[$key] );
         }
 
-        // --del-ignore
+        // --del-ignore command
 
-        if ( $this->showIgnore )
+        if ( $this->showIgnore )                // show del commands (for this file/prefix)
             foreach ( $marks as $mark )
                 if ( $mark != null )
                     if ( str_starts_with( $mark , $prefix ) )
-                        $output->addFooter( "  php {$this->argv0} $delign\n" );
+                        $output->addFooter( "  php {$this->argv0} --del-ignore=$mark\n" );
 
         return $ret;
     }

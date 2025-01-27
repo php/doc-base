@@ -594,7 +594,7 @@ if ($ac["LANG"] == "en") {
     $ac["TRANSLATION_ONLY_INCL_END"] = "-->";
 }
 checkvalue($ac['LANG']);
-file_put_contents( realpain( __DIR__ . "/temp/lang" , $ac['LANG'] ) );
+file_put_contents( __DIR__ . "/temp/lang" , $ac['LANG'] );
 
 checking("whether the language is supported");
 $LANGDIR = "{$ac['rootdir']}/{$ac['LANG']}";
