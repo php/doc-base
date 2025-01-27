@@ -310,7 +310,7 @@ function writeEntity( $file , Entity $ent )
     fwrite( $file , $line );
 }
 
-function realpain( string $path , bool $touch = false ) : string
+function realpain( string $path , bool $touch = false , bool $mkdir = false ) : string
 {
     // pain is real
 
@@ -318,12 +318,17 @@ function realpain( string $path , bool $touch = false ) : string
     // care for Windows builds (foward slashes everywhere)
     // avoid `cd` and chdir() like the plague
 
+    $path = str_replace( "\\" , '/' , $path );
+
+    if ( $mkdir && ! file_exists( $path ) )
+        mkdir( $path , recursive: true );
+
     if ( $touch && ! file_exists( $path ) )
         touch( $path );
 
     $res = realpath( $path );
-    if ($res !== false)
-        $path = $res;
+    if ( is_string( $res ) )
+        $path = str_replace( "\\" , '/' , $res );
 
     return $path;
 }

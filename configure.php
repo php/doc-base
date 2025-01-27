@@ -110,7 +110,7 @@ function realpain( string $path , bool $touch = false , bool $mkdir = false ) : 
 
     $res = realpath( $path );
     if ( is_string( $res ) )
-        $path = $res;
+        $path = str_replace( "\\" , '/' , $res );
 
     return $path;
 }
