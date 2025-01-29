@@ -46,16 +46,22 @@ There are some other important files:
 
 ## `xml:id` structure
 
-The PHP is complex, and uses `xml:id` extensively. For chunking,
-linking and XInclude purposes. So some care is necessary to avoid
-collisions. There are two pseudo-types of IDs used in manuals.
+The PHP Manual is complex, and uses `xml:id`s extensively, for vairous
+purposes. So some care is necessary to avoid failures.
+There are two types of `xml:id`s used in manuals.
 
 * **Structural IDs:** IDs that are present on structural elements of
-DocBook XML (like `<chapter>`, `<section>` and so on);
+DocBook XML (like `<chapter>`, `<section>` and so on), that are used for
+linking and chunking;
 
 * **XInclude IDs:** IDs that are used as target of XIncludes.
 
-Structural IDs are in the pattern `id.id`, while XInclude IDs use the
-pattern `structural.id..local.name`. That is, Structural IDs, the
-name parts are separated with a single dot, while XInclude IDs start
-with an Structural ID, an `..` separator, and a local path suffix.
+Structural IDs are in the pattern `id.id` (always one dot as separator),
+while XInclude IDs use the pattern `structural.id..local.name`. That is,
+Structural IDs, the name parts are separated with a *single* dot, while XInclude
+IDs start with an Structural ID, *includes* an `..` separator, and a local
+path suffix (mind the double dot on XInclude IDs).
+
+The `configure.php` script will remove any duplicated IDs found. Without
+warnings in the case of XInclude IDs, so it is possible to use XInclude
+IDs elsewhere, and will warn about duplicate Structural IDs.

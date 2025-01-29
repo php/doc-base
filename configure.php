@@ -1060,6 +1060,7 @@ MSG;
     // XInclude by XPath/XPointer may start causing duplications
     // (see docs/structure.md). Crude and ugly fixup ahead, beware!
 
+    $see = false;
     $list = array();
     $nodes = $xpath->query( "//*[@xml:id]" );
     foreach( $nodes as $node )
@@ -1068,11 +1069,16 @@ MSG;
         if ( isset( $list[ $id ] ) )
         {
             if ( ! str_contains( $id , '..' ) )
+            {
                 echo "  Random removing duplicated xml:id: $id\n";
+                $see = true;
+            }
             $node->removeAttribute( "xml:id" );
         }
         $list[ $id ] = $id;
     }
+    if ( $see )
+        echo "  See: https://github.com/php/doc-base/blob/master/docs/structure.md#xmlid-structure\n";
 }
 
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
