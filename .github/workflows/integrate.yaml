@@ -61,5 +61,5 @@ jobs:
       - name: "Build documentation for ${{ matrix.language }}"
         run: |
           git -C doc-base fetch origin master
-          git -C doc-base merge --no-ff --no-commit master
+          git -C doc-base merge --no-ff --no-commit origin/master
           php doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ matrix.language }}
