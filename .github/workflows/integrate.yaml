@@ -38,6 +38,7 @@ jobs:
         uses: "actions/checkout@v4"
         with:
           path: "doc-base"
+          fetch-depth: 0
 
       - name: "Checkout php/doc-${{ matrix.language }}"
         uses: "actions/checkout@v4"
@@ -58,8 +59,8 @@ jobs:
           php doc-base/scripts/qa/extensions.xml.php --check
           php doc-base/scripts/qa/section-order.php
 
+      - name: "Merge with master (to care for concurrent PRs)"
+        run: "git -C doc-base merge --no-ff --no-commit master"
+
       - name: "Build documentation for ${{ matrix.language }}"
-        run: |
-          git -C doc-base pull origin master
-          git -C doc-base merge --no-ff --no-commit origin/master
-          php doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ matrix.language }}
+        run: "php doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ matrix.language }}"
