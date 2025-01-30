@@ -34,33 +34,33 @@ jobs:
           - "zh"
 
     steps:
-      - name: "Checkout"
+      - name: "Checkou doc-baset"
         uses: "actions/checkout@v4"
         with:
           path: "doc-base"
           fetch-depth: 0
 
-      - name: "Checkout php/doc-${{ matrix.language }}"
+      - name: "Checkout doc-${{ matrix.language }}"
         uses: "actions/checkout@v4"
         with:
           path: "${{ matrix.language }}"
           repository: "php/doc-${{ matrix.language }}"
 
-      - name: "Checkout php/doc-en as fallback"
+      - name: "Checkout doc-en (fallback)"
         if: "matrix.language != 'en'"
         uses: "actions/checkout@v4"
         with:
           path: "en"
           repository: "php/doc-en"
 
+      - name: "Merge doc-base with master (concurrent PRs)"
+        run: "git -C doc-base merge --no-ff --no-commit origin/master"
+
       - name: "Run QA scripts for EN docs"
         if: "matrix.language == 'en'"
         run: |
           php doc-base/scripts/qa/extensions.xml.php --check
           php doc-base/scripts/qa/section-order.php
-
-      - name: "Merge with master (to care for concurrent PRs)"
-        run: "git -C doc-base merge --no-ff --no-commit origin/master"
 
       - name: "Build documentation for ${{ matrix.language }}"
         run: "php doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ matrix.language }}"
