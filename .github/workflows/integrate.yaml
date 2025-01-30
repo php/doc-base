@@ -60,7 +60,7 @@ jobs:
           php doc-base/scripts/qa/section-order.php
 
       - name: "Merge with master (to care for concurrent PRs)"
-        run: "git -C doc-base merge --no-ff --no-commit master"
+        run: "git -C doc-base merge --no-ff --no-commit origin/master"
 
       - name: "Build documentation for ${{ matrix.language }}"
         run: "php doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ matrix.language }}"
