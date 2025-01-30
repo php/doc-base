@@ -59,4 +59,6 @@ jobs:
           php doc-base/scripts/qa/section-order.php
 
       - name: "Build documentation for ${{ matrix.language }}"
-        run: "php doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ matrix.language }}"
+        run: |
+          git -C doc-base merge --no-ff --no-commit master
+          php doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ matrix.language }}
