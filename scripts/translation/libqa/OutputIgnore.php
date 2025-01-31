@@ -27,7 +27,7 @@ class OutputIgnore
     private string $filename = ".syncxml.ignores";
     private string $argv0 = "";
 
-    function __construct( array & $argv )
+    public function __construct( array & $argv )
     {
         $this->argv0 = escapeshellarg( $argv[0] );
 

@@ -28,7 +28,7 @@ class OutputBuffer
     private OutputIgnore $ignore;
     private string $options;
 
-    function __construct( string $header , string $filename , OutputIgnore $ignore )
+    public function __construct( string $header , string $filename , OutputIgnore $ignore )
     {
         $filename = str_replace( "/./" , "/" , $filename );
 
@@ -41,12 +41,12 @@ class OutputBuffer
         $this->options = implode( " " , $copy );
     }
 
-    function add( string $text )
+    public function add( string $text )
     {
         $this->matter[] = $text;
     }
 
-    function addDiff( string $text , int $sourceCount , int $targetCount )
+    public function addDiff( string $text , int $sourceCount , int $targetCount )
     {
         if ( $sourceCount == $targetCount )
             return;
@@ -65,18 +65,18 @@ class OutputBuffer
         $this->add( "{$prefix}{$text}{$suffix}\n" );
     }
 
-    function addFooter( string $text )
+    public function addFooter( string $text )
     {
         $this->footer[] = $text;
     }
 
-    function addLine()
+    public function addLine()
     {
         if ( count( $this->matter ) > 0 && end( $this->matter ) != "\n" )
             $this->add( "\n" );
     }
 
-    function print( bool $useAlternatePrinting = false )
+    public function print( bool $useAlternatePrinting = false )
     {
         if ( count( $this->matter ) == 0 && count( $this->footer ) == 0 )
             return;
