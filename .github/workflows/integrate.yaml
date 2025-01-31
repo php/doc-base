@@ -34,7 +34,7 @@ jobs:
           - "zh"
 
     steps:
-      - name: "Checkou doc-baset"
+      - name: "Checkout doc-base"
         uses: "actions/checkout@v4"
         with:
           path: "doc-base"
@@ -53,7 +53,7 @@ jobs:
           path: "en"
           repository: "php/doc-en"
 
-      - name: "Merge doc-base with master (concurrent PRs)"
+      - name: "Pull merged doc-base changes from master"
         run: "git -C doc-base merge --no-ff --no-commit origin/master"
 
       - name: "Run QA scripts for EN docs"
