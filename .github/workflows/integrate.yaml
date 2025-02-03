@@ -53,6 +53,7 @@ jobs:
 
       - name: "Merge doc-base changes from master"
         run: |
+          git -C doc-base fetch master
           git -C doc-base -c user.email="()" -c user.name="()" merge --no-ff --no-commit master
           git -C doc-base diff --cached
 
