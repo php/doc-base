@@ -53,12 +53,12 @@ jobs:
 
       - name: "Merge doc-base changes from master"
         run: |
-          cd doc-base
           ls
-          git status
-          git remote -v
+          cd doc-base
           git fetch origin master
-          gir branch
+          echo "status" ; git status
+          echo "remote" ; git remote -v
+          echo "branch" ; git branch
           git -c user.email="()" -c user.name="()" merge --no-ff --no-commit origin/master
           git diff --cached
 
