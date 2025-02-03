@@ -53,9 +53,14 @@ jobs:
 
       - name: "Merge doc-base changes from master"
         run: |
-          git -C doc-base fetch origin master
-          git -C doc-base -c user.email="()" -c user.name="()" merge --no-ff --no-commit master
-          git -C doc-base diff --cached
+          cd doc-base
+          ls
+          git status
+          git remote -v
+          git fetch origin master
+          gir branch
+          git -c user.email="()" -c user.name="()" merge --no-ff --no-commit origin/master
+          git diff --cached
 
       - name: "Run QA scripts for EN docs"
         if: "matrix.language == 'en'"
