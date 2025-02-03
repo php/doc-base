@@ -51,7 +51,7 @@ jobs:
           path: "en"
           repository: "php/doc-en"
 
-      - name: "Merge doc-base changes from master"
+      - name: "Ensure doc-base is correctly merged into master (debug)"
         run: |
           echo === This step will fail if the merge commit is not targeting master
           cd doc-base
