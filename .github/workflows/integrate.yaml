@@ -11,9 +11,7 @@ on:
 jobs:
   build:
     name: "Build"
-
     runs-on: "ubuntu-latest"
-
     continue-on-error: true
 
     strategy:
@@ -53,8 +51,10 @@ jobs:
           path: "en"
           repository: "php/doc-en"
 
-      - name: "Pull merged doc-base changes from master"
-        run: "git -C doc-base merge --no-ff --no-commit origin/master"
+      - name: "Merge doc-base changes from master"
+        run: |
+          git -C doc-base -c user.email="()" -c user.name="()" merge --no-ff --no-commit origin/master
+          git -C doc-base diff --cached
 
       - name: "Run QA scripts for EN docs"
         if: "matrix.language == 'en'"
