@@ -827,10 +827,7 @@ checkvalue($ac["GENERATE"]);
 checking('whether to save an invalid .manual.xml');
 checkvalue($ac['FORCE_DOM_SAVE']);
 
-
-$dom = new DOMDocument();
-
-function dom_load( DOMDocument $dom , string $filename ) : bool
+function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
 {
     $filename = realpath( $filename );
     $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
@@ -849,6 +846,7 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
 }
 
 echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
+$dom = new DOMDocument();
 
 if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
 {
@@ -861,7 +859,6 @@ else
     print_xml_errors();
     errors_are_bad(1);
 }
-
 
 echo "Running XInclude/XPointer... ";
 
