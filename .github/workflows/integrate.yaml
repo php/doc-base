@@ -53,18 +53,14 @@ jobs:
 
       - name: "Merge doc-base changes from master"
         run: |
-          env
+          echo === This step will fail if the merge commit is not targeting master
           cd doc-base
-          git branch
+          echo === git log -n 3
           git log -n 3
-          git checkout master
-          git branch
-          git log -n 3
-          git switch --detach -
-          git branch
-          git log -n 3
-          git -c user.email="()" -c user.name="()" merge --no-ff --no-commit master
-          git diff --cached
+          echo === git show HEAD
+          git show HEAD
+          echo === git merge --no-ff --no-commit master
+          git merge --no-ff --no-commit origin/master
 
       - name: "Run QA scripts for EN docs"
         if: "matrix.language == 'en'"
