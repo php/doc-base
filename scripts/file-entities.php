@@ -20,8 +20,8 @@
 This script creates various "file entities", that is, DTD entities that
 point to files and file listings, named and composed of:
 
-- dir.dir.file : pulls in a dir/dir/file.xml
-- dir.dif.entities.dir : pulls in all files of dir/dir/dir/*.xml
+- dir.dir.file         : pulls in a dir/dir/file.xml
+- dir.dif.entities.dir : pulls in XML files from dir/dir/dir/*.xml
 
 In the original file-entities.php.in, the files are created at:
 
@@ -31,7 +31,20 @@ In the original file-entities.php.in, the files are created at:
 In new idempotent mode, files are created at:
 
 - doc-base/temp/file-entites.ent
-- doc-base/temp/file-entites.dir.dir.ent
+- doc-base/temp/file-entites/dir.dir.ent
+
+The file entity for directories (file listings) are keep as individual
+files instead to avoid these libxml errors, in some OS/versions:
+
+- Detected an entity reference loop [1]
+- Maximum entity amplification factor exceeded [2]
+
+See LIBXML_LIMITS_HACK below. This workaround creates about a thousand
+files per running, that slowsdows even more the manual building on HDD
+systems.
+
+[1] https://github.com/php/doc-base/pull/183
+[2] https://github.com/php/doc-en/pull/4330
 
 */
 
@@ -42,6 +55,8 @@ ini_set( 'display_startup_errors' , 1 );
 error_reporting( E_ALL );
 set_time_limit( 0 );
 ob_implicit_flush();
+
+const LIBXML_LIMITS_HACK = true;
 
 // Usage
 
@@ -256,15 +271,20 @@ function list_entities_recurse( string $root , array $dirs )
     $text = implode( "\n" , $list );
 
     if ( $text != "" )
-        pushEntity( $name , text: $text );
+    {
+        if ( LIBXML_LIMITS_HACK )
+        {
+            static $entityDir = "";
+            if ( $entityDir == "" )
+                $entityDir = realpain( __DIR__ . "/../temp/file-entities" , mkdir: true );
 
-//  Old style, pre LIBXML_PARSEHUGE, "directory" entity as external file
-//
-//        $path = __DIR__ . "/../temp/file-entities." . implode( '.' , $dirs ) . ".ent";
-//        file_put_contents( $path , $text );
-//        $path = realpain( $path );
-//        pushEntity( $name , path: $path );
-//
+            $path = $entityDir . "/" . implode( '.' , $dirs ) . ".ent";
+            file_put_contents( $path , $text );
+            pushEntity( $name , path: $path );
+        }
+        else
+            pushEntity( $name , text: $text );
+    }
 
     foreach( $subdirs as $subdir )
     {
