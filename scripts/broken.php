@@ -20,7 +20,7 @@ accepting undefined entities references. If an directory is informed,
 the test is applied in all .xml files in directory and sub directories.
 
 This tool also cares for directories marked with .xmlfragmentdir, so
-theses files are tested in relaxed semantics for XML fragments.       */
+theses files are tested in relaxed semantics for XML Fragments.       */
 
 ini_set( 'display_errors' , 1 );
 ini_set( 'display_startup_errors' , 1 );
@@ -78,6 +78,24 @@ function setup( string & $prefix , string & $suffix , string & $extra )
 
 function testFile( string $filename , bool $fragment = false )
 {
+    $contents = file_get_contents( $filename );
+
+    if ( str_starts_with( $contents , b"\xEF\xBB\xBF" ) )
+    {
+        echo "Wrong XML file:\n";
+        echo "  Path:  $filename\n";
+        echo "  Error: XML file with BOM. Several tools may misbehave.\n";
+        echo "\n";
+    }
+
+    if ( PHP_EOL == "\n" && str_contains( $contents , "\r") )
+    {
+        echo "Wrong XML file:\n";
+        echo "  Path:  $filename\n";
+        echo "  Error: XML file contains \\r. Several tools may misbehave.\n";
+        echo "\n";
+    }
+
     static $prefix = "", $suffix = "", $extra = "";
     if ( $extra == "" )
         setup( $prefix , $suffix , $extra );
@@ -88,7 +106,6 @@ function testFile( string $filename , bool $fragment = false )
     $doc->substituteEntities = false;
     libxml_use_internal_errors( true );
 
-    $contents = file_get_contents( $filename );
     if ( $fragment )
         $contents = "<f>{$contents}</f>";
     $doc->loadXML( $contents );
