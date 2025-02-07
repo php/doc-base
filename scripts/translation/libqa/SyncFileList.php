@@ -31,7 +31,7 @@ class SyncFileList
         }
 
         $lang = trim( file_get_contents( $file ) );
-        $cache = __DIR__ . "/../../../temp/$lang.oklist";
+        $cache = __DIR__ . "/../../../temp/qaxml.files.$lang";
 
         if ( file_exists( $cache ) )
         {
@@ -47,7 +47,12 @@ class SyncFileList
 
         foreach( $revdata->fileDetail as $file )
         {
-            if ( $file->status != RevcheckStatus::TranslatedOk )
+            $source = "{$revcheck->sourceDir}/{$file->path}/{$file->name}";
+            $target = "{$revcheck->targetDir}/{$file->path}/{$file->name}";
+
+            if ( ! file_exists( $source ) )
+                continue;
+            if ( ! file_exists( $target ) )
                 continue;
 
             $item = new SyncFileItem();
@@ -56,6 +61,9 @@ class SyncFileList
             $item->file = $file->path . '/' . $file->name;
             $list[] = $item;
         }
+
+        if ( count( $list ) == 0 )
+            throw new Exception( "No files found. Called from wrong directory?" );
 
         $contents = gzencode( serialize( $list ) );
         file_put_contents( $cache , $contents );

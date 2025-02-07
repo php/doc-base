@@ -44,16 +44,16 @@ class XmlFrag
         [ $doc , $ent , $err ] = XmlFrag::loadXmlFragmentText( $contents , "" );
 
         if ( count( $err ) == 0 )
-            return [ $doc , $err ];
+            return [ $doc , $ent , $err ];
 
         $dtd = "<?xml version='1.0' encoding='utf-8'?>\n<!DOCTYPE frag [\n";
         foreach ( $ent as $e )
             $dtd .= "<!ENTITY $e ''>\n";
         $dtd .= "]>\n";
 
-        [ $doc , $ent , $err ] = XmlFrag::loadXmlFragmentText( $contents , $dtd );
+        [ $doc , $ign , $err ] = XmlFrag::loadXmlFragmentText( $contents , $dtd );
 
-        return [ $doc , $err ];
+        return [ $doc , $ent , $err ];
     }
 
     static function loadXmlFragmentText( string $contents , string $dtd )

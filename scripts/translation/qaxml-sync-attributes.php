@@ -28,8 +28,8 @@ foreach ( $oklist as $file )
     $target = $file->targetDir . '/' . $file->file;
     $output = new OutputBuffer( "# qaxml.a" , $target , $ignore );
 
-    [ $s , $e ] = XmlFrag::loadXmlFragmentFile( $source );
-    [ $t , $e ] = XmlFrag::loadXmlFragmentFile( $target );
+    [ $s , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $source );
+    [ $t , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $target );
 
     $s = XmlFrag::listNodes( $s , XML_ELEMENT_NODE );
     $t = XmlFrag::listNodes( $t , XML_ELEMENT_NODE );
