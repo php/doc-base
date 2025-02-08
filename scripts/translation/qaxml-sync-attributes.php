@@ -43,9 +43,9 @@ foreach ( $oklist as $file )
     $match = array();
 
     foreach( $s as $v )
-        $match[$v] = array( 0 , 0 );
+        $match[$v] = [ 0 , 0 ];
     foreach( $t as $v )
-        $match[$v] = array( 0 , 0 );
+        $match[$v] = [ 0 , 0 ];
 
     foreach( $s as $v )
         $match[$v][0] += 1;
