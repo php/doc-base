@@ -15,27 +15,21 @@
 
 # Description
 
-Compare attributes usage between two XML leaf/fragment files.         */
+Compare XML entities usage between two XML leaf/fragment files.       */
 
 require_once __DIR__ . '/libqa/all.php';
 
 $ignore = new OutputIgnore( $argv ); // always first, may exit.
-$oklist = SyncFileList::load();
+$list = SyncFileList::load();
 
-foreach ( $oklist as $file )
+foreach ( $list as $file )
 {
     $source = $file->sourceDir . '/' . $file->file;
     $target = $file->targetDir . '/' . $file->file;
-    $output = new OutputBuffer( "# qaxml.a" , $target , $ignore );
+    $output = new OutputBuffer( "# qaxml.e" , $target , $ignore );
 
-    [ $s , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $source );
-    [ $t , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $target );
-
-    $s = XmlFrag::listNodes( $s , XML_ELEMENT_NODE );
-    $t = XmlFrag::listNodes( $t , XML_ELEMENT_NODE );
-
-    $s = extractTriple( $s );
-    $t = extractTriple( $t );
+    [ $_ , $s , $_ ] = XmlFrag::loadXmlFragmentFile( $source );
+    [ $_ , $t , $_ ] = XmlFrag::loadXmlFragmentFile( $target );
 
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
@@ -56,18 +50,8 @@ foreach ( $oklist as $file )
     {
         if ( $v[0] == $v[1] )
             continue;
-
         $output->addDiff( $k , $v[0] , $v[1] );
     }
 
     $output->print();
-}
-
-function extractTriple( array $list )
-{
-    $ret = array();
-    foreach( $list as $elem )
-        foreach( $elem->attributes as $attrib )
-            $ret[] = "{$elem->nodeName} {$attrib->nodeName} {$attrib->nodeValue}";
-    return $ret;
 }

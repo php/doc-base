@@ -67,7 +67,7 @@ class OutputBuffer
 
     public function addFooter( string $text )
     {
-        $this->footer[] = $text;
+        // $this->footer[] = $text;
     }
 
     public function addLine()
