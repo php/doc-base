@@ -21,8 +21,9 @@ require_once __DIR__ . '/libqa/all.php';
 
 $argv   = new ArgvParser( $argv );
 $ignore = new OutputIgnore( $argv ); // may exit.
-$list   = SyncFileList::load();
+$urgent = $argv->consume( "--urgent" ) != null;
 
+$list   = SyncFileList::load();
 $argv->complete();
 
 foreach ( $list as $file )
@@ -43,21 +44,25 @@ foreach ( $list as $file )
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
 
-    $match = array();
+    $sideCount = array();
 
     foreach( $s as $v )
-        $match[$v] = [ 0 , 0 ];
+        $sideCount[$v] = [ 0 , 0 ];
     foreach( $t as $v )
-        $match[$v] = [ 0 , 0 ];
+        $sideCount[$v] = [ 0 , 0 ];
 
     foreach( $s as $v )
-        $match[$v][0] += 1;
+        $sideCount[$v][0] += 1;
     foreach( $t as $v )
-        $match[$v][1] += 1;
+        $sideCount[$v][1] += 1;
 
-    foreach( $match as $k => $v )
+    foreach( $sideCount as $k => $v )
         if ( $v[0] != $v[1] )
             $output->addDiff( $k , $v[0] , $v[1] );
+
+    if ( $urgent )
+        if ( $output->contains( "xml:id" ) == false )
+            continue;
 
     $output->print();
 }

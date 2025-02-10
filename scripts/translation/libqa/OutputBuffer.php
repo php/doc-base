@@ -73,6 +73,14 @@ class OutputBuffer
             $this->add( "\n" );
     }
 
+    public function contains( string $text ) : bool
+    {
+        foreach( $this->matter as $line )
+            if ( str_contains( $line , $text ) )
+                return true;
+        return false;
+    }
+
     public function print( bool $useAlternatePrinting = false )
     {
         if ( count( $this->matter ) == 0 && count( $this->footer ) == 0 )
