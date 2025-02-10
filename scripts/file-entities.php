@@ -147,16 +147,33 @@ function pushEntity( string $name , string $text = '' , string $path = '' )
     $lname = strtolower( $name );
     if ( isset( $mixedCase[ $lname ] ) && $mixedCase[ $lname ] != $name )
     {
-        echo "\n\n";
-        echo "BROKEN BUILD on case insensitive file systems!\n";
-        echo "Detected distinct file entities only by case:\n";
-        echo " - {$mixedCase[ $lname ]}\n";
-        echo " - $name \n";
-        echo "This will PERMANENTLY BRICK manual build on Windows machines!\n";
-        echo "Avoid committing this on repository, and if it's already committed,\n";
-        echo "revert and send a heads up on mailinst how to fix the issue.\n\n";
-        echo "See https://github.com/php/doc-en/pull/4330#issuecomment-2557306828";
-        echo "\n\n";
+        echo <<<END
+        \n\n
+        BROKEN BUILD on case insensitive file systems!
+
+        Detected file entities names, distinct only by case:
+        - {$mixedCase[ $lname ]}
+        - $name
+
+        This may PERMANENTLY BRICK manual build on Windows machines!
+
+        If you are seeing this message building doc-en, avoid committing any changes
+        on repository, and if it's already committed, revert and send a heads up on
+        mail lists, on how to fix the issue (refer to this message).
+
+        If you are seeing this message building a translation, this means that the
+        translation may have files or directories that differ from doc-en only by
+        upper or lower case letters. Find these differences and fix them at the git
+        level ('git mv"). After, delete the files and 'git restore' them, to see if
+        the 'git mv' worked.
+
+        This message only may be visible on non-Windows machines. Mixed cases inside
+        a repository, or between repositories, may only cause difficult to debug build
+        failures on Windows, without any other information. There is no easy fix for
+        this than a complete new checkout of the affected repository.
+
+        See: https://github.com/php/doc-en/pull/4330#issuecomment-2557306828\n\n
+        END;
         exit( 1 );
     }
     $mixedCase[ $lname ] = $name;
