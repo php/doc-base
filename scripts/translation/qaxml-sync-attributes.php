@@ -19,10 +19,13 @@ Compare attributes usage between two XML leaf/fragment files.         */
 
 require_once __DIR__ . '/libqa/all.php';
 
-$ignore = new OutputIgnore( $argv ); // always first, may exit.
-$oklist = SyncFileList::load();
+$argv   = new ArgvParser( $argv );
+$ignore = new OutputIgnore( $argv ); // may exit.
+$list   = SyncFileList::load();
 
-foreach ( $oklist as $file )
+$argv->complete();
+
+foreach ( $list as $file )
 {
     $source = $file->sourceDir . '/' . $file->file;
     $target = $file->targetDir . '/' . $file->file;
@@ -53,12 +56,8 @@ foreach ( $oklist as $file )
         $match[$v][1] += 1;
 
     foreach( $match as $k => $v )
-    {
-        if ( $v[0] == $v[1] )
-            continue;
-
-        $output->addDiff( $k , $v[0] , $v[1] );
-    }
+        if ( $v[0] != $v[1] )
+            $output->addDiff( $k , $v[0] , $v[1] );
 
     $output->print();
 }

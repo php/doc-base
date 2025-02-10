@@ -19,8 +19,11 @@ Compare XML entities usage between two XML leaf/fragment files.       */
 
 require_once __DIR__ . '/libqa/all.php';
 
-$ignore = new OutputIgnore( $argv ); // always first, may exit.
-$list = SyncFileList::load();
+$argv   = new ArgvParser( $argv );
+$ignore = new OutputIgnore( $argv ); // may exit.
+$list   = SyncFileList::load();
+
+$argv->complete();
 
 foreach ( $list as $file )
 {
@@ -47,11 +50,8 @@ foreach ( $list as $file )
         $match[$v][1] += 1;
 
     foreach( $match as $k => $v )
-    {
-        if ( $v[0] == $v[1] )
-            continue;
-        $output->addDiff( $k , $v[0] , $v[1] );
-    }
+        if ( $v[0] != $v[1] )
+            $output->addDiff( $k , $v[0] , $v[1] );
 
     $output->print();
 }
