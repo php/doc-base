@@ -19,8 +19,12 @@ Compare XML entities usage between two XML leaf/fragment files.       */
 
 require_once __DIR__ . '/libqa/all.php';
 
-$ignore = new OutputIgnore( $argv ); // always first, may exit.
-$list = SyncFileList::load();
+$argv   = new ArgvParser( $argv );
+$ignore = new OutputIgnore( $argv ); // may exit.
+$urgent = $argv->consume( "--urgent" ) != null;
+
+$list   = SyncFileList::load();
+$argv->complete();
 
 foreach ( $list as $file )
 {
@@ -30,6 +34,9 @@ foreach ( $list as $file )
 
     [ $_ , $s , $_ ] = XmlFrag::loadXmlFragmentFile( $source );
     [ $_ , $t , $_ ] = XmlFrag::loadXmlFragmentFile( $target );
+
+    adornEntities( $s );
+    adornEntities( $t );
 
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
@@ -47,11 +54,32 @@ foreach ( $list as $file )
         $match[$v][1] += 1;
 
     foreach( $match as $k => $v )
+        if ( $v[0] != $v[1] )
+            $output->addDiff( $k , $v[0] , $v[1] );
+
+    if ( $urgent )
     {
-        if ( $v[0] == $v[1] )
+        $count = 0;
+        if ( $output->contains( "&chapters" ) )
+            $count++;
+        if ( $output->contains( "&features" ) )
+            $count++;
+        if ( $output->contains( "&language" ) )
+            $count++;
+        if ( $output->contains( "&reference" ) )
+            $count++;
+        if ( $output->contains( "&security" ) )
+            $count++;
+        if ( $count == 0 )
             continue;
-        $output->addDiff( $k , $v[0] , $v[1] );
     }
 
+
     $output->print();
+}
+
+function adornEntities( array & $list )
+{
+    foreach( $list as & $item )
+        $item = '&' . $item . ';';
 }

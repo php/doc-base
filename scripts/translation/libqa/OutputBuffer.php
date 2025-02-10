@@ -35,10 +35,7 @@ class OutputBuffer
         $this->header = $header . ": " . $filename . "\n\n";
         $this->filename = $filename;
         $this->ignore = $ignore;
-
-        $copy = $ignore->residualArgv;
-        array_shift( $copy );
-        $this->options = implode( " " , $copy );
+        $this->options = implode( " " , $ignore->argv->residual() );
     }
 
     public function add( string $text )
@@ -67,7 +64,7 @@ class OutputBuffer
 
     public function addFooter( string $text )
     {
-        // $this->footer[] = $text;
+        $this->footer[] = $text;
     }
 
     public function addLine()
@@ -76,15 +73,24 @@ class OutputBuffer
             $this->add( "\n" );
     }
 
+    public function contains( string $text ) : bool
+    {
+        foreach( $this->matter as $line )
+            if ( str_contains( $line , $text ) )
+                return true;
+        return false;
+    }
+
     public function print( bool $useAlternatePrinting = false )
     {
         if ( count( $this->matter ) == 0 && count( $this->footer ) == 0 )
             return;
 
+        $hashFile = hash( "crc32b" , $this->filename );
         $hashHead = $this->hash( false );
         $hashFull = $this->hash( true );
 
-        if ( $this->ignore->shouldIgnore( $this , $this->filename , $hashHead , $hashFull ) )
+        if ( $this->ignore->shouldIgnore( $this , $hashFile , $hashHead , $hashFull ) )
             return;
 
         print $this->header;
@@ -103,6 +109,8 @@ class OutputBuffer
 
         if ( count( $this->footer ) )
             print "\n";
+
+        print "\n";
     }
 
     private function printMatterAlternate() : void

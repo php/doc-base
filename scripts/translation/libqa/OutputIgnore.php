@@ -20,57 +20,53 @@ ignored outputs with these commands.                                  */
 
 class OutputIgnore
 {
-    public array $residualArgv;
-
     private bool   $appendIgnores = true;
     private bool   $showIgnore = true;
-    private string $filename = ".syncxml.ignores";
+    private string $filename = ".qaxml.ignores";
     private string $argv0 = "";
 
-    public function __construct( array & $argv )
+    public ArgvParser $argv;
+
+    public function __construct( ArgvParser $argv )
     {
-        $this->argv0 = escapeshellarg( $argv[0] );
+        $this->argv = $argv;
+        $this->argv0 = escapeshellarg( $argv->consume( position: 0 ) );
 
-        foreach( $argv as $key => $arg )
+        $arg = $argv->consume( prefix: "--add-ignore=" );
+
+        if ( $arg != null )
         {
-            if ( str_starts_with( $arg , "--add-ignore=" ) )
+            $item = substr( $arg , 13 );
+            $list = $this->loadIgnores();
+            if ( ! in_array( $item , $list ) )
             {
-                $list = $this->loadIgnores();
-                $line = substr( $arg , 13 );
-                if ( ! in_array( $line , $list ) )
-                {
-                    $list[] = $line;
-                    $this->saveIgnores( $list );
-                }
-                exit;
+                $list[] = $item;
+                $this->saveIgnores( $list );
             }
-
-            if ( str_starts_with( $arg , "--del-ignore=" ) )
-            {
-                $list = $this->loadIgnores();
-                $line = substr( $arg , 13 );
-                $dels = 0;
-                while ( in_array( $line , $list ) )
-                {
-                    $key = array_search( $line , $list );
-                    unset( $list[$key] );
-                    $dels++;
-                }
-                if ( $dels == 0 )
-                    print "Ignore mark not found.\n";
-                else
-                    $this->saveIgnores( $list );
-                exit;
-            }
-
-            if ( $arg == "--disable-ignore" )
-            {
-                $this->showIgnore = false;
-                unset( $argv[$key] );
-            }
+            exit;
         }
 
-        $this->residualArgv = $argv;
+        $arg = $argv->consume( prefix: "--del-ignore=" );
+        if ( $arg != null )
+        {
+            $item = substr( $arg , 13 );
+            $list = $this->loadIgnores();
+            $dels = 0;
+            while ( in_array( $item , $list ) )
+            {
+                $key = array_search( $item , $list );
+                unset( $list[$key] );
+                $dels++;
+            }
+            if ( $dels == 0 )
+                print "Ignore mark not found.\n";
+            else
+                $this->saveIgnores( $list );
+            exit;
+        }
+
+        if ( $argv->consume( "--disable-ignore" ) != null )
+            $this->showIgnore = false;
     }
 
     private function loadIgnores()
@@ -87,36 +83,28 @@ class OutputIgnore
         file_put_contents( $this->filename , $contents );
     }
 
-    public function shouldIgnore( OutputBuffer $output , string $filename , string $hashHeader , string $hashMatter )
+    public function shouldIgnore( OutputBuffer $output , string $hashFile , string $hashHeader , string $hashMatter )
     {
         $ret = false;
 
-        $prefix = "{$filename}:{$hashHeader}:";
-        $ignore = "{$filename}:{$hashHeader}:{$hashMatter}";
+        $prefix = "{$hashFile}-{$hashHeader}-";
+        $active = "{$hashFile}-{$hashHeader}-{$hashMatter}";
         $marks = $this->loadIgnores();
 
         // --add-ignore command
 
-        if ( in_array( $ignore , $marks ) )
-            $ret = true;                        // is already ignored
-        else                                    //
-            if ( $this->showIgnore )            // show add command
-                $output->addFooter( "  php {$this->argv0} --add-ignore=$ignore\n" );
-
-        // Remove valid ignores, leaves outdated ones for listing
-
-        while ( in_array( $ignore , $marks ) )
-        {
-            $key = array_search( $ignore , $marks );
-            unset( $marks[$key] );
-        }
+        if ( in_array( $active , $marks ) )
+            $ret = true;
+        else
+            if ( $this->showIgnore )
+                $output->addFooter( "  php {$this->argv0} --add-ignore=$active\n" );
 
         // --del-ignore command
 
-        if ( $this->showIgnore )                // show del commands (for this file/prefix)
+        if ( $this->showIgnore )
             foreach ( $marks as $mark )
-                if ( $mark != null )
-                    if ( str_starts_with( $mark , $prefix ) )
+                if ( str_starts_with( $mark , $prefix ) )
+                    if ( $mark != $active )
                         $output->addFooter( "  php {$this->argv0} --del-ignore=$mark\n" );
 
         return $ret;
