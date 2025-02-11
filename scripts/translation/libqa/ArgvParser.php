@@ -70,10 +70,6 @@ class ArgvParser
 
     public function residual() : array
     {
-        $ret = [];
-        foreach ( $this->argv as $arg )
-            if ( $arg != null )
-                $ret[] = $arg;
-        return $ret;
+        return array_filter( $this->argv );
     }
 }
