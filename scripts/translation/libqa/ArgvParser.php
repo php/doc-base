@@ -27,8 +27,7 @@ class ArgvParser
     {
         $this->argv = $argv;
         $this->used = [];
-        foreach( $argv as $_ )
-            $this->used[] = false;
+        $this->used = array_fill(0, count($argv), false);
     }
 
     public function at( int $pos ) : string
