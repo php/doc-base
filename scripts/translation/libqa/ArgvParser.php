@@ -63,9 +63,9 @@ class ArgvParser
 
     public function complete() : void
     {
-        for ( $pos = 0 ; $pos < count( $this->argv ) ; $pos++ )
+        foreach ( $this->argv as $pos => $arg )
             if ( $this->used[ $pos ] == false )
-                fwrite( STDERR , "Unknown argument: {$this->argv[$pos]}\n\n" );
+                fwrite( STDERR , "Unknown argument: {$arg}\n\n" );
     }
 
     public function residual() : array
