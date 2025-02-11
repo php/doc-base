@@ -30,10 +30,15 @@ class ArgvParser
         $this->used = array_fill( 0 , count( $argv ) , false );
     }
 
-    public function at( int $pos ) : string
+    public function use( string $arg ) : void
     {
-        $this->used[ $pos ] = true;
-        return $this->argv[ $pos ];
+        foreach ( $this->argv as $pos => $value )
+            if ( $arg == $value && $this->used[ $pos ] == false )
+            {
+                $this->used[ $pos ] = true;
+                return;
+            }
+        throw new Exception( "Unused '$arg' not found." );
     }
 
     public function consume( string $equals = null , string $prefix = null , int $position = -1 ) : string|null
@@ -41,7 +46,6 @@ class ArgvParser
         $args = $this->argv;
         foreach ( $args as $pos => $arg )
         {
-
             if ( $arg == null )
                 continue;
 

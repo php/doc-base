@@ -23,8 +23,18 @@ $argv   = new ArgvParser( $argv );
 $ignore = new OutputIgnore( $argv ); // may exit.
 $urgent = $argv->consume( "--urgent" ) != null;
 
-$list   = SyncFileList::load();
+$ents = [];
+foreach( $argv->residual() as $ent )
+{
+    if ( strlen( $ent ) > 2 && $ent[0] == '-' && $ent[1] != '-' )
+    {
+        $ents[] = '&' . substr( $ent , 1) . ';';
+        $argv->use( $ent );
+    }
+}
 $argv->complete();
+
+$list = SyncFileList::load();
 
 foreach ( $list as $file )
 {
@@ -41,19 +51,23 @@ foreach ( $list as $file )
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
 
-    $match = array();
+    $sideCount = array();
 
     foreach( $s as $v )
-        $match[$v] = [ 0 , 0 ];
+        $sideCount[$v] = [ 0 , 0 ];
     foreach( $t as $v )
-        $match[$v] = [ 0 , 0 ];
+        $sideCount[$v] = [ 0 , 0 ];
 
     foreach( $s as $v )
-        $match[$v][0] += 1;
+        $sideCount[$v][0] += 1;
     foreach( $t as $v )
-        $match[$v][1] += 1;
+        $sideCount[$v][1] += 1;
 
-    foreach( $match as $k => $v )
+    foreach( $sideCount as $ent => $_ )
+        if ( in_array( $ent , $ents ) )
+            $sideCount[ $ent ] = [ 0 , 0 ];
+
+    foreach( $sideCount as $k => $v )
         if ( $v[0] != $v[1] )
             $output->addDiff( $k , $v[0] , $v[1] );
 
@@ -73,7 +87,6 @@ foreach ( $list as $file )
         if ( $count == 0 )
             continue;
     }
-
 
     $output->print();
 }
