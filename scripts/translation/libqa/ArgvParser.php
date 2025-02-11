@@ -39,11 +39,8 @@ class ArgvParser
     public function consume( string $equals = null , string $prefix = null , int $position = -1 ) : string|null
     {
         $args = $this->argv;
-        $limit = count( $args );
-
-        for ( $pos = 0 ; $pos < $limit ; $pos++ )
+        foreach ( $args as $pos => $arg )
         {
-            $arg = $args[ $pos ];
 
             if ( $arg == null )
                 continue;
