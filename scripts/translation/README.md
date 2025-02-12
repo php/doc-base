@@ -1,11 +1,10 @@
-
 # Scripts to check consistency of manual translations
 
 After a normal `doc-base/configure.php --with-lang=$LANG`, it is possible to
-run the command line tools below to check individual source files of
-translation for inconsenticies. These tools check for structural differences
+run the command line tools below to check translated source files
+for inconsistencies. These tools check for structural differences
 that may cause translation build failures or non-validating DocBook XML
-results, and fixing these issues helps avoid build failures.
+results, and fixing these issues will help avoid build failures.
 
 Some checks are less structural, and as not all translations are identical,
 or use the same conventions, they may not be entirely applicable in all
@@ -23,15 +22,14 @@ The first execution of these scripts may generate an inordinate amount of
 alerts. It's advised to initially run each command separately, and work the
 alerts on a case by case basis. After all interesting cases are fixed,
 it's possible to rerun the command and `grep` the output for `--add-ignore`
-lines, run these commands, and so mass ignore the residual alerts.
+lines, run these commands, and by so, mass ignore the residual alerts.
 
 ## qaxml-attributes.php (structural)
 
 `doc-base/scripts/translation/qaxml-attributes.php` checks if all translated
 files have the same tag-attribute-value triplets. Tag's attributes are
-extensively utilized in manual for linking and XIncluding. Translated files
-with missing or mistyped attributes may cause build failures or missing parts,
-not copied by XIncludes.
+extensively utilized in manual for linking and XIncludes. Translated files
+with missing or mistyped attributes may cause build failures or missing parts.
 
 This script accepts an `--urgent` option, to filter alerts related to `xml:id`
 attributes. This will help translators on languages that are failing to build,
@@ -42,7 +40,7 @@ to focus on mismatches that are probably most related with build fails.
 `doc-base/scripts/translation/qaxml-entities.php` checks if all translated
 files contain the same XML Entities References as the original files.
 Unbalanced entities may indicate mistyped or wrongly translated parts. This
-is particularly problematic because some of these entities are "file
+is problematic because some of these entities are "file
 entities", that is, entities that include entire files and even directories,
 so missing or misplaced file entity references almost always cause build
 failures.
