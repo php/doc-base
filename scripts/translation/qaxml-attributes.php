@@ -19,10 +19,14 @@ Compare attributes usage between two XML leaf/fragment files.         */
 
 require_once __DIR__ . '/libqa/all.php';
 
-$ignore = new OutputIgnore( $argv ); // always first, may exit.
-$oklist = SyncFileList::load();
+$argv   = new ArgvParser( $argv );
+$ignore = new OutputIgnore( $argv ); // may exit.
+$urgent = $argv->consume( "--urgent" ) != null;
 
-foreach ( $oklist as $file )
+$list   = SyncFileList::load();
+$argv->complete();
+
+foreach ( $list as $file )
 {
     $source = $file->sourceDir . '/' . $file->file;
     $target = $file->targetDir . '/' . $file->file;
@@ -40,25 +44,25 @@ foreach ( $oklist as $file )
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
 
-    $match = array();
+    $sideCount = array();
 
     foreach( $s as $v )
-        $match[$v] = [ 0 , 0 ];
+        $sideCount[$v] = [ 0 , 0 ];
     foreach( $t as $v )
-        $match[$v] = [ 0 , 0 ];
+        $sideCount[$v] = [ 0 , 0 ];
 
     foreach( $s as $v )
-        $match[$v][0] += 1;
+        $sideCount[$v][0] += 1;
     foreach( $t as $v )
-        $match[$v][1] += 1;
+        $sideCount[$v][1] += 1;
 
-    foreach( $match as $k => $v )
-    {
-        if ( $v[0] == $v[1] )
+    foreach( $sideCount as $k => $v )
+        if ( $v[0] != $v[1] )
+            $output->addDiff( $k , $v[0] , $v[1] );
+
+    if ( $urgent )
+        if ( $output->contains( "xml:id" ) == false )
             continue;
-
-        $output->addDiff( $k , $v[0] , $v[1] );
-    }
 
     $output->print();
 }
