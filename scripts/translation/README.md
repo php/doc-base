@@ -1,24 +1,69 @@
+# Scripts to check consistency of manual translations
 
-# Useful scripts for maintaining translation consistency of manual
+After a normal `doc-base/configure.php --with-lang=$LANG`, it is possible to
+run the command line tools below to check translated source files
+for inconsistencies. These tools check for structural differences
+that may cause translation build failures or non-validating DocBook XML
+results, and fixing these issues will help avoid build failures.
 
-Some of these scripts only test some file contents or XML structure
-of translated files against their equivalents on `en/` directory.
-Others will try to modify the translations in place, changing the
-translated files. Use with care.
+Some checks are less structural, and as not all translations are identical,
+or use the same conventions, they may not be entirely applicable in all
+languages. Even two translators working on one language may have different
+opinions on how much synchronization is wanted, so not all scripts will be of
+use for all translations.
 
-Not all translations are identical, or use the same conventions.
-Even two translators working on one language may havedifferent
-opinions on how much synchronization is wanted. So not all scripts
-will be of use for all translations.
+Because of the above, it's possible to silence each alert indempendly. These
+scripts will output `--add-ignore` commands that, if executed, will omit the
+specific alerts in future executions.
 
-Because of aboce, it's possible to silence each alert indempendly.
-These scripts will output `--add-ignore` commands that, if executed,
-will omit the specific warming in future executions.
+## First execution
 
-The `lib/` directory contains common code and functionality
-across these scripts.
+The first execution of these scripts may generate an inordinate amount of
+alerts. It's advised to initially run each command separately, and work the
+alerts on a case by case basis. After all interesting cases are fixed,
+it's possible to rerun the command and `grep` the output for `--add-ignore`
+lines, run these commands, and by so, mass ignore the residual alerts.
 
-Before using the scripts, it need be configured:
+## qaxml-attributes.php (structural)
+
+`doc-base/scripts/translation/qaxml-attributes.php` checks if all translated
+files have the same tag-attribute-value triplets. Tag's attributes are
+extensively utilized in manual for linking and XIncludes. Translated files
+with missing or mistyped attributes may cause build failures or missing parts.
+
+This script accepts an `--urgent` option, to filter alerts related to `xml:id`
+attributes. This will help translators on languages that are failing to build,
+to focus on mismatches that are probably most related with build fails.
+
+## qaxml-entities.php (structural)
+
+`doc-base/scripts/translation/qaxml-entities.php` checks if all translated
+files contain the same XML Entities References as the original files.
+Unbalanced entities may indicate mistyped or wrongly translated parts. This
+is problematic because some of these entities are "file
+entities", that is, entities that include entire files and even directories,
+so missing or misplaced file entity references almost always cause build
+failures.
+
+This script accepts an `--urgent` option, to filter alerts related to file
+entities. This will help translators on languages that are failing to build,
+to focus on mismatches that are probably most related with build fails.
+
+This script also accepts `-entity` options that will ignore the informed
+entities when generating alerts. This is handy in languages that use some
+"leaf" entities differently than `doc-en`. For example, `doc-de` uses a lot of
+`&zb;` and `&dh;` entities, and could run with `-zb -dh` to avoid generating
+alerts for these entities' differences.
+
+## Old tools (below)
+
+The tools on `doc-base/scripts/translation/` are slowly being rewritten. While
+this effort is not complete, the previous tools, document below, could be used
+to supply for features yet not completed.
+
+---
+
+Before using the old scripts, they need be configured:
 ```
 php doc-base/scripts/translation/configure.php $LANG_DIR
 ```
@@ -103,12 +148,3 @@ php doc-base/scripts/translation/qaxml.t.php filename
 php doc-base/scripts/translation/qaxml.t.php literal
 php doc-base/scripts/translation/qaxml.t.php varname
 ```
-
-## Initial alerts execution
-
-The first execution of these scripts may generate an inordinate amount of
-alerts. It's advised to initially run each command separately, and work the
-alerts on a case by case basis. After all interesting cases are observed,
-it's possible to rerun the command, and `grep` the output for `--add-ignore`
-lines, and to mass ignore the residual alerts.
-
