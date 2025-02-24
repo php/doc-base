@@ -178,6 +178,7 @@
 <!ENTITY url.icu.normalization.api "https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/unorm_8h.html">
 <!ENTITY url.icu.resources "https://unicode-org.github.io/icu/userguide/locale/resources.html">
 <!ENTITY url.icu.ruleformat "https://unicode-org.github.io/icu/userguide/format_parse/numbers/rbnf.html">
+<!ENTITY url.icu.restrictionlevel "https://unicode-org.github.io/icu-docs/apidoc/dev/icu4j/com/ibm/icu/text/SpoofChecker.RestrictionLevel.html">
 <!ENTITY url.icu.tzdatabase "https://www.iana.org/time-zones">
 <!ENTITY url.icu.userguide "https://unicode-org.github.io/icu/userguide/">
 <!ENTITY url.icu.uca "https://www.unicode.org/reports/tr10/">
