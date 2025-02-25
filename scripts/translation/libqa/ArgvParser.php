@@ -26,7 +26,6 @@ class ArgvParser
     public function __construct( array $argv )
     {
         $this->argv = array_values( array_filter( $argv ) );
-        $this->used = [];
         $this->used = array_fill( 0 , count( $argv ) , false );
     }
 
@@ -57,6 +56,9 @@ class ArgvParser
             {
                 $this->argv[ $pos ] = null;
                 $this->used[ $pos ] = true;
+
+                if ( $foundByPrefix )
+                    return substr( $arg , strlen( $prefix ) );
 
                 return $arg;
             }
