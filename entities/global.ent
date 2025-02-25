@@ -139,7 +139,6 @@
 <!ENTITY url.git.hub "https://github.com/">
 <!ENTITY url.glib "http://ftp.gnome.org/pub/gnome/sources/glib/">
 <!ENTITY url.glib.windows "http://ftp.gnome.org/pub/gnome/binaries/win32/glib/">
-<!ENTITY url.gmagick.winbuilds "http://valokuva.org/magick/">
 <!ENTITY url.gmagick.imagemagickdiff.faq "http://www.graphicsmagick.org/FAQ.html#how-does-graphicsmagick-differ-from-imagemagick">
 <!ENTITY url.gmp "http://gmplib.org/#DOWNLOAD">
 <!ENTITY url.gnochm "http://gnochm.sourceforge.net/">
