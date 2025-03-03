@@ -1,0 +1,65 @@
+# Reusable GitHub Action to build the documentation for a given repository.
+
+name: "Build"
+
+on:
+  workflow_call:
+    inputs:
+      language:
+        required: true
+        type: string
+        description: "Language code (e.g. de, it, es, etc) indicating the language of the documentation."
+      repo:
+        required: false
+        type: string
+        default: ${{ github.repository }}
+        description: "Repo path (e.g. php/doc-de) to build the documentation from."
+      repo_ref:
+        required: false
+        type: string
+        default: ${{ github.ref }}
+        description: "Repository checkout ref, defaults ref that triggered the action (github.ref)."
+      doc_base:
+        required: false
+        type: string
+        default: 'php/doc-base'
+        description: "Repo path to the doc-base repository, defaults to php/doc-base."
+      doc_en:
+        required: false
+        type: string
+        default: 'php/doc-en'
+        description: "Repo path to the doc-en repository, defaults to php/doc-en."
+
+jobs:
+  build:
+    name: "Build - ${{ inputs.language }} - ${{ inputs.repo }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout doc-base"
+        uses: "actions/checkout@v4"
+        with:
+          path: "doc-base"
+          repository: ${{ inputs.doc_base }}
+
+      - name: "Checkout ${{ inputs.language }} from ${{ inputs.repo }}"
+        uses: "actions/checkout@v4"
+        with:
+          path: ${{ inputs.language }}
+          repository: ${{ inputs.repo }}
+          ref: ${{ inputs.repo_ref }}
+
+      - name: "Checkout ${{ inputs.doc_en }} as fallback"
+        if: "${{ inputs.language }} != 'en'"
+        uses: "actions/checkout@v4"
+        with:
+          path: "en"
+          repository: ${{ inputs.doc_en }}
+
+      - name: "Run QA scripts for EN docs"
+        if: "${{ inputs.language }} == 'en'"
+        run: |
+          php doc-base/scripts/qa/extensions.xml.php --check
+          php doc-base/scripts/qa/section-order.php
+
+      - name: "Build documentation for ${{ inputs.language }}"
+        run: "php doc-base/configure.php --disable-libxml-check --enable-xml-details --redirect-stderr-to-stdout --with-lang=${{ inputs.language }}"

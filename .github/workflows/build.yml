@@ -1,0 +1,33 @@
+# https://docs.github.com/en/actions
+
+name: "Integrate"
+
+on:
+  pull_request: null
+  push:
+
+jobs:
+  build:
+    name: "Build: ${{ matrix.language }}"
+    strategy:
+      matrix:
+        language:
+          - "de"
+          - "en"
+          - "es"
+          - "fr"
+          - "it"
+          - "ja"
+          - "pl"
+          - "pt_br"
+          #          - "ro"
+          - "ru"
+          - "tr"
+          - "uk"
+          - "zh"
+
+    uses: "./.github/workflows/build-reusable.yml"
+    with:
+      repo: 'php/doc-${{ matrix.language }}'
+      repo_ref: ''
+      language: ${{ matrix.language }}
