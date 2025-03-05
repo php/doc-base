@@ -19,7 +19,7 @@
 
 require_once __DIR__ . '/lib/all.php';
 
-$tags = array();
+$tags = [];
 $showDetail = false;
 
 $qalist = QaFileInfo::cacheLoad();
@@ -66,7 +66,7 @@ foreach ( $qalist as $qafile )
         $s = extractTagsInnerText( $s , $tags );
         $t = extractTagsInnerText( $t , $tags );
 
-        $match = array();
+        $match = [];
 
         foreach( $t as $v )
             $match[$v] = array( 0 , 0 );
@@ -104,7 +104,7 @@ foreach ( $qalist as $qafile )
         $s = extractTagsInnerXmls( $s , $tags );
         $t = extractTagsInnerXmls( $t , $tags );
 
-        $match = array();
+        $match = [];
 
         foreach( $t as $v )
             $match[$v] = array( 0 , 0 );
@@ -142,7 +142,7 @@ foreach ( $qalist as $qafile )
         $s = extractNodeName( $s , $tags );
         $t = extractNodeName( $t , $tags );
 
-        $match = array();
+        $match = [];
 
         foreach( $t as $v )
             $match[$v] = array( 0 , 0 );
@@ -167,7 +167,7 @@ foreach ( $qalist as $qafile )
 
 function extractNodeName( array $list , array $tags )
 {
-    $ret = array();
+    $ret = [];
     foreach( $list as $elem )
         if ( in_array( $elem->nodeName , $tags) || count( $tags ) == 0 )
             $ret[] = $elem->nodeName;
@@ -202,7 +202,7 @@ function typesNotCaseSensitive( array & $nodes )
 
 function extractTagsInnerText( array $nodes , array $tags )
 {
-    $ret = array();
+    $ret = [];
     foreach( $nodes as $node )
     {
         $tag = $node->nodeName;
@@ -225,7 +225,7 @@ function extractTagsInnerText( array $nodes , array $tags )
 
 function extractTagsInnerXmls( array $nodes , array $tags )
 {
-    $ret = array();
+    $ret = [];
     foreach( $nodes as $node )
     {
         $tag = $node->nodeName;
@@ -297,7 +297,7 @@ function printTagUsageDetail( string $source , string $target , string $tag , Ou
 
 function collectTagDefinitions( string $file , string $tag )
 {
-    $ret = array();
+    $ret = [];
     $text = XmlUtil::loadFile( $file );
     $list = XmlUtil::listNodeType( $text , XML_ELEMENT_NODE );
     foreach( $list as $node )

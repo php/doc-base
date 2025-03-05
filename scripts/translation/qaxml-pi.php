@@ -43,7 +43,7 @@ foreach ( $list as $file )
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
 
-    $sideCount = array();
+    $sideCount = [];
 
     foreach( $s as $v )
         $sideCount[$v] = [ 0 , 0 ];
@@ -64,7 +64,7 @@ foreach ( $list as $file )
 
 function extractPiData( array $list )
 {
-    $ret = array();
+    $ret = [];
     foreach( $list as $elem )
         $ret[] = "{$elem->target} {$elem->data}";
     return $ret;

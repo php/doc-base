@@ -34,7 +34,7 @@ class OutputIgnoreArgv
             if ( str_starts_with( $arg , "--add-ignore=" ) )
             {
                 $file = OutputIgnoreArgv::cacheFile();
-                $list = $file->load( array() );
+                $list = $file->load( [] );
                 $line = substr( $arg , 13 );
                 if ( ! in_array( $line , $list ) )
                 {
@@ -47,7 +47,7 @@ class OutputIgnoreArgv
             if ( str_starts_with( $arg , "--del-ignore=" ) )
             {
                 $file = OutputIgnoreArgv::cacheFile();
-                $list = $file->load( array() );
+                $list = $file->load( [] );
                 $line = substr( $arg , 13 );
                 $dels = 0;
                 while ( in_array( $line , $list ) )

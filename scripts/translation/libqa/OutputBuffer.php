@@ -119,9 +119,9 @@ class OutputBuffer
 
     private function printMatterAlternate() : void
     {
-        $add = array();
-        $del = array();
-        $rst = array();
+        $add = [];
+        $del = [];
+        $rst = [];
 
         foreach( $this->matter as $text )
         {

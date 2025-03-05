@@ -44,7 +44,7 @@ foreach ( $list as $file )
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
 
-    $sideCount = array();
+    $sideCount = [];
 
     foreach( $s as $v )
         $sideCount[$v] = [ 0 , 0 ];
@@ -69,7 +69,7 @@ foreach ( $list as $file )
 
 function extractTriple( array $list )
 {
-    $ret = array();
+    $ret = [];
     foreach( $list as $elem )
         foreach( $elem->attributes as $attrib )
             $ret[] = "{$elem->nodeName} {$attrib->nodeName} {$attrib->nodeValue}";

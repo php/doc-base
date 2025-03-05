@@ -24,7 +24,7 @@ class XmlFrag
 {
     static function listNodes( DOMNode $node , int $type )
     {
-        $ret = array();
+        $ret = [];
         XmlFrag::listNodesRecurse( $node , $type , $ret );
         return $ret;
     }

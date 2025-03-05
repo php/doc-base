@@ -59,7 +59,7 @@ foreach ( $list as $file )
         if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
             continue;
 
-        $sideCount = array();
+        $sideCount = [];
 
         foreach( $s as $v )
             $sideCount[$v] = [ 0 , 0 ];
@@ -101,7 +101,7 @@ foreach ( $list as $file )
         if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
             continue;
 
-        $sideCount = array();
+        $sideCount = [];
 
         foreach( $s as $v )
             $sideCount[$v] = [ 0 , 0 ];
@@ -142,7 +142,7 @@ foreach ( $list as $file )
         if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
             continue;
 
-        $sideCount = array();
+        $sideCount = [];
 
         foreach( $s as $v )
             $sideCount[$v] = [ 0 , 0 ];
@@ -168,7 +168,7 @@ foreach ( $list as $file )
 
 function extractNodeName( array $list , array $tags )
 {
-    $ret = array();
+    $ret = [];
     foreach( $list as $elem )
         if ( count( $tags ) == 0 || in_array( $elem->nodeName , $tags ) )
             $ret[] = $elem->nodeName;
@@ -203,7 +203,7 @@ function typesNotCaseSensitive( array & $nodes )
 
 function extractTagsInnerText( array $nodes , array $tags )
 {
-    $ret = array();
+    $ret = [];
     foreach( $nodes as $node )
     {
         $tag = $node->nodeName;
@@ -226,7 +226,7 @@ function extractTagsInnerText( array $nodes , array $tags )
 
 function extractTagsInnerXmls( array $nodes , array $tags )
 {
-    $ret = array();
+    $ret = [];
     foreach( $nodes as $node )
     {
         $tag = $node->nodeName;
@@ -298,7 +298,7 @@ function printTagUsageDetail( string $source , string $target , string $tag , Ou
 
 function collectTagLines( string $file , string $tag )
 {
-    $ret = array();
+    $ret = [];
 
     [ $s , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $file , false );
     $list = XmlFrag::listNodes( $s , XML_ELEMENT_NODE );

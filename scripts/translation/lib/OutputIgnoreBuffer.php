@@ -25,8 +25,8 @@ class OutputIgnoreBuffer
 
     private string $filename = "";
     private string $header = "";
-    private array  $matter = array();
-    private array  $footer = array();
+    private array  $matter = [];
+    private array  $footer = [];
 
     private OutputIgnoreArgv $args;
 
@@ -82,14 +82,14 @@ class OutputIgnoreBuffer
 
         $markhead = $this->filename . ':' . $this->hash( false ) . ':';
         $markfull = $markhead . $this->hash( true );
-        $marks = OutputIgnoreArgv::cacheFile()->load( array() );
+        $marks = OutputIgnoreArgv::cacheFile()->load( [] );
 
         if ( $this->args->showIgnore )
         {
             // --add-ignore
 
             if ( in_array( $markfull , $marks ) )
-                $this->matter = array();
+                $this->matter = [];
             else
                 $this->args->pushAddIgnore( $this , $markfull );
 
@@ -132,9 +132,9 @@ class OutputIgnoreBuffer
 
     private function printMatterAlternate() : void
     {
-        $add = array();
-        $del = array();
-        $rst = array();
+        $add = [];
+        $del = [];
+        $rst = [];
 
         foreach( $this->matter as $text )
         {

@@ -38,7 +38,7 @@ foreach ( $qalist as $qafile )
 
     $output = new OutputIgnoreBuffer( $outarg , "qaxml.e: {$target}\n\n" , $target );
 
-    $match = array();
+    $match = [];
 
     foreach( $s as $v )
         $match[$v] = array( 0 , 0 );

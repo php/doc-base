@@ -44,7 +44,7 @@ foreach ( $qalist as $qafile )
         continue;
 
     $header = true;
-    $match = array();
+    $match = [];
 
     foreach( $s as $v )
         $match[$v] = array( 0 , 0 );
@@ -76,7 +76,7 @@ foreach ( $qalist as $qafile )
 
 function extractPiData( array $list )
 {
-    $ret = array();
+    $ret = [];
     foreach( $list as $elem )
         $ret[] = "{$elem->target} {$elem->data}";
     return $ret;

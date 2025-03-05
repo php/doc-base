@@ -51,7 +51,7 @@ foreach ( $list as $file )
     if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
         continue;
 
-    $sideCount = array();
+    $sideCount = [];
 
     foreach( $s as $v )
         $sideCount[$v] = [ 0 , 0 ];

@@ -34,7 +34,7 @@ class XmlUtil
         libxml_clear_errors();
         libxml_use_internal_errors( $was );
 
-        $ret = array();
+        $ret = [];
         foreach ($errors as $error)
         {
             if ( preg_match( "/Entity '(\S+)' not defined/" , $error->message , $matches ) )
@@ -45,7 +45,7 @@ class XmlUtil
 
     public static function listNodeType( DOMNode $node , int $type )
     {
-        $ret = array();
+        $ret = [];
         XmlUtil::listNodeTypeRecurse( $node , $type , $ret );
         return $ret;
     }
