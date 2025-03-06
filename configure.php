@@ -1008,6 +1008,8 @@ function xinclude_residual( DOMDocument $dom )
     $nodes = $xpath->query( "//xi:include" );
     foreach( $nodes as $node )
     {
+        echo "Failed XInclude: {$node->getAttribute("xpointer")}\n";
+
         $fixup = null;
         $parent = $node->parentNode;
         $tagName = $parent->nodeName;
@@ -1030,7 +1032,7 @@ function xinclude_residual( DOMDocument $dom )
                 $explain = true;
                 continue 2;
         }
-        if ( $fixup != "" )
+        if ( $fixup !== null )
         {
             $other = new DOMDocument( '1.0' , 'utf8' );
             $other->loadXML( "<f>$fixup</f>" );
