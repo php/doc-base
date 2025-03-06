@@ -31,8 +31,8 @@ foreach ( $list as $file )
     $target = $file->targetDir . '/' . $file->file;
     $output = new OutputBuffer( "# qaxml.p" , $target , $ignore );
 
-    [ $s , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $source );
-    [ $t , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $target );
+    [ $s ] = XmlFrag::loadXmlFragmentFile( $source );
+    [ $t ] = XmlFrag::loadXmlFragmentFile( $target );
 
     $s = XmlFrag::listNodes( $s , XML_PI_NODE );
     $t = XmlFrag::listNodes( $t , XML_PI_NODE );
@@ -40,7 +40,7 @@ foreach ( $list as $file )
     $s = extractPiData( $s );
     $t = extractPiData( $t );
 
-    if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
+    if ( implode( "\n" , $s ) === implode( "\n" , $t ) )
         continue;
 
     $sideCount = [];
