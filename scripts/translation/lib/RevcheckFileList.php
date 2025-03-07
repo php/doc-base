@@ -21,7 +21,7 @@ require_once __DIR__ . '/all.php';
 
 class RevcheckFileList
 {
-    private $list = array();
+    private $list = [];
 
     function __construct( $lang )
     {

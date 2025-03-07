@@ -32,9 +32,9 @@ class RevcheckData
     public string $lang = "";
     public string $date = "";
     public string $intro = "";
-    public $translators  = array(); // nick => RevcheckDataTranslator
-    public $fileSummary  = array(); // RevcheckStatus => int
-    public $fileDetail   = array(); // filename => RevcheckDataFile
+    public $translators  = []; // nick => RevcheckDataTranslator
+    public $fileSummary  = []; // RevcheckStatus => int
+    public $fileDetail   = []; // filename => RevcheckDataFile
 
     public function __construct()
     {

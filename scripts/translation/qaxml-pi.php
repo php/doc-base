@@ -15,40 +15,32 @@
 
 # Description
 
-Compare XML entities usage between two XML leaf/fragment files.       */
+Compare processing instructions usage between two XML files.          */
 
 require_once __DIR__ . '/libqa/all.php';
 
 $argv   = new ArgvParser( $argv );
 $ignore = new OutputIgnore( $argv ); // may exit.
-$urgent = $argv->consume( "--urgent" ) != null;
-
-$ents = [];
-foreach( $argv->residual() as $ent )
-{
-    if ( strlen( $ent ) > 2 && $ent[0] == '-' && $ent[1] != '-' )
-    {
-        $ents[] = '&' . substr( $ent , 1) . ';';
-        $argv->use( $ent );
-    }
-}
 $argv->complete();
 
-$list = SyncFileList::load();
+$list   = SyncFileList::load();
 
 foreach ( $list as $file )
 {
     $source = $file->sourceDir . '/' . $file->file;
     $target = $file->targetDir . '/' . $file->file;
-    $output = new OutputBuffer( "# qaxml.e" , $target , $ignore );
+    $output = new OutputBuffer( "# qaxml.p" , $target , $ignore );
 
-    [ $_ , $s , $_ ] = XmlFrag::loadXmlFragmentFile( $source );
-    [ $_ , $t , $_ ] = XmlFrag::loadXmlFragmentFile( $target );
+    [ $s ] = XmlFrag::loadXmlFragmentFile( $source );
+    [ $t ] = XmlFrag::loadXmlFragmentFile( $target );
 
-    adornEntities( $s );
-    adornEntities( $t );
+    $s = XmlFrag::listNodes( $s , XML_PI_NODE );
+    $t = XmlFrag::listNodes( $t , XML_PI_NODE );
 
-    if ( implode( "\n" , $s ) == implode( "\n" , $t ) )
+    $s = extractPiData( $s );
+    $t = extractPiData( $t );
+
+    if ( implode( "\n" , $s ) === implode( "\n" , $t ) )
         continue;
 
     $sideCount = [];
@@ -63,36 +55,17 @@ foreach ( $list as $file )
     foreach( $t as $v )
         $sideCount[$v][1] += 1;
 
-    foreach( $sideCount as $ent => $_ )
-        if ( in_array( $ent , $ents ) )
-            $sideCount[ $ent ] = [ 0 , 0 ];
-
     foreach( $sideCount as $k => $v )
         if ( $v[0] != $v[1] )
             $output->addDiff( $k , $v[0] , $v[1] );
 
-    if ( $urgent )
-    {
-        $count = 0;
-        if ( $output->contains( "&chapters" ) )
-            $count++;
-        if ( $output->contains( "&features" ) )
-            $count++;
-        if ( $output->contains( "&language" ) )
-            $count++;
-        if ( $output->contains( "&reference" ) )
-            $count++;
-        if ( $output->contains( "&security" ) )
-            $count++;
-        if ( $count == 0 )
-            continue;
-    }
-
     $output->print();
 }
 
-function adornEntities( array & $list )
+function extractPiData( array $list )
 {
-    foreach( $list as & $item )
-        $item = '&' . $item . ';';
+    $ret = [];
+    foreach( $list as $elem )
+        $ret[] = "{$elem->target} {$elem->data}";
+    return $ret;
 }

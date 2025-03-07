@@ -20,11 +20,10 @@ ignored outputs with these commands.                                  */
 
 class OutputIgnore
 {
-    private bool   $appendIgnores = true;
-    private bool   $showIgnore = true;
     private string $filename = ".qaxml.ignores";
     private string $argv0 = "";
 
+    public bool $appendIgnoreCommands = true;
     public ArgvParser $argv;
 
     public function __construct( ArgvParser $argv )
@@ -32,11 +31,10 @@ class OutputIgnore
         $this->argv = $argv;
         $this->argv0 = escapeshellarg( $argv->consume( position: 0 ) );
 
-        $arg = $argv->consume( prefix: "--add-ignore=" );
+        $item = $argv->consume( prefix: "--add-ignore=" );
 
-        if ( $arg != null )
+        if ( $item != null )
         {
-            $item = substr( $arg , 13 );
             $list = $this->loadIgnores();
             if ( ! in_array( $item , $list ) )
             {
@@ -46,10 +44,9 @@ class OutputIgnore
             exit;
         }
 
-        $arg = $argv->consume( prefix: "--del-ignore=" );
-        if ( $arg != null )
+        $item = $argv->consume( prefix: "--del-ignore=" );
+        if ( $item != null )
         {
-            $item = substr( $arg , 13 );
             $list = $this->loadIgnores();
             $dels = 0;
             while ( in_array( $item , $list ) )
@@ -66,7 +63,7 @@ class OutputIgnore
         }
 
         if ( $argv->consume( "--disable-ignore" ) != null )
-            $this->showIgnore = false;
+            $this->appendIgnoreCommands = false;
     }
 
     private function loadIgnores()
@@ -96,12 +93,12 @@ class OutputIgnore
         if ( in_array( $active , $marks ) )
             $ret = true;
         else
-            if ( $this->showIgnore )
+            if ( $this->appendIgnoreCommands )
                 $output->addFooter( "  php {$this->argv0} --add-ignore=$active\n" );
 
         // --del-ignore command
 
-        if ( $this->showIgnore )
+        if ( $this->appendIgnoreCommands )
             foreach ( $marks as $mark )
                 if ( str_starts_with( $mark , $prefix ) )
                     if ( $mark != $active )

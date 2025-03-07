@@ -24,7 +24,7 @@ class XmlFrag
 {
     static function listNodes( DOMNode $node , int $type )
     {
-        $ret = array();
+        $ret = [];
         XmlFrag::listNodesRecurse( $node , $type , $ret );
         return $ret;
     }
@@ -37,13 +37,13 @@ class XmlFrag
             XmlFrag::listNodesRecurse( $child , $type, $ret );
     }
 
-    static function loadXmlFragmentFile( string $filename )
+    static function loadXmlFragmentFile( string $filename , bool $fakeDtdForMissingEntity = true )
     {
         $contents = file_get_contents( $filename );
 
         [ $doc , $ent , $err ] = XmlFrag::loadXmlFragmentText( $contents , "" );
 
-        if ( count( $err ) == 0 )
+        if ( count( $err ) == 0 || $fakeDtdForMissingEntity == false )
             return [ $doc , $ent , $err ];
 
         $dtd = "<?xml version='1.0' encoding='utf-8'?>\n<!DOCTYPE frag [\n";

@@ -28,6 +28,8 @@ class OutputBuffer
     private OutputIgnore $ignore;
     private string $options;
 
+    public int $printCount = 0;
+
     public function __construct( string $header , string $filename , OutputIgnore $ignore )
     {
         $filename = str_replace( "/./" , "/" , $filename );
@@ -81,7 +83,7 @@ class OutputBuffer
         return false;
     }
 
-    public function print( bool $useAlternatePrinting = false )
+    public function print( bool $alternatePrinting = false )
     {
         if ( count( $this->matter ) == 0 && count( $this->footer ) == 0 )
             return;
@@ -93,9 +95,11 @@ class OutputBuffer
         if ( $this->ignore->shouldIgnore( $this , $hashFile , $hashHead , $hashFull ) )
             return;
 
+        $this->printCount++;
+
         print $this->header;
 
-        if ( $useAlternatePrinting )
+        if ( $alternatePrinting )
             $this->printMatterAlternate();
         else
             foreach( $this->matter as $text )
@@ -115,9 +119,9 @@ class OutputBuffer
 
     private function printMatterAlternate() : void
     {
-        $add = array();
-        $del = array();
-        $rst = array();
+        $add = [];
+        $del = [];
+        $rst = [];
 
         foreach( $this->matter as $text )
         {
@@ -128,8 +132,8 @@ class OutputBuffer
 
         for ( $idx = 0 ; $idx < count( $this->matter ) ; $idx++ )
         {
-            if ( isset( $add[ $idx ] ) ) print $add[ $idx ];
             if ( isset( $del[ $idx ] ) ) print $del[ $idx ];
+            if ( isset( $add[ $idx ] ) ) print $add[ $idx ];
         }
 
         foreach( $rst as $text )
