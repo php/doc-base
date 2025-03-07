@@ -1001,6 +1001,7 @@ function xinclude_residual( DOMDocument $dom )
     // XInclude failures are soft errors on translations, so remove
     // residual XInclude tags on translations to keep them building.
 
+    $header = false;
     $explain = false;
 
     $xpath = new DOMXPath( $dom );
@@ -1008,6 +1009,13 @@ function xinclude_residual( DOMDocument $dom )
     $nodes = $xpath->query( "//xi:include" );
     foreach( $nodes as $node )
     {
+        if ( $header == false )
+        {
+            echo "\nFailed XInclude:\n";
+            $header = true;
+        }
+        echo "- {$node->getAttribute("xpointer")}\n";
+
         $fixup = null;
         $parent = $node->parentNode;
         $tagName = $parent->nodeName;
@@ -1030,7 +1038,7 @@ function xinclude_residual( DOMDocument $dom )
                 $explain = true;
                 continue 2;
         }
-        if ( $fixup != "" )
+        if ( $fixup !== null )
         {
             $other = new DOMDocument( '1.0' , 'utf8' );
             $other->loadXML( "<f>$fixup</f>" );
@@ -1042,6 +1050,9 @@ function xinclude_residual( DOMDocument $dom )
         }
         $node->parentNode->removeChild( $node );
     }
+
+    if ( $header )
+        echo "\n";
 
     if ( $explain )
     {
