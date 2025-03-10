@@ -29,10 +29,7 @@ $argv->complete();
 if ( count( $tags ) == 1 && $tags[0] == "" )
     $tags = [];
 
-if ( $detail )
-    $ignore->appendIgnoreCommands = false;
-
-$list   = SyncFileList::load();
+$list = SyncFileList::load();
 
 foreach ( $list as $file )
 {
@@ -44,8 +41,8 @@ foreach ( $list as $file )
     {
         // "Simple" tag contents check, by inner text
 
-        [ $s , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $source );
-        [ $t , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $target );
+        [ $s ] = XmlFrag::loadXmlFragmentFile( $source );
+        [ $t ] = XmlFrag::loadXmlFragmentFile( $target );
 
         $s = XmlFrag::listNodes( $s , XML_ELEMENT_NODE );
         $t = XmlFrag::listNodes( $t , XML_ELEMENT_NODE );
@@ -86,8 +83,8 @@ foreach ( $list as $file )
 
         // "Complex" tag contents check, by inner XML
 
-        [ $s , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $source );
-        [ $t , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $target );
+        [ $s ] = XmlFrag::loadXmlFragmentFile( $source );
+        [ $t ] = XmlFrag::loadXmlFragmentFile( $target );
 
         $s = XmlFrag::listNodes( $s , XML_ELEMENT_NODE );
         $t = XmlFrag::listNodes( $t , XML_ELEMENT_NODE );
@@ -127,8 +124,8 @@ foreach ( $list as $file )
     {
         // Check tag count, not contents
 
-        [ $s , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $source );
-        [ $t , $_ , $_ ] = XmlFrag::loadXmlFragmentFile( $target );
+        [ $s ] = XmlFrag::loadXmlFragmentFile( $source );
+        [ $t ] = XmlFrag::loadXmlFragmentFile( $target );
 
         $s = XmlFrag::listNodes( $s , XML_ELEMENT_NODE );
         $t = XmlFrag::listNodes( $t , XML_ELEMENT_NODE );

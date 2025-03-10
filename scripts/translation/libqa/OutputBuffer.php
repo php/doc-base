@@ -26,7 +26,6 @@ class OutputBuffer
     private array  $footer = [];
 
     private OutputIgnore $ignore;
-    private string $options;
 
     public int $printCount = 0;
 
@@ -37,7 +36,6 @@ class OutputBuffer
         $this->header = $header . ": " . $filename . "\n\n";
         $this->filename = $filename;
         $this->ignore = $ignore;
-        $this->options = implode( " " , $ignore->argv->residual() );
     }
 
     public function add( string $text )
@@ -88,14 +86,14 @@ class OutputBuffer
         if ( count( $this->matter ) == 0 && count( $this->footer ) == 0 )
             return;
 
+        $this->printCount++;
+
         $hashFile = hash( "crc32b" , $this->filename );
         $hashHead = $this->hash( false );
         $hashFull = $this->hash( true );
 
         if ( $this->ignore->shouldIgnore( $this , $hashFile , $hashHead , $hashFull ) )
             return;
-
-        $this->printCount++;
 
         print $this->header;
 
@@ -142,7 +140,8 @@ class OutputBuffer
 
     private function hash( bool $withContents ) : string
     {
-        $text = $this->header . $this->options;
+        $text = $this->header;
+        $text .= implode( "" , array_filter( $this->ignore->argvRest ) );
         if ( $withContents )
             $text .= implode( "" , $this->matter );
         $text = str_replace( " " , "" , $text );
