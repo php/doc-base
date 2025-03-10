@@ -941,7 +941,7 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
 
         $total += $was - $now;
 
-        if ( $was == $now )
+        if ( $was === $now )
             return $total;
     }
     echo "XInclude nested too deeply (xpointer).\n";
