@@ -1097,7 +1097,7 @@ function xinclude_debug_report( DOMDocument $dom )
         $count++;
     }
 
-    if ( $count == 0 )
+    if ( $count === 0 )
         echo "\n";
 }
 
