@@ -1090,7 +1090,7 @@ function xinclude_debug_report( DOMDocument $dom )
         if ( str_starts_with( $file , $prefix ) )
             $file = substr( $file , strlen( $prefix ) + 1 );
 
-        if ( $count == 0 )
+        if ( $count === 0 )
             echo "\n";
 
         echo "[{$file} {$line}:{$clmn}] $msg\n";
