@@ -962,7 +962,7 @@ function xinclude_residual_fixup( DOMDocument $dom )
 
     foreach( $nodes as $node )
     {
-        if ( $count == 0 )
+        if ( $count === 0 )
             echo "\nFailed XInclude:\n";
         echo "  {$node->getAttribute("xpointer")}\n";
         $count++;
