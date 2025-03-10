@@ -59,7 +59,7 @@ class SyncFileList
             $ret[] = $item;
         }
 
-        if ( count( $ret ) == 0 )
+        if ( $syncFileItems === [] )
             throw new Exception( "No files found. Called from wrong directory?" );
 
         $contents = gzencode( serialize( $ret ) );
