@@ -45,7 +45,7 @@ class SyncFileList
         require_once __DIR__ . '/../lib/all.php';
 
         $files = new RevcheckFileList( $sourceDir );
-        $ret = [];
+        $syncFileItems = [];
 
         foreach( $files->iterator() as $file )
         {
