@@ -1042,8 +1042,7 @@ MSG;
     if ( $see )
         echo "  See: https://github.com/php/doc-base/blob/master/docs/structure.md#xmlid-structure\n";
 
-    global $ac;
-    $fatal = $ac['LANG'] == 'en';
+    $fatal = $GLOBALS['ac']['LANG'] == 'en';
 
     if ( $see && $fatal )
         errors_are_bad( 1 ); // Duplicated strucutral xml:ids are fatal on doc-en
