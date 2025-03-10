@@ -35,8 +35,7 @@ class SyncFileList
 
         if ( file_exists( $cacheFilename ) )
         {
-            $data = file_get_contents( $cacheFilename );
-            return unserialize( gzdecode( $data ) );
+            return unserialize( gzdecode( file_get_contents( $cacheFilename ) ) );
         }
 
         $sourceDir = 'en';
