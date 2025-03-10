@@ -1083,10 +1083,6 @@ function xinclude_debug_report( DOMDocument $dom )
         $line = $error->line;
         $clmn = $error->column;
 
-//        // XPointer failures double reports,  sometimes
-//        if ( $prevLine == $line && $prevClmn == $clmn )
-//            continue;
-
         $prevLine = $line;
         $prevClmn = $clmn;
 
