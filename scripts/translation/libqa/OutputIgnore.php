@@ -21,15 +21,17 @@ ignored outputs with these commands.                                  */
 class OutputIgnore
 {
     private string $filename = ".qaxml.ignores";
-    private string $argv0 = "";
 
-    public bool $appendIgnoreCommands = true;
     public ArgvParser $argv;
+    public string $argvZero = "";
+    public array  $argvRest = [];
+    public bool $appendIgnoreCommands = true;
 
     public function __construct( ArgvParser $argv )
     {
         $this->argv = $argv;
-        $this->argv0 = escapeshellarg( $argv->consume( position: 0 ) );
+        $this->argvZero = escapeshellarg( $argv->consume( position: 0 ) );
+        $this->argvRest = $this->argv->residual();
 
         $item = $argv->consume( prefix: "--add-ignore=" );
 
@@ -94,7 +96,7 @@ class OutputIgnore
             $ret = true;
         else
             if ( $this->appendIgnoreCommands )
-                $output->addFooter( "  php {$this->argv0} --add-ignore=$active\n" );
+                $output->addFooter( "  php {$this->argvZero} --add-ignore=$active\n" );
 
         // --del-ignore command
 
@@ -102,7 +104,7 @@ class OutputIgnore
             foreach ( $marks as $mark )
                 if ( str_starts_with( $mark , $prefix ) )
                     if ( $mark != $active )
-                        $output->addFooter( "  php {$this->argv0} --del-ignore=$mark\n" );
+                        $output->addFooter( "  php {$this->argvZero} --del-ignore=$mark\n" );
 
         return $ret;
     }
