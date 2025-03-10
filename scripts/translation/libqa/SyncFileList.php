@@ -31,43 +31,39 @@ class SyncFileList
         }
 
         $lang = trim( file_get_contents( $file ) );
-        $cache = __DIR__ . "/../../../temp/qaxml.files.$lang";
+        $cacheFilename = __DIR__ . "/../../../temp/qaxml.files.$lang";
 
-        if ( file_exists( $cache ) )
+        if ( file_exists( $cacheFilename ) )
         {
-            $data = file_get_contents( $cache );
-            return unserialize( gzdecode( $data ) );
+            return unserialize( gzdecode( file_get_contents( $cacheFilename ) ) );
         }
+
+        $sourceDir = 'en';
+        $targetDir = $lang;
 
         require_once __DIR__ . '/../lib/all.php';
 
-        $revcheck = new RevcheckRun( 'en' , $lang );
-        $revdata  = $revcheck->revData;
-        $list = [];
+        $files = new RevcheckFileList( $sourceDir );
+        $syncFileItems = [];
 
-        foreach( $revdata->fileDetail as $file )
+        foreach( $files->iterator() as $file )
         {
-            $source = "{$revcheck->sourceDir}/{$file->path}/{$file->name}";
-            $target = "{$revcheck->targetDir}/{$file->path}/{$file->name}";
-
-            if ( ! file_exists( $source ) )
-                continue;
-            if ( ! file_exists( $target ) )
+            if ( ! file_exists( "$targetDir/{$file->file}" ) )
                 continue;
 
             $item = new SyncFileItem();
-            $item->sourceDir = $revcheck->sourceDir;
-            $item->targetDir = $revcheck->targetDir;
-            $item->file = $file->path . '/' . $file->name;
-            $list[] = $item;
+            $item->sourceDir = $sourceDir;
+            $item->targetDir = $targetDir;
+            $item->file = $file->file;
+            $ret[] = $item;
         }
 
-        if ( count( $list ) == 0 )
+        if ( $syncFileItems === [] )
             throw new Exception( "No files found. Called from wrong directory?" );
 
-        $contents = gzencode( serialize( $list ) );
-        file_put_contents( $cache , $contents );
+        $contents = gzencode( serialize( $ret ) );
+        file_put_contents( $cacheFilename , $contents );
 
-        return $list;
+        return $ret;
     }
 }
