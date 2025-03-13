@@ -11,9 +11,7 @@ on:
 jobs:
   build:
     name: "Build"
-
     runs-on: "ubuntu-latest"
-
     continue-on-error: true
 
     strategy:
@@ -34,23 +32,35 @@ jobs:
           - "zh"
 
     steps:
-      - name: "Checkout"
+      - name: "Checkout doc-base"
         uses: "actions/checkout@v4"
         with:
           path: "doc-base"
+          fetch-depth: 0
 
-      - name: "Checkout php/doc-${{ matrix.language }}"
+      - name: "Checkout doc-${{ matrix.language }}"
         uses: "actions/checkout@v4"
         with:
           path: "${{ matrix.language }}"
           repository: "php/doc-${{ matrix.language }}"
 
-      - name: "Checkout php/doc-en as fallback"
+      - name: "Checkout doc-en (fallback)"
         if: "matrix.language != 'en'"
         uses: "actions/checkout@v4"
         with:
           path: "en"
           repository: "php/doc-en"
+
+      - name: "Ensure doc-base is correctly merged into master (debug)"
+        run: |
+          echo === This step will fail if the merge commit is not targeting master
+          cd doc-base
+          echo === git log -n 3
+          git log -n 3
+          echo === git show HEAD
+          git show HEAD
+          echo === git merge --no-ff --no-commit master
+          git merge --no-ff --no-commit origin/master
 
       - name: "Run QA scripts for EN docs"
         if: "matrix.language == 'en'"
