@@ -44,7 +44,7 @@ class SyncFileList
         require_once __DIR__ . '/../lib/all.php';
 
         $files = new RevcheckFileList( $sourceDir );
-        $syncFileItems = [];
+        $ret = [];
 
         foreach( $files->iterator() as $file )
         {
@@ -58,7 +58,7 @@ class SyncFileList
             $ret[] = $item;
         }
 
-        if ( $syncFileItems === [] )
+        if ( $ret === [] )
             throw new Exception( "No files found. Called from wrong directory?" );
 
         $contents = gzencode( serialize( $ret ) );
