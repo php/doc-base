@@ -872,8 +872,7 @@ if ( $total == 0 )
 else
     echo "done. Performed $total XIncludes.\n";
 
-xinclude_report();
-xinclude_residual( $dom );
+xinclude_residual_fixup( $dom );
 
 function xinclude_run_byid( DOMDocument $dom )
 {
@@ -927,94 +926,46 @@ function xinclude_run_byid( DOMDocument $dom )
 
 function xinclude_run_xpointer( DOMDocument $dom ) : int
 {
+    // The return of xinclude() cannot be used for counting or stoping, as it
+    // sometimes return zero/negative in cases of partial executions
+
     $total = 0;
-    $maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
-    for( $run = 0 ; $run < $maxrun ; $run++ )
+    for( $run = 0 ; $run < 10 ; $run++ )
     {
         echo "$run ";
-        $status = (int) $dom->xinclude();
-
-        if ( $status <= 0 )
-        {
-            return $total;
-        }
-        $total += $status;
         libxml_clear_errors();
+
+        $was = count( xinclude_residual_list( $dom ) );
+        $dom->xinclude();
+        $now = count( xinclude_residual_list( $dom ) );
+
+        $total += $was - $now;
+
+        if ( $was === $now )
+            return $total;
     }
     echo "XInclude nested too deeply (xpointer).\n";
     errors_are_bad( 1 );
 }
 
-function xinclude_report()
+function xinclude_residual_fixup( DOMDocument $dom )
 {
-    global $ac;
+    xinclude_debug_report( $dom );
 
-    $report = $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en';
-    $output = $ac['STDERR_TO_STDOUT'] == 'yes' ? STDOUT : STDERR;
-    $fatal  = $ac['LANG'] == 'en';
-
-    $errors = libxml_get_errors();
-    libxml_clear_errors();
-
-    if ( ! $report )
-        return;
-
-    $count = 0;
-    $prefix = realpath( __DIR__ );
-
-    $prevLine = -1;
-    $prevClmn = -1;
-
-    foreach( $errors as $error )
-    {
-        $msg  = $error->message;
-        $file = $error->file;
-        $line = $error->line;
-        $clmn = $error->column;
-
-        if ( $prevLine == $line && $prevClmn == $clmn )
-            continue; // XPointer failures double reports sometimes
-        $prevLine = $line;
-        $prevClmn = $clmn;
-
-        $msg = rtrim( $msg );
-        if ( str_starts_with( $file , $prefix ) )
-            $file = substr( $file , strlen( $prefix ) + 1 );
-
-        if ( $count == 0 )
-            fprintf( $output , "\n" );
-
-        fprintf( $output , "[{$file} {$line}:{$clmn}] $msg\n" );
-        $count++;
-    }
-
-    if ( $count > 0 )
-    {
-        fprintf( $output , "\n" );
-        if ( $fatal )
-            errors_are_bad( 1 );
-    }
-}
-
-function xinclude_residual( DOMDocument $dom )
-{
     // XInclude failures are soft errors on translations, so remove
     // residual XInclude tags on translations to keep them building.
 
-    $header = false;
+    $nodes = xinclude_residual_list( $dom );
+
+    $count = 0;
     $explain = false;
 
-    $xpath = new DOMXPath( $dom );
-    $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
-    $nodes = $xpath->query( "//xi:include" );
     foreach( $nodes as $node )
     {
-        if ( $header == false )
-        {
+        if ( $count === 0 )
             echo "\nFailed XInclude:\n";
-            $header = true;
-        }
-        echo "- {$node->getAttribute("xpointer")}\n";
+        echo "  {$node->getAttribute("xpointer")}\n";
+        $count++;
 
         $fixup = null;
         $parent = $node->parentNode;
@@ -1051,9 +1002,6 @@ function xinclude_residual( DOMDocument $dom )
         $node->parentNode->removeChild( $node );
     }
 
-    if ( $header )
-        echo "\n";
-
     if ( $explain )
     {
         echo <<<MSG
@@ -1063,15 +1011,19 @@ that configure.php cannot patch the translated manual into a validating
 state. Please report any "Unknown parent" messages on the doc-base
 repository, and focus on fixing XInclude/XPointers failures above.\n\n
 MSG;
-        exit(1); // stop here, do not let more messages further confuse the matter
+        exit( 1 ); // stop here, do not let more messages further confuse the matter
     }
+
+    if ( $count > 0 )
+        echo "\n";
 
     // XInclude by xml:id never duplicates xml:id, horever, also using
     // XInclude by XPath/XPointer may start causing duplications
     // (see docs/structure.md). Crude and ugly fixup ahead, beware!
 
+    $list = [];
     $see = false;
-    $list = array();
+    $xpath = new DOMXPath( $dom );
     $nodes = $xpath->query( "//*[@xml:id]" );
     foreach( $nodes as $node )
     {
@@ -1089,6 +1041,64 @@ MSG;
     }
     if ( $see )
         echo "  See: https://github.com/php/doc-base/blob/master/docs/structure.md#xmlid-structure\n";
+
+    $fatal = $GLOBALS['ac']['LANG'] == 'en';
+
+    if ( $see && $fatal )
+        errors_are_bad( 1 ); // Duplicated strucutral xml:ids are fatal on doc-en
+}
+
+function xinclude_residual_list( DOMDocument $dom ) : DOMNodeList
+{
+    $xpath = new DOMXPath( $dom );
+    $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
+    $nodes = $xpath->query( "//xi:include" );
+
+    return $nodes;
+}
+
+function xinclude_debug_report( DOMDocument $dom )
+{
+    $debugFile = __DIR__ . "/temp/xinclude-debug.xml";
+
+    dom_saveload( $dom , $debugFile ); // preserve state
+
+    libxml_clear_errors();
+    $dom->xinclude();
+    $errors = libxml_get_errors();
+    libxml_clear_errors();
+
+    dom_saveload( $dom );              // normal output
+
+    $count = 0;
+    $prefix = realpath( __DIR__ );
+
+    $prevLine = -1;
+    $prevClmn = -1;
+
+    foreach( $errors as $error )
+    {
+        $msg  = $error->message;
+        $file = $error->file;
+        $line = $error->line;
+        $clmn = $error->column;
+
+        $prevLine = $line;
+        $prevClmn = $clmn;
+
+        $msg = rtrim( $msg );
+        if ( str_starts_with( $file , $prefix ) )
+            $file = substr( $file , strlen( $prefix ) + 1 );
+
+        if ( $count === 0 )
+            echo "\n";
+
+        echo "[{$file} {$line}:{$clmn}] $msg\n";
+        $count++;
+    }
+
+    if ( $count === 0 )
+        echo "\n";
 }
 
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
