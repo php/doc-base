@@ -17,6 +17,10 @@
  *  +----------------------------------------------------------------------+
  */
 
+echo "This tool is obsolete and will be REMOVED soon.\n";
+echo "See https://github.com/php/doc-base/blob/master/scripts/translation/README.md\n";
+echo "for alternatives.\n\n".
+
 require_once __DIR__ . '/lib/all.php';
 
 $tags = [];
