@@ -950,12 +950,15 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
 
 function xinclude_residual_fixup( DOMDocument $dom )
 {
-    xinclude_debug_report( $dom );
-
     // XInclude failures are soft errors on translations, so remove
     // residual XInclude tags on translations to keep them building.
 
+    $debugFile = "temp/xinclude-debug.xml";
+    $debugPath = __DIR__ . "/{$debugFile}";
     $nodes = xinclude_residual_list( $dom );
+
+    if ( count( $nodes ) > 0 )
+        dom_saveload( $dom , $debugPath ); // preserve state
 
     $count = 0;
     $explain = false;
@@ -963,7 +966,7 @@ function xinclude_residual_fixup( DOMDocument $dom )
     foreach( $nodes as $node )
     {
         if ( $count === 0 )
-            echo "\nFailed XInclude:\n";
+            echo "\nFailed XInclude, inspect {$debugFile} for context:\n";
         echo "  {$node->getAttribute("xpointer")}\n";
         $count++;
 
@@ -1057,50 +1060,6 @@ function xinclude_residual_list( DOMDocument $dom ) : DOMNodeList
     return $nodes;
 }
 
-function xinclude_debug_report( DOMDocument $dom )
-{
-    $debugFile = __DIR__ . "/temp/xinclude-debug.xml";
-
-    dom_saveload( $dom , $debugFile ); // preserve state
-
-    libxml_clear_errors();
-    $dom->xinclude();
-    $errors = libxml_get_errors();
-    libxml_clear_errors();
-
-    dom_saveload( $dom );              // normal output
-
-    $count = 0;
-    $prefix = realpath( __DIR__ );
-
-    $prevLine = -1;
-    $prevClmn = -1;
-
-    foreach( $errors as $error )
-    {
-        $msg  = $error->message;
-        $file = $error->file;
-        $line = $error->line;
-        $clmn = $error->column;
-
-        $prevLine = $line;
-        $prevClmn = $clmn;
-
-        $msg = rtrim( $msg );
-        if ( str_starts_with( $file , $prefix ) )
-            $file = substr( $file , strlen( $prefix ) + 1 );
-
-        if ( $count === 0 )
-            echo "\n";
-
-        echo "[{$file} {$line}:{$clmn}] $msg\n";
-        $count++;
-    }
-
-    if ( $count === 0 )
-        echo "\n";
-}
-
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
 
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
@@ -1141,11 +1100,12 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
     exit(0);
 } // }}}
 
-$mxml = $ac["OUTPUT_FILENAME"];
+// Saves and reload, so libxml's RelaxNG validation to work correctly
 
-/* TODO: For some reason libxml does not validate the RelaxNG schema unless reloading the document in full */
-dom_saveload( $dom );   // idempotent path
+$mxml = $ac["OUTPUT_FILENAME"];
 $dom->save($mxml);      // non idempotent, historical path
+dom_saveload( $dom );   // idempotent path
+
 if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
     printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
