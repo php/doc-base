@@ -278,55 +278,6 @@ function find_xml_files($path) // {{{
     }
 } // }}}
 
-function generate_sources_file() // {{{
-{
-    global $ac;
-    $source_map = array();
-    echo 'Iterating over files for sources info... ';
-    $en_dir = "{$ac['rootdir']}/{$ac['EN_DIR']}";
-    $source_langs = array(
-        array('base', $ac['srcdir'], array('manual.xml', 'funcindex.xml')),
-        array('en', $en_dir, find_xml_files($en_dir)),
-    );
-    if ($ac['LANG'] !== 'en') {
-        $lang_dir = "{$ac['rootdir']}/{$ac['LANGDIR']}";
-        $source_langs[] = array($ac['LANG'], $lang_dir, find_xml_files($lang_dir));
-    }
-    foreach ($source_langs as list($source_lang, $source_dir, $source_files)) {
-        foreach ($source_files as $source_path) {
-            $source = file_get_contents("{$source_dir}/{$source_path}");
-            if (preg_match_all('/ xml:id=(["\'])([^"]+)\1/', $source, $matches)) {
-                foreach ($matches[2] as $xml_id) {
-                    $source_map[$xml_id] = array(
-                        'lang' => $source_lang,
-                        'path' => $source_path,
-                    );
-                }
-            }
-        }
-    }
-    asort($source_map);
-    echo "OK\n";
-    echo 'Generating sources XML... ';
-    $dom = new DOMDocument;
-    $dom->formatOutput = true;
-    $sources_elem = $dom->appendChild($dom->createElement("sources"));
-    foreach ($source_map as $id => $source) {
-        $el = $dom->createElement('item');
-        $el->setAttribute('id', $id);
-        $el->setAttribute('lang', $source["lang"]);
-        $el->setAttribute('path', $source["path"]);
-        $sources_elem->appendChild($el);
-    }
-    echo "OK\n";
-    echo "Saving sources.xml file... ";
-    if ($dom->save($ac['srcdir'] . '/sources.xml')) {
-        echo "OK\n";
-    } else {
-        echo "FAIL!\n";
-    }
-} // }}}
-
 if ( true ) # Initial clean up
 {
     $dir = escapeshellarg( __DIR__ );
@@ -748,10 +699,6 @@ if ($ac['VERSION_FILES'] === 'yes') {
     }
 }
 
-if ($ac['SOURCES_FILE'] === 'yes') {
-    generate_sources_file();
-}
-
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
 
@@ -1105,7 +1052,7 @@ if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
 
 phd_acronym();
 php_history();
-//phd_sources();
+phd_sources();
 //phd_version();
 
 function phd_acronym()
@@ -1146,6 +1093,57 @@ function php_history()
     echo " done.\n";
 }
 
+function phd_sources()
+{
+    global $ac;
+    if ($ac['SOURCES_FILE'] !== 'yes')
+        return;
+
+    echo 'PhD sources:';
+
+    echo ' reading,';
+    $source_map = array();
+    $en_dir = "{$ac['rootdir']}/{$ac['EN_DIR']}";
+    $source_langs = array(
+        array('base', $ac['srcdir'], array('manual.xml', 'funcindex.xml')),
+        array('en', $en_dir, find_xml_files($en_dir)),
+    );
+    if ($ac['LANG'] !== 'en') {
+        $lang_dir = "{$ac['rootdir']}/{$ac['LANGDIR']}";
+        $source_langs[] = array($ac['LANG'], $lang_dir, find_xml_files($lang_dir));
+    }
+    foreach ($source_langs as list($source_lang, $source_dir, $source_files)) {
+        foreach ($source_files as $source_path) {
+            $source = file_get_contents("{$source_dir}/{$source_path}");
+            if (preg_match_all('/ xml:id=(["\'])([^"]+)\1/', $source, $matches)) {
+                foreach ($matches[2] as $xml_id) {
+                    $source_map[$xml_id] = array(
+                        'lang' => $source_lang,
+                        'path' => $source_path,
+                    );
+                }
+            }
+        }
+    }
+    asort($source_map);
+    echo ' generating,';
+    $dom = new DOMDocument;
+    $dom->formatOutput = true;
+    $sources_elem = $dom->appendChild($dom->createElement("sources"));
+    foreach ($source_map as $id => $source) {
+        $el = $dom->createElement('item');
+        $el->setAttribute('id', $id);
+        $el->setAttribute('lang', $source["lang"]);
+        $el->setAttribute('path', $source["path"]);
+        $sources_elem->appendChild($el);
+    }
+    echo " saving,";
+    if ($dom->save($ac['srcdir'] . '/sources.xml')) {
+        echo " done.\n";
+    } else {
+        echo " fail!\n";
+    }
+}
 
 printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
 echo "All you have to do now is run 'phd -d {$mxml}'\n";
