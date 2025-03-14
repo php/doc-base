@@ -25,7 +25,7 @@ ini_set( 'display_startup_errors' , 1 );
 error_reporting( E_ALL );
 ob_implicit_flush();
 
-echo "configure.php on PHP " . phpversion() . "\n\n";
+echo "configure.php on PHP " . phpversion() . ", libxml " . LIBXML_DOTTED_VERSION . "\n\n";
 
 // init_argv()
 // init_checks()
@@ -574,9 +574,6 @@ checkvalue($ac['PARTIAL']);
 
 checking('whether to enable detailed XML error messages');
 checkvalue($ac['DETAILED_ERRORMSG']);
-
-checking('libxml version');
-checkvalue(LIBXML_DOTTED_VERSION);
 
 checking('whether to enable detailed error reporting (may segfault)');
 checkvalue($ac['SEGFAULT_ERROR']);
