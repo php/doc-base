@@ -647,56 +647,8 @@ function xml_configure()
     file_put_contents( __DIR__ . "/temp/manual.conf" , implode( "\n" , $conf ) );
 }
 
-
 if ($ac['SEGFAULT_ERROR'] === 'yes') {
     libxml_use_internal_errors(true);
-}
-
-if ($ac['VERSION_FILES'] === 'yes') {
-    $dom = new DOMDocument;
-    $dom->preserveWhiteSpace = false;
-    $dom->formatOutput       = true;
-
-    $tmp = new DOMDocument;
-    $tmp->preserveWhiteSpace = false;
-
-    $versions = $dom->appendChild($dom->createElement("versions"));
-
-
-    echo "Iterating over extension specific version files... ";
-    if ($ac["GENERATE"] != "no") {
-        $globdir = dirname($ac["GENERATE"]) . "/{../../}versions.xml";
-    }
-    else {
-        if (file_exists($ac['rootdir'] . '/en/trunk')) {
-            $globdir = $ac['rootdir'] . '/en/trunk';
-        } else {
-            $globdir = $ac['rootdir'] . '/en';
-        }
-        $globdir .= "/*/*/versions.xml";
-    }
-    if (!defined('GLOB_BRACE')) {
-        define('GLOB_BRACE', 0);
-    }
-    foreach(glob($globdir, GLOB_BRACE) as $file) {
-        if($tmp->load($file)) {
-            foreach($tmp->getElementsByTagName("function") as $function) {
-                $function = $dom->importNode($function, true);
-                $versions->appendChild($function);
-            }
-        } else {
-            print_xml_errors();
-            errors_are_bad(1);
-        }
-    }
-    echo "OK\n";
-    echo "Saving it... ";
-
-    if ($dom->save($ac['srcdir'] . '/version.xml')) {
-        echo "OK\n";
-    } else {
-        echo "FAIL!\n";
-    }
 }
 
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
@@ -1053,7 +1005,7 @@ if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
 phd_acronym();
 php_history();
 phd_sources();
-//phd_version();
+phd_version();
 
 function phd_acronym()
 {
@@ -1126,7 +1078,7 @@ function phd_sources()
         }
     }
     asort($source_map);
-    echo ' generating,';
+    echo ' transforming,';
     $dom = new DOMDocument;
     $dom->formatOutput = true;
     $sources_elem = $dom->appendChild($dom->createElement("sources"));
@@ -1144,6 +1096,60 @@ function phd_sources()
         echo " fail!\n";
     }
 }
+
+function phd_version()
+{
+    global $ac;
+    if ($ac['VERSION_FILES'] !== 'yes')
+        return;
+
+    echo 'PhD version:';
+
+    $dom = new DOMDocument;
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput       = true;
+
+    $tmp = new DOMDocument;
+    $tmp->preserveWhiteSpace = false;
+
+    $versions = $dom->appendChild($dom->createElement("versions"));
+
+    echo ' reading,';
+    if ($ac["GENERATE"] != "no") {
+        $globdir = dirname($ac["GENERATE"]) . "/{../../}versions.xml";
+    }
+    else {
+        if (file_exists($ac['rootdir'] . '/en/trunk')) {
+            $globdir = $ac['rootdir'] . '/en/trunk';
+        } else {
+            $globdir = $ac['rootdir'] . '/en';
+        }
+        $globdir .= "/*/*/versions.xml";
+    }
+    echo ' transforming,';
+    if (!defined('GLOB_BRACE')) {
+        define('GLOB_BRACE', 0);
+    }
+    foreach(glob($globdir, GLOB_BRACE) as $file) {
+        if($tmp->load($file)) {
+            foreach($tmp->getElementsByTagName("function") as $function) {
+                $function = $dom->importNode($function, true);
+                $versions->appendChild($function);
+            }
+        } else {
+            print_xml_errors();
+            errors_are_bad(1);
+        }
+    }
+    echo ' saving,';
+
+    if ($dom->save($ac['srcdir'] . '/version.xml')) {
+        echo " done.\n";
+    } else {
+        echo " fail!\n";
+    }
+}
+
 
 printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
 echo "All you have to do now is run 'phd -d {$mxml}'\n";
