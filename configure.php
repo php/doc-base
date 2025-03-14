@@ -1108,30 +1108,6 @@ dom_saveload( $dom );   // idempotent path
 
 if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
-    printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
-    echo "All you have to do now is run 'phd -d {$mxml}'\n";
-    echo "If the script hangs here, you can abort with ^C.\n";
-    echo <<<CAT
-         _ _..._ __
-        \)`    (` /
-         /      `\
-        |  d  b   |
-        =\  Y    =/--..-="````"-.
-          '.=__.-'               `\
-             o/                 /\ \
-              |                 | \ \   / )
-               \    .--""`\    <   \ '-' /
-              //   |      ||    \   '---'
-         jgs ((,,_/      ((,,___/
-
-
-CAT;
-
-    if (function_exists('proc_nice') && !is_windows()) {
-        echo " (Run `nice php $_SERVER[SCRIPT_NAME]` next time!)\n";
-    }
-
-    exit(0); // Tell the shell that this script finished successfully.
 } else {
     echo "failed.\n";
     echo "\nThe document didn't validate\n";
@@ -1159,3 +1135,28 @@ CAT;
 
     errors_are_bad(1); // Tell the shell that this script finished with an error.
 }
+
+printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
+echo "All you have to do now is run 'phd -d {$mxml}'\n";
+echo "If the script hangs here, you can abort with ^C.\n";
+echo <<<CAT
+         _ _..._ __
+        \)`    (` /
+         /      `\
+        |  d  b   |
+        =\  Y    =/--..-="````"-.
+          '.=__.-'               `\
+             o/                 /\ \
+              |                 | \ \   / )
+               \    .--""`\    <   \ '-' /
+              //   |      ||    \   '---'
+         jgs ((,,_/      ((,,___/
+
+
+CAT;
+
+if (function_exists('proc_nice') && !is_windows()) {
+    echo " (Run `nice php $_SERVER[SCRIPT_NAME]` next time!)\n";
+}
+
+exit(0); // Tell the shell that this script finished successfully.
