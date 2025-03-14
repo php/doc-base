@@ -327,36 +327,6 @@ function generate_sources_file() // {{{
     }
 } // }}}
 
-function getFileModificationHistory(): array {
-    global $ac;
-
-    $lang_mod_file = (($ac['LANG'] !== 'en') ? ("{$ac['rootdir']}/{$ac['EN_DIR']}") : ("{$ac['rootdir']}/{$ac['LANGDIR']}")) . "/fileModHistory.php";
-    $doc_base_mod_file = __DIR__ . "/fileModHistory.php";
-
-    $history_file = null;
-    if (file_exists($lang_mod_file)) {
-        $history_file = include $lang_mod_file;
-        if (is_array($history_file)) {
-            echo 'Copying modification history file... ';
-            $isFileCopied = copy($lang_mod_file, $doc_base_mod_file);
-            echo $isFileCopied ? "done.\n" : "failed.\n";
-        } else {
-            echo "Corrupted modification history file found: $lang_mod_file \n";
-        }
-    } else {
-        echo "Modification history file $lang_mod_file not found.\n";
-    }
-
-    if (!is_array($history_file)) {
-        $history_file = [];
-        echo "Creating empty modification history file...";
-        file_put_contents($doc_base_mod_file, "<?php\n\nreturn [];\n");
-        echo "done.\n";
-    }
-
-    return $history_file;
-}
-
 if ( true ) # Initial clean up
 {
     $dir = escapeshellarg( __DIR__ );
@@ -782,11 +752,6 @@ if ($ac['SOURCES_FILE'] === 'yes') {
     generate_sources_file();
 }
 
-$history_file = [];
-if ($ac['HISTORY_FILE'] === 'yes') {
-    $history_file = getFileModificationHistory();
-}
-
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
 
@@ -1135,6 +1100,52 @@ if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
 
     errors_are_bad(1); // Tell the shell that this script finished with an error.
 }
+
+// All PhD stuff, after XML validation
+
+phd_acronym();
+php_history();
+//phd_sources();
+//phd_version();
+
+function phd_acronym()
+{
+    //TODO: Move acronym.xml code here
+}
+
+function php_history()
+{
+    global $ac;
+    if ($ac['HISTORY_FILE'] !== 'yes')
+        return;
+
+    echo 'PhD history:';
+
+    $lang_mod_file = (($ac['LANG'] !== 'en') ? ("{$ac['rootdir']}/{$ac['EN_DIR']}") : ("{$ac['rootdir']}/{$ac['LANGDIR']}")) . "/fileModHistory.php";
+    $doc_base_mod_file = __DIR__ . "/fileModHistory.php";
+
+    $history_file = null;
+    if (file_exists($lang_mod_file)) {
+        $history_file = include $lang_mod_file;
+        if (is_array($history_file)) {
+            echo ' copy,';
+            $isFileCopied = copy($lang_mod_file, $doc_base_mod_file);
+            echo $isFileCopied ? "" : " failed,";
+        } else {
+            echo " corrupted file '$lang_mod_file,'";
+        }
+    } else {
+        echo " not found,";
+    }
+
+    if (!is_array($history_file)) {
+        $history_file = [];
+        echo " creating empty,";
+        file_put_contents($doc_base_mod_file, "<?php\n\nreturn [];\n");
+    }
+    echo " done.\n";
+}
+
 
 printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
 echo "All you have to do now is run 'phd -d {$mxml}'\n";
