@@ -819,7 +819,11 @@ function xinclude_residual_fixup( DOMDocument $dom )
     $nodes = xinclude_residual_list( $dom );
 
     if ( count( $nodes ) > 0 )
-        dom_saveload( $dom , $debugPath ); // preserve state
+    {
+        unset( $nodes );
+        dom_saveload( $dom , $debugPath );
+        $nodes = $nodes = xinclude_residual_list( $dom );
+    }
 
     $count = 0;
     $explain = false;
