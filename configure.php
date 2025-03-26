@@ -925,6 +925,37 @@ function xinclude_residual_list( DOMDocument $dom ) : DOMNodeList
     return $nodes;
 }
 
+echo "Process PI nodes...\n";
+if ($ac['LANG'] != 'en') {
+    if (file_exists($srcdir . '/pi_processing/langs/' . $ac['LANG'] . '.php')) {
+        require_once $srcdir . '/pi_processing/langs/' . $ac['LANG'] . '.php';
+    }
+}
+require_once $srcdir . '/pi_processing/langs/en.php';
+require_once $srcdir . '/pi_processing/processors.php';
+$xpath = new DOMXPath($dom);
+foreach ($xpath->query('//processing-instruction()') as $pi) {
+    if (!str_starts_with($pi->target, 'phpdoc')) {
+        continue;
+    }
+    // Don't care about generic phpdoc PI target
+    if ($pi->target === 'phpdoc') {
+        continue;
+    }
+
+    $fn = match ($pi->target) {
+        'phpdoc_error_ValueError_between' => error_section_value_error_between(...),
+        'phpdoc_error_ValueError_between_changelog' => error_section_value_error_between_changelog(...),
+    };
+    $data = explode(' ', $pi->data);
+    $raw_xml = $fn(...$data);
+
+    $localDom = new DOMDocument();
+    $localDom->loadXML($raw_xml);
+    $node = $dom->importNode($localDom->documentElement, true);
+    $pi->parentNode->insertBefore($node, $pi);
+}
+
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
 
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
