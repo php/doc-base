@@ -30,7 +30,6 @@ $inixml_header = <<<INIXML_HEADER
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!-- Automatically generated using gen_PHP_INI_ENTRY.php -->
 <!-- DO NOT EDIT. -->
-<!-- \$Revision$ -->
 <section id="##ID##.configuration">
  &reftitle.runtime;
  &extension.runtime;\n\n
