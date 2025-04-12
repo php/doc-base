@@ -21,7 +21,7 @@ This aids in keeping *diffs* simple, which is particularly useful for translator
 ## Whitespaces
 For XML, indent using one space. Do not use tabs.
 PHP and other code in examples may use more spaces for indentation, and
-should follow [the coding style for examples](cs-for-examples).
+should follow [the coding style for examples](cs-for-examples.md).
 
 ## Punctuation
 Punctuation in the PHP Manual follows regular grammatical rules.
