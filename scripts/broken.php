@@ -28,8 +28,19 @@ error_reporting( E_ALL );
 
 if ( count( $argv ) < 2 )
     print_usage_exit( $argv[0] );
-
 array_shift( $argv );
+
+$dos2unix = false;
+foreach( $argv as & $arg )
+{
+    if ( $arg == "--dos2unix" )
+    {
+        $dos2unix = true;
+        $arg = null;
+    }
+}
+$argv = array_filter( $argv );
+
 foreach( $argv as $arg )
 {
     if ( file_exists( $arg ) )
@@ -46,7 +57,7 @@ foreach( $argv as $arg )
 function print_usage_exit( $cmd )
 {
     fwrite( STDERR , "  Wrong paramater count. Usage:\n" );
-    fwrite( STDERR , "    {$cmd} path:\n" );
+    fwrite( STDERR , "    {$cmd} [--dos2unix] path\n" );
     exit;
 }
 
@@ -83,17 +94,21 @@ function testFile( string $filename , bool $fragment = false )
     if ( str_starts_with( $contents , b"\xEF\xBB\xBF" ) )
     {
         echo "Wrong XML file:\n";
+        echo "  Issue: XML file with BOM. Several tools may misbehave.\n";
         echo "  Path:  $filename\n";
-        echo "  Error: XML file with BOM. Several tools may misbehave.\n";
+        echo "  Hint:  You can try autofix this with --dos2unix option.\n";
         echo "\n";
+        autofix_dos2unix( $filename );
     }
 
     if ( PHP_EOL == "\n" && str_contains( $contents , "\r") )
     {
         echo "Wrong XML file:\n";
+        echo "  Issue: XML file contains \\r. Several tools may misbehave.\n";
         echo "  Path:  $filename\n";
-        echo "  Error: XML file contains \\r. Several tools may misbehave.\n";
+        echo "  Hint:  You can try autofix this with --dos2unix option.\n";
         echo "\n";
+        autofix_dos2unix( $filename );
     }
 
     static $prefix = "", $suffix = "", $extra = "";
@@ -128,10 +143,10 @@ function testFile( string $filename , bool $fragment = false )
         $lin = $error->line;
         $col = $error->column;
         echo "Broken XML file:\n";
+        echo "  Issue: $message\n";
         echo "  Path:  $filename [$lin,$col]\n";
-        echo "  Error: $message\n";
         if ( $hintFragDir )
-            echo "  Hint:  Dir is marked with .xmlfragmentdir on doc-en? If not, check entity references.\n";
+            echo "  Hint:  See source comments about '.xmlfragmentdir', or check entity references outside enclosing tags.\n";
         echo "\n";
         return;
     }
@@ -168,4 +183,15 @@ function testDir( string $dir )
 
     foreach( $subdirs as $dir )
         testDir( $dir );
+}
+
+function autofix_dos2unix( string $filename )
+{
+    if ( $GLOBALS['dos2unix'] )
+    {
+        $cmd = "dos2unix -r " . escapeshellarg( $filename );
+        echo $cmd;
+        system( $cmd );
+        echo "\n";
+    }
 }
