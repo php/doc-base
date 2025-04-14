@@ -190,7 +190,6 @@ function autofix_dos2unix( string $filename )
     if ( $GLOBALS['dos2unix'] )
     {
         $cmd = "dos2unix -r " . escapeshellarg( $filename );
-        echo $cmd;
         system( $cmd );
         echo "\n";
     }
