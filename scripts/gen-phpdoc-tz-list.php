@@ -33,7 +33,6 @@
 	$groupedList['Others'] = $others;
 ?>
 <?php echo '<?'; ?>xml version="1.0" encoding="UTF-8"?>
-<!-- $Revision$ -->
 <!-- AUTO GENERATED, DO NOT TRANSLATE OR MODIFY BY HAND -->
 
 <!-- The script to generate this file is scripts/gen-phpdoc-tz-list.php -->

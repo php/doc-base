@@ -1108,7 +1108,6 @@ $OPTION['example']	 = false;
 
 $arropts = array(
 	'verbose' 		=> 'v',  /* verbose */
-	'version' 		=> 'V',  /* version */
 	'quiet'   		=> 'q',  /* quiet */
 	'include:'		=> 'i:',  /* include */
 	'help'	  		=> 'h',  /* help */
@@ -1136,10 +1135,6 @@ if (!$options) {
 foreach ($options as $opt => $value) {
 	switch ($opt) {
 		case 'v':
-		case 'version':
-			printf("%s\n", '$Revision$');
-			break;
-		case 'V':
 		case 'verbose':
 			$OPTION['verbose'] = false;
 			break;
