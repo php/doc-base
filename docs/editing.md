@@ -34,6 +34,10 @@ Remember the extension folder [structure](structure.md) when copying those files
 ## Translating documentation
 The translation process is described in the [translating chapter](translating.md).
 
+Changes in the English version are eventually picked up by the translators.
+If a change doesn't affect translations (e.g. fixing a typo in English) then the
+commit message should start with `[skip-revcheck]`.
+
 ## Validating your changes
 Every time you make changes to documentation sources (both English or translation),
 you have to validate your changes to ensure that the manual still builds without error.
