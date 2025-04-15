@@ -553,20 +553,12 @@ file_put_contents( __DIR__ . "/temp/lang" , $ac['LANG'] );
 
 checking("whether the language is supported");
 $LANGDIR = "{$ac['rootdir']}/{$ac['LANG']}";
-if (file_exists("{$LANGDIR}/trunk")) {
-    $LANGDIR .= '/trunk';
-}
 if (!file_exists($LANGDIR) || !is_readable($LANGDIR)) {
     checkerror("No language directory found.");
 }
 
 $ac['LANGDIR'] = basename($LANGDIR);
-if ($ac['LANGDIR'] == 'trunk') {
-    $ac['LANGDIR'] = '../' . basename(dirname($LANGDIR)) . '/trunk';
-    $ac['EN_DIR'] = '../en/trunk';
-} else {
-    $ac['EN_DIR'] = 'en';
-}
+$ac['EN_DIR'] = 'en';
 checkvalue("yes");
 
 checking("for partial build");
@@ -1120,11 +1112,7 @@ function phd_version()
         $globdir = dirname($ac["GENERATE"]) . "/{../../}versions.xml";
     }
     else {
-        if (file_exists($ac['rootdir'] . '/en/trunk')) {
-            $globdir = $ac['rootdir'] . '/en/trunk';
-        } else {
-            $globdir = $ac['rootdir'] . '/en';
-        }
+        $globdir = $ac['rootdir'] . '/en';
         $globdir .= "/*/*/versions.xml";
     }
     echo ' transforming,';
