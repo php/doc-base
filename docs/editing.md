@@ -11,7 +11,7 @@ When adding new functions or methods, there are a few options:
 
 ### Option A: Generating stub using `gen_stub.php`
 This is the new preferred way to generate files for new extensions, classes, functions
-or methods using [`get_stub.php`][gen_stub]. The script is found in the [php-src][php-src]
+or methods using [`gen_stub.php`][gen_stub]. The script is found in the [php-src][php-src]
 repository and uses the stub files to generate documentation (DocBook) files.
 
 ### Option B: Generating files using docgen
