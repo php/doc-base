@@ -96,7 +96,7 @@ function testFile( string $filename , bool $fragment = false )
         echo "Wrong XML file:\n";
         echo "  Issue: XML file with BOM. Several tools may misbehave.\n";
         echo "  Path:  $filename\n";
-        echo "  Hint:  You can try autofix this with --dos2unix option.\n";
+        echo "  Hint:  You can try autofix this with 'doc-base/scripts/broken.php --dos2unix langdir'.\n";
         echo "\n";
         autofix_dos2unix( $filename );
     }
@@ -106,7 +106,7 @@ function testFile( string $filename , bool $fragment = false )
         echo "Wrong XML file:\n";
         echo "  Issue: XML file contains \\r. Several tools may misbehave.\n";
         echo "  Path:  $filename\n";
-        echo "  Hint:  You can try autofix this with --dos2unix option.\n";
+        echo "  Hint:  You can try autofix this with 'doc-base/scripts/broken.php --dos2unix langdir'.\n";
         echo "\n";
         autofix_dos2unix( $filename );
     }
