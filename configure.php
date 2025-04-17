@@ -850,8 +850,11 @@ function xinclude_residual_fixup( DOMDocument $dom )
     foreach( $nodes as $node )
     {
         if ( $count === 0 )
-            echo "\nFailed XInclude, inspect {$debugFile} for context:\n";
-        echo "  {$node->getAttribute("xpointer")}\n";
+        {
+            echo "\nFailed XIncludes, manual parts will be missing.";
+            echo " Inspect {$debugFile} for context. Failed targets are:\n";
+        }
+        echo "- {$node->getAttribute("xpointer")}\n";
         $count++;
 
         $fixup = null;
