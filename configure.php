@@ -712,7 +712,26 @@ else
 {
     echo "failed.\n";
     print_xml_errors();
+    individual_xml_broken_check();
     errors_are_bad(1);
+}
+
+function individual_xml_broken_check()
+{
+    $cmd = array();
+    $cmd[] = $GLOBALS['ac']['PHP'];
+    $cmd[] = __DIR__ . "/scripts/broken.php";
+    $cmd[] = $GLOBALS['ac']['LANG'];
+    foreach ( $cmd as & $part )
+        $part = escapeshellarg( $part );
+    $ret = 0;
+    $cmd = implode( ' ' , $cmd );
+    passthru( $cmd , $ret );
+    if ( $ret != 0 )
+    {
+        echo "doc-base/scripts/broken.php FAILED.\n";
+        exit( 1 );
+    }
 }
 
 echo "Running XInclude/XPointer... ";
@@ -823,8 +842,11 @@ function xinclude_residual_fixup( DOMDocument $dom )
     foreach( $nodes as $node )
     {
         if ( $count === 0 )
-            echo "\nFailed XInclude, inspect {$debugFile} for context:\n";
-        echo "  {$node->getAttribute("xpointer")}\n";
+        {
+            echo "\nFailed XIncludes, manual parts will be missing.";
+            echo " Inspect {$debugFile} for context. Failed targets are:\n";
+        }
+        echo "- {$node->getAttribute("xpointer")}\n";
         $count++;
 
         $fixup = null;
@@ -1159,8 +1181,5 @@ echo <<<CAT
 
 CAT;
 
-if (function_exists('proc_nice') && !is_windows()) {
-    echo " (Run `nice php $_SERVER[SCRIPT_NAME]` next time!)\n";
-}
-
-exit(0); // Tell the shell that this script finished successfully.
+individual_xml_broken_check();
+exit(0); // Finished successfully.
