@@ -146,7 +146,7 @@ function testFile( string $filename , bool $fragment = false )
         echo "  Issue: $message\n";
         echo "  Path:  $filename [$lin,$col]\n";
         if ( $hintFragDir )
-            echo "  Hint:  See source comments about '.xmlfragmentdir', or check entity references outside enclosing tags.\n";
+            echo "  Hint:  Copy the .xmlfragmentdir file, or check for misplaced entity references (outside any enclosing tag).\n";
         echo "\n";
         return;
     }
