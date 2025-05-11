@@ -132,6 +132,7 @@
    &reference.errorfunc.book;
    &reference.ffi.book;
    &reference.opcache.book;
+   &reference.operator.book;
    &reference.outcontrol.book;
    &reference.info.book;
    &reference.phpdbg.book;
