@@ -20,6 +20,8 @@
   +----------------------------------------------------------------------+
 */
 
+require_once __DIR__ . '/translation/lib/all.php';
+
 if ( $argc != 2 )
 {
     print <<<USAGE
@@ -33,456 +35,36 @@ if ( $argc != 2 )
   [translation] must be a valid git checkout directory of a translation.
 
   Read more about revision comments and related functionality in the
-  PHP Documentation Howto: http://doc.php.net/tutorial/
+  PHP Documentation Howto: https://doc.php.net/guide/
 
 
 USAGE;
     exit;
 }
 
-// Initialization
-
-set_time_limit( 0 );
-
-$root = getcwd();
 $lang = $argv[1];
+$revc = new RevcheckRun( 'en' , $argv[1] );
+$data = $revc->revData;
 
-$gitData = []; // filename lang hash
-
-$intro = "No intro available for the {$lang} translation of the manual.";
-
-$oldfiles = []; //path, name, size
-
-$enFiles = populateFileTree( 'en' );
-$trFiles = populateFileTree( $lang );
-captureGitValues( 'en'  , $gitData );
-
-computeSyncStatus( $enFiles , $trFiles , $gitData , $lang );
-$translators = computeTranslatorStatus( $lang, $enFiles, $trFiles );
-
-print_html_all( $enFiles , $trFiles , $translators, $lang );
-
-// Model
-class OldFilesInfo
-{
-    public $path;
-    public $name;
-    public $size;
-
-    public function getKey()
-    {
-        return trim( $this->path . '/' . $this->name , '/' );
-    }
-}
-
-class FileStatusEnum
-{
-    const Untranslated      = 'Untranslated';
-    const RevTagProblem     = 'RevTagProblem';
-    const TranslatedWip     = 'TranslatedWip';
-    const TranslatedOk      = 'TranslatedOk';
-    const TranslatedOld     = 'TranslatedOld';
-    const NotInEnTree       = 'NotInEnTree';
-}
-
-class FileStatusInfo
-{
-    public $path;
-    public $name;
-    public $size;
-    public $hash;
-    public $skip;
-    public $days;
-    public $adds;
-    public $dels;
-    public $syncStatus;
-    public $maintainer;
-    public $completion;
-    public $credits;
-
-    public function getKey()
-    {
-        return trim( $this->path . '/' . $this->name , '/' );
-    }
-}
-
-class TranslatorInfo
-{
-    public $name;
-    public $email;
-    public $nick;
-    public $vcs;
-
-    public $files_uptodate;
-    public $files_outdated;
-    public $files_wip;
-    public $files_sum;
-    public $files_other;
-
-    public function __construct() {
-        $this->files_uptodate = 0;
-        $this->files_outdated = 0;
-        $this->files_wip = 0;
-        $this->files_sum = 0;
-        $this->files_other = 0;
-    }
-
-    public static function getKey( $fileStatus ) {
-        switch ( $fileStatus ) {
-            case FileStatusEnum::RevTagProblem:
-            case FileStatusEnum::TranslatedOld:
-                return "files_outdated";
-                break;
-            case FileStatusEnum::TranslatedWip:
-                return "files_wip";
-                break;
-            case FileStatusEnum::TranslatedOk:
-                return "files_uptodate";
-                break;
-            default:
-                return "files_other";
-        }
-    }
-}
-
-function populateFileTree( $lang )
-{
-    $dir = new \DirectoryIterator( $lang );
-    if ( $dir === false )
-    {
-        print "$lang is not a directory.\n";
-        exit;
-    }
-    $cwd = getcwd();
-    $ret = array();
-    chdir( $lang );
-    populateFileTreeRecurse( $lang , "." , $ret );
-    chdir( $cwd );
-    return $ret;
-}
-
-function populateFileTreeRecurse( $lang , $path , & $output )
-{
-    global $oldfiles;
-    $dir = new DirectoryIterator( $path );
-    if ( $dir === false )
-    {
-        print "$path is not a directory.\n";
-        exit;
-    }
-    $todoPaths = [];
-    $trimPath = ltrim( $path , "./");
-    foreach( $dir as $entry )
-    {
-        $filename = $entry->getFilename();
-        if ( $filename[0] == '.' )
-            continue;
-        if ( substr( $filename , 0 , 9 ) == "entities." )
-            continue;
-        if ( $entry->isDir() )
-        {
-            $todoPaths[] = $path . '/' . $entry->getFilename();
-            continue;
-        }
-        if ( $entry->isFile() )
-        {
-            $ignoredFileNames = [
-                'README.md',
-                'translation.xml',
-                'readme.first',
-                'license.xml',
-                'extensions.xml',
-                'versions.xml',
-                'book.developer.xml',
-                'contributors.ent',
-                'contributors.xml',
-                'README',
-                'DO_NOT_TRANSLATE',
-                'rsusi.txt',
-                'missing-ids.xml',
-            ];
-
-            $ignoredDirectories = [
-                'chmonly',
-            ];
-
-            $ignoredFullPaths = [
-                'appendices/reserved.constants.xml',
-                'appendices/extensions.xml',
-                'reference/datetime/timezones.xml',
-            ];
-
-            if(
-                in_array($trimPath, $ignoredDirectories, true)
-                || in_array($filename, $ignoredFileNames, true)
-                || (strpos($filename, 'entities.') === 0)
-                || !in_array(substr($filename, -3), ['xml','ent'], true)
-                || (substr($filename, -13) === 'PHPEditBackup')
-                || (in_array($trimPath . '/' .$filename, $ignoredFullPaths, true))
-            ) {
-                continue;
-            }
-            $file = new FileStatusInfo;
-            $file->path = $trimPath;
-            $file->name = $filename;
-            $file->size = filesize( $path . '/' . $filename );
-            $file->syncStatus = null;
-            if ( $lang != 'en' )
-            {
-                parseRevisionTag( $entry->getPathname() , $file );
-                $path_en = '../en/' . $trimPath . '/' . $filename;
-                if( !is_file($path_en) ) //notinen
-                {
-                    $oldfile = new OldFilesInfo;
-                    $oldfile->path = $trimPath;
-                    $oldfile->name = $filename;
-                    $oldfile->size = $file->size < 1024 ? 1 : floor( $file->size / 1024 );
-                    $oldfiles[ $oldfile->getKey() ] = $oldfile;
-                 } else {
-                    $output[ $file->getKey() ] = $file;
-                 }
-             } else {
-                 $output[ $file->getKey() ] = $file;
-             }
-         }
-    }
-    sort( $todoPaths );
-    foreach( $todoPaths as $path )
-        populateFileTreeRecurse( $lang , $path , $output );
-}
-
-function parseRevisionTag( $filename , FileStatusInfo $file )
-{
-    $fp = fopen( $filename , "r" );
-    $contents = fread( $fp , 1024 );
-    fclose( $fp );
-
-    // No match before the preg
-    $match = array ();
-
-    $regex = "'<!--\s*EN-Revision:\s*(.+)\s*Maintainer:\s*(.+)\s*Status:\s*(.+)\s*-->'U";
-    if (preg_match ($regex , $contents , $match )) {
-        $file->hash = trim( $match[1] );
-        $file->maintainer = trim( $match[2] );
-        $file->completion = trim( $match[3] );
-    }
-    if ( $file->hash == null or strlen( $file->hash ) != 40 or
-         $file->maintainer == null or
-         $file->completion == null )
-         $file->syncStatus = FileStatusEnum::RevTagProblem;
-
-    $regex = "/<!--\s*CREDITS:\s*(.+)\s*-->/U";
-    $match = array();
-    preg_match ( $regex , $contents , $match );
-    if ( count( $match ) == 2 )
-        $file->credits = str_replace( ' ' , '' , trim( $match[1] ) );
-    else
-        $file->credits = '';
-}
-
-function captureGitValues( $lang , & $output )
-{
-    $cwd = getcwd();
-    chdir( $lang );
-    $fp = popen( "git --no-pager log --name-only" , "r" );
-    $hash = $additions = $deletions = $filename = null;
-    $skip = false;
-    while ( ( $line = fgets( $fp ) ) !== false )
-    {
-        if ( substr( $line , 0 , 7 ) == "commit " )
-        {
-            $hash = trim( substr( $line , 7 ) );
-            $skip = false;
-            continue;
-        }
-        if ( strpos( $line , 'Date:' ) === 0 )
-            continue;
-        if ( trim( $line ) == "" )
-            continue;
-        if ( substr( $line , 0 , 4 ) == '    ' )
-        {
-            if ( stristr( $line, '[skip-revcheck]' ) !== false )
-                $skip = true;
-            continue;
-        }
-        if ( strpos( $line , ': ' ) > 0 )
-            continue;
-        $filename = trim( $line );
-        if ( isset( $output[$filename][$lang] ) )
-            continue;
-
-        $output[$filename][$lang]['hash'] = $hash;
-        $output[$filename][$lang]['skip'] = $skip;
-    }
-    pclose( $fp );
-    chdir( $cwd );
-}
-
-function computeSyncStatus( $enFiles , $trFiles , $gitData , $lang )
-{
-    foreach( $trFiles as $filename => $trFile )
-    {
-        // notinen
-        $path_en = 'en/' . $trFile->path . '/' . $trFile->name;
-        if( !is_file($path_en) )
-        {
-            $trFile->syncStatus = FileStatusEnum::NotInEnTree;
-            continue;
-        }
-
-    }
-    foreach( $enFiles as $filename => $enFile )
-    {
-        if ( isset( $gitData[ $filename ]['en'] ) )
-        {
-            $enFile->hash = $gitData[ $filename ]['en']['hash'];
-            $enFile->skip = $gitData[ $filename ]['en']['skip'];
-        }
-        else
-            print "Warn: No hash for en/$filename<br/>";
-
-        $trFile = isset( $trFiles[ $filename ] ) ? $trFiles[ $filename ] : null;
-
-        if ( $trFile == null ) // Untranslated
-        {
-            $enFile->syncStatus = FileStatusEnum::Untranslated;
-            continue;
-        }
-        if ( $trFile->syncStatus == FileStatusEnum::RevTagProblem )
-            continue;
-
-        // TranslatedOk
-        // TranslatedOld
-        if ( strlen( $trFile->hash ) == 40 )
-        {
-            if ( $enFile->hash == $trFile->hash )
-                $trFile->syncStatus = FileStatusEnum::TranslatedOk;
-            else
-            {
-                $trFile->syncStatus = FileStatusEnum::TranslatedOld;
-
-                $cwd = getcwd();
-                chdir( 'en' );
-                //adds,dels
-                $subject = `git diff --numstat $trFile->hash -- {$filename}`;
-                if ( $subject )
-                {
-                   preg_match('/(\d+)\s+(\d+)/', $subject, $matches);
-                   if ($matches)
-                       [, $enFile->adds, $enFile->dels] = $matches;
-                }
-                //days
-                $days = `git show --no-patch --format='%ct' $enFile->hash -- {$filename}`;
-                if ( $days != "" )
-                    $enFile->days = floor( ( time() - $days ) / 86400 );
-                chdir( $cwd );
-
-                if ( $enFile->skip )
-                {
-                    $cwd = getcwd();
-                    chdir( 'en' );
-                    $hashes = explode ( "\n" , `git log -2 --format=%H -- {$filename}` );
-                    chdir( $cwd );
-                    if ( $hashes[1] == $trFile->hash )
-                        $trFile->syncStatus = FileStatusEnum::TranslatedOk;
-                }
-            }
-        }
-        // TranslatedWip
-        if ( $trFile->completion != null && $trFile->completion != "ready" )
-            $trFile->syncStatus = FileStatusEnum::TranslatedWip;
-    }
-}
-
-function parse_attr_string ( $tags_attrs ) {
-    $tag_attrs_processed = array();
-
-    foreach($tags_attrs as $attrib_list) {
-        preg_match_all("!(.+)=\\s*([\"'])\\s*(.+)\\2!U", $attrib_list, $attribs);
-
-        $attrib_array = array();
-        foreach ($attribs[1] as $num => $attrname) {
-            $attrib_array[trim($attrname)] = trim($attribs[3][$num]);
-        }
-
-        $tag_attrs_processed[] = $attrib_array;
-    }
-
-    return $tag_attrs_processed;
-}
-
-function computeTranslatorStatus( $lang, $enFiles, $trFiles ) {
-    global $intro;
-    $translation_xml = getcwd() . "/" . $lang . "/translation.xml";
-    if (!file_exists($translation_xml)) {
-        return [];
-    }
-
-    $txml = join("", file($translation_xml));
-    $txml = preg_replace("/\\s+/", " ", $txml);
-
-    preg_match("!<intro>(.+)</intro>!s", $txml, $match);
-    $intro = trim($match[1]);
-
-    preg_match("!<\?xml(.+)\?>!U", $txml, $match);
-    $xmlinfo = parse_attr_string($match);
-    $output_charset = $xmlinfo[1]["encoding"];
-
-    $pattern = "!<person(.+)/\\s?>!U";
-    preg_match_all($pattern, $txml, $matches);
-    $translators = parse_attr_string($matches[1]);
-
-    $translatorInfos = [];
-    $unknownInfo = new TranslatorInfo();
-    $unknownInfo->nick = "unknown";
-    $translatorInfos["unknown"] = $unknownInfo;
-
-    foreach ($translators as $key => $translator) {
-        $info = new TranslatorInfo();
-        $info->name = $translator["name"];
-        $info->email = $translator["email"];
-        $info->nick = $translator["nick"];
-        $info->vcs = $translator["vcs"];
-
-        $translatorInfos[$info->nick] = $info;
-    }
-
-    foreach( $enFiles as $key => $enFile ) {
-        $info_exists = false;
-        if (array_key_exists($enFile->getKey(), $trFiles)) {
-            $trFile = $trFiles[$enFile->getKey()];
-            $statusKey = TranslatorInfo::getKey($trFile->syncStatus);
-            if (array_key_exists($trFile->maintainer, $translatorInfos)) {
-                $translatorInfos[$trFile->maintainer]->$statusKey++;
-                $translatorInfos[$trFile->maintainer]->files_sum++;
-                $info_exists = true;
-            }
-        }
-        if (!$info_exists) {
-            $translatorInfos["unknown"]->$statusKey++;
-            $translatorInfos["unknown"]->files_sum++;
-        }
-    }
-
-    return $translatorInfos;
-}
+print_html_all( $data );
 
 // Output
 
-function print_html_all( $enFiles , $trFiles , $translators , $lang )
+function print_html_all( RevcheckData $data )
 {
-    print_html_header( $lang );
-    print_html_translators($translators , $enFiles, $trFiles);
-    print_html_files( $enFiles , $trFiles , $lang );
-    print_html_notinen();
-    print_html_misstags( $enFiles, $trFiles, $lang );
-    print_html_untranslated( $enFiles );
+    print_html_header( $data );
+    print_html_translators( $data );
+    print_html_oldwip( $data );
+    print_html_notinen( $data );
+    print_html_revtag( $data );
+    print_html_untranslated( $data );
     print_html_footer();
 }
 
-function print_html_header( $lang )
+function print_html_header( RevcheckData $data )
 {
-    $date = date("r");
+    $lang = $data->lang;
+    $date = $data->date;
     print <<<HTML
 <!DOCTYPE html>
 <html lang="en">
@@ -509,38 +91,37 @@ td { padding: 0.2em 0.3em; }
 <body>
 
 <div id="header" style="background-color: #9999CC;">
-<h1 style="margin: 0; padding: 0.5em;">Status of the translated PHP Manual</h1>
-<p style="font-size: small; margin: 0; padding: 1em;">Generated: $date / Language: $lang</p>
+<h1 style="margin: 0; padding: 0.5em;">Status of the PHP Manual $lang translation</h1>
+<p style="margin: 0; padding: 0 1em 1em 1em;">Generated: $date</p>
 </div>
-
 HTML;
 }
 
-
-function print_html_menu($href)
+function print_html_menu( string $href )
 {
     print <<<HTML
-
 <a id="$href"/>
 <p><a href="#intro">Introduction</a>
 | <a href="#translators">Translators</a>
 | <a href="#filesummary">File summary</a>
 | <a href="#files">Outdated Files</a>
 | <a href="#notinen">Not in EN tree</a>
-| <a href="#misstags">Missing revision numbers</a>
+| <a href="#revtag">Missing or invalid revtag</a>
 | <a href="#untranslated">Untranslated files</a>
 </p><p/>
 HTML;
 }
 
-function print_html_translators( $translators , $enFiles, $trFiles )
+function print_html_translators( RevcheckData $data )
 {
-    global $intro, $oldfiles, $files_misstags, $notinen_count, $files_untranslated;
-    if (count($translators) === 0) return;
+    $translators = $data->translators;
+    if ( count( $translators ) == 0 )
+        return;
+
     print_html_menu("intro");
     print <<<HTML
 <table class="c">
- <tr><td>$intro</td></tr>
+ <tr><td>{$data->intro}</td></tr>
 </table>
 <p/>
 <table class="c">
@@ -552,83 +133,36 @@ function print_html_translators( $translators , $enFiles, $trFiles )
     <th colspan=4>Files maintained</th>
   </tr>
   <tr>
-    <th>upto-<br>date</th>
+    <th>ok</th>
     <th>old</th>
-    <th>wip</th>
+    <th>misc</th>
     <th>sum</th>
   </tr>
 HTML;
-    $files_uptodate = 0;
-    $files_outdated = 0;
-    $files_wip = 0;
-    $files_sum = 0;
 
-    foreach( $translators as $key => $person )
+    foreach( $translators as $person )
     {
-        if ($person->nick === "unknown") continue;
+        // Unknown or untracked on translations.xml
+        if ( $person->name == "" && $person->email == "" && $person->vcs == "" )
+            continue;
 
-       $files_uptodate += $person->files_uptodate;
-       $files_outdated += $person->files_outdated;
-       $files_wip += $person->files_wip;
-       $files_sum += $person->files_sum;
+        $personSum = $person->countOk + $person->countOld + $person->countOther;
+
         print <<<HTML
-
 <tr>
   <td>{$person->name}</td>
   <td>{$person->email}</td>
   <td>{$person->nick}</td>
   <td class=c>{$person->vcs}</td>
-
-  <td class=c>{$person->files_uptodate}</td>
-  <td class=c>{$person->files_outdated}</td>
-  <td class=c>{$person->files_wip}</td>
-  <td class=c>{$person->files_sum}</td>
+  <td class=c>{$person->countOk}</td>
+  <td class=c>{$person->countOld}</td>
+  <td class=c>{$person->countOther}</td>
+  <td class=c>{$personSum}</td>
 </tr>
-
 HTML;
-
     }
     print "</table>\n";
 
-//FILE SUMMARY
-    $count = 0;
-    $files_outdated = 0;
-    $files_sum = 0;
-    $files_uptodate = 0;
-    $files_misstags = 0;
-    $files_wip = 0;
-    foreach( $trFiles as $key => $tr )
-    {
-        if ( $tr->syncStatus == FileStatusEnum::TranslatedOld )
-            $files_outdated++;
-        if ( $tr->syncStatus == FileStatusEnum::TranslatedOk )
-            $files_uptodate++;
-        if ( $tr->syncStatus == FileStatusEnum::RevTagProblem )
-            $files_misstags++;
-        if ( $tr->syncStatus == FileStatusEnum::TranslatedWip )
-            $files_wip++;
-    }
-    $files_untranslated = 0;
-    foreach( $enFiles as $key => $en )
-    {
-        if ( $en->syncStatus == FileStatusEnum::Untranslated ) {
-            $files_untranslated++;
-        }
-        $count++;
-    }
-    $notinen_count = 0;
-    foreach( $oldfiles as $key => $en )
-    {
-        if ( $key == "{$en->path}/{$en->name}" ) {
-            $notinen_count++;
-        }
-    }
-    $files_uptodate_percent = number_format($files_uptodate * 100 / $count, 2 );
-    $files_outdated_percent = number_format($files_outdated * 100 / $count, 2 );
-    $files_wip_percent = number_format($files_wip * 100 / $count, 2 );
-    $files_untranslated_percent = number_format($files_untranslated * 100 / $count, 2 );
-    $notinen_count_percent = number_format($notinen_count * 100 / $count, 2 );
-    $files_misstags_percent = number_format($files_misstags * 100 / $count, 2 );
     print_html_menu("filesummary");
     print <<<HTML
 <table class="c">
@@ -637,124 +171,256 @@ HTML;
   <th>Number of files</th>
   <th>Percent of files</th>
 </tr>
-<tr>
-  <td>Up to date files</td>
-  <td>$files_uptodate</td>
-  <td>$files_uptodate_percent%</td>
-</tr>
-<tr>
-  <td>Outdated files</td>
-  <td>$files_outdated</td>
-  <td>$files_outdated_percent%</td>
-</tr>
-<tr>
-  <td>Work in progress</td>
-  <td>$files_wip</td>
-  <td>$files_wip_percent%</td>
-</tr>
-<tr>
-  <td>Files without revision number</td>
-  <td>$files_misstags</td>
-  <td>$files_misstags_percent%</td>
-</tr>
-<tr>
-  <td>Not in EN tree</td>
-  <td>$notinen_count</td>
-  <td>$notinen_count_percent%</td>
-</tr>
-<tr>
-  <td>Files available for translation</td>
-  <td>$files_untranslated</td>
-  <td>$files_untranslated_percent%</td>
-</tr>
-<tr>
-  <td class=b>Files total</td>
-  <td class=b>$count</td>
-  <td class=b>100%</td>
-</tr></table><p/>
 HTML;
-}
 
-function print_html_misstags( $enFiles, $trFiles, $lang )
-{
-    print_html_menu("misstags");
+    $filesTotal = 0;
+    foreach ( $data->fileSummary as $count )
+        $filesTotal += $count;
 
-    GLOBAL $files_misstags;
-    if ($files_misstags == 0)
+    foreach( RevcheckStatus::cases() as $key )
     {
-        echo '<p>Good, all files contain revision numbers.</p>';
-    } else {
-        print <<<HTML
-<table class="c">
-<tr>
- <th rowspan="2">Files without EN-Revision number ($files_misstags files)</th>
- <th rowspan="2">Commit hash</th>
- <th colspan="3">Sizes in kB</th>
-</tr>
-<tr><th>en</th><th>$lang</th><th>diff</th></tr>
-HTML;
-
-        $last_path = null;
-        asort($trFiles);
-        foreach ($trFiles as $key => $tr)
+        $label = "";
+        $count = $data->fileSummary[ $key->value ];
+        $perc = number_format( $count / $filesTotal * 100 , 2 ) . "%";
+        switch( $key )
         {
-            if ( $tr->syncStatus != FileStatusEnum::RevTagProblem )
-               continue;
-
-            $en = $enFiles[ $key ];
-
-            if ( $last_path != $tr->path )
-            {
-                 $path = $tr->path == '' ? '/' : $tr->path;
-                 echo "<tr><th colspan='5'>$path</th></tr>";
-                 $last_path = $tr->path;
-            }
-             $diff = intval($en->size - $tr->size);
-             echo "<tr class='bgorange'><td>{$tr->name}</td><td>{$en->hash}</td><td>{$en->size}</td><td>{$tr->size}</td><td>$diff</td></tr>";
+            case RevcheckStatus::TranslatedOk:  $label = "Up to date files"; break;
+            case RevcheckStatus::TranslatedOld: $label = "Outdated files"; break;
+            case RevcheckStatus::TranslatedWip: $label = "Work in progress"; break;
+            case RevcheckStatus::RevTagProblem: $label = "Revision tag missing/problem"; break;
+            case RevcheckStatus::NotInEnTree:   $label = "Not in EN tree"; break;
+            case RevcheckStatus::Untranslated:  $label = "Available for translation"; break;
         }
-        echo '</table>';
+
+        print <<<HTML
+<tr>
+  <td>$label</td>
+  <td>$count</td>
+  <td>$perc</td>
+</tr>
+HTML;
     }
+
+    print <<<HTML
+<tr>
+  <td><b>Files total</b></td>
+  <td><b>$filesTotal</b></td>
+  <td><b>100%</b></td>
+</tr>
+</table>
+HTML;
 }
 
-function print_html_untranslated($enFiles)
+function print_html_oldwip( RevcheckData $data )
 {
-    global $files_untranslated;
-    $exists = false;
-    if (!$files_untranslated) return;
-    print_html_menu("untranslated");
+    print_html_menu("files");
+
+    $total =  $data->fileSummary[ RevcheckStatus::TranslatedOld->value ];
+    $total += $data->fileSummary[ RevcheckStatus::TranslatedWip->value ];
+    if ( $total == 0 )
+    {
+        print "<p>Hooray! There is no files to update, nice work!</p>\n\n";
+        return;
+    }
+
+    print <<<HTML
+<table>
+ <tr>
+  <th rowspan="2">Translated file</th>
+  <th rowspan="2">Changes</th>
+  <th colspan="2">Hash</th>
+  <th rowspan="2">Maintainer</th>
+  <th rowspan="2">Status</th>
+  <th rowspan="2">Days</th>
+ </tr>
+ <tr>
+  <th>en</th>
+  <th>{$data->lang}</th>
+ </tr>\n
+HTML;
+
+    $now = new DateTime( 'now' );
+    $path = null;
+
+    foreach( $data->fileDetail as $key => $file )
+    {
+        switch ( $file->status )
+        {
+            case RevcheckStatus::TranslatedOld:
+            case RevcheckStatus::TranslatedWip:
+                break;
+            default:
+                continue 2;
+        }
+
+        if ( $path !== $file->path )
+        {
+            $path = $file->path;
+            $path2 = $path == '' ? '/' : $path;
+            print " <tr><th colspan='7' class='c'>$path2</th></tr>";
+        }
+
+        $ma = $file->maintainer;
+        $st = $file->completion;
+        $ll = strtolower( $data->lang );
+        $kh = hash( 'sha256' , $key );
+        $d1 = "https://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$file->hashRvtg}&amp;f=$key";
+        $d2 = "https://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$file->hashRvtg}&amp;f=$key&amp;c=on";
+
+        $nm = "<a href='$d1'>{$file->name}</a> <a href='$d2'>[colored]</a>";
+        $h1 = "<a href='https://github.com/php/doc-en/blob/{$file->hashLast}/$key'>{$file->hashLast}</a>";
+        $h2 = "<a href='https://github.com/php/doc-en/blob/{$file->hashRvtg}/$key'>{$file->hashRvtg}</a>";
+
+        if ( $file->adds > 0 || $file->dels > 0 )
+            $ch = "<span style='color: darkgreen;'>+{$file->adds}</span> <span style='color: firebrick;'>-{$file->dels}</span>";
+        else
+            $ch = "<span></span>";
+
+        $bgdays = '';
+        if ( $file->days > 90 )
+            $bgdays = 'bgorange';
+
+        print <<<HTML
+ <tr class="bggray">
+  <td>$nm</td>
+  <td class="c">$ch</td>
+  <td class="oc">
+    <button class="btn copy" data-clipboard-text="{$file->hashLast}">Copy</button> $h1
+  </td>
+  <td class="o">$h2</td>
+  <td class="c">$ma</td>
+  <td class="c">$st</td>
+  <td class="c {$bgdays}">{$file->days}</td>
+ </tr>\n
+HTML;
+    }
+
+    print "</table><p/>\n\n";
+}
+
+function print_html_notinen( RevcheckData $data )
+{
+    print_html_menu("notinen");
+
+    if ( $data->fileSummary[ RevcheckStatus::NotInEnTree->value ] == 0 )
+    {
+        print "<p>Good, it seems that this translation doesn't contain any file which is not present in source tree.</p>\n\n";
+        return;
+    }
+
     print <<<HTML
 <table class="c">
  <tr>
-  <th>Untranslated files ($files_untranslated files):</th>
-  <th>Commit hash</th>
+  <th> Files which is not present in source tree </th>
+  <th> Size kB </th>
+ </tr>
+HTML;
+    $header = null;
+    foreach ( $data->fileDetail as $file )
+    {
+        if ( $file->status != RevcheckStatus::NotInEnTree )
+            continue;
+
+        if ( $header !== $file->path )
+        {
+            $header = $file->path;
+            print " <tr><th colspan='2'>$header</th></tr>";
+        }
+
+        $name = $file->name;
+        $size = round( $file->size / 1024 );
+
+        print <<<HTML
+ <tr class=bggray>
+  <td class="c">{$name}</td>
+  <td class="c">{$size}</td>
+ </tr>
+HTML;
+    }
+
+    print "</table><p/>\n\n";
+}
+
+function print_html_revtag( RevcheckData $data )
+{
+    print_html_menu("revtag");
+    if ( $data->fileSummary[ RevcheckStatus::RevTagProblem->value ] == 0 )
+    {
+        echo "<p>Good, all files contain valid revtags.</p>\n\n";
+        return;
+    }
+
+    echo <<<HTML
+<table class="c">
+<tr>
+ <th> Files with invalid or missing revision tags </th>
+ <th> Size kB </th>
+</tr>
+HTML;
+
+    $last_path = null;
+    foreach ( $data->fileDetail as $file )
+    {
+        if ( $file->status != RevcheckStatus::RevTagProblem )
+            continue;
+
+        if ( $last_path != $file->path )
+        {
+            $path = $file->path == '' ? '/' : $file->path;
+            echo "<tr><th colspan='2'>$path</th></tr>";
+            $last_path = $file->path;
+        }
+        $size = round( $file->size / 1024 );
+        echo "<tr class='bgorange'><td>{$file->name}</td><td>{$size}</td></tr>";
+    }
+    echo '</table>';
+}
+
+function print_html_untranslated( RevcheckData $data )
+{
+    print_html_menu("untranslated");
+    if ( $data->fileSummary[ RevcheckStatus::Untranslated->value ] == 0 )
+    {
+        echo "<p>No file left untranslated!</p>\n\n";
+        return;
+    }
+
+    print <<<HTML
+<table class="c">
+ <tr>
+  <th>Untranslated files</th>
+  <th>Last hash</th>
   <th>kb</th>
  </tr>
 HTML;
 
     $path = null;
-    asort($enFiles);
-    foreach( $enFiles as $key => $en )
+    foreach ( $data->fileDetail as $key => $file )
     {
-        if ( $en->syncStatus != FileStatusEnum::Untranslated )
+        if ( $file->status != RevcheckStatus::Untranslated )
             continue;
-        if ( $path !== $en->path )
+
+        if ( $path !== $file->path )
         {
-            $path = $en->path;
-            $path2 = $path == '' ? '/' : $path;
-            print " <tr><th colspan='3'>$path2</th></tr>";
+            $path = $file->path;
+            $header = $path == '' ? '/' : $path;
+            print " <tr><th colspan='3'>$header</th></tr>";
         }
-        $size = $en->size < 1024 ? 1 : floor( $en->size / 1024 );
 
-    print <<<HTML
+        $name = $file->name;
+        $hash = $file->hashLast;
+        $href = "https://github.com/php/doc-en/blob/{$hash}/$key";
+        $size = round( $file->size / 1024 );
 
+        print <<<HTML
  <tr class="bgorange">
-  <td class="c"><a href="https://github.com/php/doc-en/blob/{$en->hash}/$key">$en->name</a></td>
-  <td class="c">$en->hash</td>
+  <td class="c"><a href="$href">$name</a></td>
+  <td class="c">$hash</td>
   <td class="c">$size</td>
  </tr>
 HTML;
     }
-    print "</table>\n";
+    print "</table>\n\n";
 }
 
 function print_html_footer()
@@ -777,116 +443,9 @@ function print_html_footer()
 HTML;
 }
 
-function print_html_files( $enFiles , $trFiles , $lang )
+function print_debug_list( RevcheckData $data )
 {
-        print_html_menu("files");
-        print <<<HTML
-<table>
- <tr>
-  <th rowspan="2">Translated file</th>
-  <th rowspan="2">Changes</th>
-  <th colspan="2">Hash</th>
-  <th rowspan="2">Maintainer</th>
-  <th rowspan="2">Status</th>
-  <th rowspan="2">Days</th>
- </tr>
- <tr>
-  <th>en</th>
-  <th>$lang</th>
- </tr>
-
-HTML;
-
-    $now = new DateTime( 'now' );
-    $path = null;
-    asort($trFiles);
-    foreach( $trFiles as $key => $tr )
-    {
-        if ( $tr->syncStatus == FileStatusEnum::TranslatedOk )
-            continue;
-        if ( $tr->syncStatus == FileStatusEnum::RevTagProblem )
-            continue;
-        if ( $tr->syncStatus == FileStatusEnum::NotInEnTree )
-            continue;
-        $en = $enFiles[ $key ];
-        if ( $en->syncStatus == FileStatusEnum::Untranslated )
-              continue;
-
-        if ( $path !== $en->path )
-        {
-            $path = $en->path;
-            $path2 = $path == '' ? '/' : $path;
-            print " <tr><th colspan='7' class='c'>$path2</th></tr>";
-        }
-        $ll = strtolower( $lang );
-        $kh = hash( 'sha256' , $key );
-        $d1 = "http://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=on";
-        $d2 = "http://doc.php.net/revcheck.php?p=plain&amp;lang={$ll}&amp;hbp={$tr->hash}&amp;f=$key&amp;c=off";
-        $nm = "<a href='$d2'>{$en->name}</a> <a href='$d1'>[colored]</a>";
-        if ( $en->syncStatus == FileStatusEnum::RevTagProblem )
-            $nm = $en->name;
-        $h1 = "<a href='https://github.com/php/doc-en/blob/{$en->hash}/$key'>{$en->hash}</a>";
-        $h2 = "<a href='https://github.com/php/doc-en/blob/{$tr->hash}/$key'>{$tr->hash}</a>";
-
-        $bgdays = '';
-        if ($en->days != null && $en->days > 90)
-            $bgdays = 'bgorange';
-
-        if ($en->adds != null)
-            $ch = "<span style='color: darkgreen;'>+{$en->adds}</span> <span style='color: firebrick;'>-{$en->dels}</span>";
-        else
-            $ch = "<span style='color: firebrick;'>no data</span>";
-
-        $ma = $tr->maintainer;
-        $st = $tr->completion;
-        print <<<HTML
- <tr class="bggray">
-  <td>$nm</td>
-  <td class="c">$ch</td>
-  <td class="oc">
-    <button class="btn copy" data-clipboard-text="{$en->hash}">Copy</button> $h1
-  </td>
-  <td class="o">$h2</td>
-  <td class="c">$ma</td>
-  <td class="c">$st</td>
-  <td class="c {$bgdays}">{$en->days}</td>
- </tr>
-HTML;
-    }
-print "</table><p/>\n";
-}
-
-function print_html_notinen()
-{
-    global $oldfiles, $notinen_count;
-    print_html_menu("notinen");
-    $exists = false;
-    if (!$notinen_count)
-    {
-         print "<p>Good, it seems that this translation doesn't contain any file which is not present in English tree.</p>\n";
-     } else {
-         print <<<HTML
-<table class="c">
- <tr>
-  <th>Files which is not present in English tree.  ($notinen_count files)</th>
-  <th>Size in kB</th>
- </tr>
-HTML;
-         $path = null;
-         foreach( $oldfiles as $key => $en )
-         {
-              if ( $path !== $en->path )
-              {
-                   $path = $en->path;
-                   print " <tr><th colspan='2'>/$path</th></tr>";
-              }
-              print <<<HTML
- <tr class=bggray>
-  <td class="c">$en->name</td>
-  <td class="c">$en->size</td>
- </tr>
-HTML;
-         }
-print "</table><p/>";
-    }
+    foreach( $data->fileDetail as $key => $file )
+        print "f:$key m:{$file->maintainer} s:{$file->status->value}\n";
+    die();
 }

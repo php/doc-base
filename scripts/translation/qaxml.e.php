@@ -17,6 +17,10 @@
  *  +----------------------------------------------------------------------+
  */
 
+echo "This tool is obsolete and will be REMOVED soon.\n";
+echo "See https://github.com/php/doc-base/blob/master/scripts/translation/README.md\n";
+echo "for alternatives.\n\n".
+
 require_once __DIR__ . '/lib/all.php';
 
 $qalist = QaFileInfo::cacheLoad();
@@ -24,8 +28,6 @@ $outarg = new OutputIgnoreArgv( $argv );
 
 foreach ( $qalist as $qafile )
 {
-    if ( $qafile->file == "bookinfo.xml" )
-        continue;
     if ( $qafile->sourceHash != $qafile->targetHash )
         continue;
 
@@ -40,7 +42,7 @@ foreach ( $qalist as $qafile )
 
     $output = new OutputIgnoreBuffer( $outarg , "qaxml.e: {$target}\n\n" , $target );
 
-    $match = array();
+    $match = [];
 
     foreach( $s as $v )
         $match[$v] = array( 0 , 0 );

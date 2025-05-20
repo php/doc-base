@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Revision$ -->
 
 <!-- All Acronyms should be listed in Alphabetical order -->
 <!-- To use them, use the <acronym> tag -->
@@ -28,6 +27,12 @@
    <term>BMP</term>
    <listitem>
     <simpara>Bitmap</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>CA</term>
+   <listitem>
+    <simpara>Certificate Authority</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
@@ -67,6 +72,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>cURL</term>
+   <listitem>
+    <simpara>Client URL Library</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>CVS</term>
    <listitem>
     <simpara>Concurrent Versions System</simpara>
@@ -88,6 +99,18 @@
    <term>DNF</term>
    <listitem>
     <simpara>Disjunctive Normal Form</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>DNS</term>
+   <listitem>
+    <simpara>Domain Name System</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>DOM</term>
+   <listitem>
+    <simpara>Document Object Model</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
@@ -115,9 +138,21 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>FPM</term>
+   <listitem>
+    <simpara>FastCGI Process Manager</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>FTP</term>
    <listitem>
     <simpara>File Transfer Protocol</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>FTPS</term>
+   <listitem>
+    <simpara>File Transfer Protocol SSL/Secure</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
@@ -175,6 +210,18 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>HTTPS</term>
+   <listitem>
+    <simpara>Hypertext Transfer Protocol Secure</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>HSTS</term>
+   <listitem>
+    <simpara>HTTP Strict Transport Security</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>IDE</term>
    <listitem>
     <simpara>Integrated Development Environment</simpara>
@@ -196,6 +243,24 @@
    <term>IMAP</term>
    <listitem>
     <simpara>Internet Message Access Protocol</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>IP</term>
+   <listitem>
+    <simpara>Internet Protocol</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>IPv4</term>
+   <listitem>
+    <simpara>Internet Protocol version 4</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>IPv6</term>
+   <listitem>
+    <simpara>Internet Protocol version 6</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
@@ -226,6 +291,12 @@
    <term>JSON</term>
    <listitem>
     <simpara>JavaScript Object Notation</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>LDAP</term>
+   <listitem>
+    <simpara>Lightweight Directory Access Protocol</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
@@ -271,6 +342,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>PDO</term>
+   <listitem>
+    <simpara>PHP Data Objects</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>PECL</term>
    <listitem>
     <simpara>PHP Extension and Application Repository</simpara>
@@ -280,6 +357,12 @@
    <term>PEM</term>
    <listitem>
     <simpara>Privacy-Enhanced Mail</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>Phar</term>
+   <listitem>
+    <simpara>PHP archive</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
@@ -325,6 +408,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>RTSP</term>
+   <listitem>
+    <simpara>Real-Time Streaming Protocol</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>SAPI</term>
    <listitem>
     <simpara>Server Application Programming Interface</simpara>
@@ -337,9 +426,39 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>SFTP</term>
+   <listitem>
+    <simpara>SSH/Secure File Transfer Protocol</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>SMTP</term>
+   <listitem>
+    <simpara>Simple Mail Transfer Protocol</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>SNMP</term>
    <listitem>
     <simpara>Simple Network Management Protocol</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>SPL</term>
+   <listitem>
+    <simpara>Standard PHP Library</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>SSH</term>
+   <listitem>
+    <simpara>Secure Shell Protocol</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>SSL</term>
+   <listitem>
+    <simpara>Secure Sockets Layer</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>
@@ -361,6 +480,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>TLS</term>
+   <listitem>
+    <simpara>Transport Layer Security</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>TNS</term>
    <listitem>
     <simpara>Transparent Network Substrate</simpara>
@@ -370,6 +495,12 @@
    <term>UDF</term>
    <listitem>
     <simpara>User Defined Functions</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>UDP</term>
+   <listitem>
+    <simpara>User Datagram Protocol</simpara>
    </listitem>
   </varlistentry>
   <varlistentry>

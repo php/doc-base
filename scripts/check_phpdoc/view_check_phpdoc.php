@@ -21,7 +21,7 @@
  * @todo 
  * Add support for online doc editing
  * Add count of "perfect" functions
- * Get this on http://doc.php.net/
+ * Get this on https://doc.php.net/
  */
 
 $errors = array(

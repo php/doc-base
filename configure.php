@@ -16,13 +16,31 @@
   | Authors:    Dave Barr <dave@php.net>                                 |
   |             Hannes Magnusson <bjori@php.net>                         |
   |             Gwynne Raskind <gwynne@php.net>                          |
+  |             André L F S Bacci <gwynne@php.net>                       |
   +----------------------------------------------------------------------+
 */
 
-error_reporting(-1);
-$cvs_id = '$Id$';
+ini_set( 'display_errors' , 1 );
+ini_set( 'display_startup_errors' , 1 );
+error_reporting( E_ALL );
+ob_implicit_flush();
 
-echo "configure.php: $cvs_id\n";
+echo "configure.php on PHP " . phpversion() . ", libxml " . LIBXML_DOTTED_VERSION . "\n\n";
+
+// init_argv()
+// init_checks()
+// init_clean()
+// xml_configure()
+// xml_parse()
+// xml_xinclude()
+// xml_validate()
+// phd_sources()
+// phd_version()
+// php_history()
+
+const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
+const RNG_SCHEMA_FILE = RNG_SCHEMA_DIR . 'docbook.rng';
+const RNG_SCHEMA_XINCLUDE_FILE = RNG_SCHEMA_DIR . 'docbookxi.rng';
 
 function usage() // {{{
 {
@@ -74,6 +92,29 @@ Package-specific:
 HELPCHUNK;
 } // }}}
 
+function realpain( string $path , bool $touch = false , bool $mkdir = false ) : string
+{
+    // pain is real
+
+    // care for external XML tools (realpath() everywhere)
+    // care for Windows builds (foward slashes everywhere)
+    // avoid `cd` and chdir() like the plague
+
+    $path = str_replace( "\\" , '/' , $path );
+
+    if ( $mkdir && ! file_exists( $path ) )
+        mkdir( $path , recursive: true );
+
+    if ( $touch && ! file_exists( $path ) )
+        touch( $path );
+
+    $res = realpath( $path );
+    if ( is_string( $res ) )
+        $path = str_replace( "\\" , '/' , $res );
+
+    return $path;
+}
+
 function errbox($msg) {
     $len = strlen($msg)+4;
     $line = "+" . str_repeat("-", $len) . "+";
@@ -97,7 +138,6 @@ function checking($for) // {{{
 
     if ($ac['quiet'] != 'yes') {
         echo "Checking {$for}... ";
-        flush();
     }
 } // }}}
 
@@ -128,16 +168,6 @@ function abspath($path) // {{{
         return '';
     }
     return str_replace('\\', '/', function_exists('realpath') ? realpath($path) : $path);
-} // }}}
-
-function quietechorun($e) // {{{
-{
-    // enclose in "" on Windows for PHP < 5.3
-    if (is_windows() && phpversion() < '5.3') {
-        $e = '"'.$e.'"';
-    }
-
-    passthru($e);
 } // }}}
 
 function find_file($file_array) // {{{
@@ -197,40 +227,44 @@ function make_scripts_executable($filename) // {{{
     }
 } // }}}
 
-// Loop through and print out all XML validation errors {{{
-function print_xml_errors($details = true) {
+function print_xml_errors()
+{
     global $ac;
+    $report = $ac['LANG'] == 'en' || $ac['XPOINTER_REPORTING'] == 'yes';
+    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR ;
+
     $errors = libxml_get_errors();
-    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
-    if ($errors && count($errors) > 0) {
-        foreach($errors as $err) {
-                if ($ac['LANG'] != 'en' &&                 // translations
-                    $ac['XPOINTER_REPORTING'] != 'yes' &&  // can disable
-                    strncmp($err->message, 'XPointer evaluation failed:', 27) == 0) {
-                    continue;
-                }
-                $errmsg = wordwrap(" " . trim($err->message), 80, "\n ");
-                if ($details && $err->file) {
-                    $file = file(urldecode($err->file)); // libxml appears to urlencode() its errors strings
-                    if (isset($file[$err->line])) {
-                        $line = rtrim($file[$err->line - 1]);
-                        $padding = str_repeat("-", $err->column) . "^";
-                        fprintf($output, "\nERROR (%s:%s:%s)\n%s\n%s\n%s\n", $err->file, $err->line, $err->column, $line, $padding, $errmsg);
-                    } else {
-                        fprintf($output, "\nERROR (%s:unknown)\n%s\n", $err->file, $errmsg);
-                    }
-                } else {
-                    fprintf($output, "%s\n", $errmsg);
-                }
-                // Error too severe, stopping
-                if ($err->level === LIBXML_ERR_FATAL) {
-                    fprintf($output, "\n\nPrevious errors too severe. Stopping here.\n\n");
-                    break;
-                }
-        }
-    }
     libxml_clear_errors();
-} // }}}
+
+    $filePrefix = "file:///";
+    $tempPrefix = realpath( __DIR__ . "/temp" ) . "/";
+    $rootPrefix = realpath( __DIR__ . "/.." ) . "/";
+
+    if ( count( $errors ) > 0 )
+        fprintf( $output , "\n" );
+
+    foreach( $errors as $error )
+    {
+        $mssg = rtrim( $error->message );
+        $file = $error->file;
+        $line = $error->line;
+        $clmn = $error->column;
+
+        if ( str_starts_with( $mssg , 'XPointer evaluation failed:' ) && ! $report )
+            continue; // Translations can omit these, to focus on fatal errors
+
+        if ( str_starts_with( $file , $filePrefix ) )
+            $file = substr( $file , strlen( $filePrefix ) );
+        if ( str_starts_with( $file , $tempPrefix ) )
+            $file = substr( $file , strlen( $tempPrefix ) );
+        if ( str_starts_with( $file , $rootPrefix ) )
+            $file = substr( $file , strlen( $rootPrefix ) );
+
+        $prefix = $error->level === LIBXML_ERR_FATAL ? "FATAL" : "error";
+
+        fwrite( $output , "[$prefix $file {$line}:{$clmn}] {$mssg}\n" );
+    }
+}
 
 function find_xml_files($path) // {{{
 {
@@ -244,83 +278,17 @@ function find_xml_files($path) // {{{
     }
 } // }}}
 
-function generate_sources_file() // {{{
+if ( true ) # Initial clean up
 {
-    global $ac;
-    $source_map = array();
-    echo 'Iterating over files for sources info... ';
-    $en_dir = "{$ac['rootdir']}/{$ac['EN_DIR']}";
-    $source_langs = array(
-        array('base', $ac['srcdir'], array('manual.xml.in', 'funcindex.xml')),
-        array('en', $en_dir, find_xml_files($en_dir)),
-    );
-    if ($ac['LANG'] !== 'en') {
-        $lang_dir = "{$ac['rootdir']}/{$ac['LANGDIR']}";
-        $source_langs[] = array($ac['LANG'], $lang_dir, find_xml_files($lang_dir));
+    $dir = escapeshellarg( __DIR__ );
+    $cmd = "git -C $dir clean temp -fdx --quiet";
+    $ret = 0;
+    passthru( $cmd , $ret );
+    if ( $ret != 0 )
+    {
+        echo "doc-base/temp clean up FAILED.\n";
+        exit( 1 );
     }
-    foreach ($source_langs as list($source_lang, $source_dir, $source_files)) {
-        foreach ($source_files as $source_path) {
-            $source = file_get_contents("{$source_dir}/{$source_path}");
-            if (preg_match_all('/ xml:id=(["\'])([^"]+)\1/', $source, $matches)) {
-                foreach ($matches[2] as $xml_id) {
-                    $source_map[$xml_id] = array(
-                        'lang' => $source_lang,
-                        'path' => $source_path,
-                    );
-                }
-            }
-        }
-    }
-    asort($source_map);
-    echo "OK\n";
-    echo 'Generating sources XML... ';
-    $dom = new DOMDocument;
-    $dom->formatOutput = true;
-    $sources_elem = $dom->appendChild($dom->createElement("sources"));
-    foreach ($source_map as $id => $source) {
-        $el = $dom->createElement('item');
-        $el->setAttribute('id', $id);
-        $el->setAttribute('lang', $source["lang"]);
-        $el->setAttribute('path', $source["path"]);
-        $sources_elem->appendChild($el);
-    }
-    echo "OK\n";
-    echo "Saving sources.xml file... ";
-    if ($dom->save($ac['srcdir'] . '/sources.xml')) {
-        echo "OK\n";
-    } else {
-        echo "FAIL!\n";
-    }
-} // }}}
-
-function getFileModificationHistory(): array {
-    global $ac;
-
-    $lang_mod_file = (($ac['LANG'] !== 'en') ? ("{$ac['rootdir']}/{$ac['EN_DIR']}") : ("{$ac['rootdir']}/{$ac['LANGDIR']}")) . "/fileModHistory.php";
-    $doc_base_mod_file = __DIR__ . "/fileModHistory.php";
-
-    $history_file = null;
-    if (file_exists($lang_mod_file)) {
-        $history_file = include $lang_mod_file;
-        if (is_array($history_file)) {
-            echo 'Copying modification history file... ';
-            $isFileCopied = copy($lang_mod_file, $doc_base_mod_file);
-            echo $isFileCopied ? "done.\n" : "failed.\n";
-        } else {
-            echo "Corrupted modification history file found: $lang_mod_file \n";
-        }
-    } else {
-        echo "Modification history file $lang_mod_file not found.\n";
-    }
-
-    if (!is_array($history_file)) {
-        $history_file = [];
-        echo "Creating empty modification history file...";
-        file_put_contents($doc_base_mod_file, "<?php\n\nreturn [];\n");
-        echo "done.\n";
-    }
-
-    return $history_file;
 }
 
 $srcdir  = dirname(__FILE__);
@@ -343,16 +311,6 @@ if (getenv('GITHUB_ACTIONS') !== 'true' && basename($rootdir) === 'doc-base') {
 $cygwin_php_bat = "{$srcdir}/../phpdoc-tools/php.bat";
 $php_bin_names = array('php', 'php5', 'cli/php', 'php.exe', 'php5.exe', 'php-cli.exe', 'php-cgi.exe');
 // }}}
-
-// Reject old PHP installations {{{
-if (phpversion() < 5) {
-    echo "PHP 5 or above is required. Version detected: " . phpversion() . "\n";
-    exit(100);
-} else {
-    echo "PHP version: " . phpversion() . "\n";
-} // }}}
-
-echo "\n";
 
 $acd = array( // {{{
     'srcdir' => $srcdir,
@@ -591,23 +549,16 @@ if ($ac["LANG"] == "en") {
     $ac["TRANSLATION_ONLY_INCL_END"] = "-->";
 }
 checkvalue($ac['LANG']);
+file_put_contents( __DIR__ . "/temp/lang" , $ac['LANG'] );
 
 checking("whether the language is supported");
 $LANGDIR = "{$ac['rootdir']}/{$ac['LANG']}";
-if (file_exists("{$LANGDIR}/trunk")) {
-    $LANGDIR .= '/trunk';
-}
 if (!file_exists($LANGDIR) || !is_readable($LANGDIR)) {
     checkerror("No language directory found.");
 }
 
 $ac['LANGDIR'] = basename($LANGDIR);
-if ($ac['LANGDIR'] == 'trunk') {
-    $ac['LANGDIR'] = '../' . basename(dirname($LANGDIR)) . '/trunk';
-    $ac['EN_DIR'] = '../en/trunk';
-} else {
-    $ac['EN_DIR'] = 'en';
-}
+$ac['EN_DIR'] = 'en';
 checkvalue("yes");
 
 checking("for partial build");
@@ -615,9 +566,6 @@ checkvalue($ac['PARTIAL']);
 
 checking('whether to enable detailed XML error messages');
 checkvalue($ac['DETAILED_ERRORMSG']);
-
-checking('libxml version');
-checkvalue(LIBXML_DOTTED_VERSION);
 
 checking('whether to enable detailed error reporting (may segfault)');
 checkvalue($ac['SEGFAULT_ERROR']);
@@ -627,15 +575,6 @@ if ($ac["GENERATE"] != "no") {
 }
 
 
-// We shouldn't be globbing for this. autoconf requires you to tell it which files to use, we should do the same
-// Notice how doing it this way results in generating less than half as many files.
-$infiles = array(
-    'manual.xml.in',
-    'install-unix.xml.in',
-    'install-win.xml.in',
-    'scripts/file-entities.php.in',
-);
-
 // Show local repository status to facilitate debug
 
 $repos = array();
@@ -644,99 +583,86 @@ $repos['en']        = "{$ac['rootdir']}/{$ac['EN_DIR']}";
 $repos[$ac['LANG']] = "{$ac['rootdir']}/{$ac['LANG']}";
 $repos = array_unique($repos);
 
-foreach ($repos as $name => $path)
+$output = "";
+foreach ( $repos as $name => $path )
 {
-    $driveSwitch = is_windows() ? '/d' : '';
-    $output = str_pad( "$name:" , 10 );
-    $output .= `cd $driveSwitch $path && git rev-parse HEAD`;
-    $output .= `cd $driveSwitch $path && git status -s`;
-    $output .= `cd $driveSwitch $path && git for-each-ref --format="%(push:track)" refs/heads`;
-    echo trim($output) . "\n";
+    $path = escapeshellarg( $path );
+    $branch = trim( `git -C $path rev-parse --abbrev-ref HEAD` );
+    $suffix = $branch == "master" ? "" : " (branch $branch)";
+    $output .= str_pad( "$name:" , 10 );
+    $output .= rtrim( `git -C $path rev-parse HEAD`  ?? "" ) . "$suffix ";
+    $output .= rtrim( `git -C $path for-each-ref --format="%(push:track)" refs/heads/$branch` ?? "" ) . "\n";
+    $output .= rtrim( `git -C $path status -s` ?? "" ) . "\n";
 }
-echo "\n";
+while( str_contains( $output , "\n\n" ) )
+    $output = str_replace( "\n\n" , "\n" , $output );
+echo "\n" , trim( $output ) . "\n\n";
 
-foreach ($infiles as $in) {
-    $in = chop("{$ac['basedir']}/{$in}");
 
-    $out = substr($in, 0, -3);
-    echo "Generating {$out}... ";
-    if (generate_output_file($in, $out, $ac)) {
-        echo "done\n";
-    } else {
-        echo "fail\n";
-        errors_are_bad(117);
+xml_configure();
+function xml_configure()
+{
+    global $ac;
+    $lang = $ac["LANG"];
+    $conf = [];
+
+    $conf[] = "<!ENTITY LANG '$lang'>";
+
+    if ( $lang == 'en' )
+    {
+        realpain( __DIR__ . "/temp/empty" , touch: true );
+        $trans1 = realpain( __DIR__ . "/temp/empty" );
+        $trans2 = realpain( __DIR__ . "/temp/empty" );
+        $trans3 = realpain( __DIR__ . "/temp/empty" );
     }
+    else
+    {
+        $trans1 = realpain( __DIR__ . "/../$lang/language-defs.ent" );
+        $trans2 = realpain( __DIR__ . "/../$lang/language-snippets.ent" );
+        $trans3 = realpain( __DIR__ . "/../$lang/extensions.ent" );
+    }
+    $conf[] = "<!ENTITY % translation-defs       SYSTEM '$trans1'>";
+    $conf[] = "<!ENTITY % translation-snippets   SYSTEM '$trans2'>";
+    $conf[] = "<!ENTITY % translation-extensions SYSTEM '$trans3'>";
+
+    if ( $ac['CHMENABLED'] == 'yes' )
+    {
+        $chmpath = realpain( __DIR__ . "/chm/manual.chm.xml" );
+        $conf[] = "<!ENTITY manual.chmonly SYSTEM '$chmpath'>";
+    }
+    else
+        $conf[] = "<!ENTITY manual.chmonly ''>";
+
+    file_put_contents( __DIR__ . "/temp/manual.conf" , implode( "\n" , $conf ) );
 }
 
 if ($ac['SEGFAULT_ERROR'] === 'yes') {
     libxml_use_internal_errors(true);
 }
 
-$compact = defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0;
-$big_lines = defined('LIBXML_BIGLINES') ? LIBXML_BIGLINES : 0;
-$LIBXML_OPTS = LIBXML_NOENT | $big_lines | $compact;
-
-if ($ac['VERSION_FILES'] === 'yes') {
-    $dom = new DOMDocument;
-    $dom->preserveWhiteSpace = false;
-    $dom->formatOutput       = true;
-
-    $tmp = new DOMDocument;
-    $tmp->preserveWhiteSpace = false;
-
-    $versions = $dom->appendChild($dom->createElement("versions"));
-
-
-    echo "Iterating over extension specific version files... ";
-    if ($ac["GENERATE"] != "no") {
-        $globdir = dirname($ac["GENERATE"]) . "/{../../}versions.xml";
-    }
-    else {
-        if (file_exists($ac['rootdir'] . '/en/trunk')) {
-            $globdir = $ac['rootdir'] . '/en/trunk';
-        } else {
-            $globdir = $ac['rootdir'] . '/en';
-        }
-        $globdir .= "/*/*/versions.xml";
-    }
-    if (!defined('GLOB_BRACE')) {
-        define('GLOB_BRACE', 0);
-    }
-    foreach(glob($globdir, GLOB_BRACE) as $file) {
-        if($tmp->load($file)) {
-            foreach($tmp->getElementsByTagName("function") as $function) {
-                $function = $dom->importNode($function, true);
-                $versions->appendChild($function);
-            }
-        } else {
-            print_xml_errors();
-            errors_are_bad(1);
-        }
-    }
-    echo "OK\n";
-    echo "Saving it... ";
-
-    if ($dom->save($ac['srcdir'] . '/version.xml')) {
-        echo "OK\n";
-    } else {
-        echo "FAIL!\n";
-    }
-}
-
-if ($ac['SOURCES_FILE'] === 'yes') {
-    generate_sources_file();
-}
-
-$history_file = [];
-if ($ac['HISTORY_FILE'] === 'yes') {
-    $history_file = getFileModificationHistory();
-}
-
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
-$redir = ($ac['quiet'] == 'yes') ? ' > ' . (is_windows() ? 'nul' : '/dev/null') : '';
 
-quietechorun("\"{$ac['PHP']}\" -q \"{$ac['basedir']}/scripts/file-entities.php\"{$redir}");
+{   # file-entities.php
+
+    $cmd = array();
+    $cmd[] = $ac['PHP'];
+    $cmd[] = __DIR__ . "/scripts/file-entities.php";
+    if ( $ac["LANG"] != "en" )
+        $cmd[] = $ac["LANG"];
+    if ( $ac['CHMENABLED'] == 'yes' )
+        $cmd[] = '--chmonly';
+    foreach ( $cmd as & $part )
+        $part = escapeshellarg( $part );
+    $ret = 0;
+    $cmd = implode( ' ' , $cmd );
+    passthru( $cmd , $ret );
+    if ( $ret != 0 )
+    {
+        echo "doc-base/scripts/file-entities.php FAILED.\n";
+        exit( 1 );
+    }
+}
 
 
 checking("for if we should generate a simplified file");
@@ -755,52 +681,268 @@ checkvalue($ac["GENERATE"]);
 checking('whether to save an invalid .manual.xml');
 checkvalue($ac['FORCE_DOM_SAVE']);
 
-echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
-flush();
+function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
+{
+    $filename = realpath( $filename );
+    $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
+    return $dom->load( $filename , $options );
+}
 
+function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
+{
+    if ( $filename == "" )
+        $filename = __DIR__ . "/temp/manual.xml";
+
+    $dom->save( $filename );
+    dom_load( $dom , $filename );
+
+    return $filename;
+}
+
+echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
 $dom = new DOMDocument();
 
-// realpath() is important: omitting it causes severe performance degradation
-// and doubled memory usage on Windows.
-$didLoad = $dom->load(realpath("{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}"), $LIBXML_OPTS);
-
-// Check if the XML was simply broken, if so then just bail out
-if ($didLoad === false) {
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+{
+    echo "1 ";
+    dom_saveload( $dom ); // correct file/line/column on error messages
+    echo "2 done.\n";
+}
+else
+{
     echo "failed.\n";
     print_xml_errors();
+    individual_xml_broken_check();
     errors_are_bad(1);
 }
-echo "done.\n";
 
-echo "Running XInclude/XPointer... ";
-$status = $dom->xinclude();
-if ($status === -1) {
-    echo "failed.\n";
-} else {
-    /* For some dumb reason when no substitution are made it returns false instead of 0... */
-    $status = (int) $status;
-    echo "done. Performed $status XIncludes\n";
-}
-flush();
-
-if ( $ac['XPOINTER_REPORTING'] == 'yes' || $ac['LANG'] == 'en' )
+function individual_xml_broken_check()
 {
-    $errors = libxml_get_errors();
-    $output = ( $ac['STDERR_TO_STDOUT'] == 'yes' ) ? STDOUT : STDERR;
-    if ( count( $errors ) > 0 )
+    $cmd = array();
+    $cmd[] = $GLOBALS['ac']['PHP'];
+    $cmd[] = __DIR__ . "/scripts/broken.php";
+    $cmd[] = $GLOBALS['ac']['LANG'];
+    foreach ( $cmd as & $part )
+        $part = escapeshellarg( $part );
+    $ret = 0;
+    $cmd = implode( ' ' , $cmd );
+    passthru( $cmd , $ret );
+    if ( $ret != 0 )
     {
-        fprintf( $output , "\n");
-        foreach( $errors as $error )
-            fprintf( $output , "{$error->message}\n");
-        if ( $ac['LANG'] == 'en' )
-            errors_are_bad(1);
+        echo "doc-base/scripts/broken.php FAILED.\n";
+        exit( 1 );
     }
 }
 
+echo "Running XInclude/XPointer... ";
+
+$total  = xinclude_run_byid( $dom );
+$total += xinclude_run_xpointer( $dom );
+
+if ( $total == 0 )
+    echo "failed.\n";
+else
+    echo "done. Performed $total XIncludes.\n";
+
+xinclude_residual_fixup( $dom );
+
+function xinclude_run_byid( DOMDocument $dom )
+{
+    $total = 0;
+    $maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
+    for( $run = 0 ; $run < $maxrun ; $run++ )
+    {
+        echo "$run ";
+        $xpath = new DOMXPath( $dom );
+        $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
+        $xincludes = $xpath->query( "//xi:include" );
+
+        $changed = false;
+        foreach( $xincludes as $xinclude )
+        {
+            $xpointer = $xinclude->getAttribute( "xpointer" );
+            $target = $xinclude->ownerDocument->getElementById( $xpointer );
+
+            if ( $target == null )
+                continue;
+
+            $other = new DOMDocument( '1.0' , 'utf8' );
+            $frags = $other->createDocumentFragment();
+            $other->append( $frags );
+            $frags->append( $other->importNode( $target , true ) ); // dup add
+
+            // "attributes in xml: namespace are not copied"
+
+            $oxpth = new DOMXPath( $other );
+            $attribs = $oxpth->query( "//@*" );
+
+            foreach( $attribs as $attrib )
+                if ( $attrib->prefix == "xml" )
+                    $attrib->parentNode->removeAttribute( $attrib->nodeName );
+
+            $insert = $dom->importNode( $frags , true );                // dup
+            $xinclude->parentNode->insertBefore( $insert , $xinclude ); // add
+            $xinclude->parentNode->removeChild( $xinclude );            // del
+
+            $total++;
+            $changed = true;
+            libxml_clear_errors();
+        }
+
+        if ( ! $changed )
+            return $total;
+    }
+    echo "XInclude nested too deeply (xml:id).\n";
+    errors_are_bad( 1 );
+}
+
+function xinclude_run_xpointer( DOMDocument $dom ) : int
+{
+    // The return of xinclude() cannot be used for counting or stoping, as it
+    // sometimes return zero/negative in cases of partial executions
+
+    $total = 0;
+    for( $run = 0 ; $run < 10 ; $run++ )
+    {
+        echo "$run ";
+        libxml_clear_errors();
+
+        $was = count( xinclude_residual_list( $dom ) );
+        $dom->xinclude();
+        $now = count( xinclude_residual_list( $dom ) );
+
+        $total += $was - $now;
+
+        if ( $was === $now )
+            return $total;
+    }
+    echo "XInclude nested too deeply (xpointer).\n";
+    errors_are_bad( 1 );
+}
+
+function xinclude_residual_fixup( DOMDocument $dom )
+{
+    // XInclude failures are soft errors on translations, so remove
+    // residual XInclude tags on translations to keep them building.
+
+    $debugFile = "temp/xinclude-debug.xml";
+    $debugPath = __DIR__ . "/{$debugFile}";
+    $nodes = xinclude_residual_list( $dom );
+
+    if ( count( $nodes ) > 0 )
+    {
+        unset( $nodes );
+        dom_saveload( $dom , $debugPath );
+        $nodes = $nodes = xinclude_residual_list( $dom );
+    }
+
+    $count = 0;
+    $explain = false;
+
+    foreach( $nodes as $node )
+    {
+        if ( $count === 0 )
+        {
+            echo "\nFailed XIncludes, manual parts will be missing.";
+            echo " Inspect {$debugFile} for context. Failed targets are:\n";
+        }
+        echo "- {$node->getAttribute("xpointer")}\n";
+        $count++;
+
+        $fixup = null;
+        $parent = $node->parentNode;
+        $tagName = $parent->nodeName;
+        switch( $tagName )
+        {
+            case "refentry":
+                $fixup = "";
+                break;
+            case "refsect1":
+                $fixup = "<title>_</title><simpara>_</simpara>"; // https://github.com/php/phd/issues/181
+                break;
+            case "tbody":
+                $fixup = "<row><entry></entry></row>";
+                break;
+            case "variablelist":
+                $fixup = "<varlistentry><term></term><listitem><simpara></simpara></listitem></varlistentry>";
+                break;
+            default:
+                echo "Unknown parent of failed XInclude: $tagName\n";
+                $explain = true;
+                continue 2;
+        }
+        if ( $fixup !== null )
+        {
+            $other = new DOMDocument( '1.0' , 'utf8' );
+            $other->loadXML( "<f>$fixup</f>" );
+            foreach( $other->documentElement->childNodes as $otherNode )
+            {
+                $imported = $dom->importNode( $otherNode , true );
+                $node->parentNode->insertBefore( $imported , $node );
+            }
+        }
+        $node->parentNode->removeChild( $node );
+    }
+
+    if ( $explain )
+    {
+        echo <<<MSG
+\nIf you are seeing this message on a translation, this means that
+XInclude/XPointers failures reported above are so many or unknown,
+that configure.php cannot patch the translated manual into a validating
+state. Please report any "Unknown parent" messages on the doc-base
+repository, and focus on fixing XInclude/XPointers failures above.\n\n
+MSG;
+        exit( 1 ); // stop here, do not let more messages further confuse the matter
+    }
+
+    if ( $count > 0 )
+        echo "\n";
+
+    // XInclude by xml:id never duplicates xml:id, horever, also using
+    // XInclude by XPath/XPointer may start causing duplications
+    // (see docs/structure.md). Crude and ugly fixup ahead, beware!
+
+    $list = [];
+    $see = false;
+    $xpath = new DOMXPath( $dom );
+    $nodes = $xpath->query( "//*[@xml:id]" );
+    foreach( $nodes as $node )
+    {
+        $id = $node->getAttribute( "xml:id" );
+        if ( isset( $list[ $id ] ) )
+        {
+            if ( ! str_contains( $id , '..' ) )
+            {
+                echo "  Random removing duplicated xml:id: $id\n";
+                $see = true;
+            }
+            $node->removeAttribute( "xml:id" );
+        }
+        $list[ $id ] = $id;
+    }
+    if ( $see )
+        echo "  See: https://github.com/php/doc-base/blob/master/docs/structure.md#xmlid-structure\n";
+
+    $fatal = $GLOBALS['ac']['LANG'] == 'en';
+
+    if ( $see && $fatal )
+        errors_are_bad( 1 ); // Duplicated strucutral xml:ids are fatal on doc-en
+}
+
+function xinclude_residual_list( DOMDocument $dom ) : DOMNodeList
+{
+    $xpath = new DOMXPath( $dom );
+    $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
+    $nodes = $xpath->query( "//xi:include" );
+
+    return $nodes;
+}
+
 echo "Validating {$ac["INPUT_FILENAME"]}... ";
-flush();
+
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
-    $dom->validate(); // we don't care if the validation works or not
+    $dom->relaxNGValidate(RNG_SCHEMA_FILE); // we don't care if the validation works or not
     $node = $dom->getElementById($ac['PARTIAL']);
     if (!$node) {
         echo "failed.\n";
@@ -837,17 +979,193 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
     exit(0);
 } // }}}
 
-$mxml = $ac["OUTPUT_FILENAME"];
-if ($dom->validate()) {
-    echo "done.\n";
-    printf("\nAll good. Saving %s... ", basename($ac["OUTPUT_FILENAME"]));
-    flush();
-    $dom->save($mxml);
+// Saves and reload, so libxml's RelaxNG validation to work correctly
 
+$mxml = $ac["OUTPUT_FILENAME"];
+$dom->save($mxml);      // non idempotent, historical path
+dom_saveload( $dom );   // idempotent path
+
+if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
-    echo "All you have to do now is run 'phd -d {$mxml}'\n";
-    echo "If the script hangs here, you can abort with ^C.\n";
-    echo <<<CAT
+} else {
+    echo "failed.\n";
+    echo "\nThe document didn't validate\n";
+
+    /**
+     * TODO: Integrate jing to explain schema violations as libxml is *useless*
+     * And this is not going to change for a while as the maintainer of libxml2 even acknowledges:
+     * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
+     * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
+     */
+    $output = shell_exec('java -jar ' . $srcdir . '/docbook/jing.jar ' . RNG_SCHEMA_FILE. ' ' . $acd['OUTPUT_FILENAME']);
+    if ($output === null) {
+        echo "Command failed do you have Java installed?";
+    } else {
+        echo $output;
+    }
+    //echo 'Please use Jing and the:' . PHP_EOL
+    //    . 'java -jar ./build/jing.jar /path/to/doc-base/docbook/docbook-v5.2-os/rng/docbookxi.rng /path/to/doc-base/.manual.xml' . PHP_EOL
+    //    . 'command to check why the RelaxNG schema failed.' . PHP_EOL;
+
+    // Exit normally when don't care about validation
+    if ($ac["FORCE_DOM_SAVE"] == "yes") {
+        exit(0);
+    }
+
+    errors_are_bad(1); // Tell the shell that this script finished with an error.
+}
+
+// All PhD stuff, after XML validation
+
+phd_acronym();
+php_history();
+phd_sources();
+phd_version();
+
+function phd_acronym()
+{
+    //TODO: Move acronym.xml code here
+}
+
+function php_history()
+{
+    global $ac;
+    if ($ac['HISTORY_FILE'] !== 'yes')
+        return;
+
+    echo 'PhD history:';
+
+    $lang_mod_file = (($ac['LANG'] !== 'en') ? ("{$ac['rootdir']}/{$ac['EN_DIR']}") : ("{$ac['rootdir']}/{$ac['LANGDIR']}")) . "/fileModHistory.php";
+    $doc_base_mod_file = __DIR__ . "/fileModHistory.php";
+
+    $history_file = null;
+    if (file_exists($lang_mod_file)) {
+        $history_file = include $lang_mod_file;
+        if (is_array($history_file)) {
+            echo ' copy,';
+            $isFileCopied = copy($lang_mod_file, $doc_base_mod_file);
+            echo $isFileCopied ? "" : " failed,";
+        } else {
+            echo " corrupted file '$lang_mod_file,'";
+        }
+    } else {
+        echo " not found,";
+    }
+
+    if (!is_array($history_file)) {
+        $history_file = [];
+        echo " creating empty,";
+        file_put_contents($doc_base_mod_file, "<?php\n\nreturn [];\n");
+    }
+    echo " done.\n";
+}
+
+function phd_sources()
+{
+    global $ac;
+    if ($ac['SOURCES_FILE'] !== 'yes')
+        return;
+
+    echo 'PhD sources:';
+
+    echo ' reading,';
+    $source_map = array();
+    $en_dir = "{$ac['rootdir']}/{$ac['EN_DIR']}";
+    $source_langs = array(
+        array('base', $ac['srcdir'], array('manual.xml', 'funcindex.xml')),
+        array('en', $en_dir, find_xml_files($en_dir)),
+    );
+    if ($ac['LANG'] !== 'en') {
+        $lang_dir = "{$ac['rootdir']}/{$ac['LANGDIR']}";
+        $source_langs[] = array($ac['LANG'], $lang_dir, find_xml_files($lang_dir));
+    }
+    foreach ($source_langs as list($source_lang, $source_dir, $source_files)) {
+        foreach ($source_files as $source_path) {
+            $source = file_get_contents("{$source_dir}/{$source_path}");
+            if (preg_match_all('/ xml:id=(["\'])([^"]+)\1/', $source, $matches)) {
+                foreach ($matches[2] as $xml_id) {
+                    $source_map[$xml_id] = array(
+                        'lang' => $source_lang,
+                        'path' => $source_path,
+                    );
+                }
+            }
+        }
+    }
+    asort($source_map);
+    echo ' transforming,';
+    $dom = new DOMDocument;
+    $dom->formatOutput = true;
+    $sources_elem = $dom->appendChild($dom->createElement("sources"));
+    foreach ($source_map as $id => $source) {
+        $el = $dom->createElement('item');
+        $el->setAttribute('id', $id);
+        $el->setAttribute('lang', $source["lang"]);
+        $el->setAttribute('path', $source["path"]);
+        $sources_elem->appendChild($el);
+    }
+    echo " saving,";
+    if ($dom->save($ac['srcdir'] . '/sources.xml')) {
+        echo " done.\n";
+    } else {
+        echo " fail!\n";
+    }
+}
+
+function phd_version()
+{
+    global $ac;
+    if ($ac['VERSION_FILES'] !== 'yes')
+        return;
+
+    echo 'PhD version:';
+
+    $dom = new DOMDocument;
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput       = true;
+
+    $tmp = new DOMDocument;
+    $tmp->preserveWhiteSpace = false;
+
+    $versions = $dom->appendChild($dom->createElement("versions"));
+
+    echo ' reading,';
+    if ($ac["GENERATE"] != "no") {
+        $globdir = dirname($ac["GENERATE"]) . "/{../../}versions.xml";
+    }
+    else {
+        $globdir = $ac['rootdir'] . '/en';
+        $globdir .= "/*/*/versions.xml";
+    }
+    echo ' transforming,';
+    if (!defined('GLOB_BRACE')) {
+        define('GLOB_BRACE', 0);
+    }
+    foreach(glob($globdir, GLOB_BRACE) as $file) {
+        if($tmp->load($file)) {
+            foreach($tmp->getElementsByTagName("function") as $function) {
+                $function = $dom->importNode($function, true);
+                $versions->appendChild($function);
+            }
+        } else {
+            print_xml_errors();
+            errors_are_bad(1);
+        }
+    }
+    echo ' saving,';
+
+    if ($dom->save($ac['srcdir'] . '/version.xml')) {
+        echo " done.\n";
+    } else {
+        echo " fail!\n";
+    }
+}
+
+
+printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
+echo "All you have to do now is run 'phd -d {$mxml}'\n";
+echo "If the script hangs here, you can abort with ^C.\n";
+echo <<<CAT
          _ _..._ __
         \)`    (` /
          /      `\
@@ -863,39 +1181,5 @@ if ($dom->validate()) {
 
 CAT;
 
-    if (function_exists('proc_nice') && !is_windows()) {
-        echo " (Run `nice php $_SERVER[SCRIPT_NAME]` next time!)\n";
-    }
-
-    exit(0); // Tell the shell that this script finished successfully.
-} else {
-    echo "failed.\n";
-    echo "\nThe document didn't validate, ";
-
-    // Allow the .manual.xml file to be created, even if it is not valid.
-    if ($ac['FORCE_DOM_SAVE'] == 'yes') {
-        printf("writing %s anyway, and ", basename($ac["OUTPUT_FILENAME"]));
-        $dom->save($mxml);
-    }
-
-    if ($ac['DETAILED_ERRORMSG'] == 'yes') {
-        echo "trying to figure out what went wrong...\n";
-        echo "(This could take awhile. If you experience segfaults here, try again with --disable-xml-details)\n";
-        libxml_clear_errors(); // Clear the errors, they contain incorrect filename&line
-
-        $dom->load("{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}", $LIBXML_OPTS | LIBXML_DTDVALID);
-        print_xml_errors();
-    } else {
-        echo "here are the errors I got:\n";
-        echo "(If this isn't enough information, try again with --enable-xml-details)\n";
-        print_xml_errors(false);
-    }
-
-    // Exit normally when don't care about validation
-    if ($ac["FORCE_DOM_SAVE"] == "yes") {
-        exit(0);
-    }
-
-    errors_are_bad(1); // Tell the shell that this script finished with an error.
-}
-?>
+individual_xml_broken_check();
+exit(0); // Finished successfully.

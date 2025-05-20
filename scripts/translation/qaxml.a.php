@@ -17,6 +17,10 @@
  *  +----------------------------------------------------------------------+
  */
 
+echo "This tool is obsolete and will be REMOVED soon.\n";
+echo "See https://github.com/php/doc-base/blob/master/scripts/translation/README.md\n";
+echo "for alternatives.\n\n".
+
 require_once __DIR__ . '/lib/all.php';
 
 $qalist = QaFileInfo::cacheLoad();
@@ -44,7 +48,7 @@ foreach ( $qalist as $qafile )
         continue;
 
     $header = true;
-    $match = array();
+    $match = [];
 
     foreach( $s as $v )
         $match[$v] = array( 0 , 0 );
@@ -76,7 +80,7 @@ foreach ( $qalist as $qafile )
 
 function extractTriple( array $list )
 {
-    $ret = array();
+    $ret = [];
     foreach( $list as $elem )
         foreach( $elem->attributes as $attrib )
             $ret[] = "{$elem->nodeName} {$attrib->nodeName} {$attrib->nodeValue}";
