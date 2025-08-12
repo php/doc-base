@@ -26,7 +26,6 @@ lang( "it"    , true  , true  , "git@github.com:php/doc-it.git" , "Italian" );
 lang( "ja"    , true  , true  , "git@github.com:php/doc-ja.git" , "Japanese" );
 lang( "pl"    , false , true  , "git@github.com:php/doc-pl.git" , "Polish" );
 lang( "pt_BR" , true  , true  , "git@github.com:php/doc-pt_br.git" , "Brazilian Portuguese" );
-lang( "ro"    , false , true  , "git@github.com:php/doc-ro.git" , "Romanian" );
 lang( "ru"    , true  , true  , "git@github.com:php/doc-ru.git" , "Russian" );
 lang( "tr"    , true  , true  , "git@github.com:php/doc-tr.git" , "Turkish" );
 lang( "uk"    , true  , true  , "git@github.com:php/doc-uk.git" , "Ukrainian" );

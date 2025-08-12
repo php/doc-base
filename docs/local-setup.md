@@ -1,6 +1,6 @@
 # Setting up a local development environment
 
-This guide assumes that you are comfortable working with on the
+This guide assumes that you are comfortable working on the
 command line with tools like Git.
 
 There are instructions for building [with Docker](#with-docker) or
@@ -10,10 +10,10 @@ will be building with a version of PHP that is known to work.
 
 When working with multiple translations, or working on changes that may
 also require changing files in the `doc-base` or `phd` repositories, the
-suggested way to organize the local enviroment is to clone repositories
+suggested way to organize the local environment is to clone repositories
 into a single `phpdoc` directory, and for individual languages to be cloned
 into directories named `{LANG}` instead of `doc-{LANG}` as they are named
-on GitHub.
+on GitHub. See `doc-base/languages.php` script to automate this process.
 
 <a name="with-docker"></a>
 ## Building with make and Docker
@@ -38,7 +38,7 @@ building, otherwise the latest revision of those repositories from GitHub
 will be built into the Docker image used.
 
 To force the Docker image used for building to itself be rebuilt, run
-`make -B build`, otherwise the `Makefile` will only build it if does not
+`make -B build`, otherwise the `Makefile` will only build it if it does not
 already exist.
 
 The web version of the documentation with `make php` and the output will
@@ -102,4 +102,35 @@ To build the version for the website (with a [local web setup](local-web-setup.m
 ```sh
 $ php phd/render.php --docbook doc-base/.manual.xml --package PHP --format php
 $ open https://localhost:8080/manual/en/
+```
+
+<a name="windows-eol"></a>
+## Translating on Windows
+
+When working on Windows, try to use text editors that preserve the end
+of line mark as `U+000A LINE FEED (LF)` only. If it's not possible,
+you may issue the commands below to instruct `git` in transforming
+the files in your local clone to use the Windows native end of line
+mark:
+
+```
+cd LANG
+git config core.autocrlf true
+git add --renormalize .
+git status
+```
+
+If the last comment above outputs no files, then the process works,
+and you can start translating.
+
+If the last command above shows a list of files, something went wrong,
+because these listed files will be changed at *repository level*
+in the next commit. There should be *none*. If any files are listed,
+revert the changes with commands below and open an issue on
+`doc-base` repository.
+
+```
+git config --unset core.autocrlf
+git add --renormalize .
+git status
 ```
