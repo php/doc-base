@@ -16,8 +16,8 @@
 +------------------------------------------------------------------------------+
 */
 
-//     dir     manual  revcheck  cloneUrl                          label
-
+// Languages repositories on GitHub
+//    dir     manual  revcheck  cloneUrl                          label
 lang( "de"    , true  , true  , "git@github.com:php/doc-de.git" , "German" );
 lang( "en"    , true  , false , "git@github.com:php/doc-en.git" , "English" );
 lang( "es"    , true  , true  , "git@github.com:php/doc-es.git" , "Spanish" );
@@ -30,6 +30,10 @@ lang( "ru"    , true  , true  , "git@github.com:php/doc-ru.git" , "Russian" );
 lang( "tr"    , true  , true  , "git@github.com:php/doc-tr.git" , "Turkish" );
 lang( "uk"    , true  , true  , "git@github.com:php/doc-uk.git" , "Ukrainian" );
 lang( "zh"    , true  , true  , "git@github.com:php/doc-zh.git" , "Chinese (Simplified)" );
+
+// Inactive languages, per https://www.php.net/manual/help-translate.php
+// - Polish
+// - Romanian / ro / git@github.com:php/doc-pl.git
 
 if ( count( $argv ) == 1 )
     print_usage();

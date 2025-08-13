@@ -131,6 +131,6 @@ revert the changes with commands below and open an issue on
 
 ```
 git config --unset core.autocrlf
-git add --renormalize .
+git reset
 git status
 ```
