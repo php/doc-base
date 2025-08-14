@@ -16,8 +16,8 @@
 +------------------------------------------------------------------------------+
 */
 
-//     dir     manual  revcheck  cloneUrl                          label
-
+// Languages repositories on GitHub
+//    dir     manual  revcheck  cloneUrl                          label
 lang( "de"    , true  , true  , "git@github.com:php/doc-de.git" , "German" );
 lang( "en"    , true  , false , "git@github.com:php/doc-en.git" , "English" );
 lang( "es"    , true  , true  , "git@github.com:php/doc-es.git" , "Spanish" );
@@ -26,11 +26,14 @@ lang( "it"    , true  , true  , "git@github.com:php/doc-it.git" , "Italian" );
 lang( "ja"    , true  , true  , "git@github.com:php/doc-ja.git" , "Japanese" );
 lang( "pl"    , false , true  , "git@github.com:php/doc-pl.git" , "Polish" );
 lang( "pt_BR" , true  , true  , "git@github.com:php/doc-pt_br.git" , "Brazilian Portuguese" );
-lang( "ro"    , false , true  , "git@github.com:php/doc-ro.git" , "Romanian" );
 lang( "ru"    , true  , true  , "git@github.com:php/doc-ru.git" , "Russian" );
 lang( "tr"    , true  , true  , "git@github.com:php/doc-tr.git" , "Turkish" );
 lang( "uk"    , true  , true  , "git@github.com:php/doc-uk.git" , "Ukrainian" );
 lang( "zh"    , true  , true  , "git@github.com:php/doc-zh.git" , "Chinese (Simplified)" );
+
+// Inactive languages, per https://www.php.net/manual/help-translate.php
+// - Polish
+// - Romanian / ro / git@github.com:php/doc-pl.git
 
 if ( count( $argv ) == 1 )
     print_usage();
