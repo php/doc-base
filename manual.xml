@@ -449,6 +449,7 @@
   &appendices.tokens;
   &appendices.userlandnaming;
   &appendices.about;
+  &appendices.examples;
   &appendices.license;
   &global.function-index;
   <appendix xmlns="http://docbook.org/ns/docbook" xml:id="doc.changelog">
