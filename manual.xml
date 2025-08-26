@@ -52,6 +52,7 @@
   &install.fpm.index;
   &install.pecl;
   &install.composer;
+  &install.pie;
   &install.ini;
  </book>
 
