@@ -390,6 +390,7 @@
 <!ENTITY url.pdf "http://www.pdflib.com/products/pdflib-family/">
 <!ENTITY url.pdf.fpdf "http://www.fpdf.org/">
 <!ENTITY url.pdf.tcpdf "http://www.tcpdf.org/">
+<!ENTITY url.pie "https://github.com/php/pie">
 <!ENTITY url.pear "https://pear.php.net/">
 <!ENTITY url.pear.package "https://pear.php.net/package/">
 <!ENTITY url.pear.installation "https://pear.php.net/manual/en/installation.php">
@@ -632,6 +633,8 @@
 <!ENTITY link.composer '<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.composer;">Composer</link>'>
 
 <!ENTITY link.pecl '<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pecl;">PECL</link>'>
+
+<!ENTITY link.pie '<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pie;">PIE</link>'>
 
 <!ENTITY spec.strftime  'http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html'>
 <!ENTITY spec.pdf.fdf   'http://www.adobe.com/devnet/acrobat/fdftoolkit.html'>
