@@ -387,6 +387,11 @@
 <!ENTITY url.pcre.changelog "http://www.pcre.org/original/changelog.txt">
 <!ENTITY url.pcre.man "http://www.pcre.org/pcre.txt">
 <!ENTITY url.pcre2.changelog "https://github.com/PCRE2Project/pcre2/blob/master/NEWS">
+<!ENTITY url.pcre2.github "https://github.com/PCRE2Project/pcre2">
+<!ENTITY url.pcre2.limits "https://pcre2project.github.io/pcre2/doc/pcre2limits/">
+<!ENTITY url.pcre2.man "https://pcre2project.github.io/pcre2/doc/">
+<!ENTITY url.pcre2.perlcompat "https://pcre2project.github.io/pcre2/doc/pcre2compat/">
+<!ENTITY url.pcre2.website "https://pcre2project.github.io/pcre2/">
 <!ENTITY url.pdf "http://www.pdflib.com/products/pdflib-family/">
 <!ENTITY url.pdf.fpdf "http://www.fpdf.org/">
 <!ENTITY url.pdf.tcpdf "http://www.tcpdf.org/">
