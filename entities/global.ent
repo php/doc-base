@@ -215,6 +215,8 @@
 <!ENTITY url.iso-8601.repeating_intervals "http://en.wikipedia.org/wiki/Iso8601#Repeating_intervals">
 <!ENTITY url.jacobi "http://primes.utm.edu/glossary/page.php?sort=JacobiSymbol">
 <!ENTITY url.jpeg "http://www.ijg.org/">
+<!ENTITY url.js.intl-datetimeformat "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/resolvedOptions#timezone">
+<!ENTITY url.js.temporal-zoneddatetime "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/ZonedDateTime#time_zones_and_offsets">
 <!ENTITY url.json "http://www.json.org/">
 <!ENTITY url.libargon2 "https://github.com/P-H-C/phc-winner-argon2">
 <!ENTITY url.libevent "http://libevent.org/">
@@ -563,6 +565,7 @@
 <!ENTITY url.wiki.quicksort "http://en.wikipedia.org/wiki/Quicksort">
 <!ENTITY url.wiki.recursive-acronym "http://en.wikipedia.org/wiki/Recursive_acronym">
 <!ENTITY url.wiki.symmetric.difference "https://en.wikipedia.org/wiki/Symmetric_difference">
+<!ENTITY url.wiki.tzdb.names "https://en.wikipedia.org/wiki/Tz_database#Names_of_timezones">
 <!ENTITY url.wiki.union.set "https://en.wikipedia.org/wiki/Union_(set_theory)">
 <!ENTITY url.wiki.windows.build.howto "https://wiki.php.net/internals/windows/stepbystepbuild">
 <!ENTITY url.wincmd "http://www.ghisler.com/">
