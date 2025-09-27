@@ -90,7 +90,7 @@ USAGE;
 }
 /* }}} */
 
-function find_function($ext, ReflectionMethod $method = NULL, ReflectionFunction $func = NULL) { /* {{{ */
+function find_function($ext, ?ReflectionMethod $method = NULL, ?ReflectionFunction $func = NULL) { /* {{{ */
 	$ext_name = strtolower($ext);
 	$ext = new ReflectionExtension($ext);
 
@@ -224,7 +224,7 @@ function get_type_by_string($str) { /* {{{ */
 /* }}} */
 
 /** @return string|null */
-function get_type_as_xml_string(ReflectionType $type = null) { /* {{{ */
+function get_type_as_xml_string(?ReflectionType $type = null) { /* {{{ */
 	if ($type instanceof ReflectionNamedType) {
 		$ret = "<type>{$type->getName()}</type>";
 		if ($type->allowsNull()) {
