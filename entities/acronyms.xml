@@ -528,6 +528,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>WSDL</term>
+   <listitem>
+    <simpara>Web Services Description Language</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>XBM</term>
    <listitem>
     <simpara>X Bitmap</simpara>
