@@ -226,7 +226,7 @@
 <!ENTITY url.ldap.bind9 "http://www.bind9.net/download-openldap/">
 <!ENTITY url.ldap.openldap "http://www.openldap.org/">
 <!ENTITY url.ldap.openldap.source "https://www.openldap.org/software/download/">
-<!ENTITY url.ldap.openldap-c-api "https://www.ietf.org/proceedings/62/IDs/all_id.txt">
+<!ENTITY url.ldap.openldap-c-api "https://www.ietf.org/proceedings/50/I-D/ldapext-ldap-c-api-05.txt">
 <!ENTITY url.libedit "http://www.thrysoee.dk/editline/">
 <!ENTITY url.libevent "http://libevent.org/">
 <!ENTITY url.libffi "https://sourceware.org/libffi/">
