@@ -172,7 +172,7 @@
 <!ENTITY url.icu.home "https://icu.unicode.org/">
 <!ENTITY url.icu.locale.guide "https://unicode-org.github.io/icu/userguide/locale/">
 <!ENTITY url.icu.locale.api "https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/uloc_8h.html">
-<!ENTITY url.icu.locales "https://icu4c-demos.unicode.org/icu-bin/locexp">
+<!ENTITY url.icu.locales "https://unicode-org.github.io/icu/userguide/locale/">
 <!ENTITY url.icu.msgformat "https://unicode-org.github.io/icu/userguide/format_parse/messages/">
 <!ENTITY url.icu.normalization.guide "https://unicode-org.github.io/icu/userguide/transforms/normalization/">
 <!ENTITY url.icu.normalization.api "https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/unorm_8h.html">
