@@ -427,6 +427,7 @@
   <title>&Appendices;</title>
   &appendices.history;
   &appendices.examples;
+  &appendices.migration85;
   &appendices.migration84;
   &appendices.migration83;
   &appendices.migration82;
