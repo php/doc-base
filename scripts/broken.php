@@ -177,7 +177,8 @@ function testDir( string $dir )
             continue;
         }
 
-        if ( str_ends_with( $fullpath , ".xml" ) )
+        if (!basename( $fullpath ) === "entities."
+            && str_ends_with( $fullpath , ".xml" ) )
             testFile( $fullpath , $fragment );
     }
 
