@@ -590,9 +590,9 @@ foreach ( $repos as $name => $path )
     $branch = trim( `git -C $path rev-parse --abbrev-ref HEAD` );
     $suffix = $branch == "master" ? "" : " (branch $branch)";
     $output .= str_pad( "$name:" , 10 );
-    $output .= rtrim( `git -C $path rev-parse HEAD`  ?? "" ) . "$suffix ";
-    $output .= rtrim( `git -C $path for-each-ref --format="%(push:track)" refs/heads/$branch` ?? "" ) . "\n";
-    $output .= rtrim( `git -C $path status -s` ?? "" ) . "\n";
+    $output .= rtrim(shell_exec("git -C $path rev-parse HEAD") ?? '') . "$suffix ";
+    $output .= rtrim(shell_exec("git -C $path for-each-ref --format=\"%(push:track)\" refs/heads/$branch") ?? '') . "\n";
+    $output .= rtrim(shell_exec("git -C $path status -s") ?? '') . "\n";
 }
 while( str_contains( $output , "\n\n" ) )
     $output = str_replace( "\n\n" , "\n" , $output );
