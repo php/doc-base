@@ -587,7 +587,7 @@ $output = "";
 foreach ( $repos as $name => $path )
 {
     $path = escapeshellarg( $path );
-    $branch = trim( `git -C $path rev-parse --abbrev-ref HEAD` );
+    $branch = trim(shell_exec("git -C $path rev-parse --abbrev-ref HEAD"));
     $suffix = $branch == "master" ? "" : " (branch $branch)";
     $output .= str_pad( "$name:" , 10 );
     $output .= rtrim(shell_exec("git -C $path rev-parse HEAD") ?? "") . "$suffix ";
