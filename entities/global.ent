@@ -557,6 +557,7 @@
 <!ENTITY url.unicode.normalization.faq "http://unicode.org/faq/normalization.html">
 <!ENTITY url.unicode.reports "http://www.unicode.org/reports/tr21/">
 <!ENTITY uri.unicode.graphemes "http://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries">
+<!ENTITY uri.unicode.ldml "www.unicode.org/reports/tr35">
 <!ENTITY url.unicode.ucd "http://www.unicode.org/ucd/">
 <!ENTITY url.unixodbc "http://www.unixodbc.org/">
 <!ENTITY url.userlandnaming.cs "https://github.com/php/php-src/raw/master/CODING_STANDARDS.md">
