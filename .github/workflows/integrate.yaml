@@ -35,19 +35,19 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
         with:
           path: "doc-base"
 
       - name: "Checkout php/doc-${{ matrix.language }}"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
         with:
           path: "${{ matrix.language }}"
           repository: "php/doc-${{ matrix.language }}"
 
       - name: "Checkout php/doc-en as fallback"
         if: "matrix.language != 'en'"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
         with:
           path: "en"
           repository: "php/doc-en"
