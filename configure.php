@@ -123,13 +123,10 @@ function errbox($msg) {
     echo "|  ", $msg, "  |", "\n";
     echo $line, "\n\n";
 }
+
 function errors_are_bad($status) {
     echo "\nEyh man. No worries. Happ shittens. Try again after fixing the errors above.\n";
     exit($status);
-}
-
-function is_windows() {
-    return PHP_OS === 'WINNT';
 }
 
 function checking($for) // {{{
@@ -197,27 +194,6 @@ function globbetyglob($globber, $userfunc)
             call_user_func($userfunc, $file);
         }
     }
-} // }}}
-
-function find_dot_in($filename) // {{{
-{
-    if (substr($filename, -3) == '.in') {
-        $GLOBALS['infiles'][] = $filename;
-    }
-} // }}}
-
-function generate_output_file($in, $out, $ac) // {{{
-{
-    $data = file_get_contents($in);
-
-    if ($data === false) {
-        return false;
-    }
-    foreach ($ac as $k => $v) {
-        $data = str_replace("@$k@", $v, $data);
-    }
-
-    return file_put_contents($out, $data);
 } // }}}
 
 function make_scripts_executable($filename) // {{{
@@ -575,7 +551,7 @@ if ($ac["GENERATE"] != "no") {
 }
 
 
-// Show local repository status to facilitate debug
+// Show local repository status to facilitate remote debugging
 
 $repos = array();
 $repos['doc-base']  = $ac['basedir'];
@@ -587,12 +563,11 @@ $output = "";
 foreach ( $repos as $name => $path )
 {
     $path = escapeshellarg( $path );
-    $branch = trim(shell_exec("git -C $path rev-parse --abbrev-ref HEAD"));
-    $suffix = $branch == "master" ? "" : " (branch $branch)";
+    $branch = trim( shell_exec( "git -C $path rev-parse --abbrev-ref HEAD" ));
+    $branch = $branch == "master" ? "" : " (branch $branch)";
     $output .= str_pad( "$name:" , 10 );
-    $output .= rtrim(shell_exec("git -C $path rev-parse HEAD") ?? "") . "$suffix ";
-    $output .= rtrim(shell_exec("git -C $path for-each-ref --format=\"%(push:track)\" refs/heads/$branch") ?? "") . "\n";
-    $output .= rtrim(shell_exec("git -C $path status -s") ?? "") . "\n";
+    $output .= rtrim( shell_exec( "git -C $path rev-parse HEAD" ) ?? "" . $branch ) . "\n";
+    $output .= rtrim( shell_exec( "git -C $path status -s") ?? "" ) . "\n";
 }
 while( str_contains( $output , "\n\n" ) )
     $output = str_replace( "\n\n" , "\n" , $output );
