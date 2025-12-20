@@ -398,6 +398,7 @@
 <!ENTITY url.pdf.fpdf "http://www.fpdf.org/">
 <!ENTITY url.pdf.tcpdf "http://www.tcpdf.org/">
 <!ENTITY url.pie "https://github.com/php/pie">
+<!ENTITY url.pie.usage "https://github.com/php/pie/blob/1.4.x/docs/usage.md">
 <!ENTITY url.pear "https://pear.php.net/">
 <!ENTITY url.pear.package "https://pear.php.net/package/">
 <!ENTITY url.pear.installation "https://pear.php.net/manual/en/installation.php">
