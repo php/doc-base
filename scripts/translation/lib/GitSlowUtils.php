@@ -38,15 +38,15 @@ class GitSlowUtils
         // also ignoring insignificant ws changes in most cases we are
         // interessed.
 
-        $output = `git -C $gdir diff -b $hash -- $flnm`;
+        $output = shell_exec("git -C $gdir diff -b $hash -- $flnm");
         $onlyws = $output == "";
 
         // Slow path
 
         if ( $onlyws )
         {
-            $prev = `git -C $gdir show $hash:$flnm )`;
-            $next = `git -C $gdir show HEAD:$flnm )`;
+            $prev = shell_exec("git -C $gdir show $hash:$flnm )");
+            $next = shell_exec("git -C $gdir show HEAD:$flnm )");
 
             if ( $prev == "" || $next == "" )
             {
@@ -89,7 +89,7 @@ class GitSlowUtils
         $hash = escapeshellarg( $hash );
         $name = escapeshellarg( $name );
 
-        $output = `git -C $gdir diff --numstat $hash -- $name`;
+        $output = shell_exec("git -C $gdir diff --numstat $hash -- $name");
         if ( $output )
         {
             preg_match( '/(\d+)\s+(\d+)/' , $output , $matches );
