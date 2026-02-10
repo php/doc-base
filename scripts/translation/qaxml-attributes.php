@@ -22,9 +22,17 @@ require_once __DIR__ . '/libqa/all.php';
 $argv   = new ArgvParser( $argv );
 $ignore = new OutputIgnore( $argv ); // may exit.
 $urgent = $argv->consume( "--urgent" ) != null;
-
-$list   = SyncFileList::load();
+$lang   = $argv->consume( prefix: "--lang=" );
+$files  = [];
+foreach ( $argv->residual() as $arg )
+    if ( strlen( $arg ) > 0 && $arg[0] != '-' )
+    {
+        $files[] = $arg;
+        $argv->use( $arg );
+    }
 $argv->complete();
+
+$list   = SyncFileList::load( $lang , $files );
 
 foreach ( $list as $file )
 {

@@ -22,19 +22,26 @@ require_once __DIR__ . '/libqa/all.php';
 $argv   = new ArgvParser( $argv );
 $ignore = new OutputIgnore( $argv ); // may exit.
 $urgent = $argv->consume( "--urgent" ) != null;
+$lang   = $argv->consume( prefix: "--lang=" );
 
-$ents = [];
-foreach( $argv->residual() as $ent )
+$ents  = [];
+$files = [];
+foreach( $argv->residual() as $arg )
 {
-    if ( strlen( $ent ) > 2 && $ent[0] == '-' && $ent[1] != '-' )
+    if ( strlen( $arg ) > 2 && $arg[0] == '-' && $arg[1] != '-' )
     {
-        $ents[] = '&' . substr( $ent , 1) . ';';
-        $argv->use( $ent );
+        $ents[] = '&' . substr( $arg , 1) . ';';
+        $argv->use( $arg );
+    }
+    elseif ( strlen( $arg ) > 0 && $arg[0] != '-' )
+    {
+        $files[] = $arg;
+        $argv->use( $arg );
     }
 }
 $argv->complete();
 
-$list = SyncFileList::load();
+$list = SyncFileList::load( $lang , $files );
 
 foreach ( $list as $file )
 {

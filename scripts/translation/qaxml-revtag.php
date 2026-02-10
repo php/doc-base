@@ -23,9 +23,17 @@ require_once __DIR__ . '/lib/RevtagParser.php';
 $argv   = new ArgvParser( $argv );
 $ignore = new OutputIgnore( $argv ); // may exit.
 $ignore->appendIgnoreCommands = false;
+$lang   = $argv->consume( prefix: "--lang=" );
+$files  = [];
+foreach ( $argv->residual() as $arg )
+    if ( strlen( $arg ) > 0 && $arg[0] != '-' )
+    {
+        $files[] = $arg;
+        $argv->use( $arg );
+    }
 $argv->complete();
 
-$list   = SyncFileList::load();
+$list   = SyncFileList::load( $lang , $files );
 
 foreach ( $list as $file )
 {

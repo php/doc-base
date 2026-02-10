@@ -21,16 +21,44 @@ require_once __DIR__ . '/all.php';
 
 class SyncFileList
 {
-    static function load()
+    static function load( ?string $lang = null , array $files = [] )
     {
-        $file = __DIR__ . "/../../../temp/lang";
-        if ( ! file_exists( $file ) )
+        if ( $lang === null )
         {
-            fwrite( STDERR , "Language file not found, run 'doc-base/configure.php'.\n" );
-            exit();
+            $file = __DIR__ . "/../../../temp/lang";
+            if ( ! file_exists( $file ) )
+            {
+                fwrite( STDERR , "Language not found, run 'doc-base/configure.php' or use '--lang='.\n" );
+                exit();
+            }
+            $lang = trim( file_get_contents( $file ) );
         }
 
-        $lang = trim( file_get_contents( $file ) );
+        $sourceDir = 'en';
+        $targetDir = $lang;
+
+        if ( count( $files ) > 0 )
+        {
+            $ret = [];
+
+            foreach ( $files as $file )
+            {
+                if ( ! file_exists( "$targetDir/$file" ) )
+                    continue;
+
+                $item = new SyncFileItem();
+                $item->sourceDir = $sourceDir;
+                $item->targetDir = $targetDir;
+                $item->file = $file;
+                $ret[] = $item;
+            }
+
+            if ( $ret === [] )
+                throw new Exception( "No matching files found." );
+
+            return $ret;
+        }
+
         $cacheFilename = __DIR__ . "/../../../temp/qaxml.files.$lang";
 
         if ( file_exists( $cacheFilename ) )
@@ -38,15 +66,12 @@ class SyncFileList
             return unserialize( gzdecode( file_get_contents( $cacheFilename ) ) );
         }
 
-        $sourceDir = 'en';
-        $targetDir = $lang;
-
         require_once __DIR__ . '/../lib/all.php';
 
-        $files = new RevcheckFileList( $sourceDir );
+        $revFiles = new RevcheckFileList( $sourceDir );
         $ret = [];
 
-        foreach( $files->iterator() as $file )
+        foreach( $revFiles->iterator() as $file )
         {
             if ( ! file_exists( "$targetDir/{$file->file}" ) )
                 continue;

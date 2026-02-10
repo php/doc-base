@@ -23,13 +23,20 @@ $argv   = new ArgvParser( $argv );
 $ignore = new OutputIgnore( $argv ); // may exit.
 $detail = $argv->consume( "--detail" ) != null;
 $tags   = explode( ',' , $argv->consume( prefix: "--content=" ) ?? "" );
-
+$lang   = $argv->consume( prefix: "--lang=" );
+$files  = [];
+foreach ( $argv->residual() as $arg )
+    if ( strlen( $arg ) > 0 && $arg[0] != '-' )
+    {
+        $files[] = $arg;
+        $argv->use( $arg );
+    }
 $argv->complete();
 
 if ( count( $tags ) == 1 && $tags[0] == "" )
     $tags = [];
 
-$list = SyncFileList::load();
+$list = SyncFileList::load( $lang , $files );
 
 foreach ( $list as $file )
 {
