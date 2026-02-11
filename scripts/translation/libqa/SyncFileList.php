@@ -21,7 +21,7 @@ require_once __DIR__ . '/all.php';
 
 class SyncFileList
 {
-    static function load( ?string $lang = null , array $files = [] )
+    static function load( ?string $lang = null , array $filterFiles = [] )
     {
         if ( $lang === null )
         {
@@ -37,12 +37,17 @@ class SyncFileList
         $sourceDir = 'en';
         $targetDir = $lang;
 
-        if ( count( $files ) > 0 )
+        if ( count( $filterFiles ) > 0 )
         {
             $ret = [];
 
-            foreach ( $files as $file )
+            foreach ( $filterFiles as $file )
             {
+                if ( ! file_exists( "$sourceDir/$file" ) )
+                {
+                    fwrite( STDERR , "File not found in source: $sourceDir/$file\n" );
+                    continue;
+                }
                 if ( ! file_exists( "$targetDir/$file" ) )
                     continue;
 
