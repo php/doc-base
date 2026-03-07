@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="http://docbook.org/ns/docbook" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:ctrl="http://nwalsh.com/xmlns/schema-control/" xmlns:svg="http://www.w3.org/2000/svg" xmlns:its="http://www.w3.org/2005/11/its" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:s="http://purl.oclc.org/dsdl/schematron" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook" xmlns:trans="http://docbook.org/ns/transclusion" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<?xml version="1.0" encoding="UTF-8"?><grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:ctrl="http://nwalsh.com/xmlns/schema-control/" xmlns:db="http://docbook.org/ns/docbook" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:its="http://www.w3.org/2005/11/its" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:s="http://purl.oclc.org/dsdl/schematron" xmlns:svg="http://www.w3.org/2000/svg" xmlns:trans="http://docbook.org/ns/transclusion" xmlns:xlink="http://www.w3.org/1999/xlink" ns="http://docbook.org/ns/docbook" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!--
-    This file is part of DocBook ITS V5.2CR5
+    This file is part of DocBook ITS V5.2.1b1
     
     Copyright 2007-2020 HaL Computer Systems, Inc.,
     O'Reilly & Associates, Inc., ArborText, Inc., Fujitsu Software
@@ -19,12 +18,12 @@
     
     If you modify the DocBook schema in any way, label your schema as a
     variant of DocBook. See the reference documentation
-    (http://docbook.org/tdg5/en/html/ch05.html#s-notdocbook)
+    (https://tdg.docbook.org/tdg/5.2/ch05.html#s-notdocbook)
     for more information.
     
     Please direct all questions, bug reports, or suggestions for changes
-    to the docbook-comment@lists.oasis-open.org mailing list. For more
-    information, see http://www.oasis-open.org/docbook/.
+    to the docbook@lists.docbook.org mailing list. For more
+    information, see https://docbook.org/.
     
     ======================================================================
   -->
@@ -11104,6 +11103,12 @@ s</a:documentation>
         <a:documentation>A called out
  description of a marked area</a:documentation>
         <s:pattern>
+          <s:title>Callout cross reference idref constraint</s:title>
+          <s:rule context="db:callout[@arearefs]">
+            <s:assert test="every $id in tokenize(current()/@arearefs) satisfies exists(//*[@xml:id = $id])">Each token in @arearefs must be an idref to an element in the document.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <s:pattern>
           <s:title>Callout cross reference constraint</s:title>
           <s:rule context="db:callout[@arearefs]">
             <s:assert test="every $id in tokenize(current()/@arearefs) satisfies (every $ar in //*[@xml:id = $id] satisfies (local-name($ar) = ('areaset', 'area', 'co') and namespace-uri($ar) = 'http://docbook.org/ns/docbook'))">@arearefs on callout must point to a areaset, area, or co.</s:assert>
@@ -11424,6 +11429,18 @@ s which refer to this area. (This provides bidirectional linking which may be us
     <define name="db.coref">
       <element name="coref">
         <a:documentation>A cross reference to a co</a:documentation>
+        <s:pattern>
+          <s:title>Coref cross reference idref constraint</s:title>
+          <s:rule context="db:coref[@linkend]">
+            <s:assert test="exists(//*[@xml:id=current()/@linkend])">@linkend on coref must point to an xml:id</s:assert>
+          </s:rule>
+        </s:pattern>
+        <s:pattern>
+          <s:title>Coref cross reference constraint</s:title>
+          <s:rule context="db:coref[@linkend]">
+            <s:assert test="every $id in @linkend satisfies (every $ar in //*[@xml:id = $id] satisfies (local-name($ar) = 'co') and namespace-uri($ar) = 'http://docbook.org/ns/docbook')">@linkend on coref must point to a co.</s:assert>
+          </s:rule>
+        </s:pattern>
         <ref name="db.coref.attlist"/>
         <empty/>
       </element>
@@ -16231,7 +16248,9 @@ where the nonterminal
         <zeroOrMore>
           <ref name="db.templatename"/>
         </zeroOrMore>
-        <ref name="db.oo.inlines"/>
+        <oneOrMore>
+          <ref name="db.oo.inlines"/>
+        </oneOrMore>
         <zeroOrMore>
           <choice>
             <ref name="db.template"/>
@@ -20347,6 +20366,4 @@ that case they MUST be delimited by quotation marks.</a:documentation>
       </zeroOrMore>
     </element>
   </define>
-</grammar>
-<!-- Add local ITS attributes to all DocBook elements -->
-<!-- Allow its:rules inside info element -->
+</grammar><!-- Add local ITS attributes to all DocBook elements --><!-- Allow its:rules inside info element -->

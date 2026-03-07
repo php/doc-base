@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="public">
+<!-- ............................................................ -->
+<!-- XML Catalog for DocBook V5.2.1b1 ........................... -->
+
+<!--
+ Please direct all questions, bug reports, or suggestions for changes to the
+ docbook@lists.docbook.org mailing list. For more information, see
+ http://www.docbook.org/.
+-->
+
+<!--
+ This is an OASIS XML Catalog file. It is provided as a convenience in
+ building your own catalog files. You need not use the filenames
+ listed here, and need not use the filename method of identifying
+ storage objects at all. See the documentation for detailed
+ information on the files associated with the DocBook DTD. See XML
+ Catalogs at http://www.oasis-open.org/committees/entity/ for detailed
+ information on supplying and using catalog data.
+-->
+<!-- ............................................................ -->
+   <group> <!--  The docbook.org URIs, https  -->
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/dbits.rnc"
+           uri="rng/dbits.rnc"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/assembly.rnc"
+           uri="rng/assembly.rnc"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/dbits.rng"
+           uri="rng/dbits.rng"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/assemblyxi.rnc"
+           uri="rng/assemblyxi.rnc"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/docbookxi.rng"
+           uri="rng/docbookxi.rng"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/dbitsxi.rng"
+           uri="rng/dbitsxi.rng"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/docbookxi.rnc"
+           uri="rng/docbookxi.rnc"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/docbook.rnc"
+           uri="rng/docbook.rnc"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/assemblyxi.rng"
+           uri="rng/assemblyxi.rng"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/assembly.rng"
+           uri="rng/assembly.rng"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/dbitsxi.rnc"
+           uri="rng/dbitsxi.rnc"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/rng/docbook.rng"
+           uri="rng/docbook.rng"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/dbits.nvdl" uri="dbits.nvdl"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/docbook.nvdl" uri="docbook.nvdl"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/assembly.nvdl"
+           uri="assembly.nvdl"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/sch/assemblyxi.sch"
+           uri="sch/assemblyxi.sch"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/sch/assembly.sch"
+           uri="sch/assembly.sch"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/sch/docbook.sch"
+           uri="sch/docbook.sch"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/sch/dbitsxi.sch"
+           uri="sch/dbitsxi.sch"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/sch/docbookxi.sch"
+           uri="sch/docbookxi.sch"/>
+      <uri name="https://docbook.org/xml/5.2.1b1/sch/dbits.sch"
+           uri="sch/dbits.sch"/>
+   </group>
+   <group> <!--  The docbook.org URIs, http  -->
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/dbits.rnc" uri="rng/dbits.rnc"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/assembly.rnc"
+           uri="rng/assembly.rnc"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/dbits.rng" uri="rng/dbits.rng"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/assemblyxi.rnc"
+           uri="rng/assemblyxi.rnc"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/docbookxi.rng"
+           uri="rng/docbookxi.rng"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/dbitsxi.rng"
+           uri="rng/dbitsxi.rng"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/docbookxi.rnc"
+           uri="rng/docbookxi.rnc"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/docbook.rnc"
+           uri="rng/docbook.rnc"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/assemblyxi.rng"
+           uri="rng/assemblyxi.rng"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/assembly.rng"
+           uri="rng/assembly.rng"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/dbitsxi.rnc"
+           uri="rng/dbitsxi.rnc"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/rng/docbook.rng"
+           uri="rng/docbook.rng"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/dbits.nvdl" uri="dbits.nvdl"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/docbook.nvdl" uri="docbook.nvdl"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/assembly.nvdl" uri="assembly.nvdl"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/sch/assemblyxi.sch"
+           uri="sch/assemblyxi.sch"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/sch/assembly.sch"
+           uri="sch/assembly.sch"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/sch/docbook.sch"
+           uri="sch/docbook.sch"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/sch/dbitsxi.sch"
+           uri="sch/dbitsxi.sch"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/sch/docbookxi.sch"
+           uri="sch/docbookxi.sch"/>
+      <uri name="http://docbook.org/xml/5.2.1b1/sch/dbits.sch" uri="sch/dbits.sch"/>
+   </group>
+   <group> <!--  The www.docbook.org URIs (for completeness), https  -->
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/dbits.rnc"
+           uri="rng/dbits.rnc"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/assembly.rnc"
+           uri="rng/assembly.rnc"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/dbits.rng"
+           uri="rng/dbits.rng"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/assemblyxi.rnc"
+           uri="rng/assemblyxi.rnc"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/docbookxi.rng"
+           uri="rng/docbookxi.rng"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/dbitsxi.rng"
+           uri="rng/dbitsxi.rng"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/docbookxi.rnc"
+           uri="rng/docbookxi.rnc"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/docbook.rnc"
+           uri="rng/docbook.rnc"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/assemblyxi.rng"
+           uri="rng/assemblyxi.rng"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/assembly.rng"
+           uri="rng/assembly.rng"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/dbitsxi.rnc"
+           uri="rng/dbitsxi.rnc"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/rng/docbook.rng"
+           uri="rng/docbook.rng"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/dbits.nvdl" uri="dbits.nvdl"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/docbook.nvdl"
+           uri="docbook.nvdl"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/assembly.nvdl"
+           uri="assembly.nvdl"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/sch/assemblyxi.sch"
+           uri="sch/assemblyxi.sch"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/sch/assembly.sch"
+           uri="sch/assembly.sch"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/sch/docbook.sch"
+           uri="sch/docbook.sch"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/sch/dbitsxi.sch"
+           uri="sch/dbitsxi.sch"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/sch/docbookxi.sch"
+           uri="sch/docbookxi.sch"/>
+      <uri name="https://www.docbook.org/xml/5.2.1b1/sch/dbits.sch"
+           uri="sch/dbits.sch"/>
+   </group>
+   <group> <!--  The www.docbook.org URIs (for completeness), http  -->
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/dbits.rnc"
+           uri="rng/dbits.rnc"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/assembly.rnc"
+           uri="rng/assembly.rnc"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/dbits.rng"
+           uri="rng/dbits.rng"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/assemblyxi.rnc"
+           uri="rng/assemblyxi.rnc"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/docbookxi.rng"
+           uri="rng/docbookxi.rng"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/dbitsxi.rng"
+           uri="rng/dbitsxi.rng"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/docbookxi.rnc"
+           uri="rng/docbookxi.rnc"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/docbook.rnc"
+           uri="rng/docbook.rnc"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/assemblyxi.rng"
+           uri="rng/assemblyxi.rng"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/assembly.rng"
+           uri="rng/assembly.rng"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/dbitsxi.rnc"
+           uri="rng/dbitsxi.rnc"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/rng/docbook.rng"
+           uri="rng/docbook.rng"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/dbits.nvdl" uri="dbits.nvdl"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/docbook.nvdl"
+           uri="docbook.nvdl"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/assembly.nvdl"
+           uri="assembly.nvdl"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/sch/assemblyxi.sch"
+           uri="sch/assemblyxi.sch"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/sch/assembly.sch"
+           uri="sch/assembly.sch"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/sch/docbook.sch"
+           uri="sch/docbook.sch"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/sch/dbitsxi.sch"
+           uri="sch/dbitsxi.sch"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/sch/docbookxi.sch"
+           uri="sch/docbookxi.sch"/>
+      <uri name="http://www.docbook.org/xml/5.2.1b1/sch/dbits.sch"
+           uri="sch/dbits.sch"/>
+   </group>
+   <group> <!--  CDN schemas, https  -->
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/dbits.rnc"
+           uri="rng/dbits.rnc"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/assembly.rnc"
+           uri="rng/assembly.rnc"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/dbits.rng"
+           uri="rng/dbits.rng"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/assemblyxi.rnc"
+           uri="rng/assemblyxi.rnc"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/docbookxi.rng"
+           uri="rng/docbookxi.rng"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/dbitsxi.rng"
+           uri="rng/dbitsxi.rng"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/docbookxi.rnc"
+           uri="rng/docbookxi.rnc"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/docbook.rnc"
+           uri="rng/docbook.rnc"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/assemblyxi.rng"
+           uri="rng/assemblyxi.rng"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/assembly.rng"
+           uri="rng/assembly.rng"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/dbitsxi.rnc"
+           uri="rng/dbitsxi.rnc"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/rng/docbook.rng"
+           uri="rng/docbook.rng"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/dbits.nvdl"
+           uri="dbits.nvdl"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/docbook.nvdl"
+           uri="docbook.nvdl"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/assembly.nvdl"
+           uri="assembly.nvdl"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/sch/assemblyxi.sch"
+           uri="sch/assemblyxi.sch"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/sch/assembly.sch"
+           uri="sch/assembly.sch"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/sch/docbook.sch"
+           uri="sch/docbook.sch"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/sch/dbitsxi.sch"
+           uri="sch/dbitsxi.sch"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/sch/docbookxi.sch"
+           uri="sch/docbookxi.sch"/>
+      <uri name="https://cdn.docbook.org/schema/5.2.1b1/sch/dbits.sch"
+           uri="sch/dbits.sch"/>
+   </group>
+</catalog>
