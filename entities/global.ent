@@ -562,6 +562,8 @@
 <!ENTITY uri.unicode.ldml "www.unicode.org/reports/tr35">
 <!ENTITY url.unicode.ucd "http://www.unicode.org/ucd/">
 <!ENTITY url.unixodbc "http://www.unixodbc.org/">
+<!ENTITY url.url.rfc3986 "https://www.ietf.org/rfc/rfc3986.txt">
+<!ENTITY url.url.whatwg-url "https://url.spec.whatwg.org/">
 <!ENTITY url.userlandnaming.cs "https://github.com/php/php-src/raw/master/CODING_STANDARDS.md">
 <!ENTITY url.uuid "http://www.ossp.org/pkg/lib/uuid/">
 <!ENTITY url.v8engine "http://code.google.com/p/v8/">
