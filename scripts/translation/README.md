@@ -6,13 +6,13 @@ for inconsistencies. These tools check for structural differences
 that may cause translation build failures or non-validating DocBook XML
 results, and fixing these issues will help avoid build failures.
 
-Some checks are less structural, and as not all translations are identical,
+Some checks are not strictly structural, and as not all translations are identical,
 or use the same conventions, they may not be entirely applicable in all
 languages. Even two translators working on one language may have different
 opinions on how much synchronization is wanted, so not all scripts will be of
 use for all translations.
 
-Because of the above, it's possible to silence each alert indempendly. These
+Because of the above, it's possible to silence each output indempendly. These
 scripts will output `--add-ignore` commands that, if executed, will omit the
 specific alerts in future executions.
 
@@ -25,8 +25,8 @@ or if XML contents are not
 
 Unbalanced XML contents are invalid XML and will result in a broken build.
 BOM and CR marks may not result in broken builds, but *will* cause several
-tools below to misbehave, as `libxml` behaviour changes if XML text contains
-these bytes.
+tools below to misbehave, as *behaviour* of `libxml` itself changes if XML
+text contains these bytes.
 
 ## qaxml-attributes.php
 
@@ -77,7 +77,7 @@ mismatched tag, to facilitate the work on big files.
 
 This script also accepts an `--content=` option, that will check the
 *contents* of tags, to inspect tags where the contents are expected *not* to
-be translated. Example below.
+be translated. See example below.
 
 ## qaxml-ws.php
 
@@ -95,13 +95,13 @@ locally generated `revcheck.php` status pages.
 
 ## Suggested execution
 
-The first execution of these scripts may generate an inordinate amount of
-alerts. It's advised to initially run each command separately, and work the
+The first execution of these scripts may generate an inordinate amount of
+alerts. It's advised to initially run each command separately, and work the
 alerts on a case by case basis. After all interesting cases are fixed,
 it's possible to rerun the command and `grep` the output for `--add-ignore`
 lines, run these commands, and by so, mass ignore the residual alerts.
 
-Structural checks:
+Strict structural checks:
 
 ```
 php doc-base/scripts/broken.php
@@ -114,7 +114,7 @@ php doc-base/scripts/translation/qaxml-tags.php --detail
 php doc-base/scripts/translation/qaxml-ws.php
 ```
 
-Tags where is expected no translations:
+Tags where is expected **no** translations:
 
 ```
 php doc-base/scripts/translation/qaxml-tags.php --content=acronym

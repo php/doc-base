@@ -15,8 +15,8 @@
 
 # Description
 
-This class caches formatted output, and calculates if this output is not
-previously marked as ignored, before printing it.                     */
+This class caches the formatted output and calculates whether that
+output has not been previously marked as ignored before printing it.  */
 
 class OutputBuffer
 {

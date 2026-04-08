@@ -19,8 +19,8 @@ ini_set( 'display_startup_errors' , 1 );
 error_reporting( E_ALL );
 
 require_once __DIR__ . '/ArgvParser.php';
+require_once __DIR__ . '/QaxmlPairList.php';
+require_once __DIR__ . '/QaxmlPairItem.php';
 require_once __DIR__ . '/OutputBuffer.php';
 require_once __DIR__ . '/OutputIgnore.php';
-require_once __DIR__ . '/SyncFileList.php';
-require_once __DIR__ . '/SyncFileItem.php';
 require_once __DIR__ . '/XmlFrag.php';

@@ -36,7 +36,7 @@ $argv->complete();
 if ( count( $tags ) == 1 && $tags[0] == "" )
     $tags = [];
 
-$list = SyncFileList::load( $lang , $files );
+$list = QaxmlPairList::load( $lang , $files );
 
 foreach ( $list as $file )
 {

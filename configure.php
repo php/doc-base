@@ -1,9 +1,8 @@
 #!/usr/bin/env php
 <?php // vim: ts=4 sw=4 et tw=78 fdm=marker
-
 /*
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2023 The PHP Group                                |
+  | Copyright (c) 1997-2026 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -16,7 +15,7 @@
   | Authors:    Dave Barr <dave@php.net>                                 |
   |             Hannes Magnusson <bjori@php.net>                         |
   |             Gwynne Raskind <gwynne@php.net>                          |
-  |             André L F S Bacci <gwynne@php.net>                       |
+  |             André L F S Bacci <ae@php.net>                           |
   +----------------------------------------------------------------------+
 */
 
@@ -27,16 +26,27 @@ ob_implicit_flush();
 
 echo "configure.php on PHP " . phpversion() . ", libxml " . LIBXML_DOTTED_VERSION . "\n\n";
 
-// init_argv()
-// init_checks()
-// init_clean()
-// xml_configure()
-// xml_parse()
-// xml_xinclude()
-// xml_validate()
-// phd_sources()
-// phd_version()
-// php_history()
+// gereral structure/ordeing for refactoring this code
+
+// init_parse()     // todo: argv parsing into a typed static class, remove all global
+// init_check()     // todo: move all checks in one place
+// init_usage()
+// git_clean()                  partial done
+// git_status()                 partial done
+// dtd_conf_entities()          done
+// dtd_file_entities()          done
+// dom_load/save()              done
+// xinclude_byid()              done
+// xinclude_xpointer()          done
+// xinclude_residua()           done
+// xml_partial_output
+// xml_validation
+// phd_acronym()                done
+// phd_sources()                done
+// phd_version()                done
+// php_history()                done
+
+// ugly: make_scripts_executable
 
 const RNG_SCHEMA_DIR = __DIR__ . DIRECTORY_SEPARATOR . 'docbook' . DIRECTORY_SEPARATOR . 'docbook-v5.2-os' . DIRECTORY_SEPARATOR . 'rng' . DIRECTORY_SEPARATOR;
 const RNG_SCHEMA_FILE = RNG_SCHEMA_DIR . 'docbook.rng';
@@ -573,9 +583,10 @@ while( str_contains( $output , "\n\n" ) )
     $output = str_replace( "\n\n" , "\n" , $output );
 echo "\n" , trim( $output ) . "\n\n";
 
+// DTD configuration before first loading
 
-xml_configure();
-function xml_configure()
+dtd_conf_entities();
+function dtd_conf_entities()
 {
     global $ac;
     $lang = $ac["LANG"];
@@ -617,21 +628,28 @@ if ($ac['SEGFAULT_ERROR'] === 'yes') {
 
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
+dtd_file_entities();
+function dtd_file_entities()
+{
+    global $ac;
+    $lang = $ac["LANG"];
+    $withphp = $ac['PHP'];
+    $withchm = $ac['CHMENABLED'] == 'yes';
 
-{   # file-entities.php
+    $parts = array();
+    $parts[] = $withphp;
+    $parts[] = __DIR__ . "/scripts/file-entities.php";
+    if ( $lang != "en" )
+        $parts[] = $lang;
+    if ( $withchm )
+        $parts[] = '--chmonly';
 
-    $cmd = array();
-    $cmd[] = $ac['PHP'];
-    $cmd[] = __DIR__ . "/scripts/file-entities.php";
-    if ( $ac["LANG"] != "en" )
-        $cmd[] = $ac["LANG"];
-    if ( $ac['CHMENABLED'] == 'yes' )
-        $cmd[] = '--chmonly';
-    foreach ( $cmd as & $part )
+    foreach ( $parts as & $part )
         $part = escapeshellarg( $part );
+    $cmd = implode( ' ' , $parts );
     $ret = 0;
-    $cmd = implode( ' ' , $cmd );
     passthru( $cmd , $ret );
+
     if ( $ret != 0 )
     {
         echo "doc-base/scripts/file-entities.php FAILED.\n";
@@ -656,6 +674,23 @@ checkvalue($ac["GENERATE"]);
 checking('whether to save an invalid .manual.xml');
 checkvalue($ac['FORCE_DOM_SAVE']);
 
+echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
+$dom = new DOMDocument();
+
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+{
+    echo "1 ";
+    dom_saveload( $dom ); // correct file/line/column on error messages
+    echo "2 done.\n";
+}
+else
+{
+    echo "failed.\n";
+    print_xml_errors();
+    dom_broken_files();
+    errors_are_bad(1);
+}
+
 function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
 {
     $filename = realpath( $filename );
@@ -674,24 +709,7 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
     return $filename;
 }
 
-echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
-$dom = new DOMDocument();
-
-if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
-{
-    echo "1 ";
-    dom_saveload( $dom ); // correct file/line/column on error messages
-    echo "2 done.\n";
-}
-else
-{
-    echo "failed.\n";
-    print_xml_errors();
-    individual_xml_broken_check();
-    errors_are_bad(1);
-}
-
-function individual_xml_broken_check()
+function dom_broken_files()
 {
     $cmd = array();
     $cmd[] = $GLOBALS['ac']['PHP'];
@@ -724,7 +742,7 @@ xinclude_residual_fixup( $dom );
 function xinclude_run_byid( DOMDocument $dom )
 {
     $total = 0;
-    $maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
+    $maxrun = 10;
     for( $run = 0 ; $run < $maxrun ; $run++ )
     {
         echo "$run ";
@@ -767,7 +785,7 @@ function xinclude_run_byid( DOMDocument $dom )
         if ( ! $changed )
             return $total;
     }
-    echo "XInclude nested too deeply (xml:id).\n";
+    echo "XInclude nested too deeply (by xml:id). Update `configure.php`.\n";
     errors_are_bad( 1 );
 }
 
@@ -791,7 +809,7 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
         if ( $was === $now )
             return $total;
     }
-    echo "XInclude nested too deeply (xpointer).\n";
+    echo "XInclude nested too deeply (xpointer). Update `configure.php`.\n";
     errors_are_bad( 1 );
 }
 
@@ -800,52 +818,54 @@ function xinclude_residual_fixup( DOMDocument $dom )
     // XInclude failures are soft errors on translations, so remove
     // residual XInclude tags on translations to keep them building.
 
-    $debugFile = "temp/xinclude-debug.xml";
-    $debugPath = __DIR__ . "/{$debugFile}";
-    $nodes = xinclude_residual_list( $dom );
+    $debugFile1 = "temp/xinclude-fixup-before.xml";
+    $debugFile2 = "temp/xinclude-fixup-result.xml";
 
+    $nodes = xinclude_residual_list( $dom );
     if ( count( $nodes ) > 0 )
     {
         unset( $nodes );
-        dom_saveload( $dom , $debugPath );
-        $nodes = $nodes = xinclude_residual_list( $dom );
+        dom_saveload( $dom , __DIR__ . "/{$debugFile1}" );
+        $nodes = xinclude_residual_list( $dom );
     }
 
-    $count = 0;
+    $fixups = 0;
     $explain = false;
 
     foreach( $nodes as $node )
     {
-        if ( $count === 0 )
-        {
-            echo "\nFailed XIncludes, manual parts will be missing.";
-            echo " Inspect {$debugFile} for context. Failed targets are:\n";
-        }
-        echo "- {$node->getAttribute("xpointer")}\n";
-        $count++;
-
         $fixup = null;
-        $parent = $node->parentNode;
-        $tagName = $parent->nodeName;
-        switch( $tagName )
+        $parent = $node->parentNode->nodeName;
+        $target = $node->getAttribute("xpointer");
+        $alert = "[Failed XInclude '$target']";
+
+        if ( $fixups === 0 )
+            echo "\nFailed XIncludes, manual parts will be missing. Failed XInclude targets:\n";
+        echo "- {$target}\n";
+        $fixups++;
+
+        switch( $parent )
         {
+            case "listitem":
+                $fixup = "<para>$alert</para>";
             case "refentry":
                 $fixup = "";
                 break;
             case "refsect1":
-                $fixup = "<title>_</title><simpara>_</simpara>"; // https://github.com/php/phd/issues/181
+                $fixup = "<title>_</title><simpara>$alert</simpara>"; // https://github.com/php/phd/issues/181
                 break;
             case "tbody":
-                $fixup = "<row><entry></entry></row>";
+                $fixup = "<row><entry>$alert</entry></row>";
                 break;
             case "variablelist":
-                $fixup = "<varlistentry><term></term><listitem><simpara></simpara></listitem></varlistentry>";
+                $fixup = "<varlistentry><term></term><listitem><simpara>$alert</simpara></listitem></varlistentry>";
                 break;
             default:
-                echo "Unknown parent of failed XInclude: $tagName\n";
+                echo "  (Unknown parent of failed XInclude: $parent)\n";
                 $explain = true;
                 continue 2;
         }
+
         if ( $fixup !== null )
         {
             $other = new DOMDocument( '1.0' , 'utf8' );
@@ -861,22 +881,32 @@ function xinclude_residual_fixup( DOMDocument $dom )
 
     if ( $explain )
     {
+        dom_saveload( $dom , __DIR__ . "/{$debugFile2}" );
+
         echo <<<MSG
-\nIf you are seeing this message on a translation, this means that
-XInclude/XPointers failures reported above are so many or unknown,
-that configure.php cannot patch the translated manual into a validating
-state. Please report any "Unknown parent" messages on the doc-base
-repository, and focus on fixing XInclude/XPointers failures above.\n\n
+
+If you are seeing this message in a translation, it means that
+the XInclude/XPointers failures reported above are so numerous or unknown,
+that configure.php cannot fix up the translated manual to a validating state.
+Please report any "Unknown parent" messages to the doc-base repository
+and focus on fixing all the XInclude/XPointers failures listed above.
+
+Dumped {$debugFile1} .
+Dumped {$debugFile2} .
+
 MSG;
         exit( 1 ); // stop here, do not let more messages further confuse the matter
     }
 
-    if ( $count > 0 )
+    if ( $fixups > 0 )
         echo "\n";
 
-    // XInclude by xml:id never duplicates xml:id, horever, also using
-    // XInclude by XPath/XPointer may start causing duplications
-    // (see docs/structure.md). Crude and ugly fixup ahead, beware!
+    // XInclude by xml:id never duplicates xml:id. Horever, using
+    // XInclude by XPath/XPointer with a XInclude 1.0 library will cause
+    // xml:id duplication, as xml:id have no special tratament in this version.
+    // See docs/structure.md for details.
+
+    // Crude and ugly fixup ahead, beware!
 
     $list = [];
     $see = false;
@@ -897,12 +927,18 @@ MSG;
         $list[ $id ] = $id;
     }
     if ( $see )
-        echo "  See: https://github.com/php/doc-base/blob/master/docs/structure.md#xmlid-structure\n";
+    {
+        echo "\n  See: https://github.com/php/doc-base/blob/master/docs/structure.md#xmlid-structure";
+        echo "\n  And: https://github.com/php/doc-base/tree/master/scripts/translation";
+        echo "\n  In special, qaxml-attributes.php and qaxml-entities.php, with and without --urgent.";
+        echo "\n\n";
+    }
+
+    // Duplicated strucutral xml:ids are fatal on doc-en
 
     $fatal = $GLOBALS['ac']['LANG'] == 'en';
-
     if ( $see && $fatal )
-        errors_are_bad( 1 ); // Duplicated strucutral xml:ids are fatal on doc-en
+        errors_are_bad( 1 );
 }
 
 function xinclude_residual_list( DOMDocument $dom ) : DOMNodeList
@@ -1156,5 +1192,4 @@ echo <<<CAT
 
 CAT;
 
-individual_xml_broken_check();
 exit(0); // Finished successfully.

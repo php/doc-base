@@ -31,7 +31,7 @@ foreach ( $argv->residual() as $arg )
     }
 $argv->complete();
 
-$list   = SyncFileList::load( $lang , $files );
+$list   = QaxmlPairList::load( $lang , $files );
 
 foreach ( $list as $file )
 {
