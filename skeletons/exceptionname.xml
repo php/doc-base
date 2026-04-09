@@ -32,17 +32,11 @@
     <!-- Edit the classname below -->
     <!-- If has a constructor -->
     <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
-    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.exceptionname')/db:refentry/db:refsect1[@role='description']/descendant::db:constructorsynopsis[@role='ExceptionName'])">
-     <xi:fallback/>
-    </xi:include>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.exceptionname')/db:refentry/db:refsect1[@role='description']/descendant::db:constructorsynopsis[@role='ExceptionName'])"/>
     <!-- If has a destructor -->
-    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.exceptionname')/db:refentry/db:refsect1[@role='description']/descendant::db:destructorsynopsis[@role='ExceptionName'])">
-     <xi:fallback/>
-    </xi:include>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.exceptionname')/db:refentry/db:refsect1[@role='description']/descendant::db:destructorsynopsis[@role='ExceptionName'])"/>
     <!-- If has methods -->
-    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.exceptionname')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='ExceptionName'])">
-     <xi:fallback/>
-    </xi:include>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.exceptionname')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='ExceptionName'])"/>
 
     <!-- Edit the parentclass below -->
     <!--
@@ -51,9 +45,7 @@
         i.e. class XYZ extends class XY and class XY extends class X
     -->
     <classsynopsisinfo role="comment">&InheritedMethods;</classsynopsisinfo>
-    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.baseexceptionname')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='BaseExceptionName'])">
-     <xi:fallback/>
-    </xi:include>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.baseexceptionname')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='BaseExceptionName'])"/>
    </classsynopsis>
   </section>
 
