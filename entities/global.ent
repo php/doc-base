@@ -449,6 +449,7 @@
 <!ENTITY url.php.talks 'http://talks.php.net/'>
 <!ENTITY url.php.support "https://www.php.net/support.php">
 <!ENTITY url.php.urlhowto "https://www.php.net/urlhowto.php">
+<!ENTITY url.phpctv "https://phpc.tv/">
 <!ENTITY url.phpdbg.docs "https://phpdbg.room11.org/">
 <!ENTITY url.phpeditorlist "http://en.wikipedia.org/wiki/List_of_PHP_editors">
 <!ENTITY url.powerarchiver "http://www.powerarchiver.com/">
