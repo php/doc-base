@@ -69,8 +69,6 @@ Package-specific:
                                  even if it fails validation [{$acd['FORCE_DOM_SAVE']}]
   --enable-chm                   Enable Windows HTML Help Edition pages [{$acd['CHMENABLED']}]
   --enable-xml-details           Enable detailed XML error messages [{$acd['DETAILED_ERRORMSG']}]
-  --disable-segfault-error       LIBXML may segfault with broken XML, use this
-                                 if it does [{$acd['SEGFAULT_ERROR']}]
   --disable-version-files        Do not merge the extension specific
                                  version.xml files
   --disable-sources-file         Do not generate sources.xml file
@@ -309,7 +307,6 @@ $acd = array( // {{{
     'FORCE_DOM_SAVE' => 'no',
     'PARTIAL' => 'no',
     'DETAILED_ERRORMSG' => 'no',
-    'SEGFAULT_ERROR' => 'yes',
     'VERSION_FILES'  => 'yes',
     'SOURCES_FILE' => 'yes',
     'HISTORY_FILE' => 'yes',
@@ -411,10 +408,6 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
 
         case 'xml-details':
             $ac['DETAILED_ERRORMSG'] = $v;
-            break;
-
-        case 'segfault-error':
-            $ac['SEGFAULT_ERROR'] = $v;
             break;
 
         case 'version-files':
@@ -543,9 +536,6 @@ checkvalue($ac['PARTIAL']);
 checking('whether to enable detailed XML error messages');
 checkvalue($ac['DETAILED_ERRORMSG']);
 
-checking('whether to enable detailed error reporting (may segfault)');
-checkvalue($ac['SEGFAULT_ERROR']);
-
 if ($ac["GENERATE"] != "no") {
     $ac["ONLYDIR"] = dirname(realpath($ac["GENERATE"]));
 }
@@ -611,9 +601,7 @@ function xml_configure()
     file_put_contents( __DIR__ . "/temp/manual.conf" , implode( "\n" , $conf ) );
 }
 
-if ($ac['SEGFAULT_ERROR'] === 'yes') {
-    libxml_use_internal_errors(true);
-}
+libxml_use_internal_errors(true);
 
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
