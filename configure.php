@@ -722,6 +722,8 @@ xinclude_residual_fixup( $dom );
 
 function xinclude_run_byid( DOMDocument $dom )
 {
+    // libxml does not implements the XInclude 1.1 spec,
+    // so we need to simulate its *recursive* nature here.
     $total = 0;
     $maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
     for( $run = 0 ; $run < $maxrun ; $run++ )
