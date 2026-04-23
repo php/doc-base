@@ -679,9 +679,8 @@ $dom = new DOMDocument();
 
 if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
 {
-    echo "1 ";
     dom_saveload( $dom ); // correct file/line/column on error messages
-    echo "2 done.\n";
+    echo " done.\n";
 }
 else
 {
@@ -727,7 +726,6 @@ function xinclude_run_byid( DOMDocument $dom )
     $maxrun = 10; //LIBXML_VERSION >= 21100 ? 1 : 10;
     for( $run = 0 ; $run < $maxrun ; $run++ )
     {
-        echo "$run ";
         $xpath = new DOMXPath( $dom );
         $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
         $xincludes = $xpath->query( "//xi:include" );
@@ -779,7 +777,6 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
     $total = 0;
     for( $run = 0 ; $run < 10 ; $run++ )
     {
-        echo "$run ";
         libxml_clear_errors();
 
         $was = count( xinclude_residual_list( $dom ) );
