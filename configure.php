@@ -65,8 +65,6 @@ Configuration:
                                  [{$acd['ROOTDIR']}]
 
 Package-specific:
-  --enable-force-dom-save        Force .manual.xml to be saved in a full build
-                                 even if it fails validation [{$acd['FORCE_DOM_SAVE']}]
   --enable-chm                   Enable Windows HTML Help Edition pages [{$acd['CHMENABLED']}]
   --enable-xml-details           Enable detailed XML error messages [{$acd['DETAILED_ERRORMSG']}]
   --disable-segfault-error       LIBXML may segfault with broken XML, use this
@@ -306,7 +304,6 @@ $acd = array( // {{{
     'LANG' => 'en',
     'LANGDIR' => "{$rootdir}/en",
     'ENCODING' => 'utf-8',
-    'FORCE_DOM_SAVE' => 'no',
     'PARTIAL' => 'no',
     'DETAILED_ERRORMSG' => 'no',
     'SEGFAULT_ERROR' => 'yes',
@@ -378,10 +375,6 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
                 }
             }
             $ac['srcdir'] = $v;
-            break;
-
-        case 'force-dom-save':
-            $ac['FORCE_DOM_SAVE'] = $v;
             break;
 
         case 'chm':
@@ -649,12 +642,8 @@ if ($ac["GENERATE"] != "no") {
     $ac["GENERATE"] = str_replace($ac["ROOTDIR"].$ac["LANGDIR"], "", $tmp);
     $str = "\n<!ENTITY developer.include.file SYSTEM 'file:///{$ac["GENERATE"]}'>";
     file_put_contents("{$ac["basedir"]}/entities/file-entities.ent", $str, FILE_APPEND);
-    $ac["FORCE_DOM_SAVE"] = "yes";
 }
 checkvalue($ac["GENERATE"]);
-
-checking('whether to save an invalid .manual.xml');
-checkvalue($ac['FORCE_DOM_SAVE']);
 
 function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
 {
@@ -964,27 +953,25 @@ if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
 } else {
     echo "failed.\n";
-    echo "\nThe document didn't validate\n";
+    echo "\nThe document didn't validate.\n";
 
-    /**
-     * TODO: Integrate jing to explain schema violations as libxml is *useless*
-     * And this is not going to change for a while as the maintainer of libxml2 even acknowledges:
-     * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
-     * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
-     */
-    $output = shell_exec('java -jar ' . $srcdir . '/docbook/jing.jar ' . RNG_SCHEMA_FILE. ' ' . $acd['OUTPUT_FILENAME']);
-    if ($output === null) {
-        echo "Command failed do you have Java installed?";
+    if ($ac['DETAILED_ERRORMSG'] === 'yes') {
+        /**
+         * TODO: Integrate jing to explain schema violations as libxml is *useless*
+         * And this is not going to change for a while as the maintainer of libxml2 even acknowledges:
+         * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
+         * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
+         */
+        $output = shell_exec('java -jar ' . $srcdir . '/docbook/jing.jar ' . RNG_SCHEMA_FILE. ' ' . $acd['OUTPUT_FILENAME']);
+        if ($output === null) {
+            echo "Command failed do you have Java installed?";
+        } else {
+            echo $output;
+        }
     } else {
-        echo $output;
-    }
-    //echo 'Please use Jing and the:' . PHP_EOL
-    //    . 'java -jar ./build/jing.jar /path/to/doc-base/docbook/docbook-v5.2-os/rng/docbookxi.rng /path/to/doc-base/.manual.xml' . PHP_EOL
-    //    . 'command to check why the RelaxNG schema failed.' . PHP_EOL;
-
-    // Exit normally when don't care about validation
-    if ($ac["FORCE_DOM_SAVE"] == "yes") {
-        exit(0);
+        echo "Here are the errors I got:\n";
+        echo "(If this isn't enough information, try again with --enable-xml-details)\n";
+        print_xml_errors(false);
     }
 
     errors_are_bad(1); // Tell the shell that this script finished with an error.
