@@ -346,7 +346,6 @@
   <set xml:id="refs.utilspec.server">
    <title>&ServerSpecificExtensions;</title>
    &reference.apache.book;
-   &reference.litespeed.book;
    &reference.fpm.book;
   </set>
 
