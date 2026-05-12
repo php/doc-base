@@ -12,20 +12,20 @@ _phpdoc()
         --srcdir=
         --basedir=
         --rootdir=
-        --enable-force-dom-save
         --enable-chm
-        --enable-howto
-        --with-lang=
-        --disable-segfault-error
-        --disable-segfault-speed
+        --enable-xml-details
         --disable-version-files
+        --disable-sources-file
+        --disable-history-file
         --disable-libxml-check
         --with-php=
+        --with-lang=
         --with-partial=
-        --generate=
-        --output=
         --disable-broken-file-listing
-        --redirect-stderr-to-stdout"
+        --disable-xpointer-reporting
+        --redirect-stderr-to-stdout
+        --output=
+        --generate="
 
     if [[ ${cur} == -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
