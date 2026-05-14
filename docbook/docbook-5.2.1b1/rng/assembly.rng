@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="http://docbook.org/ns/docbook" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:ctrl="http://nwalsh.com/xmlns/schema-control/" xmlns:src="http://nwalsh.com/xmlns/litprog/fragment" xmlns:svg="http://www.w3.org/2000/svg" xmlns:its="http://www.w3.org/2005/11/its" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:s="http://purl.oclc.org/dsdl/schematron" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:db="http://docbook.org/ns/docbook" xmlns:trans="http://docbook.org/ns/transclusion" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+<?xml version="1.0" encoding="UTF-8"?><grammar xmlns="http://relaxng.org/ns/structure/1.0" xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns:ctrl="http://nwalsh.com/xmlns/schema-control/" xmlns:db="http://docbook.org/ns/docbook" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:s="http://purl.oclc.org/dsdl/schematron" xmlns:svg="http://www.w3.org/2000/svg" xmlns:trans="http://docbook.org/ns/transclusion" xmlns:xlink="http://www.w3.org/1999/xlink" ns="http://docbook.org/ns/docbook" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
   <!--
-    This file is part of DocBook ITS XInclude V5.2CR5
+    This file is part of DocBook Assembly V5.2.1b1
     
-    Copyright 2007-2020 HaL Computer Systems, Inc.,
+    Copyright 2008-2015 HaL Computer Systems, Inc.,
     O'Reilly & Associates, Inc., ArborText, Inc., Fujitsu Software
-    Corporation, Norman Walsh, Jirka Kosek, Sun Microsystems, Inc.,
-    and the Organization for the Advancement of Structured Information
+    Corporation, Norman Walsh, Sun Microsystems, Inc., and the
+    Organization for the Advancement of Structured Information
     Standards (OASIS).
     
     Permission to use, copy, modify and distribute the DocBook schema
@@ -19,12 +18,12 @@
     
     If you modify the DocBook schema in any way, label your schema as a
     variant of DocBook. See the reference documentation
-    (http://docbook.org/tdg5/en/html/ch05.html#s-notdocbook)
+    (https://tdg.docbook.org/tdg/5.2/ch05.html#s-notdocbook)
     for more information.
     
     Please direct all questions, bug reports, or suggestions for changes
-    to the docbook-comment@lists.oasis-open.org mailing list. For more
-    information, see http://www.oasis-open.org/docbook/.
+    to the docbook@lists.docbook.org mailing list. For more
+    information, see https://docbook.org/.
     
     ======================================================================
   -->
@@ -32,140 +31,49 @@
   <s:ns prefix="ctrl" uri="http://nwalsh.com/xmlns/schema-control/"/>
   <s:ns prefix="db" uri="http://docbook.org/ns/docbook"/>
   <s:ns prefix="html" uri="http://www.w3.org/1999/xhtml"/>
-  <s:ns prefix="its" uri="http://www.w3.org/2005/11/its"/>
   <s:ns prefix="mml" uri="http://www.w3.org/1998/Math/MathML"/>
   <s:ns prefix="rng" uri="http://relaxng.org/ns/structure/1.0"/>
   <s:ns prefix="s" uri="http://purl.oclc.org/dsdl/schematron"/>
-  <s:ns prefix="src" uri="http://nwalsh.com/xmlns/litprog/fragment"/>
   <s:ns prefix="svg" uri="http://www.w3.org/2000/svg"/>
   <s:ns prefix="trans" uri="http://docbook.org/ns/transclusion"/>
-  <s:ns prefix="xi" uri="http://www.w3.org/2001/XInclude"/>
   <s:ns prefix="xlink" uri="http://www.w3.org/1999/xlink"/>
-  <start>
-    <choice>
-      <choice>
-        <ref name="db.set"/>
-        <ref name="db.book"/>
-        <ref name="db.divisions"/>
-        <ref name="db.components"/>
-        <ref name="db.navigation.components"/>
-        <ref name="db.section"/>
-        <ref name="db.para"/>
-      </choice>
-      <choice>
-        <ref name="db.abstract"/>
-        <ref name="db.mediaobject.content"/>
-        <ref name="db.audiodata"/>
-        <ref name="db.imagedata"/>
-        <ref name="db.textdata"/>
-        <ref name="db.videodata"/>
-        <ref name="db.caption"/>
-        <ref name="db.publishing.blocks"/>
-        <ref name="db.wrapper.blocks"/>
-        <ref name="db.formal.blocks"/>
-        <ref name="db.informal.blocks"/>
-        <ref name="db.formalpara"/>
-        <ref name="db.inlinemediaobject"/>
-        <ref name="db.list.blocks"/>
-        <ref name="db.legalnotice"/>
-        <ref name="db.verbatim.blocks"/>
-        <ref name="db.graphic.blocks"/>
-        <ref name="db.personblurb"/>
-        <ref name="db.revhistory"/>
-        <ref name="db.simpara"/>
-        <ref name="db.step"/>
-        <ref name="db.stepalternatives"/>
-        <ref name="db.info"/>
-      </choice>
-      <choice>
-        <ref name="db.partintro"/>
-        <ref name="db.simplesect"/>
-      </choice>
-      <ref name="db.annotation"/>
-      <choice>
-        <ref name="db.sect1"/>
-        <ref name="db.sect2"/>
-        <ref name="db.sect3"/>
-        <ref name="db.sect4"/>
-        <ref name="db.sect5"/>
-      </choice>
-      <choice>
-        <ref name="db.refentry"/>
-        <ref name="db.refsection"/>
-        <ref name="db.refsynopsisdiv"/>
-      </choice>
-      <choice>
-        <ref name="db.refsect1"/>
-        <ref name="db.refsect2"/>
-        <ref name="db.refsect3"/>
-      </choice>
-      <choice>
-        <ref name="db.glossary"/>
-        <ref name="db.glossdiv"/>
-        <ref name="db.glosslist"/>
-      </choice>
-      <choice>
-        <ref name="db.bibliodiv"/>
-        <ref name="db.bibliolist"/>
-      </choice>
-      <choice>
-        <ref name="db.setindex"/>
-        <ref name="db.index"/>
-        <ref name="db.indexdiv"/>
-      </choice>
-      <choice>
-        <ref name="db.toc"/>
-        <ref name="db.tocdiv"/>
-      </choice>
-      <choice>
-        <ref name="db.task"/>
-        <ref name="db.taskprerequisites"/>
-        <ref name="db.taskrelated"/>
-        <ref name="db.tasksummary"/>
-      </choice>
-      <choice>
-        <ref name="db.calloutlist"/>
-        <ref name="db.programlistingco"/>
-        <ref name="db.screenco"/>
-        <ref name="db.imageobjectco"/>
-      </choice>
-      <choice>
-        <ref name="db.productionset"/>
-        <ref name="db.constraintdef"/>
-      </choice>
-      <choice>
-        <ref name="db.msg"/>
-        <ref name="db.msgexplan"/>
-        <ref name="db.msgmain"/>
-        <ref name="db.msgrel"/>
-        <ref name="db.msgset"/>
-        <ref name="db.msgsub"/>
-      </choice>
-      <choice>
-        <ref name="db.qandadiv"/>
-        <ref name="db.qandaentry"/>
-        <ref name="db.qandaset"/>
-      </choice>
-      <choice>
-        <ref name="db.equation"/>
-        <ref name="db.informalequation"/>
-      </choice>
-      <ref name="db.cmdsynopsis"/>
-      <choice>
-        <ref name="db.synopsis.blocks"/>
-        <ref name="db.funcsynopsisinfo"/>
-        <ref name="db.classsynopsisinfo"/>
-      </choice>
-      <ref name="db.admonition.blocks"/>
-      <ref name="db.topic"/>
-    </choice>
-  </start>
   <div>
     <define name="db._any.attribute">
       <attribute>
         <a:documentation>Any attribute, including any attribute in any namespace</a:documentation>
         <anyName/>
       </attribute>
+    </define>
+    <define name="db._any_other.attribute">
+      <attribute>
+        <a:documentation>Any attribute in any other explicit namespace</a:documentation>
+        <anyName>
+          <except>
+            <nsName/>
+            <nsName ns="http://www.w3.org/XML/1998/namespace"/>
+            <nsName ns="http://www.w3.org/1999/xlink"/>
+            <nsName ns="http://docbook.org/ns/transclusion"/>
+            <nsName ns=""/>
+          </except>
+        </anyName>
+      </attribute>
+    </define>
+    <define name="db._any">
+      <element>
+        <a:documentation>Any element from almost any namespace</a:documentation>
+        <anyName>
+          <except>
+            <nsName/>
+          </except>
+        </anyName>
+        <zeroOrMore>
+          <choice>
+            <ref name="db._any.attribute"/>
+            <text/>
+            <ref name="db._any"/>
+          </choice>
+        </zeroOrMore>
+      </element>
     </define>
   </div>
   <define name="db.arch.attribute">
@@ -588,12 +496,6 @@
       <zeroOrMore>
         <ref name="db._any_other.attribute"/>
       </zeroOrMore>
-      <interleave>
-        <ref name="its-local.attributes"/>
-        <optional>
-          <ref name="its-attribute.version"/>
-        </optional>
-      </interleave>
     </interleave>
   </define>
   <define name="db.common.attributes">
@@ -1005,17 +907,14 @@
     </choice>
   </define>
   <define name="db._text">
-    <choice>
-      <zeroOrMore>
-        <choice>
-          <text/>
-          <ref name="db.ubiq.inlines"/>
-          <ref name="db._phrase"/>
-          <ref name="db.replaceable"/>
-        </choice>
-      </zeroOrMore>
-      <ref name="db.xi.include"/>
-    </choice>
+    <zeroOrMore>
+      <choice>
+        <text/>
+        <ref name="db.ubiq.inlines"/>
+        <ref name="db._phrase"/>
+        <ref name="db.replaceable"/>
+      </choice>
+    </zeroOrMore>
   </define>
   <define name="db._title">
     <interleave>
@@ -1112,14 +1011,11 @@
   </define>
   <define name="db.all.inlines">
     <choice>
-      <choice>
-        <text/>
-        <ref name="db.ubiq.inlines"/>
-        <ref name="db.general.inlines"/>
-        <ref name="db.domain.inlines"/>
-        <ref name="db.extension.inlines"/>
-      </choice>
-      <ref name="db.xi.include"/>
+      <text/>
+      <ref name="db.ubiq.inlines"/>
+      <ref name="db.general.inlines"/>
+      <ref name="db.domain.inlines"/>
+      <ref name="db.extension.inlines"/>
     </choice>
   </define>
   <define name="db.general.inlines">
@@ -1268,7 +1164,6 @@
         <ref name="db.extension.blocks"/>
       </choice>
       <ref name="db.annotation"/>
-      <ref name="db.xi.include"/>
     </choice>
   </define>
   <define name="db.wrapper.blocks">
@@ -1355,13 +1250,7 @@
     <notAllowed/>
   </define>
   <define name="db.info.extension">
-    <choice>
-      <ref name="db._any"/>
-      <choice>
-        <ref name="its-rules"/>
-        <ref name="its-standoff"/>
-      </choice>
-    </choice>
+    <ref name="db._any"/>
   </define>
   <define name="db.info.elements">
     <choice>
@@ -1417,7 +1306,6 @@
         <ref name="db.productname"/>
         <ref name="db.productnumber"/>
       </choice>
-      <ref name="db.xi.include"/>
     </choice>
   </define>
   <define name="db.bibliographic.elements">
@@ -1519,12 +1407,6 @@
     <define name="db.info">
       <element name="info">
         <a:documentation>A wrapper for information about a component or other block</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:info">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.info.attlist"/>
         <interleave>
           <ref name="db._title"/>
@@ -1550,12 +1432,6 @@
     <define name="db.titlereq.info">
       <element name="info">
         <a:documentation>A wrapper for information about a component or other block with a required title</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:info">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.titlereq.info.attlist"/>
         <interleave>
           <ref name="db._title.req"/>
@@ -1581,12 +1457,6 @@
     <define name="db.titleonly.info">
       <element name="info">
         <a:documentation>A wrapper for information about a component or other block with only a title</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:info">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.titleonly.info.attlist"/>
         <interleave>
           <ref name="db._title.only"/>
@@ -1612,12 +1482,6 @@
     <define name="db.titleonlyreq.info">
       <element name="info">
         <a:documentation>A wrapper for information about a component or other block with only a required title</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:info">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.titleonlyreq.info.attlist"/>
         <interleave>
           <ref name="db._title.onlyreq"/>
@@ -1643,12 +1507,6 @@
     <define name="db.titleforbidden.info">
       <element name="info">
         <a:documentation>A wrapper for information about a component or other block without a title</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:info">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.titleforbidden.info.attlist"/>
         <zeroOrMore>
           <ref name="db.info.elements"/>
@@ -1833,12 +1691,6 @@
     <define name="db.procedure">
       <element name="procedure">
         <a:documentation>A list of operations to be performed in a well-defined sequence</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:procedure">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.procedure.attlist"/>
         <ref name="db.procedure.info"/>
         <zeroOrMore>
@@ -1879,12 +1731,6 @@
     <define name="db.step">
       <element name="step">
         <a:documentation>A unit of action in a procedure</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:step">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.step.attlist"/>
         <ref name="db.step.info"/>
         <choice>
@@ -1943,12 +1789,6 @@
     <define name="db.stepalternatives">
       <element name="stepalternatives">
         <a:documentation>Alternative steps in a procedure</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:stepalternatives">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.stepalternatives.attlist"/>
         <ref name="db.stepalternatives.info"/>
         <oneOrMore>
@@ -2037,12 +1877,6 @@
             <s:assert test="not(.//db:sidebar)">sidebar must not occur among the children or descendants of sidebar</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:sidebar">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.sidebar.attlist"/>
         <ref name="db.sidebar.info"/>
         <oneOrMore>
@@ -2070,12 +1904,6 @@
     <define name="db.abstract">
       <element name="abstract">
         <a:documentation>A summary</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:abstract">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.abstract.attlist"/>
         <ref name="db.abstract.info"/>
         <oneOrMore>
@@ -2103,12 +1931,6 @@
     <define name="db.personblurb">
       <element name="personblurb">
         <a:documentation>A short description or note about a person</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:personblurb">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.personblurb.attlist"/>
         <ref name="db.personblurb.info"/>
         <oneOrMore>
@@ -2136,12 +1958,6 @@
     <define name="db.blockquote">
       <element name="blockquote">
         <a:documentation>A quotation set off from the main text</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:blockquote">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.blockquote.attlist"/>
         <ref name="db.blockquote.info"/>
         <optional>
@@ -2294,12 +2110,6 @@
     <define name="db.epigraph">
       <element name="epigraph">
         <a:documentation>A short inscription at the beginning of a document or component</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:epigraph">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.epigraph.attlist"/>
         <ref name="db.epigraph.info"/>
         <optional>
@@ -2449,12 +2259,6 @@
     <define name="db.formalpara">
       <element name="formalpara">
         <a:documentation>A paragraph with a title</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:formalpara">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.formalpara.attlist"/>
         <ref name="db.formalpara.info"/>
         <zeroOrMore>
@@ -2483,12 +2287,6 @@
     <define name="db.para">
       <element name="para">
         <a:documentation>A paragraph</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:para">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.para.attlist"/>
         <ref name="db.para.info"/>
         <zeroOrMore>
@@ -2519,12 +2317,6 @@
     <define name="db.simpara">
       <element name="simpara">
         <a:documentation>A paragraph that contains only text and inline markup, no block elements</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:simpara">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.simpara.attlist"/>
         <ref name="db.simpara.info"/>
         <zeroOrMore>
@@ -2564,12 +2356,6 @@
     <define name="db.itemizedlist">
       <element name="itemizedlist">
         <a:documentation>A list in which each entry is marked with a bullet or other dingbat</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:itemizedlist">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.itemizedlist.attlist"/>
         <ref name="db.itemizedlist.info"/>
         <zeroOrMore>
@@ -2669,12 +2455,6 @@
     <define name="db.orderedlist">
       <element name="orderedlist">
         <a:documentation>A list in which each entry is marked with a sequentially incremented label</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:orderedlist">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.orderedlist.attlist"/>
         <ref name="db.orderedlist.info"/>
         <zeroOrMore>
@@ -2742,12 +2522,6 @@
     <define name="db.segmentedlist">
       <element name="segmentedlist">
         <a:documentation>A segmented list, a list of sets of elements</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:segmentedlist">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.segmentedlist.attlist"/>
         <ref name="db.segmentedlist.info"/>
         <oneOrMore>
@@ -2878,12 +2652,6 @@
     <define name="db.simplelist">
       <element name="simplelist">
         <a:documentation>An undecorated list of single words or short phrases</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:simplelist">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.simplelist.attlist"/>
         <oneOrMore>
           <ref name="db.member"/>
@@ -2944,12 +2712,6 @@
     <define name="db.variablelist">
       <element name="variablelist">
         <a:documentation>A list in which each entry is composed of a set of one or more terms and an associated description</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:variablelist">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.variablelist.attlist"/>
         <ref name="db.variablelist.info"/>
         <zeroOrMore>
@@ -3085,12 +2847,6 @@
             <s:assert test="not(.//db:equation)">equation must not occur among the children or descendants of example</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:example">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.example.attlist"/>
         <ref name="db.example.info"/>
         <oneOrMore>
@@ -3149,12 +2905,6 @@
     <define name="db.informalexample">
       <element name="informalexample">
         <a:documentation>A displayed example without a title</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:informalexample">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.informalexample.attlist"/>
         <ref name="db.informalexample.info"/>
         <oneOrMore>
@@ -3218,12 +2968,6 @@
     <define name="db.literallayout">
       <element name="literallayout">
         <a:documentation>A block of text in which line breaks and white space are to be reproduced faithfully</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:literallayout">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.literallayout.attlist"/>
         <ref name="db.verbatim.contentmodel"/>
       </element>
@@ -3252,12 +2996,6 @@
     <define name="db.screen">
       <element name="screen">
         <a:documentation>Text that a user sees or might see on a computer screen</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:screen">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.screen.attlist"/>
         <ref name="db.verbatim.contentmodel"/>
       </element>
@@ -3282,12 +3020,6 @@
     <define name="db.screenshot">
       <element name="screenshot">
         <a:documentation>A representation of what the user sees or might see on a computer screen</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:screenshot">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.screenshot.attlist"/>
         <ref name="db.screenshot.info"/>
         <ref name="db.mediaobject"/>
@@ -3365,12 +3097,6 @@
             <s:assert test="not(.//db:equation)">equation must not occur among the children or descendants of figure</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:figure">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.figure.attlist"/>
         <ref name="db.figure.info"/>
         <oneOrMore>
@@ -3429,12 +3155,6 @@
     <define name="db.informalfigure">
       <element name="informalfigure">
         <a:documentation>A untitled figure</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:informalfigure">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.informalfigure.attlist"/>
         <ref name="db.informalfigure.info"/>
         <oneOrMore>
@@ -3476,12 +3196,6 @@
     <define name="db.mediaobject">
       <element name="mediaobject">
         <a:documentation>A displayed media object (video, audio, image, etc.)</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:mediaobject">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.mediaobject.attlist"/>
         <ref name="db.mediaobject.info"/>
         <optional>
@@ -3515,12 +3229,6 @@
     <define name="db.inlinemediaobject">
       <element name="inlinemediaobject">
         <a:documentation>An inline media object (video, audio, image, and so on)</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:inlinemediaobject">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.inlinemediaobject.attlist"/>
         <ref name="db.inlinemediaobject.info"/>
         <optional>
@@ -3551,12 +3259,6 @@
     <define name="db.videoobject">
       <element name="videoobject">
         <a:documentation>A wrapper for video data and its associated meta-information</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:videoobject">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.videoobject.attlist"/>
         <ref name="db.videoobject.info"/>
         <oneOrMore>
@@ -3584,12 +3286,6 @@
     <define name="db.audioobject">
       <element name="audioobject">
         <a:documentation>A wrapper for audio data and its associated meta-information</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:audioobject">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.audioobject.attlist"/>
         <ref name="db.audioobject.info"/>
         <oneOrMore>
@@ -3607,7 +3303,6 @@
       <oneOrMore>
         <ref name="db.imagedata.svg"/>
       </oneOrMore>
-      <ref name="db.xi.include"/>
     </choice>
   </define>
   <div>
@@ -3629,12 +3324,6 @@
     <define name="db.imageobject">
       <element name="imageobject">
         <a:documentation>A wrapper for image data and its associated meta-information</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:imageobject">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.imageobject.attlist"/>
         <ref name="db.imageobject.info"/>
         <ref name="db.imageobject.content"/>
@@ -3660,12 +3349,6 @@
     <define name="db.textobject">
       <element name="textobject">
         <a:documentation>A wrapper for a text description of an object and its associated meta-information</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:textobject">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.textobject.attlist"/>
         <ref name="db.textobject.info"/>
         <choice>
@@ -3775,12 +3458,6 @@
     <define name="db.videodata">
       <element name="videodata">
         <a:documentation>Pointer to external video data</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:videodata">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.videodata.attlist"/>
         <ref name="db.videodata.info"/>
         <zeroOrMore>
@@ -3886,12 +3563,6 @@
     <define name="db.audiodata">
       <element name="audiodata">
         <a:documentation>Pointer to external audio data</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:audiodata">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.audiodata.attlist"/>
         <ref name="db.audiodata.info"/>
         <zeroOrMore>
@@ -3985,12 +3656,6 @@
     <define name="db.imagedata">
       <element name="imagedata">
         <a:documentation>Pointer to external image data</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:imagedata">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.imagedata.attlist"/>
         <ref name="db.imagedata.info"/>
         <zeroOrMore>
@@ -4026,12 +3691,6 @@
     <define name="db.textdata">
       <element name="textdata">
         <a:documentation>Pointer to external text data</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:textdata">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.textdata.attlist"/>
         <ref name="db.textdata.info"/>
       </element>
@@ -4168,12 +3827,6 @@
             <s:assert test="not(.//db:warning)">warning must not occur among the children or descendants of caption</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:caption">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.caption.attlist"/>
         <ref name="db.caption.info"/>
         <oneOrMore>
@@ -4199,12 +3852,6 @@
     <define name="db.address">
       <element name="address">
         <a:documentation>A real-world address, generally a postal address</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:address">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.address.attlist"/>
         <zeroOrMore>
           <choice>
@@ -5436,12 +5083,6 @@
     <define name="db.legalnotice">
       <element name="legalnotice">
         <a:documentation>A statement of legal obligations or requirements</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:legalnotice">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.legalnotice.attlist"/>
         <ref name="db.legalnotice.info"/>
         <oneOrMore>
@@ -5831,12 +5472,6 @@
     <define name="db.revhistory">
       <element name="revhistory">
         <a:documentation>A history of the revisions to a document</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:revhistory">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.revhistory.attlist"/>
         <ref name="db.revhistory.info"/>
         <oneOrMore>
@@ -6956,12 +6591,6 @@
     <define name="db.formalgroup">
       <element name="formalgroup">
         <a:documentation>A group of formal objects, for example subfigures</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:formalgroup">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.formalgroup.attlist"/>
         <ref name="db.formalgroup.info"/>
         <choice>
@@ -7012,38 +6641,6 @@
       <oneOrMore>
         <ref name="db.refentry"/>
       </oneOrMore>
-      <choice>
-        <oneOrMore>
-          <choice>
-            <ref name="db.section"/>
-            <ref name="db.xi.include"/>
-          </choice>
-        </oneOrMore>
-        <oneOrMore>
-          <choice>
-            <ref name="db.simplesect"/>
-            <ref name="db.xi.include"/>
-          </choice>
-        </oneOrMore>
-      </choice>
-      <oneOrMore>
-        <choice>
-          <ref name="db.refentry"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.refsect1"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.sect1"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
     </choice>
   </define>
   <define name="db.toplevel.blocks.or.sections">
@@ -7077,32 +6674,6 @@
       <oneOrMore>
         <ref name="db.refentry"/>
       </oneOrMore>
-      <choice>
-        <oneOrMore>
-          <choice>
-            <ref name="db.section"/>
-            <ref name="db.xi.include"/>
-          </choice>
-        </oneOrMore>
-        <oneOrMore>
-          <choice>
-            <ref name="db.simplesect"/>
-            <ref name="db.xi.include"/>
-          </choice>
-        </oneOrMore>
-      </choice>
-      <oneOrMore>
-        <choice>
-          <ref name="db.refentry"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.refsect1"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
     </choice>
   </define>
   <define name="db.recursive.blocks.or.sections">
@@ -7122,21 +6693,17 @@
     <choice>
       <ref name="db.part"/>
       <ref name="db.reference"/>
-      <ref name="db.xi.include"/>
     </choice>
   </define>
   <define name="db.components">
     <choice>
-      <choice>
-        <ref name="db.dedication"/>
-        <ref name="db.acknowledgements"/>
-        <ref name="db.preface"/>
-        <ref name="db.chapter"/>
-        <ref name="db.appendix"/>
-        <ref name="db.article"/>
-        <ref name="db.colophon"/>
-      </choice>
-      <ref name="db.xi.include"/>
+      <ref name="db.dedication"/>
+      <ref name="db.acknowledgements"/>
+      <ref name="db.preface"/>
+      <ref name="db.chapter"/>
+      <ref name="db.appendix"/>
+      <ref name="db.article"/>
+      <ref name="db.colophon"/>
     </choice>
   </define>
   <define name="db.navigation.components">
@@ -7171,12 +6738,9 @@
   </define>
   <define name="db.set.components">
     <choice>
-      <choice>
-        <ref name="db.set"/>
-        <ref name="db.book"/>
-        <ref name="db.article"/>
-      </choice>
-      <ref name="db.xi.include"/>
+      <ref name="db.set"/>
+      <ref name="db.book"/>
+      <ref name="db.article"/>
     </choice>
   </define>
   <div>
@@ -7207,12 +6771,6 @@
     <define name="db.set">
       <element name="set">
         <a:documentation>A collection of books</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:set">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.set.attlist"/>
         <ref name="db.set.info"/>
         <optional>
@@ -7269,12 +6827,6 @@
     <define name="db.book">
       <element name="book">
         <a:documentation>A book</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:book">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.book.attlist"/>
         <ref name="db.book.info"/>
         <ref name="db.book.components"/>
@@ -7309,12 +6861,6 @@
     <define name="db.dedication">
       <element name="dedication">
         <a:documentation>The dedication of a book or other component</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:dedication">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.dedication.attlist"/>
         <ref name="db.dedication.info"/>
         <oneOrMore>
@@ -7351,12 +6897,6 @@
     <define name="db.acknowledgements">
       <element name="acknowledgements">
         <a:documentation>Acknowledgements of a book or other component</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:acknowledgements">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.acknowledgements.attlist"/>
         <ref name="db.acknowledgements.info"/>
         <oneOrMore>
@@ -7393,12 +6933,6 @@
     <define name="db.colophon">
       <element name="colophon">
         <a:documentation>Text at the back of a book describing facts about its production</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:colophon">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.colophon.attlist"/>
         <ref name="db.colophon.info"/>
         <choice>
@@ -7458,12 +6992,6 @@
     <define name="db.appendix">
       <element name="appendix">
         <a:documentation>An appendix in a book or article</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:appendix">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.appendix.attlist"/>
         <ref name="db.appendix.info"/>
         <optional>
@@ -7508,12 +7036,6 @@
     <define name="db.chapter">
       <element name="chapter">
         <a:documentation>A chapter, as of a book</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:chapter">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.chapter.attlist"/>
         <ref name="db.chapter.info"/>
         <optional>
@@ -7532,7 +7054,6 @@
         <ref name="db.refentry"/>
         <ref name="db.reference"/>
       </choice>
-      <ref name="db.xi.include"/>
     </choice>
   </define>
   <define name="db.part.contentmodel">
@@ -7573,12 +7094,6 @@
     <define name="db.part">
       <element name="part">
         <a:documentation>A division in a book</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:part">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.part.attlist"/>
         <ref name="db.part.info"/>
         <optional>
@@ -7618,12 +7133,6 @@
     <define name="db.preface">
       <element name="preface">
         <a:documentation>Introductory matter preceding the first chapter of a book</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:preface">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.preface.attlist"/>
         <ref name="db.preface.info"/>
         <optional>
@@ -7660,12 +7169,6 @@
     <define name="db.partintro">
       <element name="partintro">
         <a:documentation>An introduction to the contents of a part</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:partintro">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.partintro.attlist"/>
         <ref name="db.partintro.info"/>
         <optional>
@@ -7737,12 +7240,6 @@
     <define name="db.section">
       <element name="section">
         <a:documentation>A recursive section</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:section">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.section.attlist"/>
         <ref name="db.section.info"/>
         <zeroOrMore>
@@ -7785,12 +7282,6 @@
     <define name="db.simplesect">
       <element name="simplesect">
         <a:documentation>A section of a document with no subdivisions</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:simplesect">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.simplesect.attlist"/>
         <ref name="db.simplesect.info"/>
         <zeroOrMore>
@@ -7886,12 +7377,6 @@
     <define name="db.article">
       <element name="article">
         <a:documentation>An article</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:article">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.article.attlist"/>
         <ref name="db.article.info"/>
         <zeroOrMore>
@@ -7949,12 +7434,6 @@
           <s:title>Element exclusion</s:title>
           <s:rule context="db:annotation">
             <s:assert test="not(.//db:annotation)">annotation must not occur among the children or descendants of annotation</s:assert>
-          </s:rule>
-        </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:annotation">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
           </s:rule>
         </s:pattern>
         <ref name="db.annotation.attlist"/>
@@ -8253,12 +7732,6 @@
       <oneOrMore>
         <ref name="db.refentry"/>
       </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.sect2"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
     </choice>
   </define>
   <div>
@@ -8295,12 +7768,6 @@
     <define name="db.sect1">
       <element name="sect1">
         <a:documentation>A top-level section of document</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:sect1">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.sect1.attlist"/>
         <ref name="db.sect1.info"/>
         <zeroOrMore>
@@ -8343,12 +7810,6 @@
       <oneOrMore>
         <ref name="db.refentry"/>
       </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.sect3"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
     </choice>
   </define>
   <div>
@@ -8385,12 +7846,6 @@
     <define name="db.sect2">
       <element name="sect2">
         <a:documentation>A subsection within a sect1</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:sect2">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.sect2.attlist"/>
         <ref name="db.sect2.info"/>
         <zeroOrMore>
@@ -8433,12 +7888,6 @@
       <oneOrMore>
         <ref name="db.refentry"/>
       </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.sect4"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
     </choice>
   </define>
   <div>
@@ -8475,12 +7924,6 @@
     <define name="db.sect3">
       <element name="sect3">
         <a:documentation>A subsection within a sect2</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:sect3">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.sect3.attlist"/>
         <ref name="db.sect3.info"/>
         <zeroOrMore>
@@ -8523,12 +7966,6 @@
       <oneOrMore>
         <ref name="db.refentry"/>
       </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.sect5"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
     </choice>
   </define>
   <div>
@@ -8565,12 +8002,6 @@
     <define name="db.sect4">
       <element name="sect4">
         <a:documentation>A subsection within a sect3</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:sect4">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.sect4.attlist"/>
         <ref name="db.sect4.info"/>
         <zeroOrMore>
@@ -8602,12 +8033,6 @@
       </oneOrMore>
       <oneOrMore>
         <ref name="db.refentry"/>
-      </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.simplesect"/>
-          <ref name="db.xi.include"/>
-        </choice>
       </oneOrMore>
     </choice>
   </define>
@@ -8645,12 +8070,6 @@
     <define name="db.sect5">
       <element name="sect5">
         <a:documentation>A subsection within a sect4</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:sect5">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.sect5.attlist"/>
         <ref name="db.sect5.info"/>
         <zeroOrMore>
@@ -8683,18 +8102,6 @@
       <oneOrMore>
         <ref name="db.refsect1"/>
       </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.refentry"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.refsect1"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
     </choice>
   </define>
   <define name="db.secondlevel.refsection">
@@ -8705,25 +8112,10 @@
       <oneOrMore>
         <ref name="db.refsect2"/>
       </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.refentry"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
-      <oneOrMore>
-        <choice>
-          <ref name="db.refsect2"/>
-          <ref name="db.xi.include"/>
-        </choice>
-      </oneOrMore>
     </choice>
   </define>
   <define name="db.reference.components">
-    <choice>
-      <ref name="db.refentry"/>
-      <ref name="db.xi.include"/>
-    </choice>
+    <ref name="db.refentry"/>
   </define>
   <div>
     <define name="db.reference.status.attribute">
@@ -8753,12 +8145,6 @@
     <define name="db.reference">
       <element name="reference">
         <a:documentation>A collection of reference entries</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:reference">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.reference.attlist"/>
         <ref name="db.reference.info"/>
         <optional>
@@ -8798,12 +8184,6 @@
     <define name="db.refentry">
       <element name="refentry">
         <a:documentation>A reference page (originally a UNIX man-style reference page)</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:refentry">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.refentry.attlist"/>
         <zeroOrMore>
           <ref name="db.indexterm"/>
@@ -9066,12 +8446,6 @@
     <define name="db.refsynopsisdiv">
       <element name="refsynopsisdiv">
         <a:documentation>A syntactic synopsis of the subject of the reference page</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:refsynopsisdiv">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.refsynopsisdiv.attlist"/>
         <ref name="db.refsynopsisdiv.info"/>
         <choice>
@@ -9116,12 +8490,6 @@
     <define name="db.refsection">
       <element name="refsection">
         <a:documentation>A recursive section in a refentry</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:refsection">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.refsection.attlist"/>
         <ref name="db.refsection.info"/>
         <choice>
@@ -9173,12 +8541,6 @@
     <define name="db.refsect1">
       <element name="refsect1">
         <a:documentation>A major subsection of a reference entry</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:refsect1">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.refsect1.attlist"/>
         <ref name="db.refsect1.info"/>
         <choice>
@@ -9228,12 +8590,6 @@
     <define name="db.refsect2">
       <element name="refsect2">
         <a:documentation>A subsection of a refsect1</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:refsect2">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.refsect2.attlist"/>
         <ref name="db.refsect2.info"/>
         <choice>
@@ -9278,12 +8634,6 @@
     <define name="db.refsect3">
       <element name="refsect3">
         <a:documentation>A subsection of a refsect2</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:refsect3">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.refsect3.attlist"/>
         <ref name="db.refsect3.info"/>
         <oneOrMore>
@@ -9326,12 +8676,6 @@
     <define name="db.glosslist">
       <element name="glosslist">
         <a:documentation>A wrapper for a list of glossary entries</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:glosslist">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.glosslist.attlist"/>
         <optional>
           <ref name="db.glosslist.info"/>
@@ -9644,12 +8988,6 @@
     <define name="db.glossary">
       <element name="glossary">
         <a:documentation>A glossary</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:glossary">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.glossary.attlist"/>
         <ref name="db.glossary.info"/>
         <zeroOrMore>
@@ -9697,12 +9035,6 @@
     <define name="db.glossdiv">
       <element name="glossdiv">
         <a:documentation>A division in a glossary</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:glossdiv">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.glossdiv.attlist"/>
         <ref name="db.glossdiv.info"/>
         <zeroOrMore>
@@ -9959,12 +9291,6 @@
     <define name="db.bibliography">
       <element name="bibliography">
         <a:documentation>A bibliography</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:bibliography">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.bibliography.attlist"/>
         <ref name="db.bibliography.info"/>
         <zeroOrMore>
@@ -10012,12 +9338,6 @@
     <define name="db.bibliodiv">
       <element name="bibliodiv">
         <a:documentation>A section of a bibliography</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:bibliodiv">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.bibliodiv.attlist"/>
         <ref name="db.bibliodiv.info"/>
         <zeroOrMore>
@@ -10051,12 +9371,6 @@
     <define name="db.bibliolist">
       <element name="bibliolist">
         <a:documentation>A wrapper for a list of bibliography entries</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:bibliolist">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.bibliolist.attlist"/>
         <optional>
           <ref name="db.bibliolist.info"/>
@@ -10576,12 +9890,6 @@
     <define name="db.index">
       <element name="index">
         <a:documentation>An index to a book or part of a book</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:index">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.index.attlist"/>
         <ref name="db.index.info"/>
         <zeroOrMore>
@@ -10630,12 +9938,6 @@
     <define name="db.setindex">
       <element name="setindex">
         <a:documentation>An index to a set of books</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:setindex">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.setindex.attlist"/>
         <ref name="db.setindex.info"/>
         <zeroOrMore>
@@ -10680,12 +9982,6 @@
     <define name="db.indexdiv">
       <element name="indexdiv">
         <a:documentation>A division in an index</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:indexdiv">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.indexdiv.attlist"/>
         <ref name="db.indexdiv.info"/>
         <zeroOrMore>
@@ -10888,12 +10184,6 @@ entry in an index, rather than in the text</a:documentation>
     <define name="db.toc">
       <element name="toc">
         <a:documentation>A table of contents</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:toc">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.toc.attlist"/>
         <ref name="db.toc.info"/>
         <zeroOrMore>
@@ -10935,12 +10225,6 @@ entry in an index, rather than in the text</a:documentation>
     <define name="db.tocdiv">
       <element name="tocdiv">
         <a:documentation>A division in a table of contents</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:tocdiv">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.tocdiv.attlist"/>
         <ref name="db.tocdiv.info"/>
         <zeroOrMore>
@@ -11005,12 +10289,6 @@ entry in an index, rather than in the text</a:documentation>
     <define name="db.task">
       <element name="task">
         <a:documentation>A task to be completed</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:task">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.task.attlist"/>
         <ref name="db.task.info"/>
         <optional>
@@ -11050,12 +10328,6 @@ entry in an index, rather than in the text</a:documentation>
     <define name="db.tasksummary">
       <element name="tasksummary">
         <a:documentation>A summary of a task</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:tasksummary">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.tasksummary.attlist"/>
         <ref name="db.tasksummary.info"/>
         <oneOrMore>
@@ -11083,12 +10355,6 @@ entry in an index, rather than in the text</a:documentation>
     <define name="db.taskprerequisites">
       <element name="taskprerequisites">
         <a:documentation>The prerequisites for a task</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:taskprerequisites">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.taskprerequisites.attlist"/>
         <ref name="db.taskprerequisites.info"/>
         <oneOrMore>
@@ -11116,12 +10382,6 @@ entry in an index, rather than in the text</a:documentation>
     <define name="db.taskrelated">
       <element name="taskrelated">
         <a:documentation>Information related to a task</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:taskrelated">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.taskrelated.attlist"/>
         <ref name="db.taskrelated.info"/>
         <oneOrMore>
@@ -11196,12 +10456,6 @@ entry in an index, rather than in the text</a:documentation>
       <element name="calloutlist">
         <a:documentation>A list of callout
 s</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:calloutlist">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.calloutlist.attlist"/>
         <ref name="db.calloutlist.info"/>
         <zeroOrMore>
@@ -11238,6 +10492,12 @@ s</a:documentation>
         <a:documentation>A called out
  description of a marked area</a:documentation>
         <s:pattern>
+          <s:title>Callout cross reference idref constraint</s:title>
+          <s:rule context="db:callout[@arearefs]">
+            <s:assert test="every $id in tokenize(current()/@arearefs) satisfies exists(//*[@xml:id = $id])">Each token in @arearefs must be an idref to an element in the document.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <s:pattern>
           <s:title>Callout cross reference constraint</s:title>
           <s:rule context="db:callout[@arearefs]">
             <s:assert test="every $id in tokenize(current()/@arearefs) satisfies (every $ar in //*[@xml:id = $id] satisfies (local-name($ar) = ('areaset', 'area', 'co') and namespace-uri($ar) = 'http://docbook.org/ns/docbook'))">@arearefs on callout must point to a areaset, area, or co.</s:assert>
@@ -11269,12 +10529,6 @@ s</a:documentation>
     <define name="db.programlistingco">
       <element name="programlistingco">
         <a:documentation>A program listing with associated areas used in callouts</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:programlistingco">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.programlistingco.attlist"/>
         <ref name="db.programlistingco.info"/>
         <ref name="db.areaspec"/>
@@ -11451,12 +10705,6 @@ s which refer to this area. (This provides bidirectional linking which may be us
     <define name="db.screenco">
       <element name="screenco">
         <a:documentation>A screen with associated areas used in callouts</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:screenco">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.screenco.attlist"/>
         <ref name="db.screenco.info"/>
         <ref name="db.areaspec"/>
@@ -11486,12 +10734,6 @@ s which refer to this area. (This provides bidirectional linking which may be us
     <define name="db.imageobjectco">
       <element name="imageobjectco">
         <a:documentation>A wrapper for an image object with callouts</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:imageobjectco">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.imageobjectco.attlist"/>
         <ref name="db.imageobjectco.info"/>
         <ref name="db.areaspec"/>
@@ -11558,6 +10800,18 @@ s which refer to this area. (This provides bidirectional linking which may be us
     <define name="db.coref">
       <element name="coref">
         <a:documentation>A cross reference to a co</a:documentation>
+        <s:pattern>
+          <s:title>Coref cross reference idref constraint</s:title>
+          <s:rule context="db:coref[@linkend]">
+            <s:assert test="exists(//*[@xml:id=current()/@linkend])">@linkend on coref must point to an xml:id</s:assert>
+          </s:rule>
+        </s:pattern>
+        <s:pattern>
+          <s:title>Coref cross reference constraint</s:title>
+          <s:rule context="db:coref[@linkend]">
+            <s:assert test="every $id in @linkend satisfies (every $ar in //*[@xml:id = $id] satisfies (local-name($ar) = 'co') and namespace-uri($ar) = 'http://docbook.org/ns/docbook')">@linkend on coref must point to a co.</s:assert>
+          </s:rule>
+        </s:pattern>
         <ref name="db.coref.attlist"/>
         <empty/>
       </element>
@@ -11582,12 +10836,6 @@ s which refer to this area. (This provides bidirectional linking which may be us
     <define name="db.productionset">
       <element name="productionset">
         <a:documentation>A set of EBNF productions</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:productionset">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.productionset.attlist"/>
         <ref name="db.productionset.info"/>
         <oneOrMore>
@@ -11778,12 +11026,6 @@ where the nonterminal
     <define name="db.constraintdef">
       <element name="constraintdef">
         <a:documentation>The definition of a constraint in an EBNF production</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:constraintdef">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.constraintdef.attlist"/>
         <ref name="db.constraintdef.info"/>
         <oneOrMore>
@@ -12598,12 +11840,6 @@ where the nonterminal
             <s:assert test="not(.//db:equation)">equation must not occur among the children or descendants of table</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:table">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.cals.table.attlist"/>
         <ref name="db.cals.table.info"/>
         <interleave>
@@ -12684,12 +11920,6 @@ where the nonterminal
     <define name="db.cals.informaltable">
       <element name="informaltable">
         <a:documentation>A table without a title</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:informaltable">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.cals.informaltable.attlist"/>
         <ref name="db.cals.informaltable.info"/>
         <interleave>
@@ -13134,12 +12364,6 @@ where the nonterminal
             <s:assert test="not(.//db:equation)">equation must not occur among the children or descendants of table</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:table">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.html.table.attlist"/>
         <ref name="db.html.table.model"/>
       </element>
@@ -13189,12 +12413,6 @@ where the nonterminal
     <define name="db.html.informaltable">
       <element name="informaltable">
         <a:documentation>An HTML table without a title</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:informaltable">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.html.informaltable.attlist"/>
         <ref name="db.html.informaltable.model"/>
       </element>
@@ -13277,12 +12495,6 @@ where the nonterminal
           <s:title>Element exclusion</s:title>
           <s:rule context="db:caption">
             <s:assert test="not(.//db:warning)">warning must not occur among the children or descendants of caption</s:assert>
-          </s:rule>
-        </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:caption">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
           </s:rule>
         </s:pattern>
         <ref name="db.html.caption.attlist"/>
@@ -13504,12 +12716,6 @@ where the nonterminal
     <define name="db.msgset">
       <element name="msgset">
         <a:documentation>A detailed set of messages, usually error messages</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:msgset">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.msgset.attlist"/>
         <ref name="db.msgset.info"/>
         <choice>
@@ -13619,12 +12825,6 @@ where the nonterminal
     <define name="db.msg">
       <element name="msg">
         <a:documentation>A message in a message set</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:msg">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.msg.attlist"/>
         <ref name="db.msg.info"/>
         <ref name="db.msgmain"/>
@@ -13656,12 +12856,6 @@ where the nonterminal
     <define name="db.msgmain">
       <element name="msgmain">
         <a:documentation>The primary component of a message in a message set </a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:msgmain">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.msgmain.attlist"/>
         <ref name="db.msgmain.info"/>
         <ref name="db.msgtext"/>
@@ -13687,12 +12881,6 @@ where the nonterminal
     <define name="db.msgsub">
       <element name="msgsub">
         <a:documentation>A subcomponent of a message in a message set</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:msgsub">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.msgsub.attlist"/>
         <ref name="db.msgsub.info"/>
         <ref name="db.msgtext"/>
@@ -13718,12 +12906,6 @@ where the nonterminal
     <define name="db.msgrel">
       <element name="msgrel">
         <a:documentation>A related component of a message in a message set</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:msgrel">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.msgrel.attlist"/>
         <ref name="db.msgrel.info"/>
         <ref name="db.msgtext"/>
@@ -13862,12 +13044,6 @@ where the nonterminal
     <define name="db.msgexplan">
       <element name="msgexplan">
         <a:documentation>Explanatory material relating to a message in a message set</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:msgexplan">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.msgexplan.attlist"/>
         <ref name="db.msgexplan.info"/>
         <oneOrMore>
@@ -13914,12 +13090,6 @@ where the nonterminal
     <define name="db.qandaset">
       <element name="qandaset">
         <a:documentation>A question-and-answer set</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:qandaset">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.qandaset.attlist"/>
         <ref name="db.qandaset.info"/>
         <zeroOrMore>
@@ -13955,12 +13125,6 @@ where the nonterminal
     <define name="db.qandadiv">
       <element name="qandadiv">
         <a:documentation>A titled division in a qandaset</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:qandadiv">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.qandadiv.attlist"/>
         <ref name="db.qandadiv.info"/>
         <zeroOrMore>
@@ -13996,12 +13160,6 @@ where the nonterminal
     <define name="db.qandaentry">
       <element name="qandaentry">
         <a:documentation>A question/answer set within a qandaset</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:qandaentry">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.qandaentry.attlist"/>
         <ref name="db.qandaentry.info"/>
         <ref name="db.question"/>
@@ -14100,9 +13258,6 @@ where the nonterminal
       <oneOrMore>
         <ref name="db._any.mml"/>
       </oneOrMore>
-      <oneOrMore>
-        <ref name="db.xi.include"/>
-      </oneOrMore>
     </choice>
   </define>
   <define name="db.inlineequation.content">
@@ -14117,9 +13272,6 @@ where the nonterminal
       </choice>
       <oneOrMore>
         <ref name="db._any.mml"/>
-      </oneOrMore>
-      <oneOrMore>
-        <ref name="db.xi.include"/>
       </oneOrMore>
     </choice>
   </define>
@@ -14188,12 +13340,6 @@ where the nonterminal
             <s:assert test="not(.//db:equation)">equation must not occur among the children or descendants of equation</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:equation">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.equation.attlist"/>
         <ref name="db.equation.info"/>
         <optional>
@@ -14241,12 +13387,6 @@ where the nonterminal
     <define name="db.informalequation">
       <element name="informalequation">
         <a:documentation>A displayed mathematical equation without a title</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:informalequation">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.informalequation.attlist"/>
         <ref name="db.informalequation.info"/>
         <optional>
@@ -14311,10 +13451,7 @@ where the nonterminal
     </define>
   </div>
   <define name="db.imagedata.mathml.content">
-    <choice>
-      <ref name="db._any.mml"/>
-      <ref name="db.xi.include"/>
-    </choice>
+    <ref name="db._any.mml"/>
   </define>
   <div>
     <define name="db.imagedata.mathml.role.attribute">
@@ -14365,12 +13502,6 @@ where the nonterminal
     <define name="db.imagedata.mathml">
       <element name="imagedata">
         <a:documentation>A MathML expression in a media object</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:imagedata">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.imagedata.mathml.attlist"/>
         <ref name="db.imagedata.mathml.info"/>
         <oneOrMore>
@@ -14395,10 +13526,7 @@ where the nonterminal
     </define>
   </div>
   <define name="db.imagedata.svg.content">
-    <choice>
-      <ref name="db._any.svg"/>
-      <ref name="db.xi.include"/>
-    </choice>
+    <ref name="db._any.svg"/>
   </define>
   <div>
     <define name="db.imagedata.svg.role.attribute">
@@ -14449,12 +13577,6 @@ where the nonterminal
     <define name="db.imagedata.svg">
       <element name="imagedata">
         <a:documentation>An SVG drawing in a media object</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:imagedata">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.imagedata.svg.attlist"/>
         <ref name="db.imagedata.svg.info"/>
         <oneOrMore>
@@ -15686,12 +14808,6 @@ where the nonterminal
     <define name="db.cmdsynopsis">
       <element name="cmdsynopsis">
         <a:documentation>A syntax summary for a software command</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:cmdsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.cmdsynopsis.attlist"/>
         <ref name="db.cmdsynopsis.info"/>
         <oneOrMore>
@@ -15973,12 +15089,6 @@ where the nonterminal
     <define name="db.synopsis">
       <element name="synopsis">
         <a:documentation>A general-purpose element for representing the syntax of commands or functions</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:synopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.synopsis.attlist"/>
         <ref name="db.verbatim.contentmodel"/>
       </element>
@@ -16036,12 +15146,6 @@ where the nonterminal
     <define name="db.funcsynopsis">
       <element name="funcsynopsis">
         <a:documentation>The syntax summary for a function definition</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:funcsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.funcsynopsis.attlist"/>
         <ref name="db.funcsynopsis.info"/>
         <oneOrMore>
@@ -16070,12 +15174,6 @@ where the nonterminal
     <define name="db.funcsynopsisinfo">
       <element name="funcsynopsisinfo">
         <a:documentation>Information supplementing the funcdefs of a funcsynopsis</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:funcsynopsisinfo">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.funcsynopsisinfo.attlist"/>
         <ref name="db.verbatim.contentmodel"/>
       </element>
@@ -16363,12 +15461,6 @@ where the nonterminal
     <define name="db.classsynopsis">
       <element name="classsynopsis">
         <a:documentation>The syntax summary for a class definition</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:classsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.classsynopsis.attlist"/>
         <ref name="db.classsynopsis.info"/>
         <zeroOrMore>
@@ -16377,7 +15469,9 @@ where the nonterminal
         <zeroOrMore>
           <ref name="db.templatename"/>
         </zeroOrMore>
-        <ref name="db.oo.inlines"/>
+        <oneOrMore>
+          <ref name="db.oo.inlines"/>
+        </oneOrMore>
         <zeroOrMore>
           <choice>
             <ref name="db.template"/>
@@ -16409,12 +15503,6 @@ where the nonterminal
     <define name="db.classsynopsisinfo">
       <element name="classsynopsisinfo">
         <a:documentation>Information supplementing the contents of a classsynopsis</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:classsynopsisinfo">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.classsynopsisinfo.attlist"/>
         <ref name="db.verbatim.contentmodel"/>
       </element>
@@ -16624,12 +15712,6 @@ where the nonterminal
     <define name="db.fieldsynopsis">
       <element name="fieldsynopsis">
         <a:documentation>The name of a field in a class definition</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:fieldsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.fieldsynopsis.attlist"/>
         <ref name="db.fieldsynopsis.info"/>
         <zeroOrMore>
@@ -16717,12 +15799,6 @@ where the nonterminal
     <define name="db.constructorsynopsis">
       <element name="constructorsynopsis">
         <a:documentation>A syntax summary for a constructor</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:constructorsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.constructorsynopsis.attlist"/>
         <ref name="db.constructorsynopsis.info"/>
         <zeroOrMore>
@@ -16787,12 +15863,6 @@ where the nonterminal
     <define name="db.destructorsynopsis">
       <element name="destructorsynopsis">
         <a:documentation>A syntax summary for a destructor</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:destructorsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.destructorsynopsis.attlist"/>
         <ref name="db.destructorsynopsis.info"/>
         <zeroOrMore>
@@ -16857,12 +15927,6 @@ where the nonterminal
     <define name="db.methodsynopsis">
       <element name="methodsynopsis">
         <a:documentation>A syntax summary for a method</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:methodsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.methodsynopsis.attlist"/>
         <ref name="db.methodsynopsis.info"/>
         <zeroOrMore>
@@ -17255,12 +16319,6 @@ where the nonterminal
     <define name="db.packagesynopsis">
       <element name="packagesynopsis">
         <a:documentation>The syntax summary for a package definition</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:packagesynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.packagesynopsis.attlist"/>
         <ref name="db.packagesynopsis.info"/>
         <zeroOrMore>
@@ -17333,12 +16391,6 @@ where the nonterminal
     <define name="db.macrosynopsis">
       <element name="macrosynopsis">
         <a:documentation>The syntax summary for a macro definition (code-generating function)</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:macrosynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.macrosynopsis.attlist"/>
         <ref name="db.macrosynopsis.info"/>
         <zeroOrMore>
@@ -17522,12 +16574,6 @@ where the nonterminal
     <define name="db.unionsynopsis">
       <element name="unionsynopsis">
         <a:documentation>The syntax summary for a union-of-types definition</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:unionsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.unionsynopsis.attlist"/>
         <ref name="db.unionsynopsis.info"/>
         <zeroOrMore>
@@ -17715,12 +16761,6 @@ where the nonterminal
     <define name="db.enumsynopsis">
       <element name="enumsynopsis">
         <a:documentation>The syntax summary for an enumerated-type definition</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:enumsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.enumsynopsis.attlist"/>
         <ref name="db.enumsynopsis.info"/>
         <zeroOrMore>
@@ -17798,12 +16838,6 @@ where the nonterminal
     <define name="db.typedefsynopsis">
       <element name="typedefsynopsis">
         <a:documentation>The syntax summary for a type-alias definition</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:typedefsynopsis">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.typedefsynopsis.attlist"/>
         <ref name="db.typedefsynopsis.info"/>
         <zeroOrMore>
@@ -17851,12 +16885,6 @@ where the nonterminal
     <define name="db.programlisting">
       <element name="programlisting">
         <a:documentation>A literal listing of all or part of a program</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:programlisting">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.programlisting.attlist"/>
         <ref name="db.verbatim.contentmodel"/>
       </element>
@@ -17930,12 +16958,6 @@ where the nonterminal
             <s:assert test="not(.//db:warning)">warning must not occur among the children or descendants of caution</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:caution">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.caution.attlist"/>
         <ref name="db.admonition.contentmodel"/>
       </element>
@@ -17991,12 +17013,6 @@ where the nonterminal
           <s:title>Element exclusion</s:title>
           <s:rule context="db:danger">
             <s:assert test="not(.//db:warning)">warning must not occur among the children or descendants of danger</s:assert>
-          </s:rule>
-        </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:danger">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
           </s:rule>
         </s:pattern>
         <ref name="db.danger.attlist"/>
@@ -18056,12 +17072,6 @@ where the nonterminal
             <s:assert test="not(.//db:warning)">warning must not occur among the children or descendants of important</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:important">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.important.attlist"/>
         <ref name="db.admonition.contentmodel"/>
       </element>
@@ -18117,12 +17127,6 @@ where the nonterminal
           <s:title>Element exclusion</s:title>
           <s:rule context="db:note">
             <s:assert test="not(.//db:warning)">warning must not occur among the children or descendants of note</s:assert>
-          </s:rule>
-        </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:note">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
           </s:rule>
         </s:pattern>
         <ref name="db.note.attlist"/>
@@ -18182,12 +17186,6 @@ where the nonterminal
             <s:assert test="not(.//db:warning)">warning must not occur among the children or descendants of tip</s:assert>
           </s:rule>
         </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:tip">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.tip.attlist"/>
         <ref name="db.admonition.contentmodel"/>
       </element>
@@ -18243,12 +17241,6 @@ where the nonterminal
           <s:title>Element exclusion</s:title>
           <s:rule context="db:warning">
             <s:assert test="not(.//db:warning)">warning must not occur among the children or descendants of warning</s:assert>
-          </s:rule>
-        </s:pattern>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:warning">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
           </s:rule>
         </s:pattern>
         <ref name="db.warning.attlist"/>
@@ -18564,12 +17556,6 @@ where the nonterminal
     <define name="db.topic">
       <element name="topic">
         <a:documentation>A modular unit of documentation not part of any particular narrative flow</a:documentation>
-        <s:pattern>
-          <s:title>Root must have version</s:title>
-          <s:rule context="/db:topic">
-            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
-          </s:rule>
-        </s:pattern>
         <ref name="db.topic.attlist"/>
         <ref name="db.topic.info"/>
         <zeroOrMore>
@@ -18582,1994 +17568,718 @@ where the nonterminal
       </element>
     </define>
   </div>
+  <start>
+    <choice>
+      <ref name="db.assembly"/>
+      <ref name="db.structure"/>
+      <ref name="db.resources"/>
+      <ref name="db.relationships"/>
+      <ref name="db.transforms"/>
+      <ref name="db.module"/>
+    </choice>
+  </start>
+  <define name="db.grammar.attribute">
+    <attribute name="grammar">
+      <a:documentation>Identifies the markup grammar of a resource</a:documentation>
+    </attribute>
+  </define>
   <div>
-    <define name="db.any.other.attribute">
-      <attribute>
-        <anyName>
-          <except>
-            <nsName ns=""/>
-          </except>
-        </anyName>
+    <define name="db.assembly.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.assembly.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.assembly.role.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.assembly.info">
+      <ref name="db._info"/>
+    </define>
+    <define name="db.assembly">
+      <element name="assembly">
+        <a:documentation>Defines the hierarchy and relationships for a collection of resources</a:documentation>
+        <s:pattern>
+          <s:title>Root must have version</s:title>
+          <s:rule context="/db:assembly">
+            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <ref name="db.assembly.attlist"/>
+        <ref name="db.assembly.info"/>
+        <oneOrMore>
+          <ref name="db.resources"/>
+        </oneOrMore>
+        <zeroOrMore>
+          <ref name="db.structure"/>
+        </zeroOrMore>
+        <zeroOrMore>
+          <ref name="db.relationships"/>
+        </zeroOrMore>
+        <optional>
+          <ref name="db.transforms"/>
+        </optional>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.resources.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.resources.grammar.attribute">
+      <ref name="db.grammar.attribute"/>
+    </define>
+    <define name="db.resources.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.resources.role.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.resources.grammar.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.resources.info">
+      <ref name="db._info.title.forbidden"/>
+    </define>
+    <define name="db.resources">
+      <element name="resources">
+        <a:documentation>Contains one or more resource objects that are managed by the assembly</a:documentation>
+        <s:pattern>
+          <s:title>Root must have version</s:title>
+          <s:rule context="/db:resources">
+            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <ref name="db.resources.attlist"/>
+        <optional>
+          <ref name="db.resources.info"/>
+        </optional>
+        <group>
+          <zeroOrMore>
+            <ref name="db.description"/>
+          </zeroOrMore>
+          <oneOrMore>
+            <ref name="db.resource"/>
+          </oneOrMore>
+        </group>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.resource.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.resource.href.attribute">
+      <attribute name="href">
+        <a:documentation>Indentifies the location of the data by URI</a:documentation>
+        <data type="anyURI"/>
       </attribute>
     </define>
-    <define name="db.xi.include.attlist">
-      <optional>
-        <attribute name="href">
-          <data type="anyURI">
-            <param name="pattern">[^#]+</param>
-          </data>
-        </attribute>
-      </optional>
-      <optional>
-        <attribute name="parse" a:defaultValue="xml">
-          <choice>
-            <value>xml</value>
-            <value>text</value>
-          </choice>
-        </attribute>
-      </optional>
-      <optional>
-        <attribute name="xpointer"/>
-      </optional>
-      <optional>
-        <attribute name="fragid"/>
-      </optional>
-      <optional>
-        <attribute name="set-xml-id"/>
-      </optional>
-      <optional>
-        <attribute name="encoding"/>
-      </optional>
-      <optional>
-        <attribute name="accept"/>
-      </optional>
-      <optional>
-        <attribute name="accept-language"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="db.any.other.attribute"/>
-      </zeroOrMore>
+    <define name="db.resource.grammar.attribute">
+      <ref name="db.grammar.attribute"/>
     </define>
-    <define name="db.xi.include">
-      <element name="xi:include">
-        <a:documentation>An XInclude</a:documentation>
-        <ref name="db.xi.include.attlist"/>
+    <define name="db.resource.transform.attribute">
+      <attribute name="transform">
+        <a:documentation>Identifies the markup grammar of a resource</a:documentation>
+        <data type="NMTOKEN"/>
+      </attribute>
+    </define>
+    <define name="db.resource.attlist">
+      <interleave>
         <optional>
-          <ref name="db.xi.fallback"/>
+          <ref name="db.resource.role.attribute"/>
         </optional>
+        <optional>
+          <choice>
+            <ref name="db.resource.transform.attribute"/>
+            <ref name="db.resource.grammar.attribute"/>
+          </choice>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.resource">
+      <element name="resource">
+        <a:documentation>Identifies an object managed within the assembly</a:documentation>
+        <ref name="db.resource.attlist"/>
+        <ref name="db.resource.href.attribute"/>
+        <zeroOrMore>
+          <ref name="db.description"/>
+        </zeroOrMore>
       </element>
     </define>
   </div>
   <div>
-    <!-- The fallback element has no attributes -->
-    <define name="db.xi.fallback">
-      <element name="xi:fallback">
-        <a:documentation>An XInclude fallback</a:documentation>
-        <choice>
-          <oneOrMore>
-            <ref name="db.all.blocks"/>
-          </oneOrMore>
-          <oneOrMore>
-            <ref name="db.all.inlines"/>
-          </oneOrMore>
+    <define name="db.structure.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.structure.type.attribute">
+      <attribute name="type">
+        <a:documentation>Identifies the structure type of the structure</a:documentation>
+        <data type="NMTOKEN"/>
+      </attribute>
+    </define>
+    <define name="db.structure.resourceref.attribute">
+      <attribute name="resourceref">
+        <a:documentation>Indicates a single resource from which to construct this structure</a:documentation>
+        <data type="IDREF"/>
+      </attribute>
+    </define>
+    <define name="db.structure.defaultformat.attribute">
+      <attribute name="defaultformat">
+        <a:documentation>Identifies the default format of the structure</a:documentation>
+        <data type="NMTOKEN"/>
+      </attribute>
+    </define>
+    <define name="db.structure.renderas.attribute">
+      <attribute name="renderas">
+        <a:documentation>Specifies the DocBook element to which this unit should be renamed</a:documentation>
+        <data type="QName"/>
+      </attribute>
+    </define>
+    <define name="db.structure.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.structure.role.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.structure.type.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.structure.resourceref.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.structure.renderas.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.structure.defaultformat.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.structure.info">
+      <optional>
+        <ref name="db.info"/>
+      </optional>
+    </define>
+    <define name="db.structure">
+      <element name="structure">
+        <a:documentation>Describes the structure of a document</a:documentation>
+        <s:pattern>
+          <s:title>Root must have version</s:title>
+          <s:rule context="/db:structure">
+            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <s:pattern>
+          <s:title>Specification of renderas</s:title>
+          <s:rule context="db:structure">
+            <s:assert test="not(@renderas and db:output/@renderas)">The renderas attribute can be specified on either the structure or output, but not both.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <ref name="db.structure.attlist"/>
+        <interleave>
           <zeroOrMore>
-            <ref name="db._any"/>
+            <ref name="db.output"/>
           </zeroOrMore>
-        </choice>
+          <optional>
+            <ref name="db.filterin"/>
+          </optional>
+          <optional>
+            <ref name="db.filterout"/>
+          </optional>
+          <ref name="db.structure.info"/>
+        </interleave>
+        <optional>
+          <ref name="db.merge"/>
+        </optional>
+        <optional>
+          <ref name="db.revhistory"/>
+        </optional>
+        <oneOrMore>
+          <ref name="db.module"/>
+        </oneOrMore>
       </element>
     </define>
   </div>
-  <define name="db._any">
-    <element>
-      <anyName>
-        <except>
-          <nsName/>
-          <nsName ns="http://www.w3.org/2005/11/its"/>
-        </except>
-      </anyName>
-      <zeroOrMore>
-        <choice>
-          <attribute>
-            <anyName/>
-          </attribute>
-          <text/>
-          <ref name="db._any"/>
-        </choice>
-      </zeroOrMore>
-    </element>
-  </define>
-  <define name="db._any_other.attribute">
-    <attribute>
-      <a:documentation>Any attribute in an other explicit namespace.</a:documentation>
-      <anyName>
-        <except>
-          <nsName/>
-          <nsName ns="http://www.w3.org/XML/1998/namespace"/>
-          <nsName ns="http://www.w3.org/1999/xlink"/>
-          <nsName ns="http://docbook.org/ns/transclusion"/>
-          <nsName ns="http://www.w3.org/2005/11/its"/>
-          <nsName ns=""/>
-        </except>
-      </anyName>
-    </attribute>
-  </define>
-  <!-- Include base ITS schema -->
-  <define name="its-version.type">
-    <a:documentation>Version of ITS</a:documentation>
-    <data type="string">
-      <param name="pattern">[0-9]+\.[0-9]+</param>
-    </data>
-  </define>
-  <define name="its-queryLanguage.type">
-    <a:documentation>The query language to be used for processing the rules</a:documentation>
-    <choice>
-      <value>xpath</value>
-      <value>css</value>
-      <text/>
-    </choice>
-  </define>
-  <define name="its-absolute-selector.type">
-    <data type="string" datatypeLibrary="">
-      <a:documentation>Absolute selector</a:documentation>
-    </data>
-  </define>
-  <define name="its-relative-selector.type">
-    <data type="string" datatypeLibrary="">
-      <a:documentation>Relative selector</a:documentation>
-    </data>
-  </define>
-  <define name="its-xpath-expression.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-confidence.type">
-    <data type="double">
-      <param name="minInclusive">0</param>
-      <param name="maxInclusive">1</param>
-    </data>
-  </define>
-  <define name="its-translate.type">
-    <a:documentation>The Translate data category information to be attached to the current node</a:documentation>
-    <choice>
-      <value>yes</value>
-      <a:documentation>The nodes need to be translated</a:documentation>
-      <value>no</value>
-      <a:documentation>The nodes must not be translated</a:documentation>
-    </choice>
-  </define>
-  <define name="its-locNote.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-locNoteType.type">
-    <a:documentation>The type of localization note</a:documentation>
-    <choice>
-      <value>alert</value>
-      <a:documentation>Localization note is an alert</a:documentation>
-      <value>description</value>
-      <a:documentation>Localization note is a description</a:documentation>
-    </choice>
-  </define>
-  <define name="its-locNoteRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-termInfoRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-term.type">
-    <a:documentation>Indicates a term locally</a:documentation>
-    <choice>
-      <value>yes</value>
-      <a:documentation>The value 'yes' means that this is a term</a:documentation>
-      <value>no</value>
-      <a:documentation>The value 'no' means that this is not a term</a:documentation>
-    </choice>
-  </define>
-  <define name="its-termConfidence.type">
-    <ref name="its-confidence.type"/>
-  </define>
-  <define name="its-dir.type">
-    <a:documentation>The text direction for the context</a:documentation>
-    <choice>
-      <value>ltr</value>
-      <a:documentation>Left-to-right text</a:documentation>
-      <value>rtl</value>
-      <a:documentation>Right-to-left text</a:documentation>
-      <value>lro</value>
-      <a:documentation>Left-to-right override</a:documentation>
-      <value>rlo</value>
-      <a:documentation>Right-to-left override</a:documentation>
-    </choice>
-  </define>
-  <define name="its-withinText.type">
-    <a:documentation>States whether current context is regarded as "within text"</a:documentation>
-    <choice>
-      <value>yes</value>
-      <a:documentation>The element and its content are part of the flow of its parent element</a:documentation>
-      <value>no</value>
-      <a:documentation>The element splits the text flow of its parent element and its content is an independent text flow</a:documentation>
-      <value>nested</value>
-      <a:documentation>The element is part of the flow of its parent element, its content is an independent flow</a:documentation>
-    </choice>
-  </define>
-  <define name="its-domainMapping.type">
-    <a:documentation>A comma separated list of mappings between values in the content
-and workflow specific values. The values may contain spaces; in
-that case they MUST be delimited by quotation marks.</a:documentation>
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-taConfidence.type">
-    <ref name="its-confidence.type"/>
-  </define>
-  <define name="its-taClassRefPointer.type">
-    <ref name="its-relative-selector.type"/>
-  </define>
-  <define name="its-taClassRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-taIdentRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-taIdent.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-taSource.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-taIdentPointer.type">
-    <ref name="its-relative-selector.type"/>
-  </define>
-  <define name="its-taIdentRefPointer.type">
-    <ref name="its-relative-selector.type"/>
-  </define>
-  <define name="its-taSourcePointer.type">
-    <ref name="its-relative-selector.type"/>
-  </define>
-  <define name="its-localeFilterList.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-localeFilterType.type">
-    <choice>
-      <value>include</value>
-      <value>exclude</value>
-    </choice>
-  </define>
-  <define name="its-provenanceRecordsRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-person.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-personRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-org.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-orgRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-tool.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-toolRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-revPerson.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-revPersonRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-revOrg.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-revOrgRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-revTool.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-revToolRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-provRef.type">
-    <list>
-      <oneOrMore>
+  <div>
+    <define name="db.output.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.output.chunk.attribute">
+      <attribute name="chunk" a:defaultValue="auto">
+        <a:documentation>Specifies chunking for this module</a:documentation>
+        <ref name="db.module.chunk.enumeration"/>
+      </attribute>
+    </define>
+    <define name="db.output.file.attribute">
+      <attribute name="file">
+        <a:documentation>Specifies the output file for this module or structure</a:documentation>
         <data type="anyURI"/>
-      </oneOrMore>
-    </list>
-  </define>
-  <define name="its-locQualityIssuesRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-locQualityIssueType.type">
-    <choice>
-      <value>terminology</value>
-      <value>mistranslation</value>
-      <value>omission</value>
-      <value>untranslated</value>
-      <value>addition</value>
-      <value>duplication</value>
-      <value>inconsistency</value>
-      <value>grammar</value>
-      <value>legal</value>
-      <value>register</value>
-      <value>locale-specific-content</value>
-      <value>locale-violation</value>
-      <value>style</value>
-      <value>characters</value>
-      <value>misspelling</value>
-      <value>typographical</value>
-      <value>formatting</value>
-      <value>inconsistent-entities</value>
-      <value>numbers</value>
-      <value>markup</value>
-      <value>pattern-problem</value>
-      <value>whitespace</value>
-      <value>internationalization</value>
-      <value>length</value>
-      <value>non-conformance</value>
-      <value>uncategorized</value>
-      <value>other</value>
-    </choice>
-  </define>
-  <define name="its-locQualityIssueComment.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-locQualityIssueSeverity.type">
-    <data type="double">
-      <param name="minInclusive">0</param>
-      <param name="maxInclusive">100</param>
-    </data>
-  </define>
-  <define name="its-locQualityIssueProfileRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-locQualityIssueEnabled.type">
-    <choice>
-      <value>yes</value>
-      <value>no</value>
-    </choice>
-  </define>
-  <define name="its-locQualityRatingScore.type">
-    <data type="double">
-      <param name="minInclusive">0</param>
-      <param name="maxInclusive">100</param>
-    </data>
-  </define>
-  <define name="its-locQualityRatingVote.type">
-    <data type="integer"/>
-  </define>
-  <define name="its-locQualityRatingScoreThreshold.type">
-    <data type="double">
-      <param name="minInclusive">0</param>
-      <param name="maxInclusive">100</param>
-    </data>
-  </define>
-  <define name="its-locQualityRatingVoteThreshold.type">
-    <data type="integer"/>
-  </define>
-  <define name="its-locQualityRatingProfileRef.type">
-    <data type="anyURI"/>
-  </define>
-  <define name="its-mtConfidence.type">
-    <ref name="its-confidence.type"/>
-  </define>
-  <define name="its-allowedCharacters.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-storageSize.type">
-    <data type="nonNegativeInteger"/>
-  </define>
-  <define name="its-storageEncoding.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-lineBreakType.type">
-    <choice>
-      <value>cr</value>
-      <value>lf</value>
-      <value>crlf</value>
-    </choice>
-  </define>
-  <define name="its-annotatorsRef.type">
-    <data type="string" datatypeLibrary=""/>
-  </define>
-  <define name="its-attribute.translate">
-    <attribute name="its:translate">
-      <ref name="its-translate.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.translate.nons">
-    <attribute name="translate">
-      <ref name="its-translate.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.dir.nons">
-    <attribute name="dir">
-      <ref name="its-dir.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locNote">
-    <attribute name="its:locNote">
-      <ref name="its-locNote.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locNote.nons">
-    <attribute name="locNote">
-      <ref name="its-locNote.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locNoteType">
-    <attribute name="its:locNoteType">
-      <ref name="its-locNoteType.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locNoteType.nons">
-    <attribute name="locNoteType">
-      <ref name="its-locNoteType.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locNoteRef">
-    <attribute name="its:locNoteRef">
-      <ref name="its-locNoteRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locNoteRef.nons">
-    <attribute name="locNoteRef">
-      <ref name="its-locNoteRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.termInfoRef">
-    <attribute name="its:termInfoRef">
-      <ref name="its-termInfoRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.termInfoRef.nons">
-    <attribute name="termInfoRef">
-      <ref name="its-termInfoRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.term">
-    <attribute name="its:term">
-      <ref name="its-term.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.term.nons">
-    <attribute name="term">
-      <ref name="its-term.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.termConfidence">
-    <attribute name="its:termConfidence">
-      <ref name="its-termConfidence.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.termConfidence.nons">
-    <attribute name="termConfidence">
-      <ref name="its-termConfidence.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.withinText">
-    <attribute name="its:withinText">
-      <ref name="its-withinText.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.withinText.nons">
-    <attribute name="withinText">
-      <ref name="its-withinText.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.domainMapping.nons">
-    <attribute name="domainMapping">
-      <ref name="its-domainMapping.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taConfidence">
-    <attribute name="its:taConfidence">
-      <ref name="its-taConfidence.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taConfidence.nons">
-    <attribute name="taConfidence">
-      <ref name="its-taConfidence.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taClassRef">
-    <attribute name="its:taClassRef">
-      <ref name="its-taClassRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taClassRef.nons">
-    <attribute name="taClassRef">
-      <ref name="its-taClassRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taIdent">
-    <attribute name="its:taIdent">
-      <ref name="its-taIdent.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taIdent.nons">
-    <attribute name="taIdent">
-      <ref name="its-taIdent.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taIdentRef">
-    <attribute name="its:taIdentRef">
-      <ref name="its-taIdentRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taIdentRef.nons">
-    <attribute name="taIdentRef">
-      <ref name="its-taIdentRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taSource">
-    <attribute name="its:taSource">
-      <ref name="its-taSource.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taSource.nons">
-    <attribute name="taSource">
-      <ref name="its-taSource.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.localeFilterList">
-    <attribute name="its:localeFilterList">
-      <ref name="its-localeFilterList.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.localeFilterList.nons">
-    <attribute name="localeFilterList">
-      <ref name="its-localeFilterList.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.localeFilterType">
-    <attribute name="its:localeFilterType">
-      <ref name="its-localeFilterType.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.localeFilterType.nons">
-    <attribute name="localeFilterType">
-      <ref name="its-localeFilterType.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.person">
-    <attribute name="its:person">
-      <ref name="its-person.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.person.nons">
-    <attribute name="person">
-      <ref name="its-person.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.personRef">
-    <attribute name="its:personRef">
-      <ref name="its-personRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.personRef.nons">
-    <attribute name="personRef">
-      <ref name="its-personRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.org">
-    <attribute name="its:org">
-      <ref name="its-org.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.org.nons">
-    <attribute name="org">
-      <ref name="its-org.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.orgRef">
-    <attribute name="its:orgRef">
-      <ref name="its-orgRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.orgRef.nons">
-    <attribute name="orgRef">
-      <ref name="its-orgRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.tool">
-    <attribute name="its:tool">
-      <ref name="its-tool.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.tool.nons">
-    <attribute name="tool">
-      <ref name="its-tool.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.toolRef">
-    <attribute name="its:toolRef">
-      <ref name="its-toolRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.toolRef.nons">
-    <attribute name="toolRef">
-      <ref name="its-toolRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revPerson">
-    <attribute name="its:revPerson">
-      <ref name="its-revPerson.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revPerson.nons">
-    <attribute name="revPerson">
-      <ref name="its-revPerson.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revPersonRef">
-    <attribute name="its:revPersonRef">
-      <ref name="its-revPersonRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revPersonRef.nons">
-    <attribute name="revPersonRef">
-      <ref name="its-revPersonRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revOrg">
-    <attribute name="its:revOrg">
-      <ref name="its-revOrg.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revOrg.nons">
-    <attribute name="revOrg">
-      <ref name="its-revOrg.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revOrgRef">
-    <attribute name="its:revOrgRef">
-      <ref name="its-revOrgRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revOrgRef.nons">
-    <attribute name="revOrgRef">
-      <ref name="its-revOrgRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revTool">
-    <attribute name="its:revTool">
-      <ref name="its-revTool.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revTool.nons">
-    <attribute name="revTool">
-      <ref name="its-revTool.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revToolRef">
-    <attribute name="its:revToolRef">
-      <ref name="its-revToolRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.revToolRef.nons">
-    <attribute name="revToolRef">
-      <ref name="its-revToolRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.provRef">
-    <attribute name="its:provRef">
-      <ref name="its-provRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.provRef.nons">
-    <attribute name="provRef">
-      <ref name="its-provRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.provenanceRecordsRef">
-    <attribute name="its:provenanceRecordsRef">
-      <ref name="its-provenanceRecordsRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.provenanceRecordsRef.nons">
-    <attribute name="provenanceRecordsRef">
-      <ref name="its-provenanceRecordsRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssuesRef">
-    <attribute name="its:locQualityIssuesRef">
-      <ref name="its-locQualityIssuesRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssuesRef.nons">
-    <attribute name="locQualityIssuesRef">
-      <ref name="its-locQualityIssuesRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueType">
-    <attribute name="its:locQualityIssueType">
-      <ref name="its-locQualityIssueType.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueType.nons">
-    <attribute name="locQualityIssueType">
-      <ref name="its-locQualityIssueType.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueComment">
-    <attribute name="its:locQualityIssueComment">
-      <ref name="its-locQualityIssueComment.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueComment.nons">
-    <attribute name="locQualityIssueComment">
-      <ref name="its-locQualityIssueComment.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueSeverity">
-    <attribute name="its:locQualityIssueSeverity">
-      <ref name="its-locQualityIssueSeverity.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueSeverity.nons">
-    <attribute name="locQualityIssueSeverity">
-      <ref name="its-locQualityIssueSeverity.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueProfileRef">
-    <attribute name="its:locQualityIssueProfileRef">
-      <ref name="its-locQualityIssueProfileRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueProfileRef.nons">
-    <attribute name="locQualityIssueProfileRef">
-      <ref name="its-locQualityIssueProfileRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueEnabled">
-    <attribute name="its:locQualityIssueEnabled">
-      <ref name="its-locQualityIssueEnabled.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityIssueEnabled.nons">
-    <attribute name="locQualityIssueEnabled">
-      <ref name="its-locQualityIssueEnabled.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingScore">
-    <attribute name="its:locQualityRatingScore">
-      <ref name="its-locQualityRatingScore.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingScore.nons">
-    <attribute name="locQualityRatingScore">
-      <ref name="its-locQualityRatingScore.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingVote">
-    <attribute name="its:locQualityRatingVote">
-      <ref name="its-locQualityRatingVote.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingVote.nons">
-    <attribute name="locQualityRatingVote">
-      <ref name="its-locQualityRatingVote.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingScoreThreshold">
-    <attribute name="its:locQualityRatingScoreThreshold">
-      <ref name="its-locQualityRatingScoreThreshold.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingScoreThreshold.nons">
-    <attribute name="locQualityRatingScoreThreshold">
-      <ref name="its-locQualityRatingScoreThreshold.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingVoteThreshold">
-    <attribute name="its:locQualityRatingVoteThreshold">
-      <ref name="its-locQualityRatingVoteThreshold.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingVoteThreshold.nons">
-    <attribute name="locQualityRatingVoteThreshold">
-      <ref name="its-locQualityRatingVoteThreshold.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingProfileRef">
-    <attribute name="its:locQualityRatingProfileRef">
-      <ref name="its-locQualityRatingProfileRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locQualityRatingProfileRef.nons">
-    <attribute name="locQualityRatingProfileRef">
-      <ref name="its-locQualityRatingProfileRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.mtConfidence">
-    <attribute name="its:mtConfidence">
-      <ref name="its-mtConfidence.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.mtConfidence.nons">
-    <attribute name="mtConfidence">
-      <ref name="its-mtConfidence.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.allowedCharacters">
-    <attribute name="its:allowedCharacters">
-      <ref name="its-allowedCharacters.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.allowedCharacters.nons">
-    <attribute name="allowedCharacters">
-      <ref name="its-allowedCharacters.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.storageSize">
-    <attribute name="its:storageSize">
-      <ref name="its-storageSize.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.storageSize.nons">
-    <attribute name="storageSize">
-      <ref name="its-storageSize.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.storageEncoding">
-    <attribute name="its:storageEncoding">
-      <ref name="its-storageEncoding.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.storageEncoding.nons">
-    <attribute name="storageEncoding">
-      <ref name="its-storageEncoding.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.lineBreakType">
-    <attribute name="its:lineBreakType">
-      <ref name="its-lineBreakType.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.lineBreakType.nons">
-    <attribute name="lineBreakType">
-      <ref name="its-lineBreakType.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.annotatorsRef">
-    <attribute name="its:annotatorsRef">
-      <ref name="its-annotatorsRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.annotatorsRef.nons">
-    <attribute name="annotatorsRef">
-      <ref name="its-annotatorsRef.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.version">
-    <attribute name="its:version">
-      <a:documentation>Version of ITS</a:documentation>
-      <ref name="its-version.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.version.nons">
-    <attribute name="version">
-      <a:documentation>Version of ITS</a:documentation>
-      <ref name="its-version.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.queryLanguage.nons">
-    <attribute name="queryLanguage">
-      <ref name="its-queryLanguage.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.xlink.href">
-    <attribute name="xlink:href">
-      <data type="anyURI"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.xlink.type">
-    <attribute name="xlink:type">
-      <value>simple</value>
-    </attribute>
-  </define>
-  <define name="its-attribute.selector">
-    <attribute name="selector">
-      <ref name="its-absolute-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-foreign-attribute">
-    <attribute>
-      <anyName>
-        <except>
-          <nsName ns=""/>
-        </except>
-      </anyName>
-    </attribute>
-  </define>
-  <define name="its-foreign-no-xml-id-attribute">
-    <attribute>
-      <anyName>
-        <except>
-          <nsName ns=""/>
-          <name>xml:id</name>
-        </except>
-      </anyName>
-    </attribute>
-  </define>
-  <define name="its-foreign-no-xlink-attribute">
-    <attribute>
-      <anyName>
-        <except>
-          <nsName ns=""/>
-          <nsName ns="http://www.w3.org/1999/xlink"/>
-        </except>
-      </anyName>
-    </attribute>
-  </define>
-  <define name="its-any-attribute">
-    <attribute>
-      <anyName/>
-    </attribute>
-  </define>
-  <define name="its-any-element">
-    <element>
-      <anyName/>
-      <zeroOrMore>
-        <choice>
+      </attribute>
+    </define>
+    <define name="db.output.renderas.attribute">
+      <attribute name="renderas">
+        <a:documentation>Specifies the DocBook element to which this unit should be renamed</a:documentation>
+        <data type="QName"/>
+      </attribute>
+    </define>
+    <define name="db.output.transform.attribute">
+      <attribute name="transform">
+        <a:documentation>Specifies the transformation that should be applied to this unit</a:documentation>
+        <data type="NMTOKEN"/>
+      </attribute>
+    </define>
+    <define name="db.output.suppress.attribute">
+      <attribute name="suppress">
+        <a:documentation>Indicates whether or not this unit should be suppressed</a:documentation>
+        <data type="boolean"/>
+      </attribute>
+    </define>
+    <define name="db.output.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.output.role.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+        <optional>
+          <ref name="db.output.chunk.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.output.file.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.output.renderas.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.output.transform.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.output.suppress.attribute"/>
+        </optional>
+      </interleave>
+    </define>
+    <define name="db.output">
+      <element name="output">
+        <a:documentation>Specify an output format and/or file name and/or renderas</a:documentation>
+        <ref name="db.output.attlist"/>
+        <empty/>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.merge.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.merge.resourceref.attribute">
+      <attribute name="resourceref">
+        <a:documentation>Indicates a single resource from which to read merged info</a:documentation>
+        <data type="IDREF"/>
+      </attribute>
+    </define>
+    <define name="db.merge.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.merge.role.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.merge.resourceref.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.merge">
+      <element name="merge">
+        <a:documentation>A wrapper for information that a module overrides in the resource it includes</a:documentation>
+        <ref name="db.merge.attlist"/>
+        <interleave>
+          <ref name="db._title"/>
           <zeroOrMore>
-            <ref name="its-any-attribute"/>
+            <ref name="db.info.elements"/>
           </zeroOrMore>
-          <text/>
-          <ref name="its-any-element"/>
-        </choice>
-      </zeroOrMore>
-    </element>
-  </define>
-  <define name="its-rules">
-    <element name="its:rules">
-      <a:documentation>Container for global rules</a:documentation>
-      <ref name="its-rules.content"/>
-      <ref name="its-rules.attributes"/>
-    </element>
-  </define>
-  <define name="its-rules.content">
-    <zeroOrMore>
-      <ref name="its-param"/>
-    </zeroOrMore>
-    <zeroOrMore>
-      <choice>
-        <ref name="its-translateRule"/>
-        <ref name="its-locNoteRule"/>
-        <ref name="its-termRule"/>
-        <ref name="its-dirRule"/>
-        <ref name="its-langRule"/>
-        <ref name="its-withinTextRule"/>
-        <ref name="its-domainRule"/>
-        <ref name="its-textAnalysisRule"/>
-        <ref name="its-localeFilterRule"/>
-        <ref name="its-provRule"/>
-        <ref name="its-locQualityIssueRule"/>
-        <ref name="its-mtConfidenceRule"/>
-        <ref name="its-externalResourceRefRule"/>
-        <ref name="its-targetPointerRule"/>
-        <ref name="its-idValueRule"/>
-        <ref name="its-preserveSpaceRule"/>
-        <ref name="its-allowedCharactersRule"/>
-        <ref name="its-storageSizeRule"/>
-        <ref name="its-foreign-element"/>
-      </choice>
-    </zeroOrMore>
-  </define>
-  <define name="its-rules.attributes">
-    <ref name="its-attribute.version.nons"/>
-    <optional>
-      <ref name="its-attribute.xlink.href"/>
-      <optional>
-        <ref name="its-attribute.xlink.type"/>
-      </optional>
-    </optional>
-    <optional>
-      <ref name="its-attribute.queryLanguage.nons"/>
-    </optional>
-    <zeroOrMore>
-      <ref name="its-foreign-no-xlink-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-param">
-    <element name="its:param">
-      <a:documentation>Declaration of variable used in selectors</a:documentation>
-      <ref name="its-param.content"/>
-      <ref name="its-param.attributes"/>
-    </element>
-  </define>
-  <define name="its-param.content">
-    <text/>
-  </define>
-  <define name="its-param.attributes">
-    <attribute name="name">
-      <data type="string"/>
-    </attribute>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-local.attributes">
-    <interleave>
-      <optional>
-        <ref name="its-attribute.translate"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.dir"/>
-      </optional>
-      <optional>
-        <choice>
-          <ref name="its-attribute.locNote"/>
-          <ref name="its-attribute.locNoteRef"/>
-        </choice>
-        <optional>
-          <ref name="its-attribute.locNoteType"/>
-        </optional>
-      </optional>
-      <optional>
-        <ref name="its-attribute.term"/>
-        <optional>
-          <ref name="its-attribute.termInfoRef"/>
-        </optional>
-        <optional>
-          <ref name="its-attribute.termConfidence"/>
-        </optional>
-      </optional>
-      <optional>
-        <ref name="its-attribute.withinText"/>
-      </optional>
-      <optional>
-        <interleave>
-          <optional>
-            <ref name="its-attribute.taConfidence"/>
-          </optional>
-          <interleave>
-            <optional>
-              <ref name="its-attribute.taClassRef"/>
-            </optional>
-            <optional>
-              <choice>
-                <group>
-                  <ref name="its-attribute.taSource"/>
-                  <ref name="its-attribute.taIdent"/>
-                </group>
-                <ref name="its-attribute.taIdentRef"/>
-              </choice>
-            </optional>
-          </interleave>
         </interleave>
-      </optional>
-      <optional>
-        <ref name="its-attribute.localeFilterList"/>
-        <optional>
-          <ref name="its-attribute.localeFilterType"/>
-        </optional>
-      </optional>
-      <optional>
-        <choice>
-          <interleave>
-            <optional>
-              <choice>
-                <ref name="its-attribute.person"/>
-                <ref name="its-attribute.personRef"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.org"/>
-                <ref name="its-attribute.orgRef"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.tool"/>
-                <ref name="its-attribute.toolRef"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.revPerson"/>
-                <ref name="its-attribute.revPersonRef"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.revOrg"/>
-                <ref name="its-attribute.revOrgRef"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.revTool"/>
-                <ref name="its-attribute.revToolRef"/>
-              </choice>
-            </optional>
-            <optional>
-              <ref name="its-attribute.provRef"/>
-            </optional>
-          </interleave>
-          <ref name="its-attribute.provenanceRecordsRef"/>
-        </choice>
-      </optional>
-      <optional>
-        <choice>
-          <ref name="its-attribute.locQualityIssuesRef"/>
-          <interleave>
-            <interleave>
-              <optional>
-                <ref name="its-attribute.locQualityIssueType"/>
-              </optional>
-              <optional>
-                <ref name="its-attribute.locQualityIssueComment"/>
-              </optional>
-            </interleave>
-            <optional>
-              <ref name="its-attribute.locQualityIssueSeverity"/>
-            </optional>
-            <optional>
-              <ref name="its-attribute.locQualityIssueProfileRef"/>
-            </optional>
-            <optional>
-              <ref name="its-attribute.locQualityIssueEnabled"/>
-            </optional>
-          </interleave>
-        </choice>
-      </optional>
-      <optional>
-        <choice>
-          <group>
-            <ref name="its-attribute.locQualityRatingScore"/>
-            <optional>
-              <ref name="its-attribute.locQualityRatingScoreThreshold"/>
-            </optional>
-          </group>
-          <group>
-            <ref name="its-attribute.locQualityRatingVote"/>
-            <optional>
-              <ref name="its-attribute.locQualityRatingVoteThreshold"/>
-            </optional>
-          </group>
-        </choice>
-        <optional>
-          <ref name="its-attribute.locQualityRatingProfileRef"/>
-        </optional>
-      </optional>
-      <optional>
-        <ref name="its-attribute.mtConfidence"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.allowedCharacters"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.storageSize"/>
-        <optional>
-          <ref name="its-attribute.storageEncoding"/>
-        </optional>
-        <optional>
-          <ref name="its-attribute.lineBreakType"/>
-        </optional>
-      </optional>
-      <optional>
-        <ref name="its-attribute.annotatorsRef"/>
-      </optional>
-    </interleave>
-  </define>
-  <define name="its-local.nons.attributes">
-    <interleave>
-      <optional>
-        <ref name="its-attribute.translate.nons"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.dir.nons"/>
-      </optional>
-      <optional>
-        <choice>
-          <ref name="its-attribute.locNote.nons"/>
-          <ref name="its-attribute.locNoteRef.nons"/>
-        </choice>
-        <optional>
-          <ref name="its-attribute.locNoteType.nons"/>
-        </optional>
-      </optional>
-      <optional>
-        <ref name="its-attribute.term.nons"/>
-        <optional>
-          <ref name="its-attribute.termInfoRef.nons"/>
-        </optional>
-        <optional>
-          <ref name="its-attribute.termConfidence.nons"/>
-        </optional>
-      </optional>
-      <optional>
-        <ref name="its-attribute.withinText.nons"/>
-      </optional>
-      <optional>
-        <interleave>
-          <optional>
-            <ref name="its-attribute.taConfidence.nons"/>
-          </optional>
-          <interleave>
-            <optional>
-              <ref name="its-attribute.taClassRef.nons"/>
-            </optional>
-            <optional>
-              <choice>
-                <group>
-                  <ref name="its-attribute.taSource.nons"/>
-                  <ref name="its-attribute.taIdent.nons"/>
-                </group>
-                <ref name="its-attribute.taIdentRef.nons"/>
-              </choice>
-            </optional>
-          </interleave>
-        </interleave>
-      </optional>
-      <optional>
-        <ref name="its-attribute.localeFilterList.nons"/>
-        <optional>
-          <ref name="its-attribute.localeFilterType.nons"/>
-        </optional>
-      </optional>
-      <optional>
-        <choice>
-          <interleave>
-            <optional>
-              <choice>
-                <ref name="its-attribute.person.nons"/>
-                <ref name="its-attribute.personRef.nons"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.org.nons"/>
-                <ref name="its-attribute.orgRef.nons"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.tool.nons"/>
-                <ref name="its-attribute.toolRef.nons"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.revPerson.nons"/>
-                <ref name="its-attribute.revPersonRef.nons"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.revOrg.nons"/>
-                <ref name="its-attribute.revOrgRef.nons"/>
-              </choice>
-            </optional>
-            <optional>
-              <choice>
-                <ref name="its-attribute.revTool.nons"/>
-                <ref name="its-attribute.revToolRef.nons"/>
-              </choice>
-            </optional>
-            <optional>
-              <ref name="its-attribute.provRef.nons"/>
-            </optional>
-          </interleave>
-          <ref name="its-attribute.provenanceRecordsRef.nons"/>
-        </choice>
-      </optional>
-      <optional>
-        <choice>
-          <ref name="its-attribute.locQualityIssuesRef.nons"/>
-          <interleave>
-            <interleave>
-              <optional>
-                <ref name="its-attribute.locQualityIssueType.nons"/>
-              </optional>
-              <optional>
-                <ref name="its-attribute.locQualityIssueComment.nons"/>
-              </optional>
-            </interleave>
-            <optional>
-              <ref name="its-attribute.locQualityIssueSeverity.nons"/>
-            </optional>
-            <optional>
-              <ref name="its-attribute.locQualityIssueProfileRef.nons"/>
-            </optional>
-            <optional>
-              <ref name="its-attribute.locQualityIssueEnabled.nons"/>
-            </optional>
-          </interleave>
-        </choice>
-      </optional>
-      <optional>
-        <choice>
-          <group>
-            <ref name="its-attribute.locQualityRatingScore.nons"/>
-            <optional>
-              <ref name="its-attribute.locQualityRatingScoreThreshold.nons"/>
-            </optional>
-          </group>
-          <group>
-            <ref name="its-attribute.locQualityRatingVote.nons"/>
-            <optional>
-              <ref name="its-attribute.locQualityRatingVoteThreshold.nons"/>
-            </optional>
-          </group>
-        </choice>
-        <optional>
-          <ref name="its-attribute.locQualityRatingProfileRef.nons"/>
-        </optional>
-      </optional>
-      <optional>
-        <ref name="its-attribute.mtConfidence.nons"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.allowedCharacters.nons"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.storageSize.nons"/>
-        <optional>
-          <ref name="its-attribute.storageEncoding.nons"/>
-        </optional>
-        <optional>
-          <ref name="its-attribute.lineBreakType.nons"/>
-        </optional>
-      </optional>
-      <optional>
-        <ref name="its-attribute.annotatorsRef.nons"/>
-      </optional>
-    </interleave>
-  </define>
-  <define name="its-span">
-    <element name="its:span">
-      <a:documentation>Inline element to contain ITS information</a:documentation>
-      <ref name="its-span.content"/>
-      <ref name="its-span.attributes"/>
-    </element>
-  </define>
-  <define name="its-span.content">
-    <zeroOrMore>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.module.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.module.chunk.enumeration">
       <choice>
-        <text/>
-        <ref name="its-span"/>
+        <value>true</value>
+        <a:documentation>This module will be in a chunk</a:documentation>
+        <value>false</value>
+        <a:documentation>This module will not be in a chunk</a:documentation>
+        <value>auto</value>
+        <a:documentation>Chunking of this module depends on the overall chunking algorithm</a:documentation>
       </choice>
-    </zeroOrMore>
-  </define>
-  <define name="its-span.attributes">
-    <interleave>
-      <ref name="its-local.nons.attributes"/>
-      <zeroOrMore>
-        <ref name="its-foreign-attribute"/>
-      </zeroOrMore>
-    </interleave>
-  </define>
-  <define name="its-translateRule">
-    <element name="its:translateRule">
-      <a:documentation>Rule about the Translate data category</a:documentation>
-      <ref name="its-translateRule.content"/>
-      <ref name="its-translateRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-translateRule.content">
-    <empty/>
-  </define>
-  <define name="its-translateRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.translate.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-locNoteRule">
-    <element name="its:locNoteRule">
-      <a:documentation>Rule about the Localization Note data category</a:documentation>
-      <ref name="its-attribute.selector"/>
-      <ref name="its-attribute.locNoteType.nons"/>
-      <choice>
-        <ref name="its-locNote"/>
-        <ref name="its-attribute.locNotePointer.nons"/>
-        <ref name="its-attribute.locNoteRef.nons"/>
-        <ref name="its-attribute.locNoteRefPointer.nons"/>
-      </choice>
-      <zeroOrMore>
-        <ref name="its-foreign-attribute"/>
-      </zeroOrMore>
-    </element>
-  </define>
-  <define name="its-attribute.locNotePointer.nons">
-    <attribute name="locNotePointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.locNoteRefPointer.nons">
-    <attribute name="locNoteRefPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-locNote">
-    <element name="its:locNote">
-      <a:documentation>Localization note</a:documentation>
-      <ref name="its-locNote.content"/>
-      <ref name="its-locNote.attributes"/>
-    </element>
-  </define>
-  <define name="its-locNote.content">
-    <zeroOrMore>
-      <choice>
-        <text/>
-        <ref name="its-span"/>
-      </choice>
-    </zeroOrMore>
-  </define>
-  <define name="its-locNote.attributes">
-    <ref name="its-local.nons.attributes"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-termRule">
-    <element name="its:termRule">
-      <a:documentation>Rule about the Terminology data category</a:documentation>
-      <ref name="its-termRule.content"/>
-      <ref name="its-termRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-termRule.content">
-    <empty/>
-  </define>
-  <define name="its-termRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.term.nons"/>
-    <optional>
-      <choice>
-        <ref name="its-attribute.termInfoPointer.nons"/>
-        <ref name="its-attribute.termInfoRef.nons"/>
-        <ref name="its-attribute.termInfoRefPointer.nons"/>
-      </choice>
-    </optional>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.termInfoPointer.nons">
-    <attribute name="termInfoPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.termInfoRefPointer.nons">
-    <attribute name="termInfoRefPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-dirRule">
-    <element name="its:dirRule">
-      <a:documentation>Rule about the Directionality data category</a:documentation>
-      <ref name="its-dirRule.content"/>
-      <ref name="its-dirRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-dirRule.content">
-    <empty/>
-  </define>
-  <define name="its-dirRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.dir.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-langRule">
-    <element name="its:langRule">
-      <a:documentation>Rule about the Language Information data category</a:documentation>
-      <ref name="its-langRule.content"/>
-      <ref name="its-langRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-langRule.content">
-    <empty/>
-  </define>
-  <define name="its-langRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.langPointer.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.langPointer.nons">
-    <attribute name="langPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-withinTextRule">
-    <element name="its:withinTextRule">
-      <a:documentation>Rule about the Elements Within Text data category</a:documentation>
-      <ref name="its-withinTextRule.content"/>
-      <ref name="its-withinTextRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-withinTextRule.content">
-    <empty/>
-  </define>
-  <define name="its-withinTextRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.withinText.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-domainRule">
-    <element name="its:domainRule">
-      <a:documentation>Rule about the Domain data category</a:documentation>
-      <ref name="its-domainRule.content"/>
-      <ref name="its-domainRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-domainRule.content">
-    <empty/>
-  </define>
-  <define name="its-domainRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.domainPointer.nons"/>
-    <optional>
-      <ref name="its-attribute.domainMapping.nons"/>
-    </optional>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.domainPointer.nons">
-    <attribute name="domainPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-textAnalysisRule">
-    <element name="its:textAnalysisRule">
-      <a:documentation>Rule about the Disambiguation data category</a:documentation>
-      <ref name="its-textAnalysisRule.content"/>
-      <ref name="its-textAnalysisRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-textAnalysisRule.content">
-    <empty/>
-  </define>
-  <define name="its-textAnalysisRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <optional>
-      <ref name="its-attribute.taClassRefPointer.nons"/>
-    </optional>
-    <optional>
-      <choice>
+    </define>
+    <define name="db.module.chunk.attribute">
+      <attribute name="chunk" a:defaultValue="auto">
+        <a:documentation>Specifies chunking for this module</a:documentation>
+        <ref name="db.module.chunk.enumeration"/>
+      </attribute>
+    </define>
+    <define name="db.module.resourceref.attribute">
+      <attribute name="resourceref">
+        <a:documentation>Identifies a single resource or structure within the assembly from which to construct this module</a:documentation>
+        <data type="IDREF"/>
+      </attribute>
+    </define>
+    <define name="db.module.omittitles.attribute">
+      <optional>
+        <attribute name="omittitles">
+          <a:documentation>Indicates if titles should be omitted when including a resource</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+    </define>
+    <define name="db.module.contentonly.attribute">
+      <optional>
+        <attribute name="contentonly">
+          <a:documentation>Indicates if the root element should be omitted when including the resource (copying only the children)</a:documentation>
+          <data type="boolean"/>
+        </attribute>
+      </optional>
+    </define>
+    <define name="db.module.renderas.attribute">
+      <attribute name="renderas">
+        <a:documentation>Changes the name of the root element of the included resource to the specified name</a:documentation>
+        <data type="QName"/>
+      </attribute>
+    </define>
+    <define name="db.module.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.module.role.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.module.chunk.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.module.resourceref.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.module.omittitles.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.module.contentonly.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.module.renderas.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.module.info">
+      <optional>
+        <ref name="db.info"/>
+      </optional>
+    </define>
+    <define name="db.module">
+      <element name="module">
+        <a:documentation>A modular component within a structure</a:documentation>
+        <s:pattern>
+          <s:title>Root must have version</s:title>
+          <s:rule context="/db:module">
+            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <s:pattern>
+          <s:title>Specification of renderas</s:title>
+          <s:rule context="db:module">
+            <s:assert test="not(@renderas and db:output/@renderas)">The renderas attribute can be specified on either the structure or output, but not both.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <ref name="db.module.attlist"/>
         <group>
-          <ref name="its-attribute.taSourcePointer.nons"/>
-          <ref name="its-attribute.taIdentPointer.nons"/>
+          <zeroOrMore>
+            <choice>
+              <ref name="db.output"/>
+              <ref name="db.filterin"/>
+              <ref name="db.filterout"/>
+            </choice>
+          </zeroOrMore>
+          <ref name="db.module.info"/>
+          <optional>
+            <ref name="db.merge"/>
+          </optional>
+          <zeroOrMore>
+            <ref name="db.module"/>
+          </zeroOrMore>
         </group>
-        <ref name="its-attribute.taIdentRefPointer.nons"/>
-      </choice>
-    </optional>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.taClassRefPointer.nons">
-    <attribute name="taClassRefPointer">
-      <ref name="its-taClassRefPointer.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taIdentPointer.nons">
-    <attribute name="taIdentPointer">
-      <ref name="its-taIdentPointer.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taSourcePointer.nons">
-    <attribute name="taSourcePointer">
-      <ref name="its-taSourcePointer.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.taIdentRefPointer.nons">
-    <attribute name="taIdentRefPointer">
-      <ref name="its-taIdentRefPointer.type"/>
-    </attribute>
-  </define>
-  <define name="its-localeFilterRule">
-    <element name="its:localeFilterRule">
-      <a:documentation>Rule about the LocaleFilter data category</a:documentation>
-      <ref name="its-localeFilterRule.content"/>
-      <ref name="its-localeFilterRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-localeFilterRule.content">
-    <empty/>
-  </define>
-  <define name="its-localeFilterRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.localeFilterList.nons"/>
-    <optional>
-      <ref name="its-attribute.localeFilterType.nons"/>
-    </optional>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-provRule">
-    <element name="its:provRule">
-      <a:documentation>Rule about the Provenance data category</a:documentation>
-      <ref name="its-provRule.content"/>
-      <ref name="its-provRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-provRule.content">
-    <empty/>
-  </define>
-  <define name="its-provRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.provenanceRecordsRefPointer.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.provenanceRecordsRefPointer.nons">
-    <attribute name="provenanceRecordsRefPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-externalResourceRefRule">
-    <element name="its:externalResourceRefRule">
-      <a:documentation>Rule about the External Resource data category</a:documentation>
-      <ref name="its-externalResourceRefRule.content"/>
-      <ref name="its-externalResourceRefRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-externalResourceRefRule.content">
-    <empty/>
-  </define>
-  <define name="its-externalResourceRefRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.externalResourceRefPointer.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.externalResourceRefPointer.nons">
-    <attribute name="externalResourceRefPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-targetPointerRule">
-    <element name="its:targetPointerRule">
-      <a:documentation>Rule about the Target Pointer data category</a:documentation>
-      <ref name="its-targetPointerRule.content"/>
-      <ref name="its-targetPointerRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-targetPointerRule.content">
-    <empty/>
-  </define>
-  <define name="its-targetPointerRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.targetPointer.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.targetPointer.nons">
-    <attribute name="targetPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-idValueRule">
-    <element name="its:idValueRule">
-      <a:documentation>Rule about the Id Value data category</a:documentation>
-      <ref name="its-idValueRule.content"/>
-      <ref name="its-idValueRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-idValueRule.content">
-    <empty/>
-  </define>
-  <define name="its-idValueRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.idValue.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.idValue.nons">
-    <attribute name="idValue">
-      <ref name="its-xpath-expression.type"/>
-    </attribute>
-  </define>
-  <define name="its-preserveSpaceRule">
-    <element name="its:preserveSpaceRule">
-      <a:documentation>Rule about the Preserve Space data category</a:documentation>
-      <ref name="its-preserveSpaceRule.content"/>
-      <ref name="its-preserveSpaceRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-preserveSpaceRule.content">
-    <empty/>
-  </define>
-  <define name="its-preserveSpaceRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.space.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.space.nons">
-    <attribute name="space">
-      <choice>
-        <value>default</value>
-        <value>preserve</value>
-      </choice>
-    </attribute>
-  </define>
-  <define name="its-locQualityIssueRule">
-    <element name="its:locQualityIssueRule">
-      <a:documentation>Rule about the Localization Quality Issue data category</a:documentation>
-      <ref name="its-locQualityIssueRule.content"/>
-      <ref name="its-locQualityIssueRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-locQualityIssueRule.content">
-    <empty/>
-  </define>
-  <define name="its-locQualityIssueRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <choice>
-      <choice>
-        <ref name="its-attribute.locQualityIssuesRef.nons"/>
-        <ref name="its-attribute.locQualityIssuesRefPointer.nons"/>
-      </choice>
-      <group>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.filterout.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.filterout.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.filterout.role.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.filterout">
+      <element name="filterout">
+        <a:documentation>Elements with effectivity attributes matching this element are suppressed</a:documentation>
+        <ref name="db.filterout.attlist"/>
+        <empty/>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.filterin.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.filterin.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.filterin.role.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.filterin">
+      <element name="filterin">
+        <a:documentation>Elements with effectivity attributes matching this element are allowed</a:documentation>
+        <ref name="db.filterin.attlist"/>
+        <empty/>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.relationships.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.relationships.type.attribute">
+      <attribute name="type">
+        <a:documentation>Identifies the type of the contained relationships</a:documentation>
+        <data type="NMTOKENS"/>
+      </attribute>
+    </define>
+    <define name="db.relationships.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.relationships.role.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.relationships.type.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.relationships.info">
+      <ref name="db._info"/>
+    </define>
+    <define name="db.relationships">
+      <element name="relationships">
+        <a:documentation>Groups relationship elements to define associations between resources</a:documentation>
+        <s:pattern>
+          <s:title>Root must have version</s:title>
+          <s:rule context="/db:relationships">
+            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <ref name="db.relationships.attlist"/>
+        <ref name="db.relationships.info"/>
         <oneOrMore>
           <choice>
-            <ref name="its-attribute.locQualityIssueType.nons"/>
-            <ref name="its-attribute.locQualityIssueComment.nons"/>
+            <ref name="db.relationship"/>
+            <ref name="db.instance"/>
           </choice>
         </oneOrMore>
-        <optional>
-          <ref name="its-attribute.locQualityIssueSeverity.nons"/>
-        </optional>
-        <optional>
-          <ref name="its-attribute.locQualityIssueProfileRef.nons"/>
-        </optional>
-        <optional>
-          <ref name="its-attribute.locQualityIssueEnabled.nons"/>
-        </optional>
-      </group>
-    </choice>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.locQualityIssuesRefPointer.nons">
-    <attribute name="locQualityIssuesRefPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-mtConfidenceRule">
-    <element name="its:mtConfidenceRule">
-      <a:documentation>Rule about the MT Confidence data category</a:documentation>
-      <ref name="its-mtConfidenceRule.content"/>
-      <ref name="its-mtConfidenceRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-mtConfidenceRule.content">
-    <empty/>
-  </define>
-  <define name="its-mtConfidenceRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <ref name="its-attribute.mtConfidence.nons"/>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-allowedCharactersRule">
-    <element name="its:allowedCharactersRule">
-      <a:documentation>Rule about the Allowed Characters data category</a:documentation>
-      <ref name="its-allowedCharactersRule.content"/>
-      <ref name="its-allowedCharactersRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-allowedCharactersRule.content">
-    <empty/>
-  </define>
-  <define name="its-allowedCharactersRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <choice>
-      <ref name="its-attribute.allowedCharacters.nons"/>
-      <ref name="its-attribute.allowedCharactersPointer.nons"/>
-    </choice>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.allowedCharactersPointer.nons">
-    <attribute name="allowedCharactersPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-storageSizeRule">
-    <element name="its:storageSizeRule">
-      <a:documentation>Rule about the Allowed Characters data category</a:documentation>
-      <ref name="its-storageSizeRule.content"/>
-      <ref name="its-storageSizeRule.attributes"/>
-    </element>
-  </define>
-  <define name="its-storageSizeRule.content">
-    <empty/>
-  </define>
-  <define name="its-storageSizeRule.attributes">
-    <ref name="its-attribute.selector"/>
-    <choice>
-      <ref name="its-attribute.storageSize.nons"/>
-      <ref name="its-attribute.storageSizePointer.nons"/>
-    </choice>
-    <optional>
-      <choice>
-        <ref name="its-attribute.storageEncoding.nons"/>
-        <ref name="its-attribute.storageEncodingPointer.nons"/>
-      </choice>
-    </optional>
-    <optional>
-      <ref name="its-attribute.lineBreakType.nons"/>
-    </optional>
-    <zeroOrMore>
-      <ref name="its-foreign-attribute"/>
-    </zeroOrMore>
-  </define>
-  <define name="its-attribute.storageSizePointer.nons">
-    <attribute name="storageSizePointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-attribute.storageEncodingPointer.nons">
-    <attribute name="storageEncodingPointer">
-      <ref name="its-relative-selector.type"/>
-    </attribute>
-  </define>
-  <define name="its-standoff">
-    <choice>
-      <ref name="its-provenanceRecords"/>
-      <ref name="its-locQualityIssues"/>
-    </choice>
-  </define>
-  <define name="its-provenanceRecords">
-    <element name="its:provenanceRecords">
-      <a:documentation>Standoff markup for Provenance data category</a:documentation>
-      <oneOrMore>
-        <ref name="its-provenanceRecord"/>
-      </oneOrMore>
-      <attribute name="xml:id">
-        <data type="ID"/>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.relationship.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.relationship.type.attribute">
+      <attribute name="type">
+        <a:documentation>Identifies the type of the relationship</a:documentation>
+        <data type="NMTOKEN"/>
       </attribute>
-      <optional>
-        <ref name="its-attribute.version.nons"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="its-foreign-no-xml-id-attribute"/>
-      </zeroOrMore>
-    </element>
-  </define>
-  <define name="its-provenanceRecord">
-    <element name="its:provenanceRecord">
-      <a:documentation>Provenance record used in Provenance standoff markup</a:documentation>
-      <ref name="its-provenanceRecord.attributes"/>
-    </element>
-  </define>
-  <define name="its-provenanceRecord.attributes">
-    <interleave>
-      <optional>
-        <choice>
-          <ref name="its-attribute.person.nons"/>
-          <ref name="its-attribute.personRef.nons"/>
-        </choice>
-      </optional>
-      <optional>
-        <choice>
-          <ref name="its-attribute.org.nons"/>
-          <ref name="its-attribute.orgRef.nons"/>
-        </choice>
-      </optional>
-      <optional>
-        <choice>
-          <ref name="its-attribute.tool.nons"/>
-          <ref name="its-attribute.toolRef.nons"/>
-        </choice>
-      </optional>
-      <optional>
-        <choice>
-          <ref name="its-attribute.revPerson.nons"/>
-          <ref name="its-attribute.revPersonRef.nons"/>
-        </choice>
-      </optional>
-      <optional>
-        <choice>
-          <ref name="its-attribute.revOrg.nons"/>
-          <ref name="its-attribute.revOrgRef.nons"/>
-        </choice>
-      </optional>
-      <optional>
-        <choice>
-          <ref name="its-attribute.revTool.nons"/>
-          <ref name="its-attribute.revToolRef.nons"/>
-        </choice>
-      </optional>
-      <optional>
-        <ref name="its-attribute.provRef.nons"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="its-foreign-attribute"/>
-      </zeroOrMore>
-    </interleave>
-  </define>
-  <define name="its-locQualityIssues">
-    <element name="its:locQualityIssues">
-      <a:documentation>Standoff markup for Localization Quality Issue data category</a:documentation>
-      <oneOrMore>
-        <ref name="its-locQualityIssue"/>
-      </oneOrMore>
-      <attribute name="xml:id">
-        <data type="ID"/>
-      </attribute>
-      <optional>
-        <ref name="its-attribute.version.nons"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="its-foreign-no-xml-id-attribute"/>
-      </zeroOrMore>
-    </element>
-  </define>
-  <define name="its-locQualityIssue">
-    <element name="its:locQualityIssue">
-      <a:documentation>Issue recorded in Localization Quality standoff markup</a:documentation>
-      <ref name="its-locQualityIssue.attributes"/>
-    </element>
-  </define>
-  <define name="its-locQualityIssue.attributes">
-    <interleave>
-      <optional>
-        <ref name="its-attribute.locQualityIssueType.nons"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.locQualityIssueComment.nons"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.locQualityIssueSeverity.nons"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.locQualityIssueProfileRef.nons"/>
-      </optional>
-      <optional>
-        <ref name="its-attribute.locQualityIssueEnabled.nons"/>
-      </optional>
-      <zeroOrMore>
-        <ref name="its-foreign-attribute"/>
-      </zeroOrMore>
-    </interleave>
-  </define>
-  <define name="its-attribute.dir">
-    <empty/>
-  </define>
-  <define name="its-foreign-element">
-    <element>
-      <anyName>
-        <except>
-          <nsName ns="http://www.w3.org/2005/11/its"/>
-        </except>
-      </anyName>
-      <zeroOrMore>
-        <choice>
-          <zeroOrMore>
-            <ref name="its-foreign-no-xml-id-attribute"/>
-          </zeroOrMore>
+    </define>
+    <define name="db.relationship.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.relationship.role.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.relationship.type.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.linkend.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.relationship">
+      <element name="relationship">
+        <a:documentation>A relationship associates one or more resources</a:documentation>
+        <ref name="db.relationship.attlist"/>
+        <ref name="db.association"/>
+        <oneOrMore>
+          <ref name="db.instance"/>
+        </oneOrMore>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.association.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.association.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.association.role.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.linkend.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.association">
+      <element name="association">
+        <a:documentation>Identifies the type of relationship between one or more resources</a:documentation>
+        <ref name="db.association.attlist"/>
+        <optional>
           <text/>
-          <ref name="its-foreign-element"/>
+        </optional>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.instance.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.instance.linking.attribute">
+      <attribute name="linking">
+        <a:documentation>Specifies the type of link for this instance</a:documentation>
+        <data type="NMTOKENS"/>
+      </attribute>
+    </define>
+    <define name="db.instance.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.instance.role.attribute"/>
+        </optional>
+        <optional>
+          <ref name="db.instance.linking.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.instance">
+      <element name="instance">
+        <a:documentation>Identifies a resource that is part of a relationship</a:documentation>
+        <ref name="db.instance.attlist"/>
+        <ref name="db.linkend.attribute"/>
+        <empty/>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.transforms.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.transforms.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.transforms.role.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.transforms.info">
+      <ref name="db._info"/>
+    </define>
+    <define name="db.transforms">
+      <element name="transforms">
+        <a:documentation>List of transforms for converting from non-DocBook schemas</a:documentation>
+        <s:pattern>
+          <s:title>Root must have version</s:title>
+          <s:rule context="/db:transforms">
+            <s:assert test="@version">If this element is the root element, it must have a version attribute.</s:assert>
+          </s:rule>
+        </s:pattern>
+        <ref name="db.transforms.attlist"/>
+        <ref name="db.transforms.info"/>
+        <oneOrMore>
+          <ref name="db.transform"/>
+        </oneOrMore>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.transform.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.transform.grammar.attribute">
+      <ref name="db.grammar.attribute"/>
+    </define>
+    <define name="db.transform.href.attribute">
+      <attribute name="href">
+        <a:documentation>Indentifies the location of the data by URI</a:documentation>
+        <data type="anyURI"/>
+      </attribute>
+    </define>
+    <define name="db.transform.name.attribute">
+      <attribute name="name">
+        <a:documentation>The name of the transform</a:documentation>
+        <data type="NMTOKEN"/>
+      </attribute>
+    </define>
+    <define name="db.transform.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.transform.role.attribute"/>
+        </optional>
+        <choice>
+          <ref name="db.transform.grammar.attribute"/>
+          <ref name="db.transform.name.attribute"/>
         </choice>
-      </zeroOrMore>
-    </element>
-  </define>
+        <ref name="db.transform.href.attribute"/>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.transform">
+      <element name="transform">
+        <a:documentation>Identifies a transform for converting from a non-DocBook schema</a:documentation>
+        <ref name="db.transform.attlist"/>
+        <empty/>
+      </element>
+    </define>
+  </div>
+  <div>
+    <define name="db.description.role.attribute">
+      <attribute name="role"/>
+    </define>
+    <define name="db.description.attlist">
+      <interleave>
+        <optional>
+          <ref name="db.description.role.attribute"/>
+        </optional>
+        <ref name="db.common.attributes"/>
+      </interleave>
+    </define>
+    <define name="db.description">
+      <element name="description">
+        <a:documentation>A description of a resource or resources</a:documentation>
+        <ref name="db.description.attlist"/>
+        <ref name="db._text"/>
+      </element>
+    </define>
+  </div>
 </grammar>
-<!-- Add local ITS attributes to all DocBook elements -->
-<!-- Allow its:rules inside info element -->

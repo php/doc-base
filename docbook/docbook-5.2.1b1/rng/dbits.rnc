@@ -2,6 +2,7 @@ namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 namespace ctrl = "http://nwalsh.com/xmlns/schema-control/"
 default namespace db = "http://docbook.org/ns/docbook"
 namespace html = "http://www.w3.org/1999/xhtml"
+namespace its = "http://www.w3.org/2005/11/its"
 namespace local = ""
 namespace mml = "http://www.w3.org/1998/Math/MathML"
 namespace rng = "http://relaxng.org/ns/structure/1.0"
@@ -10,12 +11,12 @@ namespace svg = "http://www.w3.org/2000/svg"
 namespace trans = "http://docbook.org/ns/transclusion"
 namespace xlink = "http://www.w3.org/1999/xlink"
 
-# This file is part of DocBook V5.2CR5
+# This file is part of DocBook ITS V5.2.1b1
 # 
-# Copyright 1992-2015 HaL Computer Systems, Inc.,
+# Copyright 2007-2020 HaL Computer Systems, Inc.,
 # O'Reilly & Associates, Inc., ArborText, Inc., Fujitsu Software
-# Corporation, Norman Walsh, Sun Microsystems, Inc., and the
-# Organization for the Advancement of Structured Information
+# Corporation, Norman Walsh, Jirka Kosek, Sun Microsystems, Inc.,
+# and the Organization for the Advancement of Structured Information
 # Standards (OASIS).
 # 
 # Permission to use, copy, modify and distribute the DocBook schema
@@ -28,12 +29,12 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 # 
 # If you modify the DocBook schema in any way, label your schema as a
 # variant of DocBook. See the reference documentation
-# (http://docbook.org/tdg5/en/html/ch05.html#s-notdocbook)
+# (https://tdg.docbook.org/tdg/5.2/ch05.html#s-notdocbook)
 # for more information.
 # 
 # Please direct all questions, bug reports, or suggestions for changes
-# to the docbook-comment@lists.oasis-open.org mailing list. For more
-# information, see http://www.oasis-open.org/docbook/.
+# to the docbook@lists.docbook.org mailing list. For more
+# information, see https://docbook.org/.
 # 
 # ======================================================================
 
@@ -44,6 +45,7 @@ s:ns [
 s:ns [ prefix = "ctrl" uri = "http://nwalsh.com/xmlns/schema-control/" ]
 s:ns [ prefix = "db" uri = "http://docbook.org/ns/docbook" ]
 s:ns [ prefix = "html" uri = "http://www.w3.org/1999/xhtml" ]
+s:ns [ prefix = "its" uri = "http://www.w3.org/2005/11/its" ]
 s:ns [ prefix = "mml" uri = "http://www.w3.org/1998/Math/MathML" ]
 s:ns [ prefix = "rng" uri = "http://relaxng.org/ns/structure/1.0" ]
 s:ns [ prefix = "s" uri = "http://purl.oclc.org/dsdl/schematron" ]
@@ -113,14 +115,6 @@ div {
     
     ## Any attribute, including any attribute in any namespace
     attribute * { text }
-  db._any_other.attribute =
-    
-    ## Any attribute in any other explicit namespace
-    attribute * - (db:* | xml:* | xlink:* | trans:* | local:*) { text }
-  db._any =
-    
-    ## Any element from almost any namespace
-    element * - db:* { (db._any.attribute | text | db._any)* }
 }
 db.arch.attribute =
   
@@ -417,6 +411,7 @@ db.common.base.attributes =
   & db.rdfalite.attributes
   & db.common.transclusion.attributes
   & db._any_other.attribute*
+  & (its-local.attributes & its-attribute.version?)
 db.common.attributes =
   db.xml.id.attribute?
   & db.common.base.attributes
@@ -867,7 +862,7 @@ db.verbatim.blocks =
   | (db.programlistingco | db.screenco)
   | (db.programlisting | db.synopsis)
 db.extension.blocks = notAllowed
-db.info.extension = db._any
+db.info.extension = db._any | (its-rules | its-standoff)
 db.info.elements =
   (db.abstract
    | db.address
@@ -7052,6 +7047,17 @@ div {
     ##  description of a marked area
     [
       s:pattern [
+        s:title [ "Callout cross reference idref constraint" ]
+        s:rule [
+          context = "db:callout[@arearefs]"
+          s:assert [
+            test =
+              "every $id in tokenize(current()/@arearefs) satisfies exists(//*[@xml:id = $id])"
+            "Each token in @arearefs must be an idref to an element in the document."
+          ]
+        ]
+      ]
+      s:pattern [
         s:title [ "Callout cross reference constraint" ]
         s:rule [
           context = "db:callout[@arearefs]"
@@ -7249,6 +7255,29 @@ div {
   db.coref =
     
     ## A cross reference to a co
+    [
+      s:pattern [
+        s:title [ "Coref cross reference idref constraint" ]
+        s:rule [
+          context = "db:coref[@linkend]"
+          s:assert [
+            test = "exists(//*[@xml:id=current()/@linkend])"
+            "@linkend on coref must point to an xml:id"
+          ]
+        ]
+      ]
+      s:pattern [
+        s:title [ "Coref cross reference constraint" ]
+        s:rule [
+          context = "db:coref[@linkend]"
+          s:assert [
+            test =
+              "every $id in @linkend satisfies (every $ar in //*[@xml:id = $id] satisfies (local-name($ar) = 'co') and namespace-uri($ar) = 'http://docbook.org/ns/docbook')"
+            "@linkend on coref must point to a co."
+          ]
+        ]
+      ]
+    ]
     element coref { db.coref.attlist, empty }
 }
 div {
@@ -10426,7 +10455,7 @@ div {
       db.classsynopsis.info,
       db.classsynopsisinfo*,
       db.templatename*,
-      db.oo.inlines,
+      db.oo.inlines+,
       (db.template
        | db.ooexception
        | db.methodsynopsis
@@ -11997,3 +12026,800 @@ div {
       db.navigation.components*
     }
 }
+db._any =
+  element * - (db:* | its:*) {
+    (attribute * { text }
+     | text
+     | db._any)*
+  }
+db._any_other.attribute =
+  
+  ## Any attribute in an other explicit namespace.
+  attribute * - (db:* | xml:* | xlink:* | trans:* | its:* | local:*) {
+    text
+  }
+# Include base ITS schema
+
+## Version of ITS
+its-version.type = xsd:string { pattern = "[0-9]+\.[0-9]+" }
+
+## The query language to be used for processing the rules
+its-queryLanguage.type = "xpath" | "css" | text
+its-absolute-selector.type =
+  
+  ## Absolute selector
+  string
+its-relative-selector.type =
+  
+  ## Relative selector
+  string
+its-xpath-expression.type = string
+its-confidence.type =
+  xsd:double { minInclusive = "0" maxInclusive = "1" }
+
+## The Translate data category information to be attached to the current node
+its-translate.type =
+  
+  ## The nodes need to be translated
+  "yes"
+  | 
+    ## The nodes must not be translated
+    "no"
+its-locNote.type = string
+
+## The type of localization note
+its-locNoteType.type =
+  
+  ## Localization note is an alert
+  "alert"
+  | 
+    ## Localization note is a description
+    "description"
+its-locNoteRef.type = xsd:anyURI
+its-termInfoRef.type = xsd:anyURI
+
+## Indicates a term locally
+its-term.type =
+  
+  ## The value 'yes' means that this is a term
+  "yes"
+  | 
+    ## The value 'no' means that this is not a term
+    "no"
+its-termConfidence.type = its-confidence.type
+
+## The text direction for the context
+its-dir.type =
+  
+  ## Left-to-right text
+  "ltr"
+  | 
+    ## Right-to-left text
+    "rtl"
+  | 
+    ## Left-to-right override
+    "lro"
+  | 
+    ## Right-to-left override
+    "rlo"
+
+## States whether current context is regarded as "within text"
+its-withinText.type =
+  
+  ## The element and its content are part of the flow of its parent element
+  "yes"
+  | 
+    ## The element splits the text flow of its parent element and its content is an independent text flow
+    "no"
+  | 
+    ## The element is part of the flow of its parent element, its content is an independent flow
+    "nested"
+
+## A comma separated list of mappings between values in the content
+## and workflow specific values. The values may contain spaces; in
+## that case they MUST be delimited by quotation marks.
+its-domainMapping.type = string
+its-taConfidence.type = its-confidence.type
+its-taClassRefPointer.type = its-relative-selector.type
+its-taClassRef.type = xsd:anyURI
+its-taIdentRef.type = xsd:anyURI
+its-taIdent.type = string
+its-taSource.type = string
+its-taIdentPointer.type = its-relative-selector.type
+its-taIdentRefPointer.type = its-relative-selector.type
+its-taSourcePointer.type = its-relative-selector.type
+its-localeFilterList.type = string
+its-localeFilterType.type = "include" | "exclude"
+its-provenanceRecordsRef.type = xsd:anyURI
+its-person.type = string
+its-personRef.type = xsd:anyURI
+its-org.type = string
+its-orgRef.type = xsd:anyURI
+its-tool.type = string
+its-toolRef.type = xsd:anyURI
+its-revPerson.type = string
+its-revPersonRef.type = xsd:anyURI
+its-revOrg.type = string
+its-revOrgRef.type = xsd:anyURI
+its-revTool.type = string
+its-revToolRef.type = xsd:anyURI
+its-provRef.type = list { xsd:anyURI+ }
+its-locQualityIssuesRef.type = xsd:anyURI
+its-locQualityIssueType.type =
+  "terminology"
+  | "mistranslation"
+  | "omission"
+  | "untranslated"
+  | "addition"
+  | "duplication"
+  | "inconsistency"
+  | "grammar"
+  | "legal"
+  | "register"
+  | "locale-specific-content"
+  | "locale-violation"
+  | "style"
+  | "characters"
+  | "misspelling"
+  | "typographical"
+  | "formatting"
+  | "inconsistent-entities"
+  | "numbers"
+  | "markup"
+  | "pattern-problem"
+  | "whitespace"
+  | "internationalization"
+  | "length"
+  | "non-conformance"
+  | "uncategorized"
+  | "other"
+its-locQualityIssueComment.type = string
+its-locQualityIssueSeverity.type =
+  xsd:double { minInclusive = "0" maxInclusive = "100" }
+its-locQualityIssueProfileRef.type = xsd:anyURI
+its-locQualityIssueEnabled.type = "yes" | "no"
+its-locQualityRatingScore.type =
+  xsd:double { minInclusive = "0" maxInclusive = "100" }
+its-locQualityRatingVote.type = xsd:integer
+its-locQualityRatingScoreThreshold.type =
+  xsd:double { minInclusive = "0" maxInclusive = "100" }
+its-locQualityRatingVoteThreshold.type = xsd:integer
+its-locQualityRatingProfileRef.type = xsd:anyURI
+its-mtConfidence.type = its-confidence.type
+its-allowedCharacters.type = string
+its-storageSize.type = xsd:nonNegativeInteger
+its-storageEncoding.type = string
+its-lineBreakType.type = "cr" | "lf" | "crlf"
+its-annotatorsRef.type = string
+its-attribute.translate = attribute its:translate { its-translate.type }
+its-attribute.translate.nons =
+  attribute translate { its-translate.type }
+its-attribute.dir.nons = attribute dir { its-dir.type }
+its-attribute.locNote = attribute its:locNote { its-locNote.type }
+its-attribute.locNote.nons = attribute locNote { its-locNote.type }
+its-attribute.locNoteType =
+  attribute its:locNoteType { its-locNoteType.type }
+its-attribute.locNoteType.nons =
+  attribute locNoteType { its-locNoteType.type }
+its-attribute.locNoteRef =
+  attribute its:locNoteRef { its-locNoteRef.type }
+its-attribute.locNoteRef.nons =
+  attribute locNoteRef { its-locNoteRef.type }
+its-attribute.termInfoRef =
+  attribute its:termInfoRef { its-termInfoRef.type }
+its-attribute.termInfoRef.nons =
+  attribute termInfoRef { its-termInfoRef.type }
+its-attribute.term = attribute its:term { its-term.type }
+its-attribute.term.nons = attribute term { its-term.type }
+its-attribute.termConfidence =
+  attribute its:termConfidence { its-termConfidence.type }
+its-attribute.termConfidence.nons =
+  attribute termConfidence { its-termConfidence.type }
+its-attribute.withinText =
+  attribute its:withinText { its-withinText.type }
+its-attribute.withinText.nons =
+  attribute withinText { its-withinText.type }
+its-attribute.domainMapping.nons =
+  attribute domainMapping { its-domainMapping.type }
+its-attribute.taConfidence =
+  attribute its:taConfidence { its-taConfidence.type }
+its-attribute.taConfidence.nons =
+  attribute taConfidence { its-taConfidence.type }
+its-attribute.taClassRef =
+  attribute its:taClassRef { its-taClassRef.type }
+its-attribute.taClassRef.nons =
+  attribute taClassRef { its-taClassRef.type }
+its-attribute.taIdent = attribute its:taIdent { its-taIdent.type }
+its-attribute.taIdent.nons = attribute taIdent { its-taIdent.type }
+its-attribute.taIdentRef =
+  attribute its:taIdentRef { its-taIdentRef.type }
+its-attribute.taIdentRef.nons =
+  attribute taIdentRef { its-taIdentRef.type }
+its-attribute.taSource = attribute its:taSource { its-taSource.type }
+its-attribute.taSource.nons = attribute taSource { its-taSource.type }
+its-attribute.localeFilterList =
+  attribute its:localeFilterList { its-localeFilterList.type }
+its-attribute.localeFilterList.nons =
+  attribute localeFilterList { its-localeFilterList.type }
+its-attribute.localeFilterType =
+  attribute its:localeFilterType { its-localeFilterType.type }
+its-attribute.localeFilterType.nons =
+  attribute localeFilterType { its-localeFilterType.type }
+its-attribute.person = attribute its:person { its-person.type }
+its-attribute.person.nons = attribute person { its-person.type }
+its-attribute.personRef = attribute its:personRef { its-personRef.type }
+its-attribute.personRef.nons =
+  attribute personRef { its-personRef.type }
+its-attribute.org = attribute its:org { its-org.type }
+its-attribute.org.nons = attribute org { its-org.type }
+its-attribute.orgRef = attribute its:orgRef { its-orgRef.type }
+its-attribute.orgRef.nons = attribute orgRef { its-orgRef.type }
+its-attribute.tool = attribute its:tool { its-tool.type }
+its-attribute.tool.nons = attribute tool { its-tool.type }
+its-attribute.toolRef = attribute its:toolRef { its-toolRef.type }
+its-attribute.toolRef.nons = attribute toolRef { its-toolRef.type }
+its-attribute.revPerson = attribute its:revPerson { its-revPerson.type }
+its-attribute.revPerson.nons =
+  attribute revPerson { its-revPerson.type }
+its-attribute.revPersonRef =
+  attribute its:revPersonRef { its-revPersonRef.type }
+its-attribute.revPersonRef.nons =
+  attribute revPersonRef { its-revPersonRef.type }
+its-attribute.revOrg = attribute its:revOrg { its-revOrg.type }
+its-attribute.revOrg.nons = attribute revOrg { its-revOrg.type }
+its-attribute.revOrgRef = attribute its:revOrgRef { its-revOrgRef.type }
+its-attribute.revOrgRef.nons =
+  attribute revOrgRef { its-revOrgRef.type }
+its-attribute.revTool = attribute its:revTool { its-revTool.type }
+its-attribute.revTool.nons = attribute revTool { its-revTool.type }
+its-attribute.revToolRef =
+  attribute its:revToolRef { its-revToolRef.type }
+its-attribute.revToolRef.nons =
+  attribute revToolRef { its-revToolRef.type }
+its-attribute.provRef = attribute its:provRef { its-provRef.type }
+its-attribute.provRef.nons = attribute provRef { its-provRef.type }
+its-attribute.provenanceRecordsRef =
+  attribute its:provenanceRecordsRef { its-provenanceRecordsRef.type }
+its-attribute.provenanceRecordsRef.nons =
+  attribute provenanceRecordsRef { its-provenanceRecordsRef.type }
+its-attribute.locQualityIssuesRef =
+  attribute its:locQualityIssuesRef { its-locQualityIssuesRef.type }
+its-attribute.locQualityIssuesRef.nons =
+  attribute locQualityIssuesRef { its-locQualityIssuesRef.type }
+its-attribute.locQualityIssueType =
+  attribute its:locQualityIssueType { its-locQualityIssueType.type }
+its-attribute.locQualityIssueType.nons =
+  attribute locQualityIssueType { its-locQualityIssueType.type }
+its-attribute.locQualityIssueComment =
+  attribute its:locQualityIssueComment {
+    its-locQualityIssueComment.type
+  }
+its-attribute.locQualityIssueComment.nons =
+  attribute locQualityIssueComment { its-locQualityIssueComment.type }
+its-attribute.locQualityIssueSeverity =
+  attribute its:locQualityIssueSeverity {
+    its-locQualityIssueSeverity.type
+  }
+its-attribute.locQualityIssueSeverity.nons =
+  attribute locQualityIssueSeverity { its-locQualityIssueSeverity.type }
+its-attribute.locQualityIssueProfileRef =
+  attribute its:locQualityIssueProfileRef {
+    its-locQualityIssueProfileRef.type
+  }
+its-attribute.locQualityIssueProfileRef.nons =
+  attribute locQualityIssueProfileRef {
+    its-locQualityIssueProfileRef.type
+  }
+its-attribute.locQualityIssueEnabled =
+  attribute its:locQualityIssueEnabled {
+    its-locQualityIssueEnabled.type
+  }
+its-attribute.locQualityIssueEnabled.nons =
+  attribute locQualityIssueEnabled { its-locQualityIssueEnabled.type }
+its-attribute.locQualityRatingScore =
+  attribute its:locQualityRatingScore { its-locQualityRatingScore.type }
+its-attribute.locQualityRatingScore.nons =
+  attribute locQualityRatingScore { its-locQualityRatingScore.type }
+its-attribute.locQualityRatingVote =
+  attribute its:locQualityRatingVote { its-locQualityRatingVote.type }
+its-attribute.locQualityRatingVote.nons =
+  attribute locQualityRatingVote { its-locQualityRatingVote.type }
+its-attribute.locQualityRatingScoreThreshold =
+  attribute its:locQualityRatingScoreThreshold {
+    its-locQualityRatingScoreThreshold.type
+  }
+its-attribute.locQualityRatingScoreThreshold.nons =
+  attribute locQualityRatingScoreThreshold {
+    its-locQualityRatingScoreThreshold.type
+  }
+its-attribute.locQualityRatingVoteThreshold =
+  attribute its:locQualityRatingVoteThreshold {
+    its-locQualityRatingVoteThreshold.type
+  }
+its-attribute.locQualityRatingVoteThreshold.nons =
+  attribute locQualityRatingVoteThreshold {
+    its-locQualityRatingVoteThreshold.type
+  }
+its-attribute.locQualityRatingProfileRef =
+  attribute its:locQualityRatingProfileRef {
+    its-locQualityRatingProfileRef.type
+  }
+its-attribute.locQualityRatingProfileRef.nons =
+  attribute locQualityRatingProfileRef {
+    its-locQualityRatingProfileRef.type
+  }
+its-attribute.mtConfidence =
+  attribute its:mtConfidence { its-mtConfidence.type }
+its-attribute.mtConfidence.nons =
+  attribute mtConfidence { its-mtConfidence.type }
+its-attribute.allowedCharacters =
+  attribute its:allowedCharacters { its-allowedCharacters.type }
+its-attribute.allowedCharacters.nons =
+  attribute allowedCharacters { its-allowedCharacters.type }
+its-attribute.storageSize =
+  attribute its:storageSize { its-storageSize.type }
+its-attribute.storageSize.nons =
+  attribute storageSize { its-storageSize.type }
+its-attribute.storageEncoding =
+  attribute its:storageEncoding { its-storageEncoding.type }
+its-attribute.storageEncoding.nons =
+  attribute storageEncoding { its-storageEncoding.type }
+its-attribute.lineBreakType =
+  attribute its:lineBreakType { its-lineBreakType.type }
+its-attribute.lineBreakType.nons =
+  attribute lineBreakType { its-lineBreakType.type }
+its-attribute.annotatorsRef =
+  attribute its:annotatorsRef { its-annotatorsRef.type }
+its-attribute.annotatorsRef.nons =
+  attribute annotatorsRef { its-annotatorsRef.type }
+its-attribute.version =
+  
+  ## Version of ITS
+  attribute its:version { its-version.type }
+its-attribute.version.nons =
+  
+  ## Version of ITS
+  attribute version { its-version.type }
+its-attribute.queryLanguage.nons =
+  attribute queryLanguage { its-queryLanguage.type }
+its-attribute.xlink.href = attribute xlink:href { xsd:anyURI }
+its-attribute.xlink.type = attribute xlink:type { "simple" }
+its-attribute.selector =
+  attribute selector { its-absolute-selector.type }
+its-foreign-attribute = attribute * - local:* { text }
+its-foreign-no-xml-id-attribute =
+  attribute * - (local:* | xml:id) { text }
+its-foreign-no-xlink-attribute =
+  attribute * - (local:* | xlink:*) { text }
+its-any-attribute = attribute * { text }
+its-any-element =
+  element * { (its-any-attribute* | text | its-any-element)* }
+its-rules =
+  
+  ## Container for global rules
+  element its:rules { its-rules.content, its-rules.attributes }
+its-rules.content =
+  its-param*,
+  (its-translateRule
+   | its-locNoteRule
+   | its-termRule
+   | its-dirRule
+   | its-langRule
+   | its-withinTextRule
+   | its-domainRule
+   | its-textAnalysisRule
+   | its-localeFilterRule
+   | its-provRule
+   | its-locQualityIssueRule
+   | its-mtConfidenceRule
+   | its-externalResourceRefRule
+   | its-targetPointerRule
+   | its-idValueRule
+   | its-preserveSpaceRule
+   | its-allowedCharactersRule
+   | its-storageSizeRule
+   | its-foreign-element)*
+its-rules.attributes =
+  its-attribute.version.nons,
+  (its-attribute.xlink.href, its-attribute.xlink.type?)?,
+  its-attribute.queryLanguage.nons?,
+  its-foreign-no-xlink-attribute*
+its-param =
+  
+  ## Declaration of variable used in selectors
+  element its:param { its-param.content, its-param.attributes }
+its-param.content = text
+its-param.attributes =
+  attribute name { xsd:string },
+  its-foreign-attribute*
+its-local.attributes =
+  its-attribute.translate?
+  & its-attribute.dir?
+  & ((its-attribute.locNote | its-attribute.locNoteRef),
+     its-attribute.locNoteType?)?
+  & (its-attribute.term,
+     its-attribute.termInfoRef?,
+     its-attribute.termConfidence?)?
+  & its-attribute.withinText?
+  & (its-attribute.taConfidence?
+     & (its-attribute.taClassRef?
+        & ((its-attribute.taSource, its-attribute.taIdent)
+           | its-attribute.taIdentRef)?))?
+  & (its-attribute.localeFilterList, its-attribute.localeFilterType?)?
+  & (((its-attribute.person | its-attribute.personRef)?
+      & (its-attribute.org | its-attribute.orgRef)?
+      & (its-attribute.tool | its-attribute.toolRef)?
+      & (its-attribute.revPerson | its-attribute.revPersonRef)?
+      & (its-attribute.revOrg | its-attribute.revOrgRef)?
+      & (its-attribute.revTool | its-attribute.revToolRef)?
+      & its-attribute.provRef?)
+     | its-attribute.provenanceRecordsRef)?
+  & (its-attribute.locQualityIssuesRef
+     | ((its-attribute.locQualityIssueType?
+         & its-attribute.locQualityIssueComment?)
+        & its-attribute.locQualityIssueSeverity?
+        & its-attribute.locQualityIssueProfileRef?
+        & its-attribute.locQualityIssueEnabled?))?
+  & (((its-attribute.locQualityRatingScore,
+       its-attribute.locQualityRatingScoreThreshold?)
+      | (its-attribute.locQualityRatingVote,
+         its-attribute.locQualityRatingVoteThreshold?)),
+     its-attribute.locQualityRatingProfileRef?)?
+  & its-attribute.mtConfidence?
+  & its-attribute.allowedCharacters?
+  & (its-attribute.storageSize,
+     its-attribute.storageEncoding?,
+     its-attribute.lineBreakType?)?
+  & its-attribute.annotatorsRef?
+its-local.nons.attributes =
+  its-attribute.translate.nons?
+  & its-attribute.dir.nons?
+  & ((its-attribute.locNote.nons | its-attribute.locNoteRef.nons),
+     its-attribute.locNoteType.nons?)?
+  & (its-attribute.term.nons,
+     its-attribute.termInfoRef.nons?,
+     its-attribute.termConfidence.nons?)?
+  & its-attribute.withinText.nons?
+  & (its-attribute.taConfidence.nons?
+     & (its-attribute.taClassRef.nons?
+        & ((its-attribute.taSource.nons, its-attribute.taIdent.nons)
+           | its-attribute.taIdentRef.nons)?))?
+  & (its-attribute.localeFilterList.nons,
+     its-attribute.localeFilterType.nons?)?
+  & (((its-attribute.person.nons | its-attribute.personRef.nons)?
+      & (its-attribute.org.nons | its-attribute.orgRef.nons)?
+      & (its-attribute.tool.nons | its-attribute.toolRef.nons)?
+      & (its-attribute.revPerson.nons
+         | its-attribute.revPersonRef.nons)?
+      & (its-attribute.revOrg.nons | its-attribute.revOrgRef.nons)?
+      & (its-attribute.revTool.nons | its-attribute.revToolRef.nons)?
+      & its-attribute.provRef.nons?)
+     | its-attribute.provenanceRecordsRef.nons)?
+  & (its-attribute.locQualityIssuesRef.nons
+     | ((its-attribute.locQualityIssueType.nons?
+         & its-attribute.locQualityIssueComment.nons?)
+        & its-attribute.locQualityIssueSeverity.nons?
+        & its-attribute.locQualityIssueProfileRef.nons?
+        & its-attribute.locQualityIssueEnabled.nons?))?
+  & (((its-attribute.locQualityRatingScore.nons,
+       its-attribute.locQualityRatingScoreThreshold.nons?)
+      | (its-attribute.locQualityRatingVote.nons,
+         its-attribute.locQualityRatingVoteThreshold.nons?)),
+     its-attribute.locQualityRatingProfileRef.nons?)?
+  & its-attribute.mtConfidence.nons?
+  & its-attribute.allowedCharacters.nons?
+  & (its-attribute.storageSize.nons,
+     its-attribute.storageEncoding.nons?,
+     its-attribute.lineBreakType.nons?)?
+  & its-attribute.annotatorsRef.nons?
+its-span =
+  
+  ## Inline element to contain ITS information
+  element its:span { its-span.content, its-span.attributes }
+its-span.content = (text | its-span)*
+its-span.attributes = its-local.nons.attributes & its-foreign-attribute*
+its-translateRule =
+  
+  ## Rule about the Translate data category
+  element its:translateRule {
+    its-translateRule.content, its-translateRule.attributes
+  }
+its-translateRule.content = empty
+its-translateRule.attributes =
+  its-attribute.selector,
+  its-attribute.translate.nons,
+  its-foreign-attribute*
+its-locNoteRule =
+  
+  ## Rule about the Localization Note data category
+  element its:locNoteRule {
+    its-attribute.selector,
+    its-attribute.locNoteType.nons,
+    (its-locNote
+     | its-attribute.locNotePointer.nons
+     | its-attribute.locNoteRef.nons
+     | its-attribute.locNoteRefPointer.nons),
+    its-foreign-attribute*
+  }
+its-attribute.locNotePointer.nons =
+  attribute locNotePointer { its-relative-selector.type }
+its-attribute.locNoteRefPointer.nons =
+  attribute locNoteRefPointer { its-relative-selector.type }
+its-locNote =
+  
+  ## Localization note
+  element its:locNote { its-locNote.content, its-locNote.attributes }
+its-locNote.content = (text | its-span)*
+its-locNote.attributes =
+  its-local.nons.attributes, its-foreign-attribute*
+its-termRule =
+  
+  ## Rule about the Terminology data category
+  element its:termRule { its-termRule.content, its-termRule.attributes }
+its-termRule.content = empty
+its-termRule.attributes =
+  its-attribute.selector,
+  its-attribute.term.nons,
+  (its-attribute.termInfoPointer.nons
+   | its-attribute.termInfoRef.nons
+   | its-attribute.termInfoRefPointer.nons)?,
+  its-foreign-attribute*
+its-attribute.termInfoPointer.nons =
+  attribute termInfoPointer { its-relative-selector.type }
+its-attribute.termInfoRefPointer.nons =
+  attribute termInfoRefPointer { its-relative-selector.type }
+its-dirRule =
+  
+  ## Rule about the Directionality data category
+  element its:dirRule { its-dirRule.content, its-dirRule.attributes }
+its-dirRule.content = empty
+its-dirRule.attributes =
+  its-attribute.selector, its-attribute.dir.nons, its-foreign-attribute*
+its-langRule =
+  
+  ## Rule about the Language Information data category
+  element its:langRule { its-langRule.content, its-langRule.attributes }
+its-langRule.content = empty
+its-langRule.attributes =
+  its-attribute.selector,
+  its-attribute.langPointer.nons,
+  its-foreign-attribute*
+its-attribute.langPointer.nons =
+  attribute langPointer { its-relative-selector.type }
+its-withinTextRule =
+  
+  ## Rule about the Elements Within Text data category
+  element its:withinTextRule {
+    its-withinTextRule.content, its-withinTextRule.attributes
+  }
+its-withinTextRule.content = empty
+its-withinTextRule.attributes =
+  its-attribute.selector,
+  its-attribute.withinText.nons,
+  its-foreign-attribute*
+its-domainRule =
+  
+  ## Rule about the Domain data category
+  element its:domainRule {
+    its-domainRule.content, its-domainRule.attributes
+  }
+its-domainRule.content = empty
+its-domainRule.attributes =
+  its-attribute.selector,
+  its-attribute.domainPointer.nons,
+  its-attribute.domainMapping.nons?,
+  its-foreign-attribute*
+its-attribute.domainPointer.nons =
+  attribute domainPointer { its-relative-selector.type }
+its-textAnalysisRule =
+  
+  ## Rule about the Disambiguation data category
+  element its:textAnalysisRule {
+    its-textAnalysisRule.content, its-textAnalysisRule.attributes
+  }
+its-textAnalysisRule.content = empty
+its-textAnalysisRule.attributes =
+  its-attribute.selector,
+  its-attribute.taClassRefPointer.nons?,
+  ((its-attribute.taSourcePointer.nons,
+    its-attribute.taIdentPointer.nons)
+   | its-attribute.taIdentRefPointer.nons)?,
+  its-foreign-attribute*
+its-attribute.taClassRefPointer.nons =
+  attribute taClassRefPointer { its-taClassRefPointer.type }
+its-attribute.taIdentPointer.nons =
+  attribute taIdentPointer { its-taIdentPointer.type }
+its-attribute.taSourcePointer.nons =
+  attribute taSourcePointer { its-taSourcePointer.type }
+its-attribute.taIdentRefPointer.nons =
+  attribute taIdentRefPointer { its-taIdentRefPointer.type }
+its-localeFilterRule =
+  
+  ## Rule about the LocaleFilter data category
+  element its:localeFilterRule {
+    its-localeFilterRule.content, its-localeFilterRule.attributes
+  }
+its-localeFilterRule.content = empty
+its-localeFilterRule.attributes =
+  its-attribute.selector,
+  its-attribute.localeFilterList.nons,
+  its-attribute.localeFilterType.nons?,
+  its-foreign-attribute*
+its-provRule =
+  
+  ## Rule about the Provenance data category
+  element its:provRule { its-provRule.content, its-provRule.attributes }
+its-provRule.content = empty
+its-provRule.attributes =
+  its-attribute.selector,
+  its-attribute.provenanceRecordsRefPointer.nons,
+  its-foreign-attribute*
+its-attribute.provenanceRecordsRefPointer.nons =
+  attribute provenanceRecordsRefPointer { its-relative-selector.type }
+its-externalResourceRefRule =
+  
+  ## Rule about the External Resource data category
+  element its:externalResourceRefRule {
+    its-externalResourceRefRule.content,
+    its-externalResourceRefRule.attributes
+  }
+its-externalResourceRefRule.content = empty
+its-externalResourceRefRule.attributes =
+  its-attribute.selector,
+  its-attribute.externalResourceRefPointer.nons,
+  its-foreign-attribute*
+its-attribute.externalResourceRefPointer.nons =
+  attribute externalResourceRefPointer { its-relative-selector.type }
+its-targetPointerRule =
+  
+  ## Rule about the Target Pointer data category
+  element its:targetPointerRule {
+    its-targetPointerRule.content, its-targetPointerRule.attributes
+  }
+its-targetPointerRule.content = empty
+its-targetPointerRule.attributes =
+  its-attribute.selector,
+  its-attribute.targetPointer.nons,
+  its-foreign-attribute*
+its-attribute.targetPointer.nons =
+  attribute targetPointer { its-relative-selector.type }
+its-idValueRule =
+  
+  ## Rule about the Id Value data category
+  element its:idValueRule {
+    its-idValueRule.content, its-idValueRule.attributes
+  }
+its-idValueRule.content = empty
+its-idValueRule.attributes =
+  its-attribute.selector,
+  its-attribute.idValue.nons,
+  its-foreign-attribute*
+its-attribute.idValue.nons =
+  attribute idValue { its-xpath-expression.type }
+its-preserveSpaceRule =
+  
+  ## Rule about the Preserve Space data category
+  element its:preserveSpaceRule {
+    its-preserveSpaceRule.content, its-preserveSpaceRule.attributes
+  }
+its-preserveSpaceRule.content = empty
+its-preserveSpaceRule.attributes =
+  its-attribute.selector,
+  its-attribute.space.nons,
+  its-foreign-attribute*
+its-attribute.space.nons = attribute space { "default" | "preserve" }
+its-locQualityIssueRule =
+  
+  ## Rule about the Localization Quality Issue data category
+  element its:locQualityIssueRule {
+    its-locQualityIssueRule.content, its-locQualityIssueRule.attributes
+  }
+its-locQualityIssueRule.content = empty
+its-locQualityIssueRule.attributes =
+  its-attribute.selector,
+  ((its-attribute.locQualityIssuesRef.nons
+    | its-attribute.locQualityIssuesRefPointer.nons)
+   | ((its-attribute.locQualityIssueType.nons
+       | its-attribute.locQualityIssueComment.nons)+,
+      its-attribute.locQualityIssueSeverity.nons?,
+      its-attribute.locQualityIssueProfileRef.nons?,
+      its-attribute.locQualityIssueEnabled.nons?)),
+  its-foreign-attribute*
+its-attribute.locQualityIssuesRefPointer.nons =
+  attribute locQualityIssuesRefPointer { its-relative-selector.type }
+its-mtConfidenceRule =
+  
+  ## Rule about the MT Confidence data category
+  element its:mtConfidenceRule {
+    its-mtConfidenceRule.content, its-mtConfidenceRule.attributes
+  }
+its-mtConfidenceRule.content = empty
+its-mtConfidenceRule.attributes =
+  its-attribute.selector,
+  its-attribute.mtConfidence.nons,
+  its-foreign-attribute*
+its-allowedCharactersRule =
+  
+  ## Rule about the Allowed Characters data category
+  element its:allowedCharactersRule {
+    its-allowedCharactersRule.content,
+    its-allowedCharactersRule.attributes
+  }
+its-allowedCharactersRule.content = empty
+its-allowedCharactersRule.attributes =
+  its-attribute.selector,
+  (its-attribute.allowedCharacters.nons
+   | its-attribute.allowedCharactersPointer.nons),
+  its-foreign-attribute*
+its-attribute.allowedCharactersPointer.nons =
+  attribute allowedCharactersPointer { its-relative-selector.type }
+its-storageSizeRule =
+  
+  ## Rule about the Allowed Characters data category
+  element its:storageSizeRule {
+    its-storageSizeRule.content, its-storageSizeRule.attributes
+  }
+its-storageSizeRule.content = empty
+its-storageSizeRule.attributes =
+  its-attribute.selector,
+  (its-attribute.storageSize.nons
+   | its-attribute.storageSizePointer.nons),
+  (its-attribute.storageEncoding.nons
+   | its-attribute.storageEncodingPointer.nons)?,
+  its-attribute.lineBreakType.nons?,
+  its-foreign-attribute*
+its-attribute.storageSizePointer.nons =
+  attribute storageSizePointer { its-relative-selector.type }
+its-attribute.storageEncodingPointer.nons =
+  attribute storageEncodingPointer { its-relative-selector.type }
+its-standoff = its-provenanceRecords | its-locQualityIssues
+its-provenanceRecords =
+  
+  ## Standoff markup for Provenance data category
+  element its:provenanceRecords {
+    its-provenanceRecord+,
+    attribute xml:id { xsd:ID },
+    its-attribute.version.nons?,
+    its-foreign-no-xml-id-attribute*
+  }
+its-provenanceRecord =
+  
+  ## Provenance record used in Provenance standoff markup
+  element its:provenanceRecord { its-provenanceRecord.attributes }
+its-provenanceRecord.attributes =
+  (its-attribute.person.nons | its-attribute.personRef.nons)?
+  & (its-attribute.org.nons | its-attribute.orgRef.nons)?
+  & (its-attribute.tool.nons | its-attribute.toolRef.nons)?
+  & (its-attribute.revPerson.nons | its-attribute.revPersonRef.nons)?
+  & (its-attribute.revOrg.nons | its-attribute.revOrgRef.nons)?
+  & (its-attribute.revTool.nons | its-attribute.revToolRef.nons)?
+  & its-attribute.provRef.nons?
+  & its-foreign-attribute*
+its-locQualityIssues =
+  
+  ## Standoff markup for Localization Quality Issue data category
+  element its:locQualityIssues {
+    its-locQualityIssue+,
+    attribute xml:id { xsd:ID },
+    its-attribute.version.nons?,
+    its-foreign-no-xml-id-attribute*
+  }
+its-locQualityIssue =
+  
+  ## Issue recorded in Localization Quality standoff markup
+  element its:locQualityIssue { its-locQualityIssue.attributes }
+its-locQualityIssue.attributes =
+  its-attribute.locQualityIssueType.nons?
+  & its-attribute.locQualityIssueComment.nons?
+  & its-attribute.locQualityIssueSeverity.nons?
+  & its-attribute.locQualityIssueProfileRef.nons?
+  & its-attribute.locQualityIssueEnabled.nons?
+  & its-foreign-attribute*
+its-attribute.dir = empty
+its-foreign-element =
+  element * - its:* {
+    (its-foreign-no-xml-id-attribute* | text | its-foreign-element)*
+  }
+# Add local ITS attributes to all DocBook elements
+
+# Allow its:rules inside info element

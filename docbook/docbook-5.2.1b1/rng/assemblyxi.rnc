@@ -11,7 +11,7 @@ namespace trans = "http://docbook.org/ns/transclusion"
 namespace xi = "http://www.w3.org/2001/XInclude"
 namespace xlink = "http://www.w3.org/1999/xlink"
 
-# This file is part of DocBook Assembly XIncludeV5.2CR5
+# This file is part of DocBook Assembly V5.2.1b1
 # 
 # Copyright 2020 HaL Computer Systems, Inc.,
 # O'Reilly & Associates, Inc., ArborText, Inc., Fujitsu Software
@@ -29,12 +29,12 @@ namespace xlink = "http://www.w3.org/1999/xlink"
 # 
 # If you modify the DocBook schema in any way, label your schema as a
 # variant of DocBook. See the reference documentation
-# (http://docbook.org/tdg5/en/html/ch05.html#s-notdocbook)
+# (https://tdg.docbook.org/tdg/5.2/ch05.html#s-notdocbook)
 # for more information.
 # 
 # Please direct all questions, bug reports, or suggestions for changes
-# to the docbook-comment@lists.oasis-open.org mailing list. For more
-# information, see http://www.oasis-open.org/docbook/.
+# to the docbook@lists.docbook.org mailing list. For more
+# information, see https://docbook.org/.
 # 
 # ======================================================================
 
@@ -5986,6 +5986,17 @@ div {
     ##  description of a marked area
     [
       s:pattern [
+        s:title [ "Callout cross reference idref constraint" ]
+        s:rule [
+          context = "db:callout[@arearefs]"
+          s:assert [
+            test =
+              "every $id in tokenize(current()/@arearefs) satisfies exists(//*[@xml:id = $id])"
+            "Each token in @arearefs must be an idref to an element in the document."
+          ]
+        ]
+      ]
+      s:pattern [
         s:title [ "Callout cross reference constraint" ]
         s:rule [
           context = "db:callout[@arearefs]"
@@ -6147,6 +6158,29 @@ div {
   db.coref =
     
     ## A cross reference to a co
+    [
+      s:pattern [
+        s:title [ "Coref cross reference idref constraint" ]
+        s:rule [
+          context = "db:coref[@linkend]"
+          s:assert [
+            test = "exists(//*[@xml:id=current()/@linkend])"
+            "@linkend on coref must point to an xml:id"
+          ]
+        ]
+      ]
+      s:pattern [
+        s:title [ "Coref cross reference constraint" ]
+        s:rule [
+          context = "db:coref[@linkend]"
+          s:assert [
+            test =
+              "every $id in @linkend satisfies (every $ar in //*[@xml:id = $id] satisfies (local-name($ar) = 'co') and namespace-uri($ar) = 'http://docbook.org/ns/docbook')"
+            "@linkend on coref must point to a co."
+          ]
+        ]
+      ]
+    ]
     element coref { db.coref.attlist, empty }
 }
 div {
@@ -9032,7 +9066,7 @@ div {
       db.classsynopsis.info,
       db.classsynopsisinfo*,
       db.templatename*,
-      db.oo.inlines,
+      db.oo.inlines+,
       (db.template
        | db.ooexception
        | db.methodsynopsis
