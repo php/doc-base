@@ -15,11 +15,11 @@
 
 # Description
 
-Generates (and caches) the list of files with TranslatedOk status.    */
+Generates and caches the list of file path pairs used QAXML tools.    */
 
 require_once __DIR__ . '/all.php';
 
-class SyncFileList
+class QaxmlPairList
 {
     static function load( ?string $lang = null , array $filterFiles = [] )
     {
@@ -28,7 +28,7 @@ class SyncFileList
             $file = __DIR__ . "/../../../temp/lang";
             if ( ! file_exists( $file ) )
             {
-                fwrite( STDERR , "Language not found, run 'doc-base/configure.php' or use '--lang='.\n" );
+                fwrite( STDERR , "Language to process. Run 'doc-base/configure.php' or use '--lang='.\n" );
                 exit();
             }
             $lang = trim( file_get_contents( $file ) );
@@ -45,13 +45,13 @@ class SyncFileList
             {
                 if ( ! file_exists( "$sourceDir/$file" ) )
                 {
-                    fwrite( STDERR , "File not found in source: $sourceDir/$file\n" );
+                    fwrite( STDERR , "File not found on source side, ignored: $sourceDir/$file\n" );
                     continue;
                 }
                 if ( ! file_exists( "$targetDir/$file" ) )
                     continue;
 
-                $item = new SyncFileItem();
+                $item = new QaxmlPairItem();
                 $item->sourceDir = $sourceDir;
                 $item->targetDir = $targetDir;
                 $item->file = $file;
@@ -64,12 +64,10 @@ class SyncFileList
             return $ret;
         }
 
-        $cacheFilename = __DIR__ . "/../../../temp/qaxml.files.$lang";
+        $cacheFilename = __DIR__ . "/../../../temp/qaxml.pairs.$lang.gz";
 
         if ( file_exists( $cacheFilename ) )
-        {
             return unserialize( gzdecode( file_get_contents( $cacheFilename ) ) );
-        }
 
         require_once __DIR__ . '/../lib/all.php';
 
@@ -81,7 +79,7 @@ class SyncFileList
             if ( ! file_exists( "$targetDir/{$file->file}" ) )
                 continue;
 
-            $item = new SyncFileItem();
+            $item = new QaxmlPairItem();
             $item->sourceDir = $sourceDir;
             $item->targetDir = $targetDir;
             $item->file = $file->file;

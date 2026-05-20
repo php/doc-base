@@ -15,8 +15,7 @@
 
 # Description
 
-This class process commands for ignoring outputs, and complement non
-ignored outputs with these commands.                                  */
+This class processes commands and tests for omitted local outputs.    */
 
 class OutputIgnore
 {

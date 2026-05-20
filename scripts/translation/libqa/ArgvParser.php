@@ -15,8 +15,7 @@
 
 # Description
 
-This class coordinates and centrailzes control for $argv command line
-parameters, used between vairous classes.                             */
+Analysis and consumption of command-line parameters ($argv)           */
 
 class ArgvParser
 {

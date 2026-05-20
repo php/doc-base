@@ -15,11 +15,11 @@
 
 # Description
 
-Holds file related data for synq XML tools.                           */
+Contains the file path pairs used in all QAXML tools.                 */
 
 require_once __DIR__ . '/all.php';
 
-class SyncFileItem
+class QaxmlPairItem
 {
     public string $sourceDir;
     public string $targetDir;
