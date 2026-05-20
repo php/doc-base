@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     The DocBook Schema Version 5.2
-     OASIS Standard
-     06 February 2024
-     Copyright (c) OASIS Open 2024. All Rights Reserved.
-     Source: https://docs.oasis-open.org/docbook/docbook/v5.2/os/sch/
-     Link to latest version of specification: https://docs.oasis-open.org/docbook/docbook/v5.2/docbook-v5.2.html
--->
 <s:schema xmlns:db="http://docbook.org/ns/docbook"
-           xmlns:rng="http://relaxng.org/ns/structure/1.0"
-           xmlns:s="http://purl.oclc.org/dsdl/schematron"
-           queryBinding="xslt2">
+          xmlns:rng="http://relaxng.org/ns/structure/1.0"
+          xmlns:s="http://purl.oclc.org/dsdl/schematron"
+          queryBinding="xslt2">
    <s:ns prefix="db" uri="http://docbook.org/ns/docbook"/>
    <s:ns prefix="xlink" uri="http://www.w3.org/1999/xlink"/>
    <s:ns prefix="trans" uri="http://docbook.org/ns/transclusion"/>
@@ -18,6 +10,12 @@
       <s:title>Callout cross reference constraint</s:title>
       <s:rule context="db:callout[@arearefs]">
          <s:assert test="every $id in tokenize(current()/@arearefs) satisfies (every $ar in //*[@xml:id = $id] satisfies (local-name($ar) = ('areaset', 'area', 'co') and namespace-uri($ar) = 'http://docbook.org/ns/docbook'))">@arearefs on callout must point to a areaset, area, or co.</s:assert>
+      </s:rule>
+   </s:pattern>
+   <s:pattern>
+      <s:title>Callout cross reference idref constraint</s:title>
+      <s:rule context="db:callout[@arearefs]">
+         <s:assert test="every $id in tokenize(current()/@arearefs) satisfies exists(//*[@xml:id = $id])">Each token in @arearefs must be an idref to an element in the document.</s:assert>
       </s:rule>
    </s:pattern>
    <s:pattern>
@@ -30,6 +28,18 @@
       <s:title>Constraint cross reference constraint</s:title>
       <s:rule context="db:constraint[@linkend]">
          <s:assert test="local-name(//*[@xml:id=current()/@linkend]) = 'constraintdef' and namespace-uri(//*[@xml:id=current()/@linkend]) = 'http://docbook.org/ns/docbook'">@linkend on constraint must point to a constraintdef.</s:assert>
+      </s:rule>
+   </s:pattern>
+   <s:pattern>
+      <s:title>Coref cross reference constraint</s:title>
+      <s:rule context="db:coref[@linkend]">
+         <s:assert test="every $id in @linkend satisfies (every $ar in //*[@xml:id = $id] satisfies (local-name($ar) = 'co') and namespace-uri($ar) = 'http://docbook.org/ns/docbook')">@linkend on coref must point to a co.</s:assert>
+      </s:rule>
+   </s:pattern>
+   <s:pattern>
+      <s:title>Coref cross reference idref constraint</s:title>
+      <s:rule context="db:coref[@linkend]">
+         <s:assert test="exists(//*[@xml:id=current()/@linkend])">@linkend on coref must point to an xml:id</s:assert>
       </s:rule>
    </s:pattern>
    <s:pattern>
