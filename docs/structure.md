@@ -50,18 +50,18 @@ The PHP Manual is complex, and uses `xml:id`s extensively, for various
 purposes. So some care is necessary to avoid failures.
 There are two types of `xml:id`s used in manuals.
 
-* **Structural IDs:** IDs that are present on structural elements of
-DocBook XML (like `<chapter>`, `<section>` and so on), that are used for
+* **Structural IDs:** Single dotted IDs that are present on structural elements
+of DocBook XML (like `<chapter>`, `<section>` and so on), that are used for
 linking and chunking;
 
-* **XInclude IDs:** IDs that are used as target of XIncludes.
+* **XInclude IDs:** Double dotted IDs that are used as targets of XIncludes.
 
-Structural IDs are in the pattern `id.id` (always one dot as separator),
-while XInclude IDs use the pattern `structural.id..local.name`. That is,
-for Structural IDs the name parts are separated with a *single* dot, while
+Structural IDs are in the pattern `folder.id` (always one dot as separator),
+while XInclude IDs use the pattern `folder.id..local`. That is,
+in Structural IDs the name parts are separated with a *single* dot, while
 XInclude IDs are composed of an Structural ID prefix, a *double* dot separator,
 and a named suffix.
 
 The `configure.php` script will remove any duplicated IDs found. Without
-warnings in the case of XInclude IDs, so it is possible to use XInclude
-IDs elsewhere, and will warn about duplicate Structural IDs.
+warnings in the case of XInclude IDs, but will generate warnings while
+removing duplicated Structural IDs.

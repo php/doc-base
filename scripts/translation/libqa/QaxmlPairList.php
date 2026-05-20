@@ -28,7 +28,7 @@ class QaxmlPairList
             $file = __DIR__ . "/../../../temp/lang";
             if ( ! file_exists( $file ) )
             {
-                fwrite( STDERR , "Language to process. Run 'doc-base/configure.php' or use '--lang='.\n" );
+                fwrite( STDERR , "No language to process. Run 'doc-base/configure.php' or use '--lang='.\n" );
                 exit();
             }
             $lang = trim( file_get_contents( $file ) );

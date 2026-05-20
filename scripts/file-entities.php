@@ -83,7 +83,7 @@ foreach( $argv as $arg )
 
 // Main
 
-echo "Creating file-entities.ent... ";
+echo "Running file-entities.php... ";
 
 $entities = [];
 $mixedCase = [];

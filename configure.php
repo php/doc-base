@@ -22,7 +22,9 @@
 ini_set( 'display_errors' , 1 );
 ini_set( 'display_startup_errors' , 1 );
 error_reporting( E_ALL );
+
 ob_implicit_flush();
+libxml_use_internal_errors(true);
 
 echo "configure.php on PHP " . phpversion() . ", libxml " . LIBXML_DOTTED_VERSION . "\n\n";
 
@@ -31,8 +33,8 @@ echo "configure.php on PHP " . phpversion() . ", libxml " . LIBXML_DOTTED_VERSIO
 // init_parse()     // todo: argv parsing into a typed static class, remove all global
 // init_check()     // todo: move all checks in one place
 // init_usage()
-// git_clean()                  partial done
-// git_status()                 partial done
+// git_clean()                  done
+// git_status()                 done
 // dtd_conf_entities()          done
 // dtd_file_entities()          done
 // dom_load/save()              done
@@ -40,7 +42,7 @@ echo "configure.php on PHP " . phpversion() . ", libxml " . LIBXML_DOTTED_VERSIO
 // xinclude_xpointer()          done
 // xinclude_residua()           done
 // xml_partial_output
-// xml_validation
+// xml_validation               partial
 // phd_acronym()                done
 // phd_sources()                done
 // phd_version()                done
@@ -259,19 +261,6 @@ function find_xml_files($path) // {{{
         }
     }
 } // }}}
-
-if ( true ) # Initial clean up
-{
-    $dir = escapeshellarg( __DIR__ );
-    $cmd = "git -C $dir clean temp -fdx --quiet";
-    $ret = 0;
-    passthru( $cmd , $ret );
-    if ( $ret != 0 )
-    {
-        echo "doc-base/temp clean up FAILED.\n";
-        exit( 1 );
-    }
-}
 
 $srcdir  = dirname(__FILE__);
 $workdir = $srcdir;
@@ -543,32 +532,54 @@ if ($ac["GENERATE"] != "no") {
     $ac["ONLYDIR"] = dirname(realpath($ac["GENERATE"]));
 }
 
+globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
-// Show local repository status to facilitate remote debugging
+git_clean();    // Idempotent clean up
+git_status();   // Show local repository status
 
-$repos = array();
-$repos['doc-base']  = $ac['basedir'];
-$repos['en']        = "{$ac['rootdir']}/{$ac['EN_DIR']}";
-$repos[$ac['LANG']] = "{$ac['rootdir']}/{$ac['LANG']}";
-$repos = array_unique($repos);
-
-$output = "";
-foreach ( $repos as $name => $path )
+function git_clean()
 {
-    $path = escapeshellarg( $path );
-    $branch = trim( shell_exec( "git -C $path rev-parse --abbrev-ref HEAD" ));
-    $branch = $branch == "master" ? "" : " (branch $branch)";
-    $output .= str_pad( "$name:" , 10 );
-    $output .= rtrim( shell_exec( "git -C $path rev-parse HEAD" ) ?? "" . $branch ) . "\n";
-    $output .= rtrim( shell_exec( "git -C $path status -s") ?? "" ) . "\n";
+    //
+    $dir = escapeshellarg( __DIR__ );
+    $cmd = "git -C $dir clean temp -fdx --quiet";
+    $ret = 0;
+    passthru( $cmd , $ret );
+    if ( $ret != 0 )
+    {
+        echo "doc-base/temp clean up FAILED.\n";
+        exit( 1 );
+    }
 }
-while( str_contains( $output , "\n\n" ) )
-    $output = str_replace( "\n\n" , "\n" , $output );
-echo "\n" , trim( $output ) . "\n\n";
 
-// DTD configuration before first loading
+function git_status()
+{
+    global $ac;
+
+    $repos = array();
+    $repos['doc-base']  = $ac['basedir'];
+    $repos['en']        = "{$ac['rootdir']}/{$ac['EN_DIR']}";
+    $repos[$ac['LANG']] = "{$ac['rootdir']}/{$ac['LANG']}";
+
+    $output = "";
+    foreach ( $repos as $name => $path )
+    {
+        $path = escapeshellarg( $path );
+        $branch = trim( shell_exec( "git -C $path rev-parse --abbrev-ref HEAD" ));
+        $branch = $branch == "master" ? "" : " (branch $branch)";
+        $output .= str_pad( "$name:" , 10 );
+        $output .= rtrim( shell_exec( "git -C $path rev-parse HEAD" ) ?? "" . $branch ) . "\n";
+        $output .= rtrim( shell_exec( "git -C $path status -s") ?? "" ) . "\n";
+    }
+    while( str_contains( $output , "\n\n" ) )
+        $output = str_replace( "\n\n" , "\n" , $output );
+    echo "\n" , trim( $output ) . "\n\n";
+}
+
+// DTD layer before first XML loading
 
 dtd_conf_entities();
+dtd_file_entities();
+
 function dtd_conf_entities()
 {
     global $ac;
@@ -605,11 +616,6 @@ function dtd_conf_entities()
     file_put_contents( __DIR__ . "/temp/manual.conf" , implode( "\n" , $conf ) );
 }
 
-libxml_use_internal_errors(true);
-
-globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
-
-dtd_file_entities();
 function dtd_file_entities()
 {
     global $ac;
@@ -663,13 +669,14 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
     if ( $filename == "" )
         $filename = __DIR__ . "/temp/manual.xml";
 
+    libxml_clear_errors();
     $dom->save( $filename );
     dom_load( $dom , $filename );
 
     return $filename;
 }
 
-echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
+echo "Creating monolithic temp/manual.xml... ";
 $dom = new DOMDocument();
 
 if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
@@ -703,7 +710,7 @@ function individual_xml_broken_check()
     }
 }
 
-echo "Running XInclude/XPointer... ";
+echo "Expanding XIncludes... ";
 
 $total  = xinclude_run_byid( $dom );
 $total += xinclude_run_xpointer( $dom );
@@ -711,17 +718,17 @@ $total += xinclude_run_xpointer( $dom );
 if ( $total == 0 )
     echo "failed.\n";
 else
-    echo "done. Performed $total XIncludes.\n";
+    echo "done: $total tags replaced.\n";
 
 xinclude_residual_fixup( $dom );
 
 function xinclude_run_byid( DOMDocument $dom )
 {
-    // libxml does not implements the XInclude 1.1 spec,
-    // so we need to simulate its *recursive* nature here.
+    // libxml does not implements the XInclude 1.1 feature,
+    // so we need to *simulate* its *recursive* nature here.
+
     $total = 0;
-    $maxrun = 10;
-    for( $run = 0 ; $run < $maxrun ; $run++ )
+    for( $run = 0 ; $run < 10 ; $run++ )
     {
         $xpath = new DOMXPath( $dom );
         $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
@@ -791,32 +798,25 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
 
 function xinclude_residual_fixup( DOMDocument $dom )
 {
-    // XInclude failures are soft errors on translations, so remove
-    // residual XInclude tags on translations to keep them building.
-
-    $debugFile1 = "temp/xinclude-fixup-before.xml";
-    $debugFile2 = "temp/xinclude-fixup-result.xml";
-
-    $nodes = xinclude_residual_list( $dom );
-    if ( count( $nodes ) > 0 )
-    {
-        unset( $nodes );
-        dom_saveload( $dom , __DIR__ . "/{$debugFile1}" );
-        $nodes = xinclude_residual_list( $dom );
-    }
+    // XInclude failures are soft errors on translations, so we replace
+    // residual XInclude tags on translations to keep them validating.
 
     $fixups = 0;
-    $explain = false;
+    $hardfail = false;
+
+    dom_saveload( $dom , __DIR__ . "/temp/manual.err" );
+    $nodes = xinclude_residual_list( $dom );
 
     foreach( $nodes as $node )
     {
         $fixup = null;
         $parent = $node->parentNode->nodeName;
         $target = $node->getAttribute("xpointer");
-        $alert = "[Failed XInclude '$target']";
+        $alert = "[[[Failed XInclude '$target']]]";
 
         if ( $fixups === 0 )
-            echo "\nFailed XIncludes, manual parts will be missing. Failed XInclude targets:\n";
+            echo "\nFailed XIncludes, manual parts will be missing. Unresolved xpointers:\n";
+
         echo "- {$target}\n";
         $fixups++;
 
@@ -838,7 +838,7 @@ function xinclude_residual_fixup( DOMDocument $dom )
                 break;
             default:
                 echo "  (Unknown parent of failed XInclude: $parent)\n";
-                $explain = true;
+                $hardfail = true;
                 continue 2;
         }
 
@@ -854,11 +854,13 @@ function xinclude_residual_fixup( DOMDocument $dom )
         }
         $node->parentNode->removeChild( $node );
     }
+    unset( $nodes );
 
-    if ( $explain )
+    if ( $fixups > 0 )
+        echo "Dumped file: temp/manual.err. Inspect residual xi:include tags in this file.\n\n";
+
+    if ( $hardfail )
     {
-        dom_saveload( $dom , __DIR__ . "/{$debugFile2}" );
-
         echo <<<MSG
 
 If you are seeing this message in a translation, it means that
@@ -867,25 +869,24 @@ that configure.php cannot fix up the translated manual to a validating state.
 Please report any "Unknown parent" messages to the doc-base repository
 and focus on fixing all the XInclude/XPointers failures listed above.
 
-Dumped {$debugFile1} .
-Dumped {$debugFile2} .
-
 MSG;
         exit( 1 ); // stop here, do not let more messages further confuse the matter
     }
 
-    if ( $fixups > 0 )
-        echo "\n";
-
-    // XInclude by xml:id never duplicates xml:id. Horever, using
-    // XInclude by XPath/XPointer with a XInclude 1.0 library will cause
-    // xml:id duplication, as xml:id have no special tratament in this version.
-    // See docs/structure.md for details.
+    // A real implementation of XInclude 1.1 will never duplicate any xml:id,
+    // but we are stuck with libxml's XInclude 1.0, so we need to fix these
+    // duplications yourselfs.
 
     // Crude and ugly fixup ahead, beware!
 
+    // The code below removes any XInclude IDs without warnings, as they are
+    // expected to occur, and also remove any duplicated structural IDs while
+    // generating warnings, as they should never happen.
+
+    // See docs/structure.md for details.
+
+    $structural = false;
     $list = [];
-    $see = false;
     $xpath = new DOMXPath( $dom );
     $nodes = $xpath->query( "//*[@xml:id]" );
     foreach( $nodes as $node )
@@ -895,25 +896,26 @@ MSG;
         {
             if ( ! str_contains( $id , '..' ) )
             {
-                echo "  Random removing duplicated xml:id: $id\n";
-                $see = true;
+                echo "  Deleted duplicated structural xml:id: $id\n";
+                $structural = true;
             }
             $node->removeAttribute( "xml:id" );
         }
         $list[ $id ] = $id;
     }
-    if ( $see )
+    if ( $structural )
     {
         echo "\n  See: https://github.com/php/doc-base/blob/master/docs/structure.md#xmlid-structure";
         echo "\n  And: https://github.com/php/doc-base/tree/master/scripts/translation";
-        echo "\n  In special, qaxml-attributes.php and qaxml-entities.php, with and without --urgent.";
+        echo "\n  Use: qaxml-attributes.php and qaxml-entities.php, with and without --urgent.";
         echo "\n\n";
     }
 
     // Duplicated strucutral xml:ids are fatal on doc-en
 
     $fatal = $GLOBALS['ac']['LANG'] == 'en';
-    if ( $see && $fatal )
+
+    if ( $structural && $fatal )
         errors_are_bad( 1 );
 }
 
@@ -926,9 +928,16 @@ function xinclude_residual_list( DOMDocument $dom ) : DOMNodeList
     return $nodes;
 }
 
-echo "Validating {$ac["INPUT_FILENAME"]}... ";
+// Last save/reloads before libxml's RelaxNG validation,
+// so file positions and errors are reseted.
 
-if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
+$idempath = dom_saveload( $dom );                           // idempotent path
+$histpath = dom_saveload( $dom , $ac["OUTPUT_FILENAME"] );  // historical path
+
+if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no')
+{
+    echo "Validating partial {$idempath}... ";
+
     $dom->relaxNGValidate(RNG_SCHEMA_FILE); // we don't care if the validation works or not
     $node = $dom->getElementById($ac['PARTIAL']);
     if (!$node) {
@@ -966,46 +975,75 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no') { // {{{
     exit(0);
 } // }}}
 
-// Saves and reload, so libxml's RelaxNG validation to work correctly
+echo "Validating temp/manual.xml... ";
 
-$mxml = $ac["OUTPUT_FILENAME"];
-$dom->save($mxml);      // non idempotent, historical path
-dom_saveload( $dom );   // idempotent path
-
-if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
+if ($dom->relaxNGValidate(RNG_SCHEMA_FILE))
+{
     echo "done.\n";
-} else {
-    echo "failed.\n";
-    echo "\nThe document didn't validate.\n";
+}
+else
+{
+    echo "failed. ";
 
-    if ($ac['DETAILED_ERRORMSG'] === 'yes') {
-        /**
-         * TODO: Integrate jing to explain schema violations as libxml is *useless*
-         * And this is not going to change for a while as the maintainer of libxml2 even acknowledges:
-         * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
-         * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
-         */
-        $output = shell_exec('java -jar ' . $srcdir . '/docbook/jing.jar ' . RNG_SCHEMA_FILE. ' ' . $acd['OUTPUT_FILENAME']);
-        if ($output === null) {
-            echo "Command failed do you have Java installed?";
-        } else {
-            echo $output;
-        }
-    } else {
-        echo "Here are the errors I got:\n";
-        echo "(If this isn't enough information, try again with --enable-xml-details)\n";
-        print_xml_errors(false);
+    // First, tries to use Jing, that has better error reporting than libxml, because:
+    // > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
+    // -- https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
+
+    $out = null;
+    $ret = null;
+    exec( "java -version 2>&1" , $out , $ret );
+
+    if ( $ret == 0 )
+    {
+        echo "Issues (jing):\n";
+        $schema = RNG_SCHEMA_FILE;
+        $cmdJing = "java -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath}";
+        passthru( $cmdJing );
     }
-
-    errors_are_bad(1); // Tell the shell that this script finished with an error.
+    else
+    {
+        echo "Issues (libxml):\n";
+        print_xml_errors();
+        errors_are_bad(1);
+    }
 }
 
-// All PhD stuff, after XML validation
+echo "\nAll good. Saved temp/manual.xml\n";
+echo "All you have to do now is run 'phd -d {$idempath}'\n";
+echo "If the script hangs here, you can abort with ^C.\n";
+echo <<<CAT
+         _ _..._ __
+        \)`    (` /
+         /      `\
+        |  d  b   |
+        =\  Y    =/--..-="````"-.
+          '.=__.-'               `\
+             o/                 /\ \
+              |                 | \ \   / )
+               \    .--""`\    <   \ '-' /
+              //   |      ||    \   '---'
+         jgs ((,,_/      ((,,___/
+
+
+CAT;
+
+// All PhD stuff, after XML validation.
+
+echo "PhD scripts started.\n";
 
 phd_acronym();
 php_history();
 phd_sources();
 phd_version();
+
+echo "PhD scripts completed.\n";
+
+exit(0); // Finished successfully.
+
+
+
+// TODO: Should this moved to github/php/phd?
+// Any input/state can be serialized into doc-base/temp/phd-conf.json.
 
 function phd_acronym()
 {
@@ -1145,25 +1183,3 @@ function phd_version()
         echo " fail!\n";
     }
 }
-
-
-printf("\nAll good. Saved %s\n", basename($ac["OUTPUT_FILENAME"]));
-echo "All you have to do now is run 'phd -d {$mxml}'\n";
-echo "If the script hangs here, you can abort with ^C.\n";
-echo <<<CAT
-         _ _..._ __
-        \)`    (` /
-         /      `\
-        |  d  b   |
-        =\  Y    =/--..-="````"-.
-          '.=__.-'               `\
-             o/                 /\ \
-              |                 | \ \   / )
-               \    .--""`\    <   \ '-' /
-              //   |      ||    \   '---'
-         jgs ((,,_/      ((,,___/
-
-
-CAT;
-
-exit(0); // Finished successfully.
