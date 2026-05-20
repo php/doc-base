@@ -139,7 +139,6 @@
 <!ENTITY url.git.hub "https://github.com/">
 <!ENTITY url.glib "http://ftp.gnome.org/pub/gnome/sources/glib/">
 <!ENTITY url.glib.windows "http://ftp.gnome.org/pub/gnome/binaries/win32/glib/">
-<!ENTITY url.gmagick.winbuilds "http://valokuva.org/magick/">
 <!ENTITY url.gmagick.imagemagickdiff.faq "http://www.graphicsmagick.org/FAQ.html#how-does-graphicsmagick-differ-from-imagemagick">
 <!ENTITY url.gmp "http://gmplib.org/#DOWNLOAD">
 <!ENTITY url.gnochm "http://gnochm.sourceforge.net/">
@@ -367,10 +366,11 @@
 <!ENTITY url.openbsd.ports "http://www.openbsd.org/faq/ports/ports.html">
 <!ENTITY url.openlink "http://www.openlinksw.com/">
 <!ENTITY url.openssl "http://www.openssl.org/">
-<!ENTITY url.openssl.ciphers "https://www.openssl.org/docs/manmaster/man1/ciphers.html#CIPHER-LIST-FORMAT">
+<!ENTITY url.openssl.ciphers "https://docs.openssl.org/master/man1/openssl-ciphers/">
+<!ENTITY url.openssl.protocol-versions "https://docs.openssl.org/master/man3/SSL_CTX_set_min_proto_version/">
 <!ENTITY url.openssl.ciphers.mozilla "https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_Ciphersuite">
-<!ENTITY url.openssl.security-level "https://www.openssl.org/docs/man1.1.1/man3/SSL_CTX_get_security_level.html">
-<!ENTITY url.openssl.config "https://www.openssl.org/docs/manmaster/man5/config.html">
+<!ENTITY url.openssl.security-level "https://docs.openssl.org/master/man3/SSL_CTX_set_security_level/">
+<!ENTITY url.openssl.config "https://docs.openssl.org/master/man5/config/">
 <!ENTITY url.oracle.instant.client "https://www.oracle.com/database/technologies/instant-client.html">
 <!ENTITY url.oracle.oic.connect "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-E5358DEA-D619-4B7B-A799-3D2F802500F1">
 <!ENTITY url.oracle.drcp.configure "https://docs.oracle.com/en/database/oracle/oracle-database/23/jjdbc/database-resident-connection-pooling.html">
@@ -448,6 +448,7 @@
 <!ENTITY url.php.talks 'http://talks.php.net/'>
 <!ENTITY url.php.support "https://www.php.net/support.php">
 <!ENTITY url.php.urlhowto "https://www.php.net/urlhowto.php">
+<!ENTITY url.phpctv "https://phpc.tv/">
 <!ENTITY url.phpdbg.docs "https://phpdbg.room11.org/">
 <!ENTITY url.phpeditorlist "http://en.wikipedia.org/wiki/List_of_PHP_editors">
 <!ENTITY url.powerarchiver "http://www.powerarchiver.com/">
@@ -561,6 +562,8 @@
 <!ENTITY uri.unicode.ldml "www.unicode.org/reports/tr35">
 <!ENTITY url.unicode.ucd "http://www.unicode.org/ucd/">
 <!ENTITY url.unixodbc "http://www.unixodbc.org/">
+<!ENTITY url.url.rfc3986 "https://www.ietf.org/rfc/rfc3986.txt">
+<!ENTITY url.url.whatwg-url "https://url.spec.whatwg.org/">
 <!ENTITY url.userlandnaming.cs "https://github.com/php/php-src/raw/master/CODING_STANDARDS.md">
 <!ENTITY url.uuid "http://www.ossp.org/pkg/lib/uuid/">
 <!ENTITY url.v8engine "http://code.google.com/p/v8/">

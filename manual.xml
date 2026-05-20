@@ -301,6 +301,7 @@
    &reference.swoole.book;
    &reference.tidy.book;
    &reference.tokenizer.book;
+   &reference.uri.book;
    &reference.url.book;
    &reference.v8js.book;
    &reference.yaml.book;

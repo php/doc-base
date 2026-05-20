@@ -75,12 +75,8 @@ Configuration:
                                  [{$acd['ROOTDIR']}]
 
 Package-specific:
-  --enable-force-dom-save        Force .manual.xml to be saved in a full build
-                                 even if it fails validation [{$acd['FORCE_DOM_SAVE']}]
   --enable-chm                   Enable Windows HTML Help Edition pages [{$acd['CHMENABLED']}]
   --enable-xml-details           Enable detailed XML error messages [{$acd['DETAILED_ERRORMSG']}]
-  --disable-segfault-error       LIBXML may segfault with broken XML, use this
-                                 if it does [{$acd['SEGFAULT_ERROR']}]
   --disable-version-files        Do not merge the extension specific
                                  version.xml files
   --disable-sources-file         Do not generate sources.xml file
@@ -316,10 +312,8 @@ $acd = array( // {{{
     'LANG' => 'en',
     'LANGDIR' => "{$rootdir}/en",
     'ENCODING' => 'utf-8',
-    'FORCE_DOM_SAVE' => 'no',
     'PARTIAL' => 'no',
     'DETAILED_ERRORMSG' => 'no',
-    'SEGFAULT_ERROR' => 'yes',
     'VERSION_FILES'  => 'yes',
     'SOURCES_FILE' => 'yes',
     'HISTORY_FILE' => 'yes',
@@ -390,10 +384,6 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
             $ac['srcdir'] = $v;
             break;
 
-        case 'force-dom-save':
-            $ac['FORCE_DOM_SAVE'] = $v;
-            break;
-
         case 'chm':
             $ac['CHMENABLED'] = $v;
             break;
@@ -421,10 +411,6 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
 
         case 'xml-details':
             $ac['DETAILED_ERRORMSG'] = $v;
-            break;
-
-        case 'segfault-error':
-            $ac['SEGFAULT_ERROR'] = $v;
             break;
 
         case 'version-files':
@@ -553,9 +539,6 @@ checkvalue($ac['PARTIAL']);
 checking('whether to enable detailed XML error messages');
 checkvalue($ac['DETAILED_ERRORMSG']);
 
-checking('whether to enable detailed error reporting (may segfault)');
-checkvalue($ac['SEGFAULT_ERROR']);
-
 if ($ac["GENERATE"] != "no") {
     $ac["ONLYDIR"] = dirname(realpath($ac["GENERATE"]));
 }
@@ -622,9 +605,7 @@ function dtd_conf_entities()
     file_put_contents( __DIR__ . "/temp/manual.conf" , implode( "\n" , $conf ) );
 }
 
-if ($ac['SEGFAULT_ERROR'] === 'yes') {
-    libxml_use_internal_errors(true);
-}
+libxml_use_internal_errors(true);
 
 globbetyglob("{$ac['basedir']}/scripts", 'make_scripts_executable');
 
@@ -667,29 +648,8 @@ if ($ac["GENERATE"] != "no") {
     $ac["GENERATE"] = str_replace($ac["ROOTDIR"].$ac["LANGDIR"], "", $tmp);
     $str = "\n<!ENTITY developer.include.file SYSTEM 'file:///{$ac["GENERATE"]}'>";
     file_put_contents("{$ac["basedir"]}/entities/file-entities.ent", $str, FILE_APPEND);
-    $ac["FORCE_DOM_SAVE"] = "yes";
 }
 checkvalue($ac["GENERATE"]);
-
-checking('whether to save an invalid .manual.xml');
-checkvalue($ac['FORCE_DOM_SAVE']);
-
-echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
-$dom = new DOMDocument();
-
-if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
-{
-    echo "1 ";
-    dom_saveload( $dom ); // correct file/line/column on error messages
-    echo "2 done.\n";
-}
-else
-{
-    echo "failed.\n";
-    print_xml_errors();
-    dom_broken_files();
-    errors_are_bad(1);
-}
 
 function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
 {
@@ -709,7 +669,23 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
     return $filename;
 }
 
-function dom_broken_files()
+echo "Loading and parsing {$ac["INPUT_FILENAME"]}... ";
+$dom = new DOMDocument();
+
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+{
+    dom_saveload( $dom ); // correct file/line/column on error messages
+    echo " done.\n";
+}
+else
+{
+    echo "failed.\n";
+    print_xml_errors();
+    individual_xml_broken_check();
+    errors_are_bad(1);
+}
+
+function individual_xml_broken_check()
 {
     $cmd = array();
     $cmd[] = $GLOBALS['ac']['PHP'];
@@ -741,11 +717,12 @@ xinclude_residual_fixup( $dom );
 
 function xinclude_run_byid( DOMDocument $dom )
 {
+    // libxml does not implements the XInclude 1.1 spec,
+    // so we need to simulate its *recursive* nature here.
     $total = 0;
     $maxrun = 10;
     for( $run = 0 ; $run < $maxrun ; $run++ )
     {
-        echo "$run ";
         $xpath = new DOMXPath( $dom );
         $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
         $xincludes = $xpath->query( "//xi:include" );
@@ -797,7 +774,6 @@ function xinclude_run_xpointer( DOMDocument $dom ) : int
     $total = 0;
     for( $run = 0 ; $run < 10 ; $run++ )
     {
-        echo "$run ";
         libxml_clear_errors();
 
         $was = count( xinclude_residual_list( $dom ) );
@@ -1000,27 +976,25 @@ if ($dom->relaxNGValidate(RNG_SCHEMA_FILE)) {
     echo "done.\n";
 } else {
     echo "failed.\n";
-    echo "\nThe document didn't validate\n";
+    echo "\nThe document didn't validate.\n";
 
-    /**
-     * TODO: Integrate jing to explain schema violations as libxml is *useless*
-     * And this is not going to change for a while as the maintainer of libxml2 even acknowledges:
-     * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
-     * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
-     */
-    $output = shell_exec('java -jar ' . $srcdir . '/docbook/jing.jar ' . RNG_SCHEMA_FILE. ' ' . $acd['OUTPUT_FILENAME']);
-    if ($output === null) {
-        echo "Command failed do you have Java installed?";
+    if ($ac['DETAILED_ERRORMSG'] === 'yes') {
+        /**
+         * TODO: Integrate jing to explain schema violations as libxml is *useless*
+         * And this is not going to change for a while as the maintainer of libxml2 even acknowledges:
+         * > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
+         * cf. https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
+         */
+        $output = shell_exec('java -jar ' . $srcdir . '/docbook/jing.jar ' . RNG_SCHEMA_FILE. ' ' . $acd['OUTPUT_FILENAME']);
+        if ($output === null) {
+            echo "Command failed do you have Java installed?";
+        } else {
+            echo $output;
+        }
     } else {
-        echo $output;
-    }
-    //echo 'Please use Jing and the:' . PHP_EOL
-    //    . 'java -jar ./build/jing.jar /path/to/doc-base/docbook/docbook-v5.2-os/rng/docbookxi.rng /path/to/doc-base/.manual.xml' . PHP_EOL
-    //    . 'command to check why the RelaxNG schema failed.' . PHP_EOL;
-
-    // Exit normally when don't care about validation
-    if ($ac["FORCE_DOM_SAVE"] == "yes") {
-        exit(0);
+        echo "Here are the errors I got:\n";
+        echo "(If this isn't enough information, try again with --enable-xml-details)\n";
+        print_xml_errors(false);
     }
 
     errors_are_bad(1); // Tell the shell that this script finished with an error.
