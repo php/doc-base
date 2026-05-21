@@ -28,7 +28,7 @@ libxml_use_internal_errors(true);
 
 echo "configure.php on PHP " . phpversion() . ", libxml " . LIBXML_DOTTED_VERSION . "\n\n";
 
-// gereral structure/ordeing for refactoring this code
+// general structure/ordering for refactoring this code
 
 // init_parse()     // todo: argv parsing into a typed static class, remove all global
 // init_check()     // todo: move all checks in one place
@@ -42,7 +42,7 @@ echo "configure.php on PHP " . phpversion() . ", libxml " . LIBXML_DOTTED_VERSIO
 // xinclude_xpointer()          done
 // xinclude_residua()           done
 // xml_partial_output
-// xml_validation               partial
+// xml_validate()               done
 // phd_acronym()                done
 // phd_sources()                done
 // phd_version()                done
@@ -105,7 +105,7 @@ function realpain( string $path , bool $touch = false , bool $mkdir = false ) : 
     // pain is real
 
     // care for external XML tools (realpath() everywhere)
-    // care for Windows builds (foward slashes everywhere)
+    // care for Windows builds (forward slashes everywhere)
     // avoid `cd` and chdir() like the plague
 
     $path = str_replace( "\\" , '/' , $path );
@@ -911,7 +911,7 @@ MSG;
         echo "\n\n";
     }
 
-    // Duplicated strucutral xml:ids are fatal on doc-en
+    // Duplicated structural xml:ids are fatal on doc-en
 
     $fatal = $GLOBALS['ac']['LANG'] == 'en';
 
@@ -975,36 +975,67 @@ if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no')
     exit(0);
 } // }}}
 
-echo "Validating temp/manual.xml... ";
+xml_validate( $dom );
 
-if ($dom->relaxNGValidate(RNG_SCHEMA_FILE))
+function xml_validate( $dom )
 {
-    echo "done.\n";
-}
-else
-{
-    echo "failed. ";
+    // libxml2's RelaxNG validation shows quadratic to cubic behavior in some cases.
 
-    // First, tries to use Jing, that has better error reporting than libxml, because:
     // > As it stands, libxml2's Relax NG validator doesn't seem suitable for production.
     // -- https://gitlab.gnome.org/GNOME/libxml2/-/issues/448
+
+    // Jing is faster, but depends on Java.
 
     $out = null;
     $ret = null;
     exec( "java -version 2>&1" , $out , $ret );
 
     if ( $ret == 0 )
+        xml_validate_jing();
+    else
+        xml_validate_libxml( $dom );
+}
+
+function xml_validate_jing()
+{
+    global $srcdir;     // TODO, static typed field on Conf class
+    global $idempath;   // TODO, static typed field on Conf class
+
+    echo "Validating temp/manual.xml (jing)... ";
+
+    $out = null;
+    $ret = null;
+    $schema = RNG_SCHEMA_FILE;
+    $cmdJing = "java -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath}";
+    exec( $cmdJing , $out , $ret );
+
+    if ( $ret == 0 )
     {
-        echo "Issues (jing):\n";
-        $schema = RNG_SCHEMA_FILE;
-        $cmdJing = "java -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath}";
-        passthru( $cmdJing );
+        echo "done.\n";
+        return;
+    }
+
+    echo "failed.\n";
+    if ( is_array( $out ) )
+        foreach ( $out as $line )
+            echo "$line\n";
+
+    errors_are_bad( 1 );
+}
+
+function xml_validate_libxml( $dom )
+{
+    echo "Validating temp/manual.xml (libxml)... ";
+
+    if ( $dom->relaxNGValidate( RNG_SCHEMA_FILE ) )
+    {
+        echo "done.\n";
     }
     else
     {
-        echo "Issues (libxml):\n";
+        echo "failed.\n";
         print_xml_errors();
-        errors_are_bad(1);
+        errors_are_bad( 1 );
     }
 }
 
@@ -1029,14 +1060,10 @@ CAT;
 
 // All PhD stuff, after XML validation.
 
-echo "PhD scripts started.\n";
-
 phd_acronym();
 php_history();
 phd_sources();
 phd_version();
-
-echo "PhD scripts completed.\n";
 
 exit(0); // Finished successfully.
 
