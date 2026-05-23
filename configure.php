@@ -539,7 +539,6 @@ git_status();   // Show local repository status
 
 function git_clean()
 {
-    //
     $dir = escapeshellarg( __DIR__ );
     $cmd = "git -C $dir clean temp -fdx --quiet";
     $ret = 0;
@@ -928,15 +927,15 @@ function xinclude_residual_list( DOMDocument $dom ) : DOMNodeList
     return $nodes;
 }
 
-// Last save/reloads before libxml's RelaxNG validation,
+// Last save/reload before libxml's RelaxNG validation,
 // so file positions and errors are reseted.
 
-$idempath = dom_saveload( $dom );                           // idempotent path
-$histpath = dom_saveload( $dom , $ac["OUTPUT_FILENAME"] );  // historical path
+$idempath = dom_saveload( $dom );       // idempotent path
+$dom->save( $ac["OUTPUT_FILENAME"] );   // historical path
 
 if ($ac['PARTIAL'] != '' && $ac['PARTIAL'] != 'no')
 {
-    echo "Validating partial {$idempath}... ";
+    echo "Validating partial temp/manual.xml... ";
 
     $dom->relaxNGValidate(RNG_SCHEMA_FILE); // we don't care if the validation works or not
     $node = $dom->getElementById($ac['PARTIAL']);
@@ -1014,13 +1013,14 @@ function xml_validate_jing()
         echo "done.\n";
         return;
     }
-
-    echo "failed.\n";
-    if ( is_array( $out ) )
-        foreach ( $out as $line )
-            echo "$line\n";
-
-    errors_are_bad( 1 );
+    else
+    {
+        echo "failed.\n";
+        if ( is_array( $out ) )
+            foreach ( $out as $line )
+                echo "$line\n";
+        errors_are_bad( 1 );
+    }
 }
 
 function xml_validate_libxml( $dom )
@@ -1074,7 +1074,6 @@ exit(0); // Finished successfully.
 
 function phd_acronym()
 {
-    //TODO: Move acronym.xml code here
 }
 
 function php_history()
