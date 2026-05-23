@@ -248,7 +248,7 @@
 <!ENTITY url.libzip "https://libzip.org/">
 <!ENTITY url.lighttpd.doc "http://trac.lighttpd.net/trac/">
 <!ENTITY url.litespeed.cpanel "https://docs.litespeedtech.com/cp/cpanel/quickstart/#easyapache-integration">
-<!ENTITY url.litespeed.install "https://openlitespeed.org/kb/category/installation/more-installation-methods/">
+<!ENTITY url.litespeed.install "https://docs.openlitespeed.org/installation/source/">
 <!ENTITY url.litespeed.lsws "https://docs.litespeedtech.com/products/lsws/installation/">
 <!ENTITY url.litespeed.packages "https://docs.litespeedtech.com/extapp/php/getting_started/#litespeed-repo-search-packages">
 <!ENTITY url.litespeed.php "https://docs.litespeedtech.com/extapp/php/configuration/control/">
