@@ -11,10 +11,7 @@ The manual is built from the documentation using a tool called
 [PhD](https://doc.php.net/phd.php). The [local setup](local-setup.md)
 chapter explains how to set up a local development environment.
 
-The manual is written to the [DocBook 5.2](https://tdg.docbook.org/tdg/5.2/)
-XML schema, with one change to allow the `<classsynopsis>` tag to support
-more than one `<ooclass>`, `<ooexception>`, or `<oointerface>` as the
-[DocBook 5.1](https://tdg.docbook.org/tdg/5.1/classsynopsis) schema does.
+The manual is written to the [DocBook 5.2.1](https://tdg.docbook.org/tdg/5.2.1/) XML schema.
 
 ## Glossary
 
