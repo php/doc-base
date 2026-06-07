@@ -605,7 +605,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 			}
 			$markup .= '<classsynopsisinfo role="comment">&InheritedProperties;</classsynopsisinfo>'. PHP_EOL;
 			foreach ($inherited as $declaring_class) {
-				$markup .= str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('" . strtolower($declaring_class) . ".synopsis')/descendant::db:fieldsynopsis)\">" . PHP_EOL . str_repeat(' ', $ident + 1) . "<xi:fallback/>" . PHP_EOL . str_repeat(' ', $ident) . "</xi:include>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('" . strtolower($declaring_class) . ".synopsis')/descendant::db:fieldsynopsis)\"/>". PHP_EOL;
 			}
 		}
 
@@ -643,14 +643,14 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 
 	/* {PROPERTY_XINCLUDE} */
 	$content = preg_replace('/\{PROPERTY_XINCLUDE\}/',
-		"<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:fieldsynopsis[1])\"><xi:fallback/></xi:include>". PHP_EOL,
+		"<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:fieldsynopsis[1])\"/>". PHP_EOL,
 		$content, 1);
 
 	/* {METHOD_XINCLUDE} */
 	$ident = get_ident_size('METHOD_XINCLUDE', $content);
 	$content = preg_replace('/\{METHOD_XINCLUDE\}/',
 		PHP_EOL . str_repeat(' ', $ident) . "<classsynopsisinfo role=\"comment\">&Methods;</classsynopsisinfo>". PHP_EOL.
-		str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\">" . PHP_EOL . str_repeat(' ', $ident + 1) . "<xi:fallback/>" . PHP_EOL . str_repeat(' ', $ident) . "</xi:include>",
+		str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\"/>",
 		$content, 1);
 
 	/* {INHERITED_XINCLUDE} */
@@ -658,7 +658,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 		$ident = get_ident_size('INHERITED_XINCLUDE', $content);
 		$content = preg_replace('/\{INHERITED_XINCLUDE\}/',
 			PHP_EOL . str_repeat(' ', $ident) ."<classsynopsisinfo role=\"comment\">&InheritedMethods;</classsynopsisinfo>". PHP_EOL.
-			str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". format_id($parent->getName()) ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\">" . PHP_EOL . str_repeat(' ', $ident + 1) . "<xi:fallback/>" . PHP_EOL . str_repeat(' ', $ident) . "</xi:include>". PHP_EOL,
+			str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". format_id($parent->getName()) ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\"/>". PHP_EOL,
 			$content, 1);
 	} else {
 		$content = preg_replace('/^\s*\{INHERITED_XINCLUDE\}.*?\n/m', '', $content, 1);
