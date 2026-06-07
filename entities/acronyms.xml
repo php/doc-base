@@ -402,6 +402,12 @@
    </listitem>
   </varlistentry>
   <varlistentry>
+   <term>QoS</term>
+   <listitem>
+    <simpara>Quality of Service</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
    <term>RGB</term>
    <listitem>
     <simpara>Red-Green-Blue</simpara>
