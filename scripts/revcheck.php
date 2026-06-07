@@ -428,14 +428,18 @@ function print_html_footer()
     print_html_menu("");
     print <<<HTML
 <p/>
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
 <script>
-  var clipboard = new ClipboardJS('.btn');
-  clipboard.on('success', function (e) {
-     console.log(e);
-  });
-  clipboard.on('error', function (e) {
-     console.log(e);
+  document.querySelectorAll('.btn').forEach(button => {
+    button.addEventListener('click', async () => {
+      const text = button.dataset.clipboardText;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        console.log('Copied:', text);
+      } catch (err) {
+        console.error('Copy failed:', err);
+      }
+    });
   });
 </script>
 </body>
