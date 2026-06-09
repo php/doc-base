@@ -17,7 +17,7 @@ you will soon come along and flesh them out might seem like a good idea. However
 temporary often becomes permanent.
 
 ## Is there an online editor?
-No, but [simple changes can be submitted via GitHub](contributing#minor-changes).
+No, but [simple changes can be submitted via GitHub](contributing.md#minor-changes).
 
 ## How do I add a link to a method?
 Use `<methodname>Class::method</methodname>`. Note that the case does not matter when adding a link.

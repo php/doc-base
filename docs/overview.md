@@ -65,7 +65,7 @@ Other than the above PhD also does the following:
 ## web-php
 
 [web-php](https://github.com/php/web-php) is the repository that PHP's web servers actually run
-(ie. almost everything accesible on [php.net](https://php.net)).
+(ie. almost everything accessible on [php.net](https://php.net)).
 
 This repository includes the functions that generate the header (top
 navigation and search bar) and footer (copyright, privacy policy,
