@@ -5,6 +5,10 @@
 <!ENTITY % configure         SYSTEM "./temp/manual.conf">
 %configure;
 
+<!-- Entities collected by entities.php -->
+<!ENTITY % manual-entities   SYSTEM "./temp/entities.ent">
+%manual-entities;
+
 <!-- Translation layer, if any -->
 %translation-defs;
 %translation-snippets;
