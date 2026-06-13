@@ -21,75 +21,6 @@ require_once __DIR__ . '/all.php';
 
 class GitLogParser
 {
-    static function parseInto( string $lang , RevcheckFileList & $list )
-    {
-        $cwd = getcwd();
-        chdir( $lang );
-        $fp = popen( "git log --name-only" , "r" );
-        chdir( $cwd );
-
-        $hash = "";
-        $date = "";
-        $skip = false;
-        $mcnt = 0;
-
-        while ( ( $line = fgets( $fp ) ) !== false )
-        {
-            // new commit block
-            if ( substr( $line , 0 , 7 ) == "commit " )
-            {
-                $hash = trim( substr( $line , 7 ) );
-                $date = "";
-                $skip = false;
-                $mcnt = 0;
-                continue;
-            }
-            // datetime of commit
-            if ( strpos( $line , 'Date:' ) === 0 )
-            {
-                $line = trim( substr( $line , 5 ) );
-                $date = strtotime( $line );
-                continue;
-            }
-            // empty lines
-            if ( trim( $line ) == "" )
-                continue;
-            // commit message
-            if ( str_starts_with( $line , '    ' ) )
-            {
-                if ( LOOSE_SKIP_REVCHECK ) // See below, and https://github.com/php/doc-base/pull/132
-                {
-                    // commits with [skip-revcheck] anywhere commit message flags skip
-                    if ( str_contains( $line, '[skip-revcheck]' ) )
-                        $skip = true;
-                }
-                else
-                {
-                    $mcnt++;
-                    // [skip-revcheck] at start of first line of commit message flags a skip
-                    if ( $mcnt == 1 && str_starts_with( trim( $line ) , '[skip-revcheck]' ) )
-                        $skip = true;
-                }
-                continue;
-            }
-            // other headers
-            if ( strpos( $line , ': ' ) > 0 )
-                continue;
-
-            // otherwise, a filename
-            $filename = trim( $line );
-            $info = $list->get( $filename );
-
-            // untracked file (deleted, renamed)
-            if ( $info == null )
-                continue;
-
-            $info->addGitLogData( $hash , $date , $skip );
-        }
-
-        pclose( $fp );
-    }
-
     static function parseDir( string $gdir , RevcheckFileList $list )
     {
         $gdir = escapeshellarg( $gdir );
@@ -142,19 +73,10 @@ class GitLogParser
 
             while ( $proc->live && str_starts_with( $proc->line , '    ' ) )
             {
-                if ( LOOSE_SKIP_REVCHECK ) // https://github.com/php/doc-base/pull/132
-                {
-                    // Messages that contains [skip-revcheck] flags entire commit as ignored.
-                    if ( str_contains( $proc->line , '[skip-revcheck]' ) )
-                        $skip = true;
-                }
-                else
-                {
-                    // Messages that start with [skip-revcheck] flags entire commit as ignored.
-                    $lcnt++;
-                    if ( $lcnt == 1 && str_starts_with( trim( $line ) , '[skip-revcheck]' ) )
-                        $skip = true;
-                }
+                // Messages that start with [skip-revcheck] flags entire commit as ignored.
+                $lcnt++;
+                if ( $lcnt == 1 && str_starts_with( trim( $proc->line ) , '[skip-revcheck]' ) )
+                    $skip = true;
                 $proc->next();
             }
 
