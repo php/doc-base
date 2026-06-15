@@ -551,10 +551,11 @@ function git_status()
     echo "\n" , trim( $output ) . "\n\n";
 }
 
-// DTD layer before first XML loading
+// DTD entity layer before first XML loading
 
 dtd_conf_entities();
 dtd_file_entities();
+dtd_text_entities();
 
 function dtd_conf_entities()
 {
@@ -564,22 +565,16 @@ function dtd_conf_entities()
 
     $conf[] = "<!ENTITY LANG '$lang'>";
 
-    if ( $lang == 'en' )
-    {
-        realpain( __DIR__ . "/temp/empty" , touch: true );
-        $trans1 = realpain( __DIR__ . "/temp/empty" );
-        $trans2 = realpain( __DIR__ . "/temp/empty" );
-        $trans3 = realpain( __DIR__ . "/temp/empty" );
-    }
-    else
+    if ( $lang != 'en' )
     {
         $trans1 = realpain( __DIR__ . "/../$lang/language-defs.ent" );
         $trans2 = realpain( __DIR__ . "/../$lang/language-snippets.ent" );
         $trans3 = realpain( __DIR__ . "/../$lang/extensions.ent" );
+
+        $conf[] = "<!ENTITY % translation-defs       SYSTEM '$trans1'>";
+        $conf[] = "<!ENTITY % translation-snippets   SYSTEM '$trans2'>";
+        $conf[] = "<!ENTITY % translation-extensions SYSTEM '$trans3'>";
     }
-    $conf[] = "<!ENTITY % translation-defs       SYSTEM '$trans1'>";
-    $conf[] = "<!ENTITY % translation-snippets   SYSTEM '$trans2'>";
-    $conf[] = "<!ENTITY % translation-extensions SYSTEM '$trans3'>";
 
     if ( $ac['CHMENABLED'] == 'yes' )
     {
@@ -589,7 +584,7 @@ function dtd_conf_entities()
     else
         $conf[] = "<!ENTITY manual.chmonly ''>";
 
-    file_put_contents( __DIR__ . "/temp/manual.conf" , implode( "\n" , $conf ) );
+    file_put_contents( __DIR__ . "/temp/manual.inc" , implode( "\n" , $conf ) );
 }
 
 function dtd_file_entities()
@@ -620,6 +615,31 @@ function dtd_file_entities()
     }
 }
 
+function dtd_text_entities()
+{
+    global $ac;
+    $php = $ac['PHP'];
+    $lang = $ac["LANG"];
+
+    $parts = array();
+    $parts[] = $php;
+    $parts[] = __DIR__ . "/scripts/entities.php";
+    $parts[] = "en";
+    if ( $lang != "en" )
+        $parts[] = $lang;
+
+    foreach ( $parts as & $part )
+        $part = escapeshellarg( $part );
+    $cmd = implode( ' ' , $parts );
+    $ret = 0;
+    passthru( $cmd , $ret );
+
+    if ( $ret != 0 )
+    {
+        echo "doc-base/scripts/entities.php FAILED.\n";
+        exit( 1 );
+    }
+}
 
 checking("for if we should generate a simplified file");
 if ($ac["GENERATE"] != "no") {

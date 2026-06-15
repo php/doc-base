@@ -118,7 +118,7 @@ foreach ( $entities as $ent )
     writeEntity( $file , $ent );
 
 fclose( $file );
-echo "done\n";
+echo "done.\n";
 exit( 0 );
 
 

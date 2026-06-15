@@ -12,18 +12,18 @@
 +----------------------------------------------------------------------+
 | Authors:     André L F S Bacci <ae php.net>                          |
 +----------------------------------------------------------------------+
-| Description: Collect individual entities into an .entities.ent file. |
+| Description: Collect individual entities into an temp/entities.ent.  |
 +----------------------------------------------------------------------+
 
 # Mental model, or things that I would liked to know 20 years prior
 
 DTD Entity processing has more in common with DOMDocumentFragment than
-DOMElement. In other words, simple text and multi rooted XML files
-are valid <!ENTITY> contents, whereas they are not valid XML documents.
+DOMElement. In other words, simple text and multi rooted XML fragments
+are valid <!ENTITY> content, whereas they are not valid XML documents.
 
 Also, namespaces do not automatically "cross" between a parent
 document and their entities, even if they are included in the same
-file, as local textual entities. <!ENTITY>s are, for all intended
+file, as local textual entities. Each <!ENTITY>s are, for all intended
 purposes, separated documents, with separated namespaces and have
 *expected* different default namespaces.
 
@@ -48,7 +48,7 @@ ignored. The priority order used here is important to allow detecting
 cases where global entities are being overwritten, or if expected
 translatable entities are missing translations.
 
-# Individual XML Entities, or `.xml` files at `entities/`
+# Individual XML Entity files, or `.xml` files at `doc-lang/entities/`
 
 As explained above, the individual entity contents are not really
 valid XML *documents*, they are only at most valid XML *fragments*.
@@ -62,15 +62,15 @@ per file, without requiring weird changes on `revcheck.php`. Note that
 is *invalid* to place XML declaration in these fragment files, at least
 in files that are invalid XML documents (on multi-node rooted ones).
 
-# Grouped entities files, file tracked
+# Grouped XML Entity files
 
 For very small textual entities, down to simple text words or single
 tag elements that may never change, individual entity tracking is
-an overkill. This script also loads grouped XML Entities files, at
+an overkill. This script also loads grouped XML Entity files, at
 some expected locations, with specific semantics.
 
 These grouped files are really normal XML files, correctly annotated
-with XML namespaces used on manuals, so any individual exported entity
+with XML namespaces used on manual, so any individual exported entity
 has correct and clean XML namespace annotations. These grouped entity
 files are tracked normally by revcheck, but are not directly included
 in manual.xml.in, as they only participate in general entity loading,
@@ -95,24 +95,21 @@ if ( count( $argv ) < 2 || in_array( '--help' , $argv ) || in_array( '-h' , $arg
     return;
 }
 
-$filename = Entities::rotateOutputFile(); // idempotent
+$filename = Entities::prepareOutputFile();
 
 $langs = [];
-$normal = true;
 $debug = false;
 
 for( $idx = 1 ; $idx < count( $argv ) ; $idx++ )
     if ( $argv[$idx] == "--debug" )
-        $normal = false;
+        $debug = true;
     else
         $langs[] = $argv[$idx];
-$debug = ! $normal;
 
-if ( $normal )
-    print "Creating .entities.ent...";
+if ( $debug )
+    print "Running temp/entities.ent in debug mode.\n";
 else
-    print "Creating .entities.ent in debug mode.\n";
-$debug = ! $normal;
+    print "Running temp/entities.ent...";
 
 loadEnt( __DIR__ . "/../global.ent"  , global: true , warnMissing: true );
 foreach( $langs as $lang )
@@ -120,8 +117,8 @@ foreach( $langs as $lang )
     loadEnt( __DIR__ . "/../../$lang/global.ent" , global: true );
     loadEnt( __DIR__ . "/../../$lang/manual.ent" , translate: true , warnMissing: true );
     loadEnt( __DIR__ . "/../../$lang/remove.ent" , remove: true );
-    loadDir( $langs , $lang );
-    Entities::$debugUnique = false;
+    loadDir( $langs , $lang , $debug );
+    Entities::$checkUnique = false;
 }
 
 Entities::writeOutputFile();
@@ -150,17 +147,16 @@ class EntityData
 
 class Entities
 {
-    private static string $filename = __DIR__ . "/../temp/entities.ent"; // idempotent
+    private static string $filename = __DIR__ . "/../temp/entities.ent";
 
-    private static array $entities = [];    // All entities, bi duplications
+    private static array $entities = [];    // All collected entities, no duplications
     private static array $global = [];      // Entities expected not replaced
     private static array $replace = [];     // Entities expected replaced / translated
     private static array $remove = [];      // Entities expected not replaced and not used
     private static array $unique = [];      // For detecting duplicated global+en entities
     private static array $count = [];       // Name / Count
-    private static array $slow = [];        // External entities, slow, uncontrolled file overwrites
 
-    public static bool $debugUnique = true; // Start on unique mode, disable on second language
+    public static bool $checkUnique = true; // Start on unique mode, disable on second language
 
     public static int $countUnstranslated = 0;
     public static int $countReplacedGlobal = 0;
@@ -187,7 +183,7 @@ class Entities
         else
             Entities::$count[$name]++;
 
-        if ( Entities::$debugUnique )
+        if ( Entities::$checkUnique )
         {
             if ( isset( Entities::$unique[ $name ] ) )
             {
@@ -200,14 +196,7 @@ class Entities
         }
     }
 
-    static function slow( string $path )
-    {
-        if ( isset( $slow[$path] ) )
-            fwrite( STDERR , "Unexpected file overwrite: $path\n" );
-        $slow[ $path ] = $path;
-    }
-
-    static function rotateOutputFile()
+    static function prepareOutputFile()
     {
         if ( file_exists( Entities::$filename ) )
             unlink( Entities::$filename );
@@ -292,18 +281,18 @@ function loadEnt( string $path , bool $global = false , bool $translate = false 
 
         $text = rtrim( $text , "\n" );
         $text = str_replace( "&amp;" , "&" , $text );
+
+        // Remove XML declaration.
         $lines = explode( "\n" , $text );
-        array_shift( $lines ); // remove XML declaration
+        array_shift( $lines );
         $text = implode( "\n" , $lines );
 
         Entities::put( $path , $name , $text , $global , $translate , $remove );
     }
 }
 
-function loadDir( array $langs , string $lang )
+function loadDir( array $langs , string $lang , bool $debug )
 {
-    global $debug;
-
     $dir = __DIR__ . "/../../$lang/entities";
     $dir = realpath( $dir );
     if ( $dir === false || ! is_dir( $dir ) )
@@ -376,36 +365,56 @@ function loadXml( string $path , string $text , bool $expectedReplaced )
 
 function saveEntitiesFile( string $filename , array $entities )
 {
-    $tmpDir = __DIR__ . "/temp"; // idempotent
-
     $file = fopen( $filename , "w" );
     fputs( $file , "\n<!-- DO NOT COPY / DO NOT TRANSLATE - Autogenerated by entities.php -->\n\n" );
+
+    $slowDir = __DIR__ . "/../temp/text-entities/";
+    $slowFiles = [];
+
+    if ( file_exists( $slowDir ) == false )
+        mkdir( $slowDir , recursive: true );
 
     foreach( $entities as $name => $entity )
     {
         $text = $entity->text;
-        $quote = "";
 
-        // If the text contains mixed quoting, keeping it
-        // as an external file to avoid (re)quotation hell.
+        $quote = "'";
+        $count = 0;
 
-        if ( strpos( $text , "'" ) === false )
-            $quote = "'";
-        if ( strpos( $text , '"' ) === false )
-            $quote = '"';
-
-        if ( $quote == "" )
+        if ( str_contains( $string , "'" ) )
         {
-            if ( $entity->path == "" )
-            {
-                $entity->path = $tmpDir . "/{$entity->path}.tmp";
-                file_put_contents( $entity->path , $text );
-            }
-            fputs( $file , "<!ENTITY $name SYSTEM '{$entity->path}'>\n\n" );
-            Entities::slow( $entity->path );
+            $quote = '"';
+            $count++;
         }
-        else
+        if ( str_contains( $string , '"' ) )
+        {
+            $quote = "'";
+            $count++;
+        }
+
+        if ( $count < 2 )
+        {
+            // Fast path for single or no quote:
+            // entity body directly quoted on output file.
+
             fputs( $file , "<!ENTITY $name {$quote}{$text}{$quote}>\n\n" );
+            continue;
+        }
+
+        // Slow path: entity body as an external file,
+        // as to avoid (re)quotation hell.
+
+        if ( $entity->path == "" )
+            $entity->path = realpath( $tmpDir . "/{$entity->name}.ent" );
+
+        if ( file_exists( $entity->path ) )
+        {
+            echo "\nDuplicated output file '{$entity->path}'.\n";
+            exit( 1 );
+        }
+
+        fputs( $file , "<!ENTITY $name SYSTEM '{$entity->path}'>\n\n" );
+        file_put_contents( $entity->path , $text );
     }
 
     fclose( $file );
