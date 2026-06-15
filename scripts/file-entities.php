@@ -118,7 +118,9 @@ foreach ( $entities as $ent )
     writeEntity( $file , $ent );
 
 fclose( $file );
-echo "done.\n";
+
+$total = count( $entities );
+echo "done: $total entities.\n";
 exit( 0 );
 
 

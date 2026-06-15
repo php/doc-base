@@ -107,9 +107,9 @@ for( $idx = 1 ; $idx < count( $argv ) ; $idx++ )
         $langs[] = $argv[$idx];
 
 if ( $debug )
-    print "Running temp/entities.ent in debug mode.\n";
+    print "Running text-entities.ent in debug mode.\n";
 else
-    print "Running temp/entities.ent...";
+    print "Running text-entities.ent...";
 
 loadEnt( __DIR__ . "/../global.ent"  , global: true , warnMissing: true );
 foreach( $langs as $lang )
