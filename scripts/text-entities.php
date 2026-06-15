@@ -376,17 +376,17 @@ function saveEntitiesFile( string $filename , array $entities )
 
     foreach( $entities as $name => $entity )
     {
-        $text = $entity->text;
+        $body = $entity->text;
 
         $quote = "'";
         $count = 0;
 
-        if ( str_contains( $string , "'" ) )
+        if ( str_contains( $body , "'" ) )
         {
             $quote = '"';
             $count++;
         }
-        if ( str_contains( $string , '"' ) )
+        if ( str_contains( $body , '"' ) )
         {
             $quote = "'";
             $count++;
@@ -397,7 +397,7 @@ function saveEntitiesFile( string $filename , array $entities )
             // Fast path for single or no quote:
             // entity body directly quoted on output file.
 
-            fputs( $file , "<!ENTITY $name {$quote}{$text}{$quote}>\n\n" );
+            fputs( $file , "<!ENTITY $name {$quote}{$body}{$quote}>\n\n" );
             continue;
         }
 
@@ -414,7 +414,7 @@ function saveEntitiesFile( string $filename , array $entities )
         }
 
         fputs( $file , "<!ENTITY $name SYSTEM '{$entity->path}'>\n\n" );
-        file_put_contents( $entity->path , $text );
+        file_put_contents( $entity->path , $body );
     }
 
     fclose( $file );
