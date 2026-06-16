@@ -982,7 +982,7 @@ function xml_validate_jing()
     $out = null;
     $ret = null;
     $schema = RNG_SCHEMA_FILE;
-    $cmdJing = "java -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath}";
+    $cmdJing = "java -Djdk.xml.totalEntitySizeLimit=300000 -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath}";
     exec( $cmdJing , $out , $ret );
 
     if ( $ret == 0 )
