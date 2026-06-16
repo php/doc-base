@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf8" ?>
 <!-- $Revision:$ -->
 <!--
-    This is a "manual" XML Entity file.
-    See doc-base/script/entities.php for details.
 
-    Place here only small entities that are expected to be
-    translated and/or replaced in any part of the manual.
+# Description
+
+This is a "manual.ent" XML Entity file.
+See doc-base/script/text-entities.php for details.
+
+Place here small entities that are expected to be translated.
+For big or complex entities, please create an individual entity
+file at doc-lang/entities/entityname.xml.
+
+# Examples
+
+<entity name="name">Direct text</entity>
+
+<entity name="name.name">
+ Single-, multi- or text rooted XML fragment, as long as it is
+ a well-balanced one. Mind the XML namespaces of <entities>
+ XML element below.
+</entity>
+
 -->
-<entities xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
 
-<!-- <entity name="ent.name">XML fragment</entity> -->
+<entities xmlns       = "http://docbook.org/ns/docbook"
+          xmlns:xlink = "http://www.w3.org/1999/xlink" >
+
+
 
 </entities>
