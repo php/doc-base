@@ -109,7 +109,7 @@ for( $idx = 1 ; $idx < count( $argv ) ; $idx++ )
 if ( $debug )
     print "Running text-entities.ent in debug mode.\n";
 else
-    print "Running text-entities.ent...";
+    print "Running text-entities.ent... ";
 
 loadEnt( __DIR__ . "/../global.ent"  , global: true , warnMissing: true );
 foreach( $langs as $lang )
@@ -118,21 +118,18 @@ foreach( $langs as $lang )
     loadEnt( __DIR__ . "/../../$lang/manual.ent" , translate: true , warnMissing: true );
     loadEnt( __DIR__ . "/../../$lang/remove.ent" , remove: true );
     loadDir( $langs , $lang , $debug );
-    Entities::$checkUnique = false;
 }
 
 Entities::writeOutputFile();
 Entities::checkReplaces( $debug );
 
-echo " done: " , Entities::$countTotalGenerated , " entities";
+echo "done: " , Entities::$countTotalGenerated , " entities";
 if ( Entities::$countUnstranslated  > 0 )
     echo ", " , Entities::$countUnstranslated , " untranslated";
 if ( Entities::$countReplacedGlobal > 0 )
-    echo ", " , Entities::$countReplacedGlobal , " global replaced";
+    echo ", " , Entities::$countReplacedGlobal , " unique replaced";
 if ( Entities::$countReplacedRemove  > 0 )
     echo ", " , Entities::$countReplacedRemove , " remove replaced";
-if ( Entities::$countDuplicated  > 0 )
-    echo ", " , Entities::$countDuplicated , " duplicated (first language)";
 echo ".\n";
 
 exit;
@@ -156,20 +153,24 @@ class Entities
     private static array $unique = [];      // For detecting duplicated global+en entities
     private static array $count = [];       // Name / Count
 
-    public static bool $checkUnique = true; // Start on unique mode, disable on second language
-
     public static int $countUnstranslated = 0;
     public static int $countReplacedGlobal = 0;
     public static int $countReplacedRemove = 0;
     public static int $countTotalGenerated = 0;
-    public static int $countDuplicated = 0;
 
-    static function put( string $path , string $name , string $text , bool $global = false , bool $replace = false , bool $remove = false )
+    public static int $languagesCount = 0;  // Controls untranslated checking
+
+    static function put( string $path , string $name , string $text , bool $unique = false , bool $replace = false , bool $remove = false )
     {
         $entity = new EntityData( $path , $name , $text );
         Entities::$entities[ $name ] = $entity;
 
-        if ( $global )
+        if ( ! isset( Entities::$count[ $name ] ) )
+            Entities::$count[$name] = 1;
+        else
+            Entities::$count[$name]++;
+
+        if ( $unique )
             Entities::$global[ $name ] = $name;
 
         if ( $replace )
@@ -178,22 +179,9 @@ class Entities
         if ( $remove )
             Entities::$remove[ $name ] = $name;
 
-        if ( ! isset( Entities::$count[ $name ] ) )
-            Entities::$count[$name] = 1;
-        else
-            Entities::$count[$name]++;
-
-        if ( Entities::$checkUnique )
-        {
-            if ( isset( Entities::$unique[ $name ] ) )
-            {
-                Entities::$countDuplicated++;
-                if ( Entities::$countDuplicated == 1 )
-                    fwrite( STDERR , "\n\n" );
-                fwrite( STDERR , "  Duplicated entity: $name\n" );
-            }
-            Entities::$unique[ $name ] = $entity;
-        }
+        if ( $unique && isset( Entities::$unique[ $name ] ) )
+            fwrite( STDOUT , "\n  Replaced unique entity: $name\n" );
+        Entities::$unique[ $name ] = $name;
     }
 
     static function prepareOutputFile()
@@ -219,6 +207,7 @@ class Entities
         foreach( Entities::$entities as $name => $text )
         {
             $replaced = Entities::$count[$name] - 1;
+            $languages = Entities::$languagesCount;
             $expectedGlobal = in_array( $name , Entities::$global );
             $expectedReplaced = in_array( $name , Entities::$replace );
             $expectedRemoved  = in_array( $name , Entities::$remove );
@@ -227,21 +216,21 @@ class Entities
             {
                 Entities::$countReplacedGlobal++;
                 if ( $debug )
-                    print "Expected global, replaced $replaced times:     $name\n";
+                    print "  Expected global, replaced $replaced times:     $name\n";
             }
 
-            if ( $expectedReplaced && $replaced != 1 )
+            if ( $expectedReplaced && $replaced != 1 && $languages != 1 )
             {
                 Entities::$countUnstranslated++;
                 if ( $debug )
-                    print "Expected translated, replaced $replaced times: $name\n";
+                    print "  Expected translated, replaced $replaced times: $name\n";
             }
 
             if ( $expectedRemoved && $replaced != 0 )
             {
                 Entities::$countReplacedRemove++;
                 if ( $debug )
-                    print "Expected removed, replaced $replaced times:    $name\n";
+                    print "  Expected removed, replaced $replaced times:    $name\n";
             }
         }
     }
@@ -322,6 +311,8 @@ function loadDir( array $langs , string $lang , bool $debug )
 
         loadXml( $path , $text , $expectedReplaced );
     }
+
+    Entities::$languagesCount++;
 }
 
 function loadXml( string $path , string $text , bool $expectedReplaced )
