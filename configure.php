@@ -990,14 +990,50 @@ function xml_validate_jing()
         echo "done.\n";
         return;
     }
-    else
+
+    // For non-English translations, IDREF mismatches are treated as warnings instead of errors,
+    // because outdated translations may reference IDs that have yet to be translated from doc-en.
+
+    $isEnglish = $GLOBALS['ac']['LANG'] === 'en';
+    $errors = [];
+    $warnings = [];
+
+    if ( is_array( $out ) )
     {
-        echo "failed.\n";
-        if ( is_array( $out ) )
-            foreach ( $out as $line )
-                echo "$line\n";
-        errors_are_bad( 1 );
+        foreach ( $out as $line )
+        {
+            if ( !$isEnglish && preg_match( '/IDREF "[^"]+" without matching ID/', $line ) )
+            {
+                $warnings[] = $line;
+            }
+            else
+            {
+                $errors[] = $line;
+            }
+        }
     }
+
+    if ( count( $warnings ) > 0 )
+    {
+        echo "\n" . count( $warnings ) . " IDREF warning(s) (translation out of sync with doc-en):\n";
+        foreach ( $warnings as $line )
+        {
+            echo "$line\n";
+        }
+    }
+
+    if ( count( $errors ) === 0 )
+    {
+        echo "done.\n";
+        return;
+    }
+
+    echo "failed.\n";
+    foreach ( $errors as $line )
+    {
+        echo "$line\n";
+    }
+    errors_are_bad( 1 );
 }
 
 function xml_validate_libxml( $dom )
