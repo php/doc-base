@@ -636,7 +636,7 @@ checkvalue($ac["GENERATE"]);
 function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
 {
     $filename = realpath( $filename );
-    $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
+    $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE | LIBXML_NOBLANKS;
     return $dom->load( $filename , $options );
 }
 
