@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf8" ?>
+<?xml version="1.0" encoding="utf8" ?><?phprevcheck no ?>
 <!-- $Revision:$ -->
 <!--
 
 # Description
 
-This is a "remove.ent" XML Entity file.
+This is a "remove" XML Entity file.
 See doc-base/script/text-entities.php for details.
 
 Place here only deprecated entities that are expected NOT
@@ -14,8 +14,7 @@ DO NOT COPY OR TRANSLATE THIS FILE.
 
 If an entity moved here is used in a language in your control,
 this means that the entity on the original file is planned to be
-removed, or already was removed. Consult the original text file
-and apply changes accordly.
+removed, or already was removed.
 
 # Examples
 
@@ -29,7 +28,8 @@ and apply changes accordly.
 -->
 
 <entities xmlns       = "http://docbook.org/ns/docbook"
-          xmlns:xlink = "http://www.w3.org/1999/xlink" >
+          xmlns:xlink = "http://www.w3.org/1999/xlink"
+          translate   = "remove">
 
 
 

@@ -15,9 +15,10 @@
 | Description: Collect individual entities into an temp/entities.ent.  |
 +----------------------------------------------------------------------+
 
-# Mental model, or things that I would liked to know 20 years prior
+# Mental model for DTD <!ENTITY>,
+  or things that I would liked to know 20 years ago
 
-DTD Entity processing has more in common with DOMDocumentFragment than
+DTD Entity contents have more in common with DOMDocumentFragment than
 DOMElement. In other words, simple text and multi rooted XML fragments
 are valid <!ENTITY> content, whereas they are not valid XML documents.
 
@@ -41,11 +42,11 @@ This script collects grouped and individual XML Entity files
 doc-base/temp/entities.ent file with their respective DTD Entities.
 
 The output file has no duplications, so collection order is important
-to keep the necessary operational semantics. Here, latter loaded entities
+to create some operational semantics. Here, latter loaded entities
 takes priority (overrides) an previous defined one. Note that this is the
 reverse of DTD <!ENTITY> convention, where duplicated entity names are
 ignored. The priority order used here is important to allow detecting
-cases where global entities are being overwritten, or if expected
+cases where unique entities are being overwritten, or if expected
 translatable entities are missing translations.
 
 # Individual XML Entity files, or `.xml` files at `doc-lang/entities/`
@@ -64,10 +65,10 @@ in files that are invalid XML documents (on multi-node rooted ones).
 
 # Grouped XML Entity files
 
-For very small textual entities, down to simple text words or single
-tag elements that may never change, individual entity tracking is
-an overkill. This script also loads grouped XML Entity files, at
-some expected locations, with specific semantics.
+For very small textual entities, down to simple text or single XML
+elements that may never change, individual file tracking of entities
+is an overkill. To avoid an infinitude of micro entity files, this script
+also loads grouped XML Entity files, at some expected locations.
 
 These grouped files are really normal XML files, correctly annotated
 with XML namespaces used on the manual, so any individual exported entity
@@ -76,10 +77,21 @@ files are tracked normally by revcheck, but are not directly included
 in manual.xml.in, as they only participate in general entity loading,
 described above.
 
-- global.ent        - expected unreplaced
-- manual.ent        - expected replaced (translated)
-- remove.ent        - expected unused
-- lang/entities/*   - expected replaced (translated)
+# Checks
+
+Groped XML Entity files are annotated with an attribute named "translate",
+that accepts the following values:
+
+- "yes": these entities are expected to be translated or replaced;
+- "no": these entities are expected not be translated or replaced;
+- "delete": these entities should be deleted on sight.
+
+The characteristics above are validated at the end of the script. Use the
+--debug argument to also list the names of misused entities.
+
+The "delete" value exists to make possible deleting entities from
+doc-en while keeping translations building. To achieve this result,
+move any recently deleted to a .ent file with translate="delete".
 
 */
 
@@ -89,50 +101,59 @@ ini_set( 'display_errors' , 1 );
 ini_set( 'display_startup_errors' , 1 );
 error_reporting( E_ALL );
 
-if ( count( $argv ) < 2 || in_array( '--help' , $argv ) || in_array( '-h' , $argv ) )
-{
-    fwrite( STDERR , "\nUsage: {$argv[0]} [--debug] langCode [langCode]\n\n" );
-    return;
-}
-
-$filename = Entities::prepareOutputFile();
+Entities::truncateOutputFile();
 
 $langs = [];
 $debug = false;
+$usage = in_array( '--help' , $argv ) || in_array( '-h' , $argv );
 
-for( $idx = 1 ; $idx < count( $argv ) ; $idx++ )
-    if ( $argv[$idx] == "--debug" )
+if ( count( $argv ) < 2 || $usage )
+{
+    print "\nUsage: {$argv[0]} langCode [langCode] [--debug]\n\n";
+    if ( $usage )
+        exit( 0 );
+    else
+        exit( 1 );
+}
+array_shift( $argv );
+foreach( $argv as $arg )
+    if ( $arg == "--debug" )
         $debug = true;
     else
-        $langs[] = $argv[$idx];
+        $langs[] = $arg;
 
 if ( $debug )
     print "Running text-entities.ent in debug mode.\n";
 else
     print "Running text-entities.ent... ";
 
-loadEnt( __DIR__ . "/../global.ent"  , global: true , warnMissing: true );
 foreach( $langs as $lang )
 {
-    loadEnt( __DIR__ . "/../../$lang/global.ent" , global: true );
-    loadEnt( __DIR__ . "/../../$lang/manual.ent" , translate: true , warnMissing: true );
-    loadEnt( __DIR__ . "/../../$lang/remove.ent" , remove: true );
-    loadDir( $langs , $lang , $debug );
+    loadDirEntities( $lang );
+    loadDirReference( $lang );
+    Entities::$countLanguages++;
 }
 
 Entities::writeOutputFile();
 Entities::checkReplaces( $debug );
 
-echo "done: " , Entities::$countTotalGenerated , " entities";
+echo "done: generated " , Entities::$countTotalGenerated , " entities";
 if ( Entities::$countUntranslated  > 0 )
     echo ", " , Entities::$countUntranslated , " untranslated";
-if ( Entities::$countReplacedGlobal > 0 )
-    echo ", " , Entities::$countReplacedGlobal , " unique replaced";
-if ( Entities::$countReplacedRemove  > 0 )
-    echo ", " , Entities::$countReplacedRemove , " remove replaced";
+if ( Entities::$countUniqueReplaced > 0 )
+    echo ", " , Entities::$countUniqueReplaced , " unique replaced";
+if ( Entities::$countRemoveReplaced  > 0 )
+    echo ", " , Entities::$countRemoveReplaced , " remove replaced";
 echo ".\n";
 
 exit;
+
+enum EntityCheck
+{
+    case Unique; // Expected once
+    case Normal; // Expected used/translated
+    case Remove; // Expected unused
+}
 
 class EntityData
 {
@@ -146,45 +167,34 @@ class Entities
 {
     private static string $filename = __DIR__ . "/../temp/entities.ent";
 
-    private static array $entities = [];    // All collected entities, no duplications
-    private static array $global = [];      // Entities expected not replaced
-    private static array $replace = [];     // Entities expected replaced / translated
-    private static array $remove = [];      // Entities expected not replaced and not used
-    private static array $unique = [];      // For detecting duplicated global+en entities
-    private static array $count = [];       // Name / Count
+    private static array $merged = [];          // All EntityData, merged by name, no duplications
+    private static array $unique = [];          // Any entity marked unique
+    private static array $remove = [];          // Any entity marked deleted
+    private static array $nameCount = [];       // Name / Count
 
-    public static int $countLanguages = 0;  // Controls untranslated checking
+    public static int $countLanguages = 0;      // For translated check
     public static int $countUntranslated = 0;
-    public static int $countReplacedGlobal = 0;
-    public static int $countReplacedRemove = 0;
+    public static int $countUniqueReplaced = 0;
+    public static int $countRemoveReplaced = 0;
     public static int $countTotalGenerated = 0;
 
-
-    static function put( string $path , string $name , string $text , bool $unique = false , bool $replace = false , bool $remove = false )
+    static function put( string $path , string $name , string $text , bool $unique = false , bool $remove = false )
     {
         $entity = new EntityData( $path , $name , $text );
-        Entities::$entities[ $name ] = $entity;
-
-        if ( ! isset( Entities::$count[ $name ] ) )
-            Entities::$count[$name] = 1;
-        else
-            Entities::$count[$name]++;
+        Entities::$merged[ $name ] = $entity;
 
         if ( $unique )
-            Entities::$global[ $name ] = $name;
-
-        if ( $replace )
-            Entities::$replace[ $name ] = $name;
+            Entities::$unique[ $name ] = $name;
 
         if ( $remove )
             Entities::$remove[ $name ] = $name;
 
-        if ( $unique && isset( Entities::$unique[ $name ] ) )
-            fwrite( STDOUT , "\n  Replaced unique entity: $name\n" );
-        Entities::$unique[ $name ] = $name;
+        if ( ! isset( Entities::$nameCount[ $name ] ) )
+            Entities::$nameCount[ $name ] = 0;
+        Entities::$nameCount[ $name ]++;
     }
 
-    static function prepareOutputFile()
+    static function truncateOutputFile()
     {
         if ( file_exists( Entities::$filename ) )
             unlink( Entities::$filename );
@@ -194,109 +204,67 @@ class Entities
 
     static function writeOutputFile()
     {
-        saveEntitiesFile( Entities::$filename , Entities::$entities );
+        outputFiles( Entities::$filename , Entities::$merged );
     }
 
     static function checkReplaces( bool $debug )
     {
-        Entities::$countTotalGenerated = count( Entities::$entities );
+        Entities::$countTotalGenerated = count( Entities::$merged );
         Entities::$countUntranslated = 0;
-        Entities::$countReplacedGlobal = 0;
-        Entities::$countReplacedRemove = 0;
+        Entities::$countUniqueReplaced = 0;
+        Entities::$countRemoveReplaced = 0;
 
-        foreach( Entities::$entities as $name => $text )
+        foreach( Entities::$merged as $name => $null )
         {
-            $replaced = Entities::$count[$name] - 1;
+            $replaced = Entities::$nameCount[$name] - 1;
             $languages = Entities::$countLanguages;
-            $expectedGlobal = in_array( $name , Entities::$global );
-            $expectedReplaced = in_array( $name , Entities::$replace );
+            $expectedUnique = in_array( $name , Entities::$unique );
             $expectedRemoved  = in_array( $name , Entities::$remove );
+            $expectedTranslated = ! ( $expectedUnique || $expectedRemoved );
 
-            if ( $expectedGlobal && $replaced != 0 )
+            if ( $expectedUnique && $replaced != 0 )
             {
-                Entities::$countReplacedGlobal++;
+                Entities::$countUniqueReplaced++;
                 if ( $debug )
-                    print "  Expected global, replaced $replaced times:     $name\n";
-            }
-
-            if ( $expectedReplaced && $replaced != 1 && $languages != 1 )
-            {
-                Entities::$countUntranslated++;
-                if ( $debug )
-                    print "  Expected translated, replaced $replaced times: $name\n";
+                    print " Expected unique, replaced $replaced times:     $name\n";
             }
 
             if ( $expectedRemoved && $replaced != 0 )
             {
-                Entities::$countReplacedRemove++;
+                Entities::$countRemoveReplaced++;
                 if ( $debug )
-                    print "  Expected removed, replaced $replaced times:    $name\n";
+                    print " Expected removed, replaced $replaced times:    $name\n";
+            }
+
+            if ( $expectedTranslated && $replaced != 1 && $languages != 1 )
+            {
+                Entities::$countUntranslated++;
+                if ( $debug )
+                    print " Expected translated, replaced $replaced times: $name\n";
             }
         }
     }
 }
 
-function loadEnt( string $path , bool $global = false , bool $translate = false , bool $remove = false , bool $warnMissing = false )
-{
-    $realpath = realpath( $path );
-    if ( $realpath === false )
-        if ( PARTIAL_IMPL )
-            return;
-        else
-            if ( $warnMissing )
-                fwrite( STDERR , "\n  Missing entity file: $path\n" );
-    $path = $realpath;
-
-    $text = file_get_contents( $path );
-    $text = str_replace( "&" , "&amp;" , $text );
-
-    $dom = new DOMDocument( '1.0' , 'utf8' );
-    if ( ! $dom->loadXML( $text ) )
-        die( "XML load failed for $path\n" );
-
-    $xpath = new DOMXPath( $dom );
-    $list = $xpath->query( "/*/*" );
-
-    foreach( $list as $ent )
-    {
-        // weird, namespace correting, DOMNodeList -> DOMDocumentFragment transform
-        $other = new DOMDocument( '1.0' , 'utf8' );
-
-        foreach( $ent->childNodes as $node )
-            $other->appendChild( $other->importNode( $node , true ) );
-
-        $name = $ent->getAttribute( "name" );
-        $text = $other->saveXML();
-
-        $text = rtrim( $text , "\n" );
-        $text = str_replace( "&amp;" , "&" , $text );
-
-        // Remove XML declaration.
-        $lines = explode( "\n" , $text );
-        array_shift( $lines );
-        $text = implode( "\n" , $lines );
-
-        Entities::put( $path , $name , $text , $global , $translate , $remove );
-    }
-}
-
-function loadDir( array $langs , string $lang , bool $debug )
+function loadDirEntities( string $lang )
 {
     $dir = __DIR__ . "/../../$lang/entities";
     $dir = realpath( $dir );
     if ( $dir === false || ! is_dir( $dir ) )
+    {
         if ( PARTIAL_IMPL )
         {
-            if ( $debug )
-                print "Not a directory: $dir\n";
+            print "\n  Skiped $lang/entities\n";
             return;
         }
         else
-            exit( "Error: not a directory: $dir\n" );
+        {
+            print "\n  Not a directory: $dir\n";
+            exit( 1 );
+        }
+    }
 
     $files = scandir( $dir );
-    $expectedReplaced = array_search( $lang , $langs ) > 0;
-
     foreach( $files as $file )
     {
         $path = realpath( "$dir/$file" );
@@ -306,58 +274,121 @@ function loadDir( array $langs , string $lang , bool $debug )
         if ( is_dir( $path ) )
             continue;
 
-        $text = file_get_contents( $path );
-        $text = rtrim( $text , "\n" );
+        if ( str_ends_with( $path , ".xml" ) )
+            loadEntitySingle( $path );
 
-        loadXml( $path , $text , $expectedReplaced );
+        if ( str_ends_with( $path , ".ent" ) )
+            loadEntityGroup( $path );
     }
-
-    Entities::$countLanguages++;
 }
 
-function loadXml( string $path , string $text , bool $expectedReplaced )
+function loadDirReference( string $lang )
 {
+    // TODO
+}
+
+function loadEntityGroup( string $path )
+{
+    $path = realpath( $path );
+    $text = file_get_contents( $path );
+    $text = str_replace( "&" , "&amp;" , $text );
+
+    $dom = new DOMDocument( '1.0' , 'utf8' );
+    if ( ! $dom->loadXML( $text ) )
+        die( "XML load failed for $path\n" );
+
+    $unique = false;
+    $remove = false;
+    $value = $dom->documentElement->getAttribute("translate");
+    switch ( $value )
+    {
+        case "no":
+            $unique = true;
+            break;
+        case "delete":
+        case "remove":
+            $remove = true;
+            break;
+        default:
+            print "\n Invalid translate value '$value' in '$path'.\n";
+            exit( 1 );
+    }
+
+    $xpath = new DOMXPath( $dom );
+    $list = $xpath->query( "/*/*" );
+
+    foreach( $list as $ent )
+    {
+        // Weird, namespace correting, DOMNodeList -> DOMDocumentFragment transform
+        $other = new DOMDocument( '1.0' , 'utf8' );
+
+        foreach( $ent->childNodes as $node )
+            $other->appendChild( $other->importNode( $node , true ) );
+
+        $name = $ent->getAttribute( "name" );
+        $text = $other->saveXML();
+        $text = str_replace( "&amp;" , "&" , $text );
+
+        // Remove XML declaration and empty line added by libxml
+
+        $lines = explode( "\n" , $text );
+        array_shift( $lines );
+        array_pop( $lines );
+        $text = implode( "\n" , $lines );
+
+        Entities::put( $path , $name , $text , $unique , $remove );
+    }
+}
+
+function loadEntitySingle( string $path )
+{
+    $text = file_get_contents( $path );
     $info = pathinfo( $path );
     $name = $info["filename"];
     $frag = "<frag>$text</frag>";
 
     if ( trim( $text ) == "" )
     {
-        if ( ! PARTIAL_IMPL )
-            fwrite( STDERR , "\n  Empty entity (should it be in remove.ent?): '$path' \n" );
+        print "\n  Empty entity '$name' on file '$path'.\n";
+        print "\n  Should it be in a file with translate='remove'?\n";
         Entities::put( $path , $name , $text );
         return;
     }
+
+    // Validate. Accepts only the error "Entity * not defined"
 
     $dom = new DOMDocument( '1.0' , 'utf8' );
     $dom->recover = true;
     $dom->resolveExternals = false;
     libxml_use_internal_errors( true );
 
-    $res = $dom->loadXML( $frag );
-
+    $xml = $dom->loadXML( $frag );
     $err = libxml_get_errors();
     libxml_clear_errors();
 
     foreach( $err as $item )
     {
         $msg = trim( $item->message );
+
+        if ( $item->code == 26 )
+            continue;
         if ( str_starts_with( $msg , "Entity '" ) && str_ends_with( $msg , "' not defined" ) )
             continue;
 
-        fwrite( STDERR , "\n  XML load failed on entity file." );
-        fwrite( STDERR , "\n    Path:  $path" );
-        fwrite( STDERR , "\n    Error: $msg\n" );
+        print "\n  XML load failed for entity file:";
+        print "\n   Path:  $path";
+        print "\n   Error: $msg\n";
         return;
     }
 
-    Entities::put( $path , $name , $text , replace: $expectedReplaced );
+    Entities::put( $path , $name , $text );
 }
 
-function saveEntitiesFile( string $filename , array $entities )
+function outputFiles( string $filename , array $entities )
 {
     $file = fopen( $filename , "w" );
-    fputs( $file , "\n<!-- DO NOT COPY / DO NOT TRANSLATE - Autogenerated by text-entities.php -->\n\n" );
+    fputs( $file , "\n<!-- DO NOT COPY / DO NOT TRANSLATE -->" );
+    fputs( $file , "\n<!-- Autogenerated by text-entities.php -->\n\n" );
 
     $sepFileDir = __DIR__ . "/../temp/text-entities/";
 

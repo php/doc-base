@@ -4,7 +4,7 @@
 
 # Description
 
-This is a "manual.ent" XML Entity file.
+This is a "normal" XML Entity file.
 See doc-base/script/text-entities.php for details.
 
 Place here small entities that are expected to be translated.
@@ -17,15 +17,15 @@ file at doc-lang/entities/entityname.xml.
 
 <entity name="name.name">
  Single-, multi- or text rooted XML fragment, as long as it is
- a well-balanced one. Mind the XML namespaces of <entities>
- XML element below.
+ a well-balanced one. Mind the XML namespaces of the root XML
+ element below.
 </entity>
 
 -->
 
 <entities xmlns       = "http://docbook.org/ns/docbook"
-          xmlns:xlink = "http://www.w3.org/1999/xlink" >
-
+          xmlns:xlink = "http://www.w3.org/1999/xlink"
+          translate   = "yes">
 
 
 </entities>
