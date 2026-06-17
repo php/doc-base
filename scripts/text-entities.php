@@ -70,7 +70,7 @@ an overkill. This script also loads grouped XML Entity files, at
 some expected locations, with specific semantics.
 
 These grouped files are really normal XML files, correctly annotated
-with XML namespaces used on manual, so any individual exported entity
+with XML namespaces used on the manual, so any individual exported entity
 has correct and clean XML namespace annotations. These grouped entity
 files are tracked normally by revcheck, but are not directly included
 in manual.xml.in, as they only participate in general entity loading,
