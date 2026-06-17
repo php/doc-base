@@ -124,8 +124,8 @@ Entities::writeOutputFile();
 Entities::checkReplaces( $debug );
 
 echo "done: " , Entities::$countTotalGenerated , " entities";
-if ( Entities::$countUnstranslated  > 0 )
-    echo ", " , Entities::$countUnstranslated , " untranslated";
+if ( Entities::$countUntranslated  > 0 )
+    echo ", " , Entities::$countUntranslated , " untranslated";
 if ( Entities::$countReplacedGlobal > 0 )
     echo ", " , Entities::$countReplacedGlobal , " unique replaced";
 if ( Entities::$countReplacedRemove  > 0 )
@@ -153,12 +153,12 @@ class Entities
     private static array $unique = [];      // For detecting duplicated global+en entities
     private static array $count = [];       // Name / Count
 
-    public static int $countUnstranslated = 0;
+    public static int $countLanguages = 0;  // Controls untranslated checking
+    public static int $countUntranslated = 0;
     public static int $countReplacedGlobal = 0;
     public static int $countReplacedRemove = 0;
     public static int $countTotalGenerated = 0;
 
-    public static int $languagesCount = 0;  // Controls untranslated checking
 
     static function put( string $path , string $name , string $text , bool $unique = false , bool $replace = false , bool $remove = false )
     {
@@ -200,14 +200,14 @@ class Entities
     static function checkReplaces( bool $debug )
     {
         Entities::$countTotalGenerated = count( Entities::$entities );
-        Entities::$countUnstranslated = 0;
+        Entities::$countUntranslated = 0;
         Entities::$countReplacedGlobal = 0;
         Entities::$countReplacedRemove = 0;
 
         foreach( Entities::$entities as $name => $text )
         {
             $replaced = Entities::$count[$name] - 1;
-            $languages = Entities::$languagesCount;
+            $languages = Entities::$countLanguages;
             $expectedGlobal = in_array( $name , Entities::$global );
             $expectedReplaced = in_array( $name , Entities::$replace );
             $expectedRemoved  = in_array( $name , Entities::$remove );
@@ -221,7 +221,7 @@ class Entities
 
             if ( $expectedReplaced && $replaced != 1 && $languages != 1 )
             {
-                Entities::$countUnstranslated++;
+                Entities::$countUntranslated++;
                 if ( $debug )
                     print "  Expected translated, replaced $replaced times: $name\n";
             }
@@ -312,7 +312,7 @@ function loadDir( array $langs , string $lang , bool $debug )
         loadXml( $path , $text , $expectedReplaced );
     }
 
-    Entities::$languagesCount++;
+    Entities::$countLanguages++;
 }
 
 function loadXml( string $path , string $text , bool $expectedReplaced )
