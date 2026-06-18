@@ -129,8 +129,11 @@ else
 
 foreach( $langs as $lang )
 {
-    loadDirEntities( $lang );
-    loadDirReference( $lang );
+    $entDir = __DIR__ . "/../../$lang/entities";
+    $refDir = __DIR__ . "/../../$lang/reference";
+
+    loadDirEntities( $entDir );
+    loadDirRecurse( $refDir );
     Entities::$countLanguages++;
 }
 
@@ -246,9 +249,8 @@ class Entities
     }
 }
 
-function loadDirEntities( string $lang )
+function loadDirEntities( string $dir )
 {
-    $dir = __DIR__ . "/../../$lang/entities";
     $dir = realpath( $dir );
     if ( $dir === false || ! is_dir( $dir ) )
     {
@@ -282,9 +284,22 @@ function loadDirEntities( string $lang )
     }
 }
 
-function loadDirReference( string $lang )
+function loadDirRecurse( string $dir )
 {
-    // TODO
+    $paths = scandir( $dir );
+    foreach( $paths as $path )
+    {
+        if ( str_starts_with( $path , '.' ) )
+            continue;
+
+        $path = realpath( "$dir/$path" );
+
+        if ( is_dir( $path ) )
+            loadDirRecurse( $path );
+        else
+            if ( str_ends_with( $path , ".ent" ) )
+                loadEntityGroup( $path );
+    }
 }
 
 function loadEntityGroup( string $path )
@@ -310,7 +325,7 @@ function loadEntityGroup( string $path )
             $remove = true;
             break;
         default:
-            print "\n Invalid translate value '$value' in '$path'.\n";
+            print "\n Invalid translate attribute '$value' in '$path'.\n";
             exit( 1 );
     }
 
@@ -319,22 +334,19 @@ function loadEntityGroup( string $path )
 
     foreach( $list as $ent )
     {
-        // Weird, namespace correting, DOMNodeList -> DOMDocumentFragment transform
-        $other = new DOMDocument( '1.0' , 'utf8' );
+        $name = $ent->getAttribute( "name" );
 
+        // Weird, namespace correting, DOMNodeList -> DOMDocumentFragment transform
+
+        $other = new DOMDocument( '1.0' , 'utf8' );
         foreach( $ent->childNodes as $node )
             $other->appendChild( $other->importNode( $node , true ) );
 
-        $name = $ent->getAttribute( "name" );
-        $text = $other->saveXML();
-        $text = str_replace( "&amp;" , "&" , $text );
+        // Piecewise reconstruct fragment, without XML declarations or extra newlines
 
-        // Remove XML declaration and empty line added by libxml
-
-        $lines = explode( "\n" , $text );
-        array_shift( $lines );
-        array_pop( $lines );
-        $text = implode( "\n" , $lines );
+        $text = "";
+        foreach( $other->childNodes as $node )
+            $text .= $other->saveXML( $node );
 
         Entities::put( $path , $name , $text , $unique , $remove );
     }
@@ -426,7 +438,7 @@ function outputFiles( string $filename , array $entities )
         // Slow path: entity body as an external file,
         // as to avoid (re)quotation hell.
 
-        $path = $sepFileDir . "/{$entity->name}.ent";
+        $path = $sepFileDir . "/{$entity->name}.xml";
 
         if ( file_exists( $path ) )
         {

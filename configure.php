@@ -621,11 +621,9 @@ function dtd_text_entities()
     $php = $ac['PHP'];
     $lang = $ac["LANG"];
 
-    $parts =
-        [ $php
-        , __DIR__ . "/scripts/text-entities.php"
-        , "en"
-    ];
+    $parts = [ $php
+             , __DIR__ . "/scripts/text-entities.php"
+             , "en" ];
     if ( $lang != "en" )
         $parts[] = $lang;
 
