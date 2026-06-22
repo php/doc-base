@@ -256,7 +256,7 @@ function loadDirEntities( string $dir )
     {
         if ( PARTIAL_IMPL )
         {
-            print "\n  Skiped $lang/entities\n";
+            print "(skip) ";
             return;
         }
         else
