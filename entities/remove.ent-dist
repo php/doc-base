@@ -1,20 +1,36 @@
-<?xml version="1.0" encoding="utf8" ?>
+<?xml version="1.0" encoding="utf8" ?><?phprevcheck no ?>
+<!-- $Revision:$ -->
 <!--
-    This is a "remove" XML Entity file.
-    See doc-base/script/entities.php for details.
 
-    Place here only deprecated entities that are expected NOT
-    be being used in any part of the manual.
+# Description
 
-    DO NOT COPY OR TRANSLATE THIS FILE.
+This is a "remove" XML Entity file.
+See doc-base/script/text-entities.php for details.
 
-    If an entity moved here is used in a language in your control,
-    this means that the entity on the original file is planned to be
-    removed, or already was removed. Consult the original text file
-    and apply changes accordly.
+Place here only deprecated entities that are expected NOT
+be being used in any part of the manual.
+
+DO NOT COPY OR TRANSLATE THIS FILE.
+
+If an entity moved here is used in a language in your control,
+this means that the entity on the original file is planned to be
+removed, or already was removed.
+
+# Examples
+
+<entity name="name"></entity>
+
+<entity name="name.name">
+ It may be necessary to preserve the original body to avoid
+ breakage in manual translations.
+</entity>
+
 -->
-<entities xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
 
-<!-- <entity name="ent.name">XML fragment</entity> -->
+<entities xmlns       = "http://docbook.org/ns/docbook"
+          xmlns:xlink = "http://www.w3.org/1999/xlink"
+          translate   = "remove">
+
+
 
 </entities>

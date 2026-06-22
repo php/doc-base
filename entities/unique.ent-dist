@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf8" ?><?phprevcheck no ?>
+<!-- $Revision:$ -->
+<!--
+
+# Description
+
+This is a "unique" XML Entity file.
+See doc-base/script/text-entities.php for details.
+
+Place here only small entities that are expected NOT
+being translated in any part of the manual.
+
+DO NOT COPY OR TRANSLATE THIS FILE.
+
+If you want/need to translate some entity placed here,
+open an issue on doc-base or doc-en repository, so the
+translatable entity is moved to a normal entity file.
+
+# Examples
+
+<entity name="name">Direct text</entity>
+
+<entity name="name.name">
+ Single-, multi- or text rooted XML fragment, as long as it is
+ a well-balanced one. Mind the XML namespaces of <entities>
+ XML element below.
+</entity>
+
+-->
+
+<entities xmlns       = "http://docbook.org/ns/docbook"
+          xmlns:xlink = "http://www.w3.org/1999/xlink"
+          translate   = "no">
+
+
+
+</entities>
