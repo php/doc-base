@@ -61,7 +61,7 @@ two reasons: first, text editors in general can highlights XML syntax in
 well-balanced texts; and second, this allows normal revision tracking
 per file, without requiring weird changes on `revcheck.php`. Note that
 is *invalid* to place XML declaration in these fragment files, at least
-in files that are invalid XML documents (on multi-node rooted ones).
+in files that are invalid XML documents (on text or multi-element roots).
 
 # Grouped XML Entity files
 
@@ -74,7 +74,7 @@ These grouped files are really normal XML files, correctly annotated
 with XML namespaces used on the manual, so any individual exported entity
 has correct and clean XML namespace annotations. These grouped entity
 files are tracked normally by revcheck, but are not directly included
-in manual.xml.in, as they only participate in general entity loading,
+in manual.xml, as they only participate in general entity generation,
 described above.
 
 # Checks
@@ -86,12 +86,13 @@ that accepts the following values:
 - "no": these entities are expected not be translated or replaced;
 - "delete": these entities should be deleted on sight.
 
-The characteristics above are validated at the end of the script. Use the
---debug argument to also list the names of misused entities.
+The characteristics above are validated at the end of the script. You
+can use an --debug argument to also list the names of misused entities.
 
 The "delete" value exists to make possible deleting entities from
 doc-en while keeping translations building. To achieve this result,
-move any recently deleted to a .ent file with translate="delete".
+move any recently deleted of doc-en to a entities/.ent file
+annotated with translate="delete".
 
 */
 
@@ -143,10 +144,8 @@ Entities::checkReplaces( $debug );
 echo "done: generated " , Entities::$countTotalGenerated , " entities";
 if ( Entities::$countUntranslated  > 0 )
     echo ", " , Entities::$countUntranslated , " untranslated";
-if ( Entities::$countUniqueReplaced > 0 )
-    echo ", " , Entities::$countUniqueReplaced , " unique replaced";
-if ( Entities::$countRemoveReplaced  > 0 )
-    echo ", " , Entities::$countRemoveReplaced , " remove replaced";
+if ( Entities::$countFailures > 0 )
+    echo ", " , Entities::$countFailures , " failures";
 echo ".\n";
 
 exit;
@@ -176,10 +175,9 @@ class Entities
     private static array $nameCount = [];       // Name / Count
 
     public static int $countLanguages = 0;      // For translated check
-    public static int $countUntranslated = 0;
-    public static int $countUniqueReplaced = 0;
-    public static int $countRemoveReplaced = 0;
     public static int $countTotalGenerated = 0;
+    public static int $countUntranslated = 0;
+    public static int $countFailures = 0;
 
     static function put( string $path , string $name , string $text , bool $unique = false , bool $remove = false )
     {
@@ -214,8 +212,7 @@ class Entities
     {
         Entities::$countTotalGenerated = count( Entities::$merged );
         Entities::$countUntranslated = 0;
-        Entities::$countUniqueReplaced = 0;
-        Entities::$countRemoveReplaced = 0;
+        Entities::$countFailures = 0;
 
         foreach( Entities::$merged as $name => $null )
         {
@@ -227,23 +224,23 @@ class Entities
 
             if ( $expectedUnique && $replaced != 0 )
             {
-                Entities::$countUniqueReplaced++;
+                Entities::$countFailures++;
                 if ( $debug )
-                    print " Expected unique, replaced $replaced times:     $name\n";
+                    print " Expected unique, redefined $replaced times:     $name\n";
             }
 
             if ( $expectedRemoved && $replaced != 0 )
             {
-                Entities::$countRemoveReplaced++;
+                Entities::$countFailures++;
                 if ( $debug )
-                    print " Expected removed, replaced $replaced times:    $name\n";
+                    print " Expected removed, redefined $replaced times:    $name\n";
             }
 
             if ( $expectedTranslated && $replaced != 1 && $languages != 1 )
             {
                 Entities::$countUntranslated++;
                 if ( $debug )
-                    print " Expected translated, replaced $replaced times: $name\n";
+                    print " Expected translated, redefined $replaced times: $name\n";
             }
         }
     }
@@ -256,7 +253,7 @@ function loadDirEntities( string $dir )
     {
         if ( PARTIAL_IMPL )
         {
-            print "\n  Skiped $lang/entities\n";
+            print "\n  Skiped $dir/entities\n";
             return;
         }
         else
@@ -321,8 +318,7 @@ function loadEntityGroup( string $path )
             $unique = true;
             break;
         case "delete":
-        case "remove":
-            $remove = true;
+            $delete = true;
             break;
         default:
             print "\n Invalid translate attribute '$value' in '$path'.\n";
@@ -348,7 +344,7 @@ function loadEntityGroup( string $path )
         foreach( $other->childNodes as $node )
             $text .= $other->saveXML( $node );
 
-        Entities::put( $path , $name , $text , $unique , $remove );
+        Entities::put( $path , $name , $text , $unique , $delete );
     }
 }
 
@@ -362,7 +358,7 @@ function loadEntitySingle( string $path )
     if ( trim( $text ) == "" )
     {
         print "\n  Empty entity '$name' on file '$path'.\n";
-        print "\n  Should it be in a file with translate='remove'?\n";
+        print "\n  Should it be in a file with translate='delete'?\n";
         Entities::put( $path , $name , $text );
         return;
     }
