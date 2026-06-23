@@ -985,55 +985,28 @@ function xml_validate_jing()
     $cmdJing = "java -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath}";
     exec( $cmdJing , $out , $ret );
 
+    if ( ! is_array( $out ) )
+        $out = [];
+
     if ( $ret == 0 )
     {
         echo "done.\n";
         return;
     }
 
-    // For non-English translations, IDREF mismatches are treated as warnings instead of errors,
-    // because outdated translations may reference IDs that have yet to be translated from doc-en.
-
-    $isEnglish = $GLOBALS['ac']['LANG'] === 'en';
-    $errors = [];
-    $warnings = [];
-
-    if ( is_array( $out ) )
-    {
-        foreach ( $out as $line )
-        {
-            if ( !$isEnglish && preg_match( '/IDREF "[^"]+" without matching ID/', $line ) )
-            {
-                $warnings[] = $line;
-            }
-            else
-            {
-                $errors[] = $line;
-            }
-        }
-    }
-
-    if ( count( $warnings ) > 0 )
-    {
-        echo "\n" . count( $warnings ) . " IDREF warning(s) (translation out of sync with doc-en):\n";
-        foreach ( $warnings as $line )
-        {
-            echo "$line\n";
-        }
-    }
-
-    if ( count( $errors ) === 0 )
-    {
-        echo "done.\n";
-        return;
-    }
-
     echo "failed.\n";
-    foreach ( $errors as $line )
-    {
+    foreach ( $out as $line )
         echo "$line\n";
-    }
-    errors_are_bad( 1 );
+
+    // Allow translations with missing/mismatched IDREFs to continue building.
+
+    $countFatal = count( $out );
+    foreach ( $out as $line )
+        if ( preg_match( '/IDREF "[^"]+" without matching ID/', $line ) )
+            $countFatal--;
+
+    if ( $GLOBALS['ac']['LANG'] === 'en' || $countFatal > 0 )
+        errors_are_bad( 1 );
 }
 
 function xml_validate_libxml( $dom )
