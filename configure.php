@@ -19,10 +19,7 @@
   +----------------------------------------------------------------------+
 */
 
-ini_set( 'display_errors' , 1 );
-ini_set( 'display_startup_errors' , 1 );
-error_reporting( E_ALL );
-
+errorsAll();
 ob_implicit_flush();
 libxml_use_internal_errors(true);
 
@@ -119,6 +116,42 @@ function realpain( string $path , bool $touch = false , bool $mkdir = false ) : 
         $path = str_replace( "\\" , '/' , $res );
 
     return $path;
+}
+
+function errorsAll(): void {
+    $ini = [
+        'display_errors' => 1 + defined('STDERR'),
+        'display_startup_errors' => 1 + defined('STDERR'),
+        'error_reporting' => E_ALL,
+    ];
+
+    foreach ($ini as $option => $value) {
+        $result = ini_set($option, $value);
+        if ($result === false) {
+            $errors[] = sprintf('ini setting "%s"', $option);
+        }
+    }
+
+    if (isset($errors)) {
+        throw errorsWrap(sprintf('php.ini errors (%d)', count($errors)), ...$errors);
+    }
+
+    error_reporting(E_ALL);
+}
+
+function errorsWrap(string|null ...$err): Error|null {
+    $errors = null;
+    foreach ($err as $e) {
+        if (isset($e)) {
+            $errors[] = $e;
+        }
+    }
+
+    if (empty($errors)) {
+        return null;
+    }
+
+    return new Error(implode("\n  ", $errors));
 }
 
 function errbox($msg) {
