@@ -84,15 +84,15 @@ that accepts the following values:
 
 - "yes": these entities are expected to be translated or replaced;
 - "no": these entities are expected not be translated or replaced;
-- "delete": these entities should be deleted on sight.
+- "remove": these entities should be deleted on sight.
 
 The characteristics above are validated at the end of the script. You
 can use an --debug argument to also list the names of misused entities.
 
-The "delete" value exists to make possible deleting entities from
+The "remove" value exists to make possible deleting entities from
 doc-en while keeping translations building. To achieve this result,
 move any recently deleted of doc-en to a entities/.ent file
-annotated with translate="delete".
+annotated with translate="remove".
 
 */
 
@@ -123,10 +123,9 @@ foreach( $argv as $arg )
     else
         $langs[] = $arg;
 
+print "Running text-entities.php... ";
 if ( $debug )
-    print "Running text-entities.ent in debug mode.\n";
-else
-    print "Running text-entities.ent... ";
+    print "\n";
 
 foreach( $langs as $lang )
 {
@@ -141,11 +140,11 @@ foreach( $langs as $lang )
 Entities::writeOutputFile();
 Entities::checkReplaces( $debug );
 
-echo "done: generated " , Entities::$countTotalGenerated , " entities";
-if ( Entities::$countUntranslated  > 0 )
-    echo ", " , Entities::$countUntranslated , " untranslated";
-if ( Entities::$countFailures > 0 )
-    echo ", " , Entities::$countFailures , " failures";
+echo "done: " , Entities::$countTotalGenerated , " entities";
+if ( Entities::$countTransFailures  > 0 )
+    echo ", " , Entities::$countTransFailures , " untranslated";
+if ( Entities::$countOtherFailures > 0 )
+    echo ", " , Entities::$countOtherFailures , " other failures";
 echo ".\n";
 
 exit;
@@ -176,8 +175,8 @@ class Entities
 
     public static int $countLanguages = 0;      // For translated check
     public static int $countTotalGenerated = 0;
-    public static int $countUntranslated = 0;
-    public static int $countFailures = 0;
+    public static int $countTransFailures = 0;
+    public static int $countOtherFailures = 0;
 
     static function put( string $path , string $name , string $text , bool $unique = false , bool $remove = false )
     {
@@ -211,36 +210,51 @@ class Entities
     static function checkReplaces( bool $debug )
     {
         Entities::$countTotalGenerated = count( Entities::$merged );
-        Entities::$countUntranslated = 0;
-        Entities::$countFailures = 0;
+        Entities::$countTransFailures = 0;
+        Entities::$countOtherFailures = 0;
 
         foreach( Entities::$merged as $name => $null )
         {
             $replaced = Entities::$nameCount[$name] - 1;
             $languages = Entities::$countLanguages;
-            $expectedUnique = in_array( $name , Entities::$unique );
-            $expectedRemoved  = in_array( $name , Entities::$remove );
-            $expectedTranslated = ! ( $expectedUnique || $expectedRemoved );
+            $entityUnique = in_array( $name , Entities::$unique );
+            $entityRemove  = in_array( $name , Entities::$remove );
+            $entityNormal = ! ( $entityUnique || $entityRemove );
 
-            if ( $expectedUnique && $replaced != 0 )
+            if ( $entityUnique && $replaced != 0 )
             {
-                Entities::$countFailures++;
+                Entities::$countOtherFailures++;
                 if ( $debug )
-                    print " Expected unique, redefined $replaced times:     $name\n";
+                    print " Unique entity, redefined $replaced times: $name\n";
             }
 
-            if ( $expectedRemoved && $replaced != 0 )
+            if ( $entityRemove && $replaced != 0 )
             {
-                Entities::$countFailures++;
+                Entities::$countOtherFailures++;
                 if ( $debug )
-                    print " Expected removed, redefined $replaced times:    $name\n";
+                    print " Remove entity, redefined $replaced times: $name\n";
             }
 
-            if ( $expectedTranslated && $replaced != 1 && $languages != 1 )
+            if ( $entityNormal && $languages == 0 && $replaced != 0 )
             {
-                Entities::$countUntranslated++;
+                Entities::$countOtherFailures++;
                 if ( $debug )
-                    print " Expected translated, redefined $replaced times: $name\n";
+                    print " Normal entity, redefined $replaced times: $name\n";
+            }
+            if ( $entityNormal && $languages != 0 )
+            {
+                if ( $replaced == 0 )
+                {
+                    Entities::$countTransFailures++;
+                    if ( $debug )
+                        print " Not translated:                           $name\n";
+                }
+                else
+                {
+                    Entities::$countOtherFailures++;
+                    if ( $debug )
+                        print " Multiple translations:                    $name\n";
+                }
             }
         }
     }
@@ -314,11 +328,13 @@ function loadEntityGroup( string $path )
     $value = $dom->documentElement->getAttribute("translate");
     switch ( $value )
     {
+        case "yes":
+            break;
         case "no":
             $unique = true;
             break;
-        case "delete":
-            $delete = true;
+        case "remove":
+            $remove = true;
             break;
         default:
             print "\n Invalid translate attribute '$value' in '$path'.\n";
@@ -344,7 +360,7 @@ function loadEntityGroup( string $path )
         foreach( $other->childNodes as $node )
             $text .= $other->saveXML( $node );
 
-        Entities::put( $path , $name , $text , $unique , $delete );
+        Entities::put( $path , $name , $text , $unique , $remove );
     }
 }
 
@@ -358,7 +374,7 @@ function loadEntitySingle( string $path )
     if ( trim( $text ) == "" )
     {
         print "\n  Empty entity '$name' on file '$path'.\n";
-        print "\n  Should it be in a file with translate='delete'?\n";
+        print "\n  Should it be in a file with translate='remove'?\n";
         Entities::put( $path , $name , $text );
         return;
     }
