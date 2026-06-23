@@ -235,25 +235,26 @@ class Entities
                     print " Remove entity, redefined $replaced times: $name\n";
             }
 
-            if ( $entityNormal && $languages == 0 && $replaced != 0 )
+            if ( $entityNormal && $languages == 1 && $replaced != 0 )
             {
                 Entities::$countOtherFailures++;
                 if ( $debug )
                     print " Normal entity, redefined $replaced times: $name\n";
             }
-            if ( $entityNormal && $languages != 0 )
+
+            if ( $entityNormal && $languages != 1 )
             {
                 if ( $replaced == 0 )
                 {
                     Entities::$countTransFailures++;
                     if ( $debug )
-                        print " Not translated:                           $name\n";
+                        print " Not translated:                   $name\n";
                 }
                 else
                 {
                     Entities::$countOtherFailures++;
                     if ( $debug )
-                        print " Multiple translations:                    $name\n";
+                        print " Multiple redefined/translated:    $name\n";
                 }
             }
         }
