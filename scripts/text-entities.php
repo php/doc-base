@@ -251,12 +251,12 @@ class Entities
 
 function loadDirEntities( string $dir )
 {
-    $dir = realpath( $dir );
-    if ( $dir === false || ! is_dir( $dir ) )
+    if ( realpath( $dir ) === false || ! is_dir( $dir ) )
     {
         if ( PARTIAL_IMPL )
         {
-            print "(skip) ";
+           global $lang;
+            print "(skiped $lang/entities) ";
             return;
         }
         else
@@ -266,6 +266,7 @@ function loadDirEntities( string $dir )
         }
     }
 
+    $dir = realpath( $dir );
     $files = scandir( $dir );
     foreach( $files as $file )
     {
