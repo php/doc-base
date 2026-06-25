@@ -371,6 +371,7 @@
 <!ENTITY url.openssl.ciphers.mozilla "https://wiki.mozilla.org/Security/Server_Side_TLS#Recommended_Ciphersuite">
 <!ENTITY url.openssl.security-level "https://docs.openssl.org/master/man3/SSL_CTX_set_security_level/">
 <!ENTITY url.openssl.config "https://docs.openssl.org/master/man5/config/">
+<!ENTITY url.operator.source "https://github.com/jb-lopez/pecl-php-operator/">
 <!ENTITY url.oracle.instant.client "https://www.oracle.com/database/technologies/instant-client.html">
 <!ENTITY url.oracle.oic.connect "https://www.oracle.com/pls/topic/lookup?ctx=dblatest&amp;id=GUID-E5358DEA-D619-4B7B-A799-3D2F802500F1">
 <!ENTITY url.oracle.drcp.configure "https://docs.oracle.com/en/database/oracle/oracle-database/23/jjdbc/database-resident-connection-pooling.html">
