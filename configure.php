@@ -1012,19 +1012,28 @@ function xml_validate_jing()
     $cmdJing = "java -Djdk.xml.totalEntitySizeLimit=300000 -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath}";
     exec( $cmdJing , $out , $ret );
 
+    if ( ! is_array( $out ) )
+        $out = [];
+
     if ( $ret == 0 )
     {
         echo "done.\n";
         return;
     }
-    else
-    {
-        echo "failed.\n";
-        if ( is_array( $out ) )
-            foreach ( $out as $line )
-                echo "$line\n";
+
+    echo "failed.\n";
+    foreach ( $out as $line )
+        echo "$line\n";
+
+    // Allow translations with missing/mismatched IDREFs to continue building.
+
+    $countFatal = count( $out );
+    foreach ( $out as $line )
+        if ( preg_match( '/IDREF "[^"]+" without matching ID/', $line ) )
+            $countFatal--;
+
+    if ( $GLOBALS['ac']['LANG'] === 'en' || $countFatal > 0 )
         errors_are_bad( 1 );
-    }
 }
 
 function xml_validate_libxml( $dom )
