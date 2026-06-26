@@ -131,7 +131,7 @@ Procedural synopsis goes after OOP synopsis.
 <![CDATA[
 <?php
 if ($anexample === true) {
-    echo 'Use the PEAR Coding standards';
+    echo 'Use the PER Coding standards';
 }
 if ($thereisoutput === 'and it is multiple lines') {
     echo 'Use a screen like we did below';

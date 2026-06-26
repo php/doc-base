@@ -3,35 +3,27 @@
  &reftitle.setup;
 
  <!-- Remove sections which are useless -->
- <!-- {{{ Requirements -->
  <section xml:id="extname.requirements">
   &reftitle.required;
   &no.requirement;
  </section>
- <!-- }}} -->
 
- <!-- {{{ Installation -->
  <section xml:id="extname.installation">
   &reftitle.install;
   &no.install;
  </section>
  <!-- or &reference.extname.entities.configure; -->
- <!-- }}} -->
 
- <!-- {{{ Configuration -->
  <section xml:id="extname.configuration">
   &reftitle.runtime;
   &no.config;
  </section>
  <!-- or &reference.extname.entities.ini; -->
- <!-- }}} -->
 
- <!-- {{{ Resources -->
  <section xml:id="extname.resources">
   &reftitle.resources;
   &no.resource;
  </section>
- <!-- }}} -->
 
 </chapter>
 <!-- Keep this comment at the end of the file

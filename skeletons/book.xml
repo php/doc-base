@@ -3,14 +3,12 @@
  <title>Long title of extension</title>
  <titleabbrev>Extname</titleabbrev>
 
- <!-- {{{ preface -->
  <preface xml:id="intro.extname">
   &reftitle.intro;
   <simpara>
    Extension introduction.
   </simpara>
  </preface>
- <!-- }}} -->
 
  &reference.extname.setup;
  &reference.extname.constants;
