@@ -131,7 +131,7 @@ Procedural synopsis goes after OOP synopsis.
 <![CDATA[
 <?php
 if ($anexample === true) {
-    echo 'Use the PEAR Coding standards';
+    echo 'Use the latest PHP-FIG PER Coding style for PHP code examples: https://www.php-fig.org/per/coding-style/';
 }
 if ($thereisoutput === 'and it is multiple lines') {
     echo 'Use a screen like we did below';

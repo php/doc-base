@@ -5,19 +5,16 @@
  
  <partintro>
 
-  <!-- {{{ ClassName intro -->
   <section xml:id="classname.intro">
    &reftitle.intro;
    <simpara>
     Description of the class.
    </simpara>
   </section>
-  <!-- }}} -->
 
   <section xml:id="classname.synopsis">
    &reftitle.classsynopsis;
 
-   <!-- {{{ Synopsis -->
    <classsynopsis class="class">
     <ooclass>
      <classname>ClassName</classname>
@@ -90,7 +87,6 @@
      <xi:fallback/>
     </xi:include>
    </classsynopsis>
-   <!-- }}} -->
 
   </section>
 

@@ -5,19 +5,16 @@
  
  <partintro>
  
-<!-- {{{ ExceptionName intro -->
   <section xml:id="exceptionname.intro">
    &reftitle.intro;
    <simpara>
     Description of the exception.
    </simpara>
   </section>
-<!-- }}} -->
 
   <section xml:id="exceptionname.synopsis">
    &reftitle.classsynopsis;
 
-   <!-- {{{ Synopsis -->
    <classsynopsis class="class">
     <ooclass>
      <classname>ExceptionName</classname>
