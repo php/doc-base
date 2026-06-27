@@ -1,7 +1,7 @@
 <?php
 /**
  *  +----------------------------------------------------------------------+
- *  | Copyright (c) 1997-2023 The PHP Group                                |
+ *  | Copyright (c) 1997-2026 The PHP Group                                |
  *  +----------------------------------------------------------------------+
  *  | This source file is subject to version 3.01 of the PHP license,      |
  *  | that is bundled with this package in the file LICENSE, and is        |
@@ -64,5 +64,12 @@ class RevcheckIgnore
 
         // At least, do not ignore
         return false;
+    }
+
+    public static function mark( $filename )
+    {
+        $contents = file_get_contents( $filename );
+        $skip = strpos( $contents , '<?do-not-translate?>' ) !== false;
+        return $skip;
     }
 }

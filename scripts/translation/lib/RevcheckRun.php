@@ -82,6 +82,9 @@ class RevcheckRun
 
             if ( $target == null )
             {
+                if ( RevcheckIgnore::mark( "{$this->sourceDir}/{$source->file}" ) )
+                    continue;
+
                 $source->status = RevcheckStatus::Untranslated;
                 $this->filesUntranslated[] = $source;
                 $this->addData( $source , null );
