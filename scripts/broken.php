@@ -1,6 +1,6 @@
 <?php /*
 +----------------------------------------------------------------------+
-| Copyright (c) 1997-2025 The PHP Group                                |
+| Copyright (c) 1997-2026 The PHP Group                                |
 +----------------------------------------------------------------------+
 | This source file is subject to version 3.01 of the PHP license,      |
 | that is bundled with this package in the file LICENSE, and is        |
@@ -38,20 +38,28 @@ foreach( $argv as & $arg )
         $dos2unix = true;
         $arg = null;
     }
+    else
+        $arg = str_replace( '\\' , '/' , $arg );
 }
-$argv = array_filter( $argv );
+$paths = array_filter( $argv );
+if ( count( $paths) == 0 )
+    print_usage_exit();
 
-foreach( $argv as $arg )
+foreach( $paths as $path )
 {
-    if ( file_exists( $arg ) )
+    $dnt = true;
+    if ( $path == 'en' || str_ends_with( $path , '/en' ) )
+        $dnt = false;
+
+    if ( file_exists( $path ) )
     {
-        if ( is_file( $arg ) )
-            testFile( $arg );
-        if ( is_dir( $arg ) )
-            testDir( $arg );
+        if ( is_file( $path ) )
+            testFile( $path , $dnt );
+        if ( is_dir( $path ) )
+            testDir( $path , $dnt );
         continue;
     }
-    echo "Path does not exist: $arg\n";
+    echo "Path does not exist: $path\n";
 }
 
 function print_usage_exit( $cmd )
@@ -87,7 +95,7 @@ function setup( string & $prefix , string & $suffix , string & $extra )
     libxml_clear_errors();
 }
 
-function testFile( string $filename , bool $fragment = false )
+function testFile( string $filename , bool $checkDnt , bool $fragmentDir = false )
 {
     $contents = file_get_contents( $filename );
 
@@ -96,7 +104,7 @@ function testFile( string $filename , bool $fragment = false )
         echo "Wrong XML file:\n";
         echo "  Issue: XML file with BOM. Several tools may misbehave.\n";
         echo "  Path:  $filename\n";
-        echo "  Hint:  You can try autofix this with 'doc-base/scripts/broken.php --dos2unix langdir'.\n";
+        echo "  Hint:  You can try auto fix this with 'doc-base/scripts/broken.php --dos2unix langdir'.\n";
         echo "\n";
         autofix_dos2unix( $filename );
     }
@@ -106,7 +114,16 @@ function testFile( string $filename , bool $fragment = false )
         echo "Wrong XML file:\n";
         echo "  Issue: XML file contains \\r. Several tools may misbehave.\n";
         echo "  Path:  $filename\n";
-        echo "  Hint:  You can try autofix this with 'doc-base/scripts/broken.php --dos2unix langdir'.\n";
+        echo "  Hint:  You can try auto fix this with 'doc-base/scripts/broken.php --dos2unix langdir'.\n";
+        echo "\n";
+        autofix_dos2unix( $filename );
+    }
+
+    if ( $checkDnt && strpos( $contents , '<?do-not-translate?>' ) !== false )
+    {
+        echo "File marked do-not-translate in translation:\n";
+        echo "  Issue: Manual build may fail.\n";
+        echo "  Path:  $filename\n";
         echo "\n";
         autofix_dos2unix( $filename );
     }
@@ -121,7 +138,7 @@ function testFile( string $filename , bool $fragment = false )
     $doc->substituteEntities = false;
     libxml_use_internal_errors( true );
 
-    if ( $fragment )
+    if ( $fragmentDir )
         $contents = "<f>{$contents}</f>";
     $doc->loadXML( $contents );
 
@@ -152,18 +169,18 @@ function testFile( string $filename , bool $fragment = false )
     }
 }
 
-function testDir( string $dir )
+function testDir( string $dir , bool $checkDnt )
 {
     $dir = realpath( $dir );
     $files = scandir( $dir );
-    $fragment = false;
+    $fragmentDir = false;
     $subdirs = [];
 
     foreach( $files as $file )
     {
         if ( $file == ".xmlfragmentdir" )
         {
-            $fragment = true;
+            $fragmentDir = true;
             continue;
         }
         if ( $file[0] == "." )
@@ -178,11 +195,11 @@ function testDir( string $dir )
         }
 
         if ( str_ends_with( $fullpath , ".xml" ) )
-            testFile( $fullpath , $fragment );
+            testFile( $fullpath , $checkDnt , $fragmentDir );
     }
 
     foreach( $subdirs as $dir )
-        testDir( $dir );
+        testDir( $dir , $checkDnt );
 }
 
 function autofix_dos2unix( string $filename )
