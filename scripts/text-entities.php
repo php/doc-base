@@ -111,16 +111,13 @@ $debug = false;
 $argv0 = array_shift( $argv );
 $usage = in_array( '--help' , $argv ) || in_array( '-h' , $argv );
 
-if ( count( $argv ) == 0 || $usage )
-    usage_and_exit( $argv0 );
-
 foreach( $argv as $arg )
     if ( $arg == "--debug" )
         $debug = true;
     else
         $langs[] = $arg;
 
-if ( count( $langs ) == 0 )
+if ( count( $argv ) == 0 || $usage )
     usage_and_exit( $argv0 );
 
 print "Running text-entities.php... ";
@@ -151,7 +148,7 @@ if ( Entities::$countOtherFailures > 0 && ! $debug )
 {
     $langs[] = '--debug';
     $opts = implode( ' ' , $langs );
-    print "(Run 'php $argv0 $opts' for details.\n";
+    print "(Run 'php $argv0 $opts' for details.)\n";
 }
 exit;
 
