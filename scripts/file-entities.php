@@ -48,8 +48,8 @@ less surprising.
 
 */
 
-const ENTITY_NAME_MINUS = true;
-const ENTITY_NAME_EQUAL = false;
+const BACKPORT_MIXED_REPLACE = true;
+const ENTITY_NAME_REPLACE = true;
 const LIBXML_LIMITS_HACK = true;
 
 // Setup
@@ -82,28 +82,32 @@ $allFiles = [];
 $entities = [];
 
 foreach( $langs as $lang )
-    load_all_files( $langBase , $lang , $allFiles );
+    scan_files( $langBase , $lang , $allFiles );
 check_case_conflict( $allFiles );
+
 generate_entities( $allFiles , $entities );
+writeEntities( $entities );
+
+$total = count( $entities );
+print "done: $total entities.\n";
+
+exit( 0 );
 
 // old scheme
 //  file en
 //  list en
 //  file? lang
 
-// Fixups
+class Entity
+{
+    public function __construct(
+        public string $name,
+        public string $text,
+        public string $file,
+    ) {}
+}
 
-pushEntity( "global.function-index", realpain( __DIR__ . "/../funcindex.xml" ) , $entities ); // TODO move this file from doc-bese to doc-en, with a <?do-not-translate tag
-
-// Output
-
-writeEntities( $entities );
-$total = count( $entities );
-print "done: $total entities.\n";
-
-exit( 0 );
-
-function load_all_files( string $langBase , string $lang , array & $allFIles )
+function scan_files( string $langBase , string $lang , array & $allFIles )
 {
     $todo = [ "" ];
     while ( count( $todo ) > 0 )
@@ -176,160 +180,180 @@ function check_case_conflict( array $allFIles )
 
 function generate_entities( array $allFiles , array & $entities )
 {
-    // Direct file inclusion is easy. It is just a
-    // DTD entity that points to a filename, without
-    // the extension
+    // Ugly, but necessary
+    // TODO move this file from doc-bese to doc-en, with a do-not-translate PI
 
-    foreach( $allFiles as $name => $file )
+    $name = 'global.function-index';
+    $file = realpain( __DIR__ . "/../funcindex.xml" );
+    $text = "<!ENTITY $name SYSTEM '$file'>";
+    pushEntity( $entities , $name , $text );
+
+    // Inclusion of a single file is easy. The entity name is the
+    // relative path without the .xml extension (sadly), and the text
+    // is complete DTD entity with a SYSTEM pointing to the real path
+    // of the included file.
+
+    foreach( $allFiles as $path => $file )
     {
-        $name = substr( $name , 0 , -4 );
-        $name = normalizeEntityName( $name );
+        $name = pathToEntityName( $path );
         $text = "<!ENTITY $name SYSTEM '$file'>";
-        pushEntity( $name , $text , $entities );
+        pushEntity( $entities , $name , $text );
     }
 
     // Inclusion of reference/ directories is a little more involved.
-    // From the entity name of the file, is calculated  list name and
-    // one list item. The list items are then grouped, and a virtual
-    // DTD entity for the directory is created with these components.
+    // The entity name is calculated from the relative path, but with
+    // an 'entities' component added in penultimae position. The
+    // contents are concatened DTD entities references, as above.
 
-    // Note that these "list" entities do not contain the final
-    // filenames, as there is only a SYSTEM attribute per DTD entity.
-    // The contents of list entities are the concatenated list of
-    // entity references of the final files.
+    // LIBXML_LIMITS_HACK - Unfortunatlly, we nedd to put these entities
+    // that expand in another DTD entities as separate files, to bypass
+    // some hardcoded limits of libxml2. This is slow, more so on HDDs.
 
-    $mapNameList = [];
+    // BACKPORT_MIXED_REPLACE - Anoying enought, the previous script
+    // normalized the entity name, but not the file name of the extra file
+    // file. So indirect file entities ends having a surprising convention:
+    //
+    // <!ENTITY name-dir SYSTEM 'name_dir.ent'>
+    //
+    // Mind the distinction between _ and - above. In the future, let's
+    // remove this, to make debugging easier.
 
-    foreach( $allFiles as $name => $file )
+    $groupFilename = []; // LIBXML_LIMITS_HACK
+    $groupContents = [];
+
+    foreach( $allFiles as $path => $null )
     {
         // Only generate directory inclusions for reference/
 
-        if ( ! str_starts_with ( $name , 'reference' ) )
+        if ( ! str_starts_with ( $path , 'reference' ) )
             continue;
 
-        // List name
+        // Entity name
         //
-        // Discard the file part, and reform the name from
-        //   dir.dir.dir
-        // to
-        //   dir.dir.entities.dir
+        // Discard the file part, 'entities' in the
+        // second-to-last position.
+        //
+        // dir/dir/dir/file.xml -> dir.dir.entities.dir
 
-        $parts = explode( '/' , $name );
+        $parts = explode( '/' , $path );
         array_pop( $parts );
         $last = array_pop( $parts );
         $parts[] = 'entities';
         $parts[] = $last;
-        $listName = implode( '.' , $parts );
+        $entName = implode( '.' , $parts );
+        $entName = str_replace( '_' , '-' , $entName ); // BACKPORT_MIXED_REPLACE
 
-        // List item
+        // Entity fila
+        //
+        // dir/dir/dir/file.xml -> dir.dir.dir.ent
 
-        $listItem = "&{$name};";
+        $parts = explode( '/' , $path );
+        array_pop( $parts );
+        array_push( $parts , 'ent');
+        $entFile = implode( '.' , $parts );
 
-        // Collect
+        $groupFilename[ $entName ] = $entFile;
 
-        iF ( ! isset( $mapNameList[$listName] ) )
-            $mapNameList[$listName] = [];
-        $mapNameList[$listName][] = $listItem;
+        // Contents
+
+        $name = pathToEntityName( $path );
+        $entRef = "&{$name};";
+
+        $groupContents[ $entName ][ $name ] = $entRef;
     }
 
-    // List emit
+    // Merge
 
-    foreach( $mapNameList as $name => $list )
+    foreach( $groupContents as $name => $list )
     {
-        sort( $list );
+        ksort( $list );
         $text = implode ( "\n" , $list );
-        pushEntity( $name , $text , $entities );
+        $file = $groupFilename[ $name ];
+        pushEntity( $entities , $name , $text , $file );
     }
 }
 
-function normalizeEntityName( string $name ) : string
+function pathToEntityName( string $name , string $removeSuffix = "" ) : string
 {
+    if ( str_ends_with( $name , ".xml" ) )
+        $name = substr( $name , 0 , -4 );
+    else
+        throw new Exception( "Expected extension .xml" );
+
     $name = str_replace( '\\' , '/' , $name );
+    $name = str_replace( '_' , '-' , $name );   // ENTITY_NAME_REPLACE
     $name = str_replace( '/' , '.' , $name );
     $name = trim( $name , '.' );
     return $name;
+
+    // ENTITY_NAME_REPLACE, or a TODO to a far future
+    // - Replace all name replaced entities from doc en
+    // - Add the removed entities on doc-en/entities/remove.ent
+    // - Remove all codepaths related to ENTITY_NAME_REPLACE constant
 }
 
-function pushEntity( string $name , string $text , array & $entities )
+function pushEntity( array & $entities , string $name , string $text , string $file = "" )
 {
-$debug = false;
-if ( str_contains( $name , "apache" ) )
-    $debug = true;
-
     if ( $name == "" || $text == "" )
     {
         print "Something went very wrong on file-entities.php.\n";
         exit( 1 );
     }
 
-    $nameEqual = normalizeEntityName( $name );                // Almost same as on disk
-    $nameMinus = str_replace( '_' , '-' , $nameEqual ); // Historical behaviour
-
-    if ( $nameEqual == $nameMinus )
-    {
-        $entities[ $nameEqual ] = $text;
-        return;
-    }
-
-    // This is the historical behaviour. Why?
-
-    if ( ENTITY_NAME_MINUS )
-        $entities[ $nameMinus ] = $text;
-
-    // To make manual writing easier, as file entity names
-    // always match file system names.
-
-    if ( ENTITY_NAME_EQUAL )
-        $entities[ $nameEqual ] = $text;
-
-    // TODO for the far future
-    // - Replace all MINUS entities from doc en
-    // - Add the MINUS entities on doc-en/entities/remove.ent
-    // - Remove all codepaths related to MINUS constant
+    $entity = new Entity( $name , $text , $file );
+    $entities[ $name ] = $entity;
 }
 
 function writeEntities( array $entities )
 {
-    ksort( $entities );
+    // Output a single temp/file-entities.ent file for single file inclusion.
 
-    // Output a single temp/file-entities.ent file for direct file inclusion.
-    // Output individual files for indirect file inclusions on
-    //   temp/file-entities/dir.dir.entities.dir.ent
-    // See LIBXML_LIMITS_HACK below.
+    // Output separate files for file list inclusions, at
+    //   temp/file-entities/dir.dir.dir.ent
+    // LIBXML_LIMITS_HACK
+
+    ksort( $entities );
 
     $outFile = realpain(  __DIR__ . "/../temp/file-entities.ent" , touch: true );
     $lstFile = realpain(  __DIR__ . "/../temp/file-entities.txt" , touch: true );
     $sepPath = realpain(  __DIR__ . "/../temp/file-entities" , mkdir: true );
 
-    $file = fopen( $outFile , "w" );
-    if ( ! $file )
+    $singleFile = fopen( $outFile , "w" );
+    if ( ! $singleFile )
     {
         print "Failed to open $outFile\n.";
         exit( 1 );
     }
-    fputs( $file , "<!-- DON'T TOUCH - AUTOGENERATED BY file-entities.php -->\n\n" );
+    fputs( $singleFile , "<!-- DON'T TOUCH - AUTOGENERATED BY file-entities.php -->\n\n" );
 
     // Life could be simpler, but the building of PHP Manual is already
     // triping some hardcoded limits of bundled libxml2.
 
-    // Off loading file entities that expand to more file entities,
+    // Off loading DTD entities that expand to more DTD entities,
     // as external files, somehow avoid these limits.
 
     if ( LIBXML_LIMITS_HACK )
     {
-        foreach ( $entities as $name => $text )
+        foreach ( $entities as $entity )
+        {
+            $name = $entity->name;
+            $text = $entity->text;
+            $file = $entity->file;
+            $extraFile = "{$sepPath}/{$file}";
+
             if ( $text[0] == '&' )
-                writeEntityIndirectSlow( $file , $name , $text , $sepPath );
+                writeEntityIndirectSlow( $singleFile , $extraFile , $name , $text );
             else
-                fputs( $file , "$text\n" );
+                fputs( $singleFile , "$text\n" );
+        }
     }
     else
     {
         foreach ( $entities as $name => $text )
-            fputs( $file , "$text\n" );
+            fputs( $singleFile , "$text\n" );
     }
 
-    fclose( $file );
+    fclose( $singleFile );
 
     // After everything is said and done, also output a listing file, so
     // it is possible to analyse collisions between 'text' and 'file'
@@ -339,17 +363,15 @@ function writeEntities( array $entities )
     file_put_contents( $lstFile , $contents );
 }
 
-function writeEntityIndirectSlow( $file , string $name , string $text , string $baseDir )
+function writeEntityIndirectSlow( $singleFile , string $extraFile , string $name , string $text )
 {
-    $newFilename = "{$baseDir}/{$name}.ent";
-
     // The entity will point to to a new, individual filename
 
-    fputs( $file , "<!ENTITY $name SYSTEM '$newFilename'>\n" );
+    fputs( $singleFile , "<!ENTITY $name SYSTEM '$extraFile'>\n" );
 
     // And the new individual file will hold the final text
 
-    file_put_contents( $newFilename , $text );
+    file_put_contents( $extraFile , $text );
 }
 
 function realpain( string $path , bool $touch = false , bool $mkdir = false ) : string
