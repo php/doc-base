@@ -96,7 +96,9 @@ annotated with translate="remove".
 
 */
 
-const PARTIAL_IMPL = true; // For while XML Entities are not fully implanted in all languages
+// For while XML Entities are not fully implanted in all languages
+// Can be removed when all languages have an doc-lang/entities dir.
+const PARTIAL_IMPL = true;
 
 ini_set( 'display_errors' , 1 );
 ini_set( 'display_startup_errors' , 1 );
@@ -106,22 +108,17 @@ Entities::truncateOutputFile();
 
 $langs = [];
 $debug = false;
+$argv0 = array_shift( $argv );
 $usage = in_array( '--help' , $argv ) || in_array( '-h' , $argv );
 
-if ( count( $argv ) < 2 || $usage )
-{
-    print "\nUsage: {$argv[0]} langCode [langCode] [--debug]\n\n";
-    if ( $usage )
-        exit( 0 );
-    else
-        exit( 1 );
-}
-array_shift( $argv );
 foreach( $argv as $arg )
     if ( $arg == "--debug" )
         $debug = true;
     else
         $langs[] = $arg;
+
+if ( count( $argv ) == 0 || $usage )
+    usage_and_exit( $argv0 );
 
 print "Running text-entities.php... ";
 if ( $debug )
@@ -140,14 +137,26 @@ foreach( $langs as $lang )
 Entities::writeOutputFile();
 Entities::checkReplaces( $debug );
 
-echo "done: " , Entities::$countTotalGenerated , " entities";
+print "done: " . Entities::$countTotalGenerated . " entities";
 if ( Entities::$countTransFailures  > 0 )
-    echo ", " , Entities::$countTransFailures , " untranslated";
+    print ", " . Entities::$countTransFailures . " untranslated";
 if ( Entities::$countOtherFailures > 0 )
-    echo ", " , Entities::$countOtherFailures , " other failures";
-echo ".\n";
+    print ", " . Entities::$countOtherFailures . " errors";
+print ".\n";
 
+if ( Entities::$countOtherFailures > 0 && ! $debug )
+{
+    $langs[] = '--debug';
+    $opts = implode( ' ' , $langs );
+    print "(Run 'php $argv0 $opts' for details.)\n";
+}
 exit;
+
+function usage_and_exit( $argv0 )
+{
+    print "\nUsage: $argv0 langCode [langCode] [--debug]\n\n";
+    exit( 0 );
+}
 
 enum EntityCheck
 {
@@ -189,9 +198,10 @@ class Entities
         if ( $remove )
             Entities::$remove[ $name ] = $name;
 
-        if ( ! isset( Entities::$nameCount[ $name ] ) )
-            Entities::$nameCount[ $name ] = 0;
-        Entities::$nameCount[ $name ]++;
+        if ( isset( Entities::$nameCount[ $name ] ) )
+            Entities::$nameCount[ $name ] += 1;
+        else
+            Entities::$nameCount[ $name ] = 1;
     }
 
     static function truncateOutputFile()
@@ -280,7 +290,6 @@ function loadDirEntities( string $dir )
 
     $dir = realpath( $dir );
     $files = scandir( $dir );
-    foreach( $files as $file )
     foreach( $files as $file )
     {
         $path = realpath( "$dir/$file" );
@@ -457,7 +466,7 @@ function outputFiles( string $filename , array $entities )
 
         if ( file_exists( $path ) )
         {
-            echo "\nDuplicated text-entity file: '{$path}'.\n";
+            print "\nDuplicated text-entity file: '{$path}'.\n";
             exit( 1 );
         }
 
