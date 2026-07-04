@@ -137,13 +137,14 @@ function pushEntity( string $name , string $text = '' , string $path = '' )
     global $entities;
     global $mixedCase;
     global $englishEntities;
+    global $lang;
 
     $name = str_replace( '_' , '-' , $name );
     $path = str_replace( '\\' , '/' , $path );
 
     // Prevents doc-en to load entities from doc-lang. Resulting in it rendering
     // a different language when the underlying doc-en XML file has been removed.
-    if ( $englishEntities !== null && ! isset( $englishEntities[ $name ] ) )
+    if ( $lang === 'en' && $englishEntities !== null && ! isset( $englishEntities[ $name ] ) )
     {
         $text = ' ';
         $path = '';
