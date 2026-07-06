@@ -38,6 +38,9 @@ Changes in the English version are eventually picked up by the translators.
 If a change doesn't affect translations (e.g. fixing a typo in English) then the
 commit message should start with `[skip-revcheck]`.
 
+Files that are not to be translated, or copied on translations, should include
+an `<?do-not-translate?>` mark.
+
 ## Validating your changes
 Every time you make changes to documentation sources (both English or translation),
 you have to validate your changes to ensure that the manual still builds without error.
