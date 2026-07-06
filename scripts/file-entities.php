@@ -87,14 +87,16 @@ echo "Running file-entities.php... ";
 
 $entities = [];
 $mixedCase = [];
+$englishEntities = null;
 
 generate_file_entities( $root , "en" );
 generate_list_entities( $root , "en" );
 
-if ( $lang != "" )
-    generate_file_entities( $root , $lang );
-
 pushEntity( "global.function-index", path: realpain( __DIR__ . "/.." ) . "/funcindex.xml" );
+
+$englishEntities = $entities;
+if ( $lang && $lang !== "en" )
+    generate_file_entities( $root , $lang );
 
 if ( ! $chmonly )
     foreach( $entities as $ent )
@@ -134,9 +136,20 @@ function pushEntity( string $name , string $text = '' , string $path = '' )
 {
     global $entities;
     global $mixedCase;
+    global $englishEntities;
+    global $lang;
 
     $name = str_replace( '_' , '-' , $name );
     $path = str_replace( '\\' , '/' , $path );
+
+    // Prevents doc-en to load entities from doc-lang. Resulting in it rendering
+    // a different language when the underlying doc-en XML file has been removed.
+    if ( $lang === 'en' && $englishEntities !== null && ! isset( $englishEntities[ $name ] ) )
+    {
+        $text = ' ';
+        $path = '';
+    }
+
     $ent = new Entity( $name , $text , $path );
     $entities[ $name ] = $ent;
 
