@@ -69,7 +69,7 @@
 <!ENTITY url.csprng.get-random-2 "http://man7.org/linux/man-pages/man2/getrandom.2.html">
 <!ENTITY url.csprng.compat "https://github.com/paragonie/random_compat">
 <!ENTITY url.cubrid "http://www.cubrid.org/">
-<!ENTITY url.cubrid.docs "http://www.cubrid.org/documentation/">
+<!ENTITY url.cubrid.docs "https://www.cubrid.org/manuals/">
 <!ENTITY url.curl "http://curl.haxx.se/">
 <!ENTITY url.curl.error "http://curl.haxx.se/libcurl/c/libcurl-errors.html">
 <!ENTITY url.cyrus "http://cyrusimap.org/">
@@ -191,8 +191,8 @@
 <!ENTITY url.iis.fastcgi.downloads "http://www.iis.net/extensions/fastcgi">
 <!ENTITY url.iis.fastcgi.settings "http://learn.iis.net/page.aspx/248/configuring-fastcgi-extension-for-iis-60/">
 <!ENTITY url.imagemagick "http://www.imagemagick.org/">
-<!ENTITY url.imagemagick.usage.color_mods.sigmoidal "http://www.imagemagick.org/Usage/color_mods/#sigmoidal">
-<!ENTITY url.imagemagick.usage.transform.function "http://www.imagemagick.org/Usage/transform/#function">
+<!ENTITY url.imagemagick.usage.color_mods.sigmoidal "https://usage.imagemagick.org/color_mods/#sigmoidal">
+<!ENTITY url.imagemagick.usage.transform.function "https://usage.imagemagick.org/transform/#function">
 <!ENTITY url.imap "https://github.com/uw-imap/imap">
 <!ENTITY url.imap.book "http://oreilly.com/catalog/9780596000127/">
 <!ENTITY url.imode "http://www.nttdocomo.com/services/imode/">
@@ -235,7 +235,7 @@
 <!ENTITY url.liblzf "http://oldhome.schmorp.de/marc/liblzf.html">
 <!ENTITY url.librpm "https://rpm.org/">
 <!ENTITY url.libsodium "https://libsodium.org/">
-<!ENTITY url.libsodium.argon2 "https://download.libsodium.org/doc/password_hashing/the_argon2i_function.html">
+<!ENTITY url.libsodium.argon2 "https://doc.libsodium.org/password_hashing/default_phf">
 <!ENTITY url.libxml "https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home">
 <!ENTITY url.libxml.errorcodes "https://gnome.pages.gitlab.gnome.org/libxml2/devhelp/libxml2-xmlerror.html">
 <!ENTITY url.libxslt "https://gitlab.gnome.org/GNOME/libxslt/-/wikis/home">
@@ -253,7 +253,7 @@
 <!ENTITY url.litespeed.packages "https://docs.litespeedtech.com/extapp/php/getting_started/#litespeed-repo-search-packages">
 <!ENTITY url.litespeed.php "https://docs.litespeedtech.com/extapp/php/configuration/control/">
 <!ENTITY url.litespeed.plesk "https://docs.litespeedtech.com/cp/plesk/">
-<!ENTITY url.litespeed.open "https://openlitespeed.org/kb/category/installation/php-installation-guides/">
+<!ENTITY url.litespeed.open "https://docs.openlitespeed.org/kb/category/php/">
 <!ENTITY url.litespeed.web.server "https://docs.litespeedtech.com/extapp/php/getting_started/">
 <!ENTITY url.lmdb "https://symas.com/lmdb/">
 <!ENTITY url.lua "http://www.lua.org/">
@@ -293,7 +293,7 @@
 <!ENTITY url.mongodb.libbson "https://github.com/mongodb/mongo-c-driver/tree/master/src/libbson">
 <!ENTITY url.mongodb.library "https://github.com/mongodb/mongo-php-library">
 <!ENTITY url.mongodb.library.docs "https://www.mongodb.com/docs/php-library/current/">
-<!ENTITY url.mongodb.library.apidocs "https://www.mongodb.com/docs/php-library/master/reference">
+<!ENTITY url.mongodb.library.apidocs "https://www.mongodb.com/docs/php-library/current/reference">
 <!ENTITY url.mongodb.libmongoc "https://github.com/mongodb/mongo-c-driver">
 <!ENTITY url.mongodb.libmongocrypt "https://github.com/mongodb/libmongocrypt">
 <!ENTITY url.mongodb.libmongocrypt.allow.list "https://github.com/mongodb/specifications/blob/master/source/client-side-encryption/client-side-encryption.rst#libmongocrypt-auto-encryption-allow-list">
@@ -606,10 +606,10 @@
 <!ENTITY url.yaml "http://www.yaml.org/">
 <!ENTITY url.yaml.libyaml "http://pyyaml.org/wiki/LibYAML">
 <!ENTITY url.yaz "http://www.indexdata.dk/yaz/">
-<!ENTITY url.yaz.zoom.ext "http://www.indexdata.dk/yaz/doc/zoom.tkl">
+<!ENTITY url.yaz.zoom.ext "https://software.indexdata.com/yaz/doc/zoom.html">
 <!ENTITY url.yaz.ftp.win32 "http://ftp.indexdata.dk/pub/yaz/win32/">
 <!ENTITY url.yaz.ftp "http://ftp.indexdata.dk/pub/yaz/">
-<!ENTITY url.yaz-ccl "http://www.indexdata.dk/yaz/doc/tools.tkl#CCL">
+<!ENTITY url.yaz-ccl "https://software.indexdata.com/yaz/doc/tools.html#CCL">
 <!ENTITY url.yaz-phpyaz "http://www.indexdata.dk/phpyaz/">
 <!ENTITY url.yaz.ill "http://www.collectionscanada.ca/iso/ill/stanprf.htm">
 <!ENTITY url.yaz-proxy "http://www.indexdata.dk/yazproxy/">
@@ -624,7 +624,7 @@
 <!ENTITY url.zlib "http://www.zlib.net/">
 <!ENTITY url.zlib.manual "http://www.zlib.net/manual.html">
 <!ENTITY url.zookeeper "https://zookeeper.apache.org/">
-<!ENTITY url.zookeeper.doc.cbinding "https://zookeeper.apache.org/doc/trunk/zookeeperProgrammers.html#C+Binding">
+<!ENTITY url.zookeeper.doc.cbinding "https://zookeeper.apache.org/doc/current/zookeeperProgrammers.html#C+Binding">
 
 <!ENTITY spec.http1.1  'http://tools.ietf.org/html/rfc7231'>
 <!ENTITY spec.soap1.1  'http://www.w3.org/TR/soap11/'>
