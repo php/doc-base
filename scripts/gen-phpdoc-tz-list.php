@@ -31,10 +31,14 @@
 	$others = $groupedList['Others'];
 	unset($groupedList['Others']);
 	$groupedList['Others'] = $others;
-?>
-<?php echo '<?'; ?>xml version="1.0" encoding="UTF-8"?>
-<!-- AUTO GENERATED, DO NOT TRANSLATE OR MODIFY BY HAND -->
 
+    // Some IDEs are very unhappy about having XML processing
+    // instructions *outside* PHP processing instructions.
+
+    echo "<?xml version='1.0' encoding='UTF-8'?>\n";
+    echo "<?do-not-translate?>\n\n";
+?>
+<!-- AUTO GENERATED, DO NOT TRANSLATE OR MODIFY BY HAND -->
 <!-- The script to generate this file is scripts/gen-phpdoc-tz-list.php -->
 <!-- in the doc-base repo. However, it should only need to be run when  -->
 <!-- the tzdb file is updated by the maintainer of DateTime/timelib.    -->
@@ -54,7 +58,7 @@
 <?php
     }
 
-    foreach ($groupedList as $group => $zones) { 
+    foreach ($groupedList as $group => $zones) {
         $groupColumns = $columns;
         $m = count($zones) > ($groupColumns-1) ? $groupColumns : count($zones); ?>
 
@@ -118,4 +122,3 @@ vim600: syn=xml fen fdm=syntax fdl=2 si
 vim: et tw=78 syn=php
 vi: ts=4 sw=1
 -->
-
