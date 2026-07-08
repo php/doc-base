@@ -32,21 +32,21 @@
 	unset($groupedList['Others']);
 	$groupedList['Others'] = $others;
 
-    // Some IDEs are very unhappy about having XML processing
-    // instructions *outside* PHP processing instructions.
+    echo <<<'XML'
+    <?xml version="1.0" encoding="UTF-8"?>
+    <?do-not-translate?>
 
-    echo "<?xml version='1.0' encoding='UTF-8'?>\n";
-    echo "<?do-not-translate?>\n\n";
-?>
-<!-- AUTO GENERATED, DO NOT TRANSLATE OR MODIFY BY HAND -->
-<!-- The script to generate this file is scripts/gen-phpdoc-tz-list.php -->
-<!-- in the doc-base repo. However, it should only need to be run when  -->
-<!-- the tzdb file is updated by the maintainer of DateTime/timelib.    -->
+    <!-- AUTO GENERATED, DO NOT TRANSLATE OR MODIFY BY HAND -->
+    <!-- The script to generate this file is scripts/gen-phpdoc-tz-list.php -->
+    <!-- in the doc-base repo. However, it should only need to be run when  -->
+    <!-- the tzdb file is updated by the maintainer of DateTime/timelib.    -->
 
-<appendix xml:id="timezones" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
- &date.timezone.intro.title;
- &date.timezone.intro;
-<?php
+    <appendix xml:id="timezones" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+     &date.timezone.intro.title;
+     &date.timezone.intro;
+
+    XML;
+
     if (function_exists('timezone_version_get')) {
 ?>
 
