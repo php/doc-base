@@ -68,7 +68,7 @@ class RevcheckFileList
                 continue;
             }
 
-            if ( RevcheckIgnore::ignore( $key ) )
+            if ( RevcheckIgnore::byName( $key ) )
                 continue;
             $file = new RevcheckFileItem( $key , $entry->getSize() );
             $this->list[ $key ] = $file;
