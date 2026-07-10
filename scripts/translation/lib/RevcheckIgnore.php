@@ -23,22 +23,15 @@ class RevcheckIgnore
 {
     public static function byName( $filename ) : bool
     {
-        // Ignore dot files
-
         if ( $filename[0] == '.' )
             return true;
-
-        // Ignore files other than xml assets
 
         if ( ( str_ends_with( $filename , '.xml' ) || str_ends_with( $filename , '.ent' ) ) == false )
             return true;
 
-        // Only in translations
-
         if ( $filename == "translation.xml" )
             return true;
 
-        // At least, do not ignore
         return false;
     }
 
