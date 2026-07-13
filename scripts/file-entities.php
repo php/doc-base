@@ -88,6 +88,12 @@ echo "Running file-entities.php... ";
 $entities = [];
 $mixedCase = [];
 
+if ( is_dir( "$root/doc-contrib" ) )
+{
+    generate_file_entities( $root , "doc-contrib" );
+    generate_list_entities( $root , "doc-contrib" );
+}
+
 generate_file_entities( $root , "en" );
 generate_list_entities( $root , "en" );
 
