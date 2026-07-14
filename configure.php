@@ -771,11 +771,9 @@ function xml_trim_docbook_wsi( DOMNode $parent , array $trimList )
             xml_trim_docbook_wsi( $node , $trimList );
 
         if ( $type == 3 ) // XML_TEXT_NODE
-        {
             if ( in_array( $parent->nodeName , $trimList ) )
-                $parent->removeChild( $node );
-            continue;
-        }
+                if ( trim( $node->nodeValue ) == '' )
+                    $parent->removeChild( $node );
     }
 }
 
