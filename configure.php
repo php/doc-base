@@ -652,25 +652,6 @@ if ($ac["GENERATE"] != "no") {
 }
 checkvalue($ac["GENERATE"]);
 
-function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
-{
-    $filename = realpath( $filename );
-    $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
-    return $dom->load( $filename , $options );
-}
-
-function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
-{
-    if ( $filename == "" )
-        $filename = __DIR__ . "/temp/manual.xml";
-
-    libxml_clear_errors();
-    $dom->save( $filename );
-    dom_load( $dom , $filename );
-
-    return $filename;
-}
-
 echo "Creating monolithic temp/manual.xml... ";
 $dom = new DOMDocument();
 
@@ -683,11 +664,70 @@ else
 {
     echo "failed.\n";
     print_xml_errors();
-    individual_xml_broken_check();
+    xml_broken_file_check();
     errors_are_bad(1);
 }
 
-function individual_xml_broken_check()
+function dom_load( DOMDocument $dom , string $filename , bool $firstLoad = true ) : bool
+{
+    $filename = realpath( $filename );
+
+    // On the first load we cannot use LIBXML_NSCLEAN, because
+    // libxml drops all namespaces inside DTD entities.
+
+    $options = LIBXML_NOENT
+             | LIBXML_COMPACT
+             | LIBXML_BIGLINES
+             | LIBXML_PARSEHUGE;
+
+    if ( ! $firstLoad )
+        $options |= LIBXML_NSCLEAN;
+
+    $ret = $dom->load( $filename , $options );
+
+    if ( $ret && $firstLoad )
+        xml_trim_first( $dom );
+
+    return $ret;
+}
+
+function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
+{
+    if ( $filename == "" )
+        $filename = __DIR__ . "/temp/manual.xml";
+
+    libxml_clear_errors();
+    $dom->save( $filename );
+    dom_load( $dom , $filename , false );
+
+    return $filename;
+}
+
+function xml_trim_first( DOMDocument $doc )
+{
+    $xpath = new DOMXPath( $doc );
+    $dtdNode = null;
+    $dels = [];
+
+    // Remove DTD Document Type, as all entity references
+    // are already expanded at this point.
+
+    foreach( $doc->childNodes as $node )
+        if ( $node->nodeType == XML_DOCUMENT_TYPE_NODE )
+            $dtdNode = $node;
+    if ( $dtdNode != null )
+        $node->parentNode->removeChild( $dtdNode );
+
+    // Remove all XML comments, as they are distracting,
+    // in reverse order, outside enumerations.
+
+    foreach( $xpath->query( "//comment()" ) as $node )
+        $dels[] = $node;
+    while( ( $del = array_pop( $dels ) ) != null )
+        $del->parentNode->removeChild( $del );
+}
+
+function xml_broken_file_check()
 {
     $cmd = array();
     $cmd[] = $GLOBALS['ac']['PHP'];
