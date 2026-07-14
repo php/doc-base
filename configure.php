@@ -721,10 +721,62 @@ function xml_trim_first( DOMDocument $doc )
     // Remove all XML comments, as they are distracting,
     // in reverse order, outside enumerations.
 
-    foreach( $xpath->query( "//comment()" ) as $node )
-        $dels[] = $node;
-    while( ( $del = array_pop( $dels ) ) != null )
-        $del->parentNode->removeChild( $del );
+    $comments = $xpath->query( "//comment()" );
+    for ( $idx = $comments->length - 1 ; $idx >= 0 ; $idx-- )
+    {
+        $node = $comments[ $idx ];
+        $node->parentNode->removeChild( $node );
+    }
+
+    // These first five elements account for almost 50%
+    // of all insignificant Docbook whitespace in manual:
+
+    $trimList[] = 'refsect1';
+    $trimList[] = 'varlistentry';
+    $trimList[] = 'listitem';
+    $trimList[] = 'row';
+    $trimList[] = 'methodsynopsis';
+
+    // The first twenty elements account for almost 95%
+    // of all insignificant Docbook whitespace in manual.
+
+    $trimList[] = 'refentry';
+    $trimList[] = 'fieldsynopsis';
+    $trimList[] = 'variablelist';
+    $trimList[] = 'example';
+    $trimList[] = 'simplelist';
+    $trimList[] = 'refnamediv';
+    $trimList[] = 'tbody';
+    $trimList[] = 'reference';
+    $trimList[] = 'classsynopsis';
+    $trimList[] = 'section';
+    $trimList[] = 'tgroup';
+    $trimList[] = 'thead';
+    $trimList[] = 'itemizedlist';
+    $trimList[] = 'note';
+    $trimList[] = 'sect2';
+
+    xml_trim_docbook_wsi( $doc->documentElement , $trimList );
+}
+
+function xml_trim_docbook_wsi( DOMNode $parent , array $trimList )
+{
+    $nodeList = $parent->childNodes;
+    for ( $idx = $nodeList->length - 1 ; $idx >= 0 ; $idx-- )
+    {
+        $node = $nodeList[ $idx ];
+        $type = $node->nodeType;
+
+        if ( $type == 1 ) // XML_ELEMENT_NODE
+            xml_trim_docbook_wsi( $node , $trimList );
+
+        if ( $type == 3 ) // XML_TEXT_NODE
+        {
+            if ( in_array( $parent->nodeName , $trimList ) )
+                $parent->removeChild( $node );
+            continue;
+        }
+    }
 }
 
 function xml_broken_file_check()
