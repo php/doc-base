@@ -1,16 +1,19 @@
-<?php /*
+<?php
 // SPDX-License-Identifier: 0BSD
 // © André L F S Bacci <ae#php.net>
-
+/*
 This script reads a RelaxNG XML file, and calculates all elements
 that _not_ contain <text/> contents, in all alternatives. That is,
 the list shows all elements that can have all inter-element
 whitespace removed, without affecting the expected parsing of the
 XML document that follows the RelaxNG specification.
 
-If informed a second XML file, the script will calculate all savings
+If run with a second XML argument, the script will calculate all savings
 that can be done by stripping these insignificant whitespace between
-elements. */
+elements.
+
+See mentions of 'docbookwsi' on source code for parts that need to be
+updated if/when a new version of Docbook is used.                */
 
 $arg0 = array_shift( $argv ) ?? null;
 $rngFile = array_shift( $argv ) ?? null;

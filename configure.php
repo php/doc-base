@@ -728,8 +728,10 @@ function xml_trim_first( DOMDocument $doc )
         $node->parentNode->removeChild( $node );
     }
 
+    // See docbook/docbookwsi.php.
+
     // These first five elements account for almost 50%
-    // of all insignificant Docbook whitespace in manual:
+    // of all insignificant Docbook whitespace in manual.
 
     $trimList[] = 'refsect1';
     $trimList[] = 'varlistentry';
