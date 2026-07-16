@@ -674,7 +674,19 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
 echo "Creating monolithic temp/manual.xml... ";
 $dom = new DOMDocument();
 
-if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+// A language directory may ship its own manual.xml to build a self-contained
+// manual (e.g. the third-party extension manual) that references only its own
+// books, instead of the main manual skeleton in doc-base. When absent, the
+// default doc-base manual.xml is used, so existing builds are unaffected.
+$input_manual = "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}";
+$lang_manual  = "{$LANGDIR}/{$ac["INPUT_FILENAME"]}";
+if ( file_exists( $lang_manual ) )
+{
+    echo "using {$ac['LANG']}/{$ac["INPUT_FILENAME"]}... ";
+    $input_manual = $lang_manual;
+}
+
+if ( dom_load( $dom , $input_manual ) )
 {
     dom_saveload( $dom ); // correct file/line/column on error messages
     echo " done.\n";
