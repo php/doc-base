@@ -15,7 +15,7 @@ elements.
 See mentions of 'docbookwsi' on source code for parts that need to be
 updated if/when a new version of Docbook is used.                */
 
-$arg0 = array_shift( $argv ) ?? null;
+$argv0 = array_shift( $argv ) ?? null;
 $rngFile = array_shift( $argv ) ?? null;
 $xmlFile = array_shift( $argv ) ?? null;
 

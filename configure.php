@@ -655,7 +655,7 @@ checkvalue($ac["GENERATE"]);
 echo "Creating monolithic temp/manual.xml... ";
 $dom = new DOMDocument();
 
-if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" , true ) )
 {
     dom_saveload( $dom ); // correct file/line/column on error messages
     echo " done.\n";
@@ -668,7 +668,7 @@ else
     errors_are_bad(1);
 }
 
-function dom_load( DOMDocument $dom , string $filename , bool $firstLoad = true ) : bool
+function dom_load( DOMDocument $dom , string $filename , bool $firstLoad ) : bool
 {
     $filename = realpath( $filename );
 
@@ -679,15 +679,12 @@ function dom_load( DOMDocument $dom , string $filename , bool $firstLoad = true 
              | LIBXML_COMPACT
              | LIBXML_BIGLINES
              | LIBXML_PARSEHUGE;
-
     if ( ! $firstLoad )
         $options |= LIBXML_NSCLEAN;
 
     $ret = $dom->load( $filename , $options );
-
     if ( $ret && $firstLoad )
         xml_trim_first( $dom );
-
     return $ret;
 }
 
@@ -732,31 +729,29 @@ function xml_trim_first( DOMDocument $doc )
 
     // These first five elements account for almost 50%
     // of all insignificant Docbook whitespace in manual.
-
-    $trimList[] = 'refsect1';
-    $trimList[] = 'varlistentry';
-    $trimList[] = 'listitem';
-    $trimList[] = 'row';
-    $trimList[] = 'methodsynopsis';
-
-    // The first twenty elements account for almost 95%
+    // And first twenty elements account for almost 95%
     // of all insignificant Docbook whitespace in manual.
 
-    $trimList[] = 'refentry';
-    $trimList[] = 'fieldsynopsis';
-    $trimList[] = 'variablelist';
-    $trimList[] = 'example';
-    $trimList[] = 'simplelist';
-    $trimList[] = 'refnamediv';
-    $trimList[] = 'tbody';
-    $trimList[] = 'reference';
-    $trimList[] = 'classsynopsis';
-    $trimList[] = 'section';
-    $trimList[] = 'tgroup';
-    $trimList[] = 'thead';
-    $trimList[] = 'itemizedlist';
-    $trimList[] = 'note';
-    $trimList[] = 'sect2';
+    $trimList = [ 'refsect1'
+                , 'varlistentry'
+                , 'listitem'
+                , 'row'
+                , 'methodsynopsis'
+                , 'refentry'
+                , 'fieldsynopsis'
+                , 'variablelist'
+                , 'example'
+                , 'simplelist'
+                , 'refnamediv'
+                , 'tbody'
+                , 'reference'
+                , 'classsynopsis'
+                , 'section'
+                , 'tgroup'
+                , 'thead'
+                , 'itemizedlist'
+                , 'note'
+                , 'sect2' ];
 
     xml_trim_docbook_wsi( $doc->documentElement , $trimList );
 }
