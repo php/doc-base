@@ -31,18 +31,22 @@
 	$others = $groupedList['Others'];
 	unset($groupedList['Others']);
 	$groupedList['Others'] = $others;
-?>
-<?php echo '<?'; ?>xml version="1.0" encoding="UTF-8"?>
-<!-- AUTO GENERATED, DO NOT TRANSLATE OR MODIFY BY HAND -->
 
-<!-- The script to generate this file is scripts/gen-phpdoc-tz-list.php -->
-<!-- in the doc-base repo. However, it should only need to be run when  -->
-<!-- the tzdb file is updated by the maintainer of DateTime/timelib.    -->
+    echo <<<'XML'
+    <?xml version="1.0" encoding="UTF-8"?>
+    <?do-not-translate?>
 
-<appendix xml:id="timezones" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
- &date.timezone.intro.title;
- &date.timezone.intro;
-<?php
+    <!-- AUTO GENERATED, DO NOT TRANSLATE OR MODIFY BY HAND -->
+    <!-- The script to generate this file is scripts/gen-phpdoc-tz-list.php -->
+    <!-- in the doc-base repo. However, it should only need to be run when  -->
+    <!-- the tzdb file is updated by the maintainer of DateTime/timelib.    -->
+
+    <appendix xml:id="timezones" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+     &date.timezone.intro.title;
+     &date.timezone.intro;
+
+    XML;
+
     if (function_exists('timezone_version_get')) {
 ?>
 
@@ -54,7 +58,7 @@
 <?php
     }
 
-    foreach ($groupedList as $group => $zones) { 
+    foreach ($groupedList as $group => $zones) {
         $groupColumns = $columns;
         $m = count($zones) > ($groupColumns-1) ? $groupColumns : count($zones); ?>
 
@@ -118,4 +122,3 @@ vim600: syn=xml fen fdm=syntax fdl=2 si
 vim: et tw=78 syn=php
 vi: ts=4 sw=1
 -->
-
