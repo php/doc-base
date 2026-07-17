@@ -8,22 +8,22 @@
 
  <refsect1 role="description">
   &reftitle.description;
-  <para>&style.oop; (method):</para>
-   <methodsynopsis>
+  <simpara>&style.oop; (method):</simpara>
+  <methodsynopsis>
    {MODIFIERS}{RETURN_TYPE}<methodname>{FULL_METHOD_NAME}</methodname>
    {METHOD_PARAMETERS}
-   </methodsynopsis>
-  <para>&style.procedural;:</para>
+  </methodsynopsis>
+  <simpara>&style.procedural;:</simpara>
   <methodsynopsis>
    <type>ReturnType</type><methodname>{FUNCTION_NAME}</methodname>
    {FUNCTION_PARAMETERS}
   </methodsynopsis>
-  <para>
+  <simpara>
 
-  </para>
+  </simpara>
   
   &warn.undocumented.func;
- 
+
  </refsect1>
 
  <refsect1 role="parameters">
@@ -33,9 +33,9 @@
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
-  <para>
-   
-  </para>
+  <simpara>
+
+  </simpara>
  </refsect1>
 {DEFAULT_EXAMPLE}
 {DEFAULT_SEEALSO}

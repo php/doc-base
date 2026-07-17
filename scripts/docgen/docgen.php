@@ -42,7 +42,6 @@ $TEMPLATE = array(
 /* Default files for extensions */
 $DOC_EXT = array(
 	'book.xml' 	         => 'book.tpl',
-	'book.developer.xml' => 'book.developer.tpl',
 	'setup.xml'          => 'setup.tpl',
 	'constants.xml'      => 'constants.tpl',
 	'configure.xml'      => 'configure.tpl',
@@ -91,7 +90,7 @@ USAGE;
 }
 /* }}} */
 
-function find_function($ext, ReflectionMethod $method = NULL, ReflectionFunction $func = NULL) { /* {{{ */
+function find_function($ext, ?ReflectionMethod $method = NULL, ?ReflectionFunction $func = NULL) { /* {{{ */
 	$ext_name = strtolower($ext);
 	$ext = new ReflectionExtension($ext);
 
@@ -225,7 +224,7 @@ function get_type_by_string($str) { /* {{{ */
 /* }}} */
 
 /** @return string|null */
-function get_type_as_xml_string(ReflectionType $type = null) { /* {{{ */
+function get_type_as_xml_string(?ReflectionType $type = null) { /* {{{ */
 	if ($type instanceof ReflectionNamedType) {
 		$ret = "<type>{$type->getName()}</type>";
 		if ($type->allowsNull()) {
@@ -331,9 +330,9 @@ function create_markup_to_parameter_section(Reflector $obj, $content) { /* {{{ *
 				$markup .= str_repeat(' ', $ident + 1) ."<varlistentry>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 2) .'<term><parameter>'. ($param->getName() ? $param->getName() : 'param'. $count) ."</parameter></term>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 2) ."<listitem>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 3) ."<para>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 3) ."<simpara>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 4) . PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 3) ."</para>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 3) ."</simpara>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 2) ."</listitem>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 1) ."</varlistentry>". PHP_EOL;
 
@@ -344,7 +343,7 @@ function create_markup_to_parameter_section(Reflector $obj, $content) { /* {{{ *
 			$content = preg_replace('/\{PARAMETERS_DESCRIPTION\}/', $markup, $content, 1);
 		}
 	} else {
-		$content = preg_replace('/\{'. $param_name .'\}/', '<void />', $content, 1);
+		$content = preg_replace('/\{'. $param_name .'\}/', '<void/>', $content, 1);
 		$content = preg_replace('/\{PARAMETERS_DESCRIPTION\}/', '&no.function.parameters;', $content, 1);
 	}
 
@@ -424,17 +423,16 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
 				$method_params[] = $param->getName();
 			}
 
-			$markup  = "<para>". PHP_EOL;
-			$markup .= str_repeat(' ', $ident + 1) ."<variablelist>". PHP_EOL;
+			$markup = str_repeat(' ', $ident) ."<variablelist>". PHP_EOL;
 			foreach ($func_params as $param) {
-				$markup .= str_repeat(' ', $ident + 2) ."<varlistentry>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 3) .'<term><parameter>'. ($param ? $param : 'param'. $count) ."</parameter></term>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 3) ."<listitem>". PHP_EOL;
-      			$markup .= str_repeat(' ', $ident + 4) ."<para>". PHP_EOL;
-       			$markup .= str_repeat(' ', $ident + 5) . PHP_EOL;
-       			$markup .= str_repeat(' ', $ident + 4) ."</para>". PHP_EOL;
-     			$markup .= str_repeat(' ', $ident + 3) ."</listitem>". PHP_EOL;
-    			$markup .= str_repeat(' ', $ident + 2) ."</varlistentry>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 1) ."<varlistentry>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 2) .'<term><parameter>'. ($param ? $param : 'param'. $count) ."</parameter></term>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 2) ."<listitem>". PHP_EOL;
+      			$markup .= str_repeat(' ', $ident + 3) ."<simpara>". PHP_EOL;
+       			$markup .= str_repeat(' ', $ident + 4) . PHP_EOL;
+       			$markup .= str_repeat(' ', $ident + 3) ."</simpara>". PHP_EOL;
+     			$markup .= str_repeat(' ', $ident + 2) ."</listitem>". PHP_EOL;
+    			$markup .= str_repeat(' ', $ident + 1) ."</varlistentry>". PHP_EOL;
     			$count++;
 			}
 			$diff_params = array_diff($method_params, $func_params);
@@ -443,23 +441,22 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
 				if (!($param && in_array($param, $diff_params))) {
 					continue;
 				}
-				$markup .= str_repeat(' ', $ident + 2) ."<varlistentry>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 3) .'<term><parameter>'. ($param ? $param : 'param'. $count) ."</parameter></term>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 3) ."<listitem>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 4) ."<para>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 5) . PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 4) ."</para>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 3) ."</listitem>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 2) ."</varlistentry>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 1) ."<varlistentry>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 2) .'<term><parameter>'. ($param ? $param : 'param'. $count) ."</parameter></term>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 2) ."<listitem>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 3) ."<simpara>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 4) . PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 3) ."</simpara>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 2) ."</listitem>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident + 1) ."</varlistentry>". PHP_EOL;
 				$count++;
 			}
-			$markup .= str_repeat(' ', $ident + 1) ."</variablelist>". PHP_EOL;
-			$markup .= str_repeat(' ', $ident) ."</para>";
+			$markup .= str_repeat(' ', $ident) ."</variablelist>". PHP_EOL;
 
 			$content = preg_replace('/\{PARAMETERS_DESCRIPTION\}/', $markup, $content, 1);
 		}
 	} else {
-		$content = preg_replace('/\{PARAMETERS\}/', '<void />', $content, 1);
+		$content = preg_replace('/\{PARAMETERS\}/', '<void/>', $content, 1);
 		$content = preg_replace('/\{PARAMETERS_DESCRIPTION\}/', '&no.function.parameters;', $content, 1);
 	}
 
@@ -470,6 +467,7 @@ function gen_mapping_markup(ReflectionMethod $method, ReflectionFunction $functi
 }
 /* }}} */
 
+/* TODO This is outdated */
 function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 	$id = format_id($class->getName());
 	$escapedName = addslashes($class->getName());
@@ -554,7 +552,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
      		$markup .= str_repeat(' ', $ident + 2) .'<varlistentry xml:id="'. $id .".constants.". format_id($constant) ."\">". PHP_EOL;
      		$markup .= str_repeat(' ', $ident + 3) .'<term><constant>'. $class->getName() .'::'. $constant ."</constant></term>". PHP_EOL;
       		$markup .= str_repeat(' ', $ident + 3) ."<listitem>". PHP_EOL;
-       		$markup .= str_repeat(' ', $ident + 4) ."<para></para>". PHP_EOL;
+       		$markup .= str_repeat(' ', $ident + 4) ."<simpara></simpara>". PHP_EOL;
       		$markup .= str_repeat(' ', $ident + 3) ."</listitem>". PHP_EOL;
      		$markup .= str_repeat(' ', $ident + 2) ."</varlistentry>". PHP_EOL . PHP_EOL;
 		}
@@ -607,7 +605,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 			}
 			$markup .= '<classsynopsisinfo role="comment">&InheritedProperties;</classsynopsisinfo>'. PHP_EOL;
 			foreach ($inherited as $declaring_class) {
-				$markup .= str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('" . strtolower($declaring_class) . ".synopsis')/descendant::db:fieldsynopsis)\">" . PHP_EOL . str_repeat(' ', $ident + 1) . "<xi:fallback/>" . PHP_EOL . str_repeat(' ', $ident) . "</xi:include>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('" . strtolower($declaring_class) . ".synopsis')/descendant::db:fieldsynopsis)\"/>". PHP_EOL;
 			}
 		}
 
@@ -629,7 +627,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 			$markup .= str_repeat(' ', $ident + 2) .'<varlistentry xml:id="'. $id .'.props.'. format_id($property->getName()) ."\">". PHP_EOL;
 			$markup .= str_repeat(' ', $ident + 3) .'<term><varname>'. $property->getName() ."</varname></term>". PHP_EOL;
      		$markup .= str_repeat(' ', $ident + 3) ."<listitem>". PHP_EOL;
-      		$markup .= str_repeat(' ', $ident + 4) ."<para></para>". PHP_EOL;
+      		$markup .= str_repeat(' ', $ident + 4) ."<simpara></simpara>". PHP_EOL;
      		$markup .= str_repeat(' ', $ident + 3) ."</listitem>". PHP_EOL;
     		$markup .= str_repeat(' ', $ident + 2) ."</varlistentry>". PHP_EOL;
 		}
@@ -645,14 +643,14 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 
 	/* {PROPERTY_XINCLUDE} */
 	$content = preg_replace('/\{PROPERTY_XINCLUDE\}/',
-		"<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:fieldsynopsis[1])\"><xi:fallback/></xi:include>". PHP_EOL,
+		"<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:fieldsynopsis[1])\"/>". PHP_EOL,
 		$content, 1);
 
 	/* {METHOD_XINCLUDE} */
 	$ident = get_ident_size('METHOD_XINCLUDE', $content);
 	$content = preg_replace('/\{METHOD_XINCLUDE\}/',
 		PHP_EOL . str_repeat(' ', $ident) . "<classsynopsisinfo role=\"comment\">&Methods;</classsynopsisinfo>". PHP_EOL.
-		str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\">" . PHP_EOL . str_repeat(' ', $ident + 1) . "<xi:fallback/>" . PHP_EOL . str_repeat(' ', $ident) . "</xi:include>",
+		str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". $id ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\"/>",
 		$content, 1);
 
 	/* {INHERITED_XINCLUDE} */
@@ -660,7 +658,7 @@ function gen_class_markup(ReflectionClass $class, $content) { /* {{{ */
 		$ident = get_ident_size('INHERITED_XINCLUDE', $content);
 		$content = preg_replace('/\{INHERITED_XINCLUDE\}/',
 			PHP_EOL . str_repeat(' ', $ident) ."<classsynopsisinfo role=\"comment\">&InheritedMethods;</classsynopsisinfo>". PHP_EOL.
-			str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". format_id($parent->getName()) ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\">" . PHP_EOL . str_repeat(' ', $ident + 1) . "<xi:fallback/>" . PHP_EOL . str_repeat(' ', $ident) . "</xi:include>". PHP_EOL,
+			str_repeat(' ', $ident) ."<xi:include xpointer=\"xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.". format_id($parent->getName()) ."')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='" . $escapedName . "'])\"/>". PHP_EOL,
 			$content, 1);
 	} else {
 		$content = preg_replace('/^\s*\{INHERITED_XINCLUDE\}.*?\n/m', '', $content, 1);
@@ -703,9 +701,9 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 					$markup2 .= str_repeat(' ', $ident + 2) ."<type>". get_type_by_string($value['global_value']) ."</type>". PHP_EOL;
 					$markup2 .= str_repeat(' ', $ident + 1) ."</term>". PHP_EOL;
 					$markup2 .= str_repeat(' ', $ident + 1) ."<listitem>". PHP_EOL;
-					$markup2 .= str_repeat(' ', $ident + 2) ."<para>". PHP_EOL;
+					$markup2 .= str_repeat(' ', $ident + 2) ."<simpara>". PHP_EOL;
 					$markup2 .= str_repeat(' ', $ident + 3) . PHP_EOL;
-					$markup2 .= str_repeat(' ', $ident + 2) ."</para>". PHP_EOL;
+					$markup2 .= str_repeat(' ', $ident + 2) ."</simpara>". PHP_EOL;
     				$markup2 .= str_repeat(' ', $ident + 1) ."</listitem>". PHP_EOL;
    					$markup2 .= str_repeat(' ', $ident) ."</varlistentry>". PHP_EOL;
 				}
@@ -727,24 +725,22 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 				$ident = get_ident_size('CONSTANTS', $content);
 
 				$markup  = "&extension.constants;". PHP_EOL;
-				$markup .= str_repeat(' ', $ident) ."<para>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident + 1) ."<variablelist>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident) ."<variablelist>". PHP_EOL;
 
 				foreach ($constants as $name => $value) {
-					$markup .= str_repeat(' ', $ident + 2) .'<varlistentry xml:id="constant.'. format_id($name) .'">'. PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 3) ."<term>". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 4) ."<constant>". $name ."</constant>". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 4) ."(". get_xml_type_tag_or_entity($value, true) .")". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 3) ."</term>". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 3) ."<listitem>". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 4) ."<simpara>". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 4) ."</simpara>". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 3) ."</listitem>". PHP_EOL;
-					$markup .= str_repeat(' ', $ident + 2) ."</varlistentry>". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 1) .'<varlistentry xml:id="constant.'. format_id($name) .'">'. PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 2) ."<term>". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 3) ."<constant>". $name ."</constant>". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 3) ."(". get_xml_type_tag_or_entity($value, true) .")". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 2) ."</term>". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 2) ."<listitem>". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 3) ."<simpara>". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 3) ."</simpara>". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 2) ."</listitem>". PHP_EOL;
+					$markup .= str_repeat(' ', $ident + 1) ."</varlistentry>". PHP_EOL;
 				}
 
-				$markup .= str_repeat(' ', $ident + 1) ."</variablelist>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident) ."</para>";
+				$markup .= str_repeat(' ', $ident) ."</variablelist>". PHP_EOL;
 
 				$content = preg_replace('/\{CONSTANTS\}/', $markup, $content, 1);
 			} else {
@@ -761,26 +757,26 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 			$markup2 = '';
 			if ($OPTION['pecl'] === true) {
 
-				$markup .= "<para>". PHP_EOL;
+				$markup .= "<simpara>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 1) ."&pecl.info;". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 1) ."<link xlink:href=\"&url.pecl.package;{EXT_NAME_ID}\">&url.pecl.package;{EXT_NAME_ID}</link>". PHP_EOL;
-				$markup .= str_repeat(' ', $ident) . "</para>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident) . "</simpara>". PHP_EOL;
 
 				/*
-				$markup2 .= "<para>". PHP_EOL;
+				$markup2 .= "<simpara>". PHP_EOL;
 				$markup2 .= str_repeat(' ', $ident2 + 1) ."The latest PECL/{EXT_NAME_ID} Win32 DLL is available here:". PHP_EOL;
 				$markup2 .= str_repeat(' ', $ident2 + 1) ."<link xlink:href=\"&url.pecl.win.ext;php_{EXT_NAME_ID}.dll\">php_{EXT_NAME_ID}.dll</link>". PHP_EOL;
-				$markup2 .= str_repeat(' ', $ident2) ."</para>". PHP_EOL;
+				$markup2 .= str_repeat(' ', $ident2) ."</simpara>". PHP_EOL;
 				*/
 			} else {
 
-				$markup .= "<para>". PHP_EOL;
+				$markup .= "<simpara>". PHP_EOL;
 				$markup .= str_repeat(' ', $ident + 1) ."Use <option role=\"configure\">--with-{EXT_NAME_ID}[=DIR]</option> when compiling PHP.". PHP_EOL;
-				$markup .= str_repeat(' ', $ident) ."</para>". PHP_EOL;
+				$markup .= str_repeat(' ', $ident) ."</simpara>". PHP_EOL;
 
-				$markup2 .= "<para>". PHP_EOL;
+				$markup2 .= "<simpara>". PHP_EOL;
 				$markup2 .= str_repeat(' ', $ident2 + 1) ."Windows users should include <filename>php_{EXT_NAME_ID}.dll</filename> into &php.ini;". PHP_EOL;
-				$markup2 .= str_repeat(' ', $ident2) ."</para>". PHP_EOL;
+				$markup2 .= str_repeat(' ', $ident2) ."</simpara>". PHP_EOL;
 			}
 
 			$content = str_replace('{EXT_INSTALL_MAIN}', $markup, $content);
@@ -815,13 +811,6 @@ function gen_extension_markup(ReflectionExtension $obj, $content, $xml_file) { /
 				}
 			}
 			$content = preg_replace('/\{VERSIONS\}/', rtrim($markup), $content);
-		break;
-
-		case 'book.developer.xml':
-			if ($OPTION['docbase'] && $OPTION['phpdoc']) {
-				$content = preg_replace('/\{PATH_TO_DOCBASE\}/', $OPTION['docbase'], $content);
-				$content = preg_replace('/\{PATH_TO_DOC\}/', $OPTION['phpdoc'], $content);
-			}
 		break;
 	}
 
@@ -1119,7 +1108,6 @@ $OPTION['example']	 = false;
 
 $arropts = array(
 	'verbose' 		=> 'v',  /* verbose */
-	'version' 		=> 'V',  /* version */
 	'quiet'   		=> 'q',  /* quiet */
 	'include:'		=> 'i:',  /* include */
 	'help'	  		=> 'h',  /* help */
@@ -1147,10 +1135,6 @@ if (!$options) {
 foreach ($options as $opt => $value) {
 	switch ($opt) {
 		case 'v':
-		case 'version':
-			printf("%s\n", '$Revision$');
-			break;
-		case 'V':
 		case 'verbose':
 			$OPTION['verbose'] = false;
 			break;

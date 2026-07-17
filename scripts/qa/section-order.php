@@ -40,6 +40,8 @@ const SKIP_FILE = [
     'reference/oci8/oldaliases/ocifetchinto.xml',
     /* This page uses <xi:include> tags to include the docs from the OO version */
     'reference/parallel/functions/parallel.run.xml',
+    /* This page uses <xi:include> tags to include the docs from the OO version */
+    'reference/pdo/pdo/connect.xml',
     /* These pages use <xi:include> tags to include the docs from the interface version */
     'reference/dom/domcharacterdata/after.xml',
     'reference/dom/domcharacterdata/remove.xml',
@@ -176,8 +178,8 @@ function checkSectionErrors(string $path): array
     $pageHasNoReturnSection = false;
     $content = file_get_contents($path);
 
-    /* Skip class definitions */
-    if (preg_match('#<reference xml:id="(.+)" role="class"#', $content)) {
+    /* Skip class or enum definitions */
+    if (preg_match('#<reference xml:id="(.+)" role="(class|enum)"#', $content)) {
         return [];
     }
     /* Skip Exception classes definitions */

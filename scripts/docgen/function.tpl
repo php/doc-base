@@ -11,9 +11,9 @@
    {RETURN_TYPE}<methodname>{FUNCTION_NAME}</methodname>
    {FUNCTION_PARAMETERS}
   </methodsynopsis>
-  <para>
+  <simpara>
 
-  </para>
+  </simpara>
 
   &warn.undocumented.func;
 
@@ -26,9 +26,9 @@
 
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
-  <para>
+  <simpara>
    
-  </para>
+  </simpara>
  </refsect1>
 {DEFAULT_EXAMPLE}
 {DEFAULT_SEEALSO}

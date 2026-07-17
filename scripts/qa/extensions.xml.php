@@ -83,6 +83,16 @@ foreach ($files as $filename) {
 			$debug['bogus-membership'][] = array($ext, $m);
 	}
 
+	if (preg_match('/<!-- State: (\w+)/S', $file, $match)) {
+		switch ($match[1]) {
+		case 'experimental':
+		case 'deprecated':
+			$State[$match[1]][$ext] = 1;
+			break;
+                default:
+			$debug['bogus-state'][] = array($ext, $match[1]);
+		}
+	}
 }
 
 
@@ -164,6 +174,12 @@ if (isset($debug['bogus-membership'])) {
 	echo "\nExtensions with bogus Membership:\n";
 	$status = 2;
 	print_r($debug['bogus-membership']);
+}
+
+if (isset($debug['bogus-state'])) {
+	echo "\nExtensions with bogus State:\n";
+	$status = 2;
+	print_r($debug['bogus-state']);
 }
 
 if (isset($debug['unknown-extension'])) {

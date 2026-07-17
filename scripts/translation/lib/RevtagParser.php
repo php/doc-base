@@ -30,7 +30,7 @@ class RevtagInfo
 
 class RevtagParser
 {
-    static function parseInto( string $lang , RevcheckFileList & $list )
+    static function parseDir( string $lang , RevcheckFileList $list )
     {
         foreach( $list->iterator() as $entry )
             $entry->revtag = RevtagParser::parseFile( $lang . '/' . $entry->file );
@@ -67,11 +67,11 @@ class RevtagParser
 
         if ( str_starts_with( $text , "EN-" ) )
         {
-            // /EN-Revision:\s*(\S+)\s*Maintainer:\s*(\S+)\s*Status:\s*(\S+)/ // restrict maintainer without spaces
-            // /EN-Revision:\s*(\S+)\s*Maintainer:\s(.*?)\sStatus:\s*(\S+)/   // accepts maintainer with spaces
+            // /EN-Revision:\s*(\S+)\s*Maintainer:\s*(\S+)\s*Status:\s*(\S+)/       // restrict maintainer without spaces
+            // /EN-Revision:\s*(\S+)\s*Maintainer:\s(.*?)\sStatus:\s*(\S+)/         // accepts maintainer with spaces
 
-            $match = array();
-            $regex = "/EN-Revision:\s*(\S+)\s*Maintainer:\s*(\S+)\s*Status:\s*(\S+)/";
+            $match = [];
+            $regex = "/EN-Revision:\s*(\S+)\s*Maintainer:\s(.*?)\sStatus:\s*(\S+)/";
             if ( preg_match( $regex , $text , $match ) )
             {
                 $ret->revision = trim( $match[1] );
@@ -91,7 +91,7 @@ class RevtagParser
 
         if ( str_starts_with( $text , "CREDITS:" ) )
         {
-            $match = array();
+            $match = [];
             $regex = "/CREDITS:(.*)/";
             if ( preg_match( $regex , $text , $match ) )
             {

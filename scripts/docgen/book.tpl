@@ -5,9 +5,9 @@
 
  <preface xml:id="intro.{EXT_NAME_ID}">
   &reftitle.intro;
-  <para>
-
-  </para>
+  <simpara>
+   Extension introduction.
+  </simpara>
  </preface>
 
  &reference.{EXT_NAME_ID}.setup;

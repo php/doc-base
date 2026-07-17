@@ -2,30 +2,26 @@
 <section xml:id="{EXT_NAME_ID}.configuration" xmlns="http://docbook.org/ns/docbook">
  &reftitle.runtime;
  &extension.runtime;
- <para>
-  <table>
-   <title>{EXT_NAME} &ConfigureOptions;</title>
-   <tgroup cols="4">
-    <thead>
-     <row>
-      <entry>&Name;</entry>
-      <entry>&Default;</entry>
-      <entry>&Changeable;</entry>
-      <entry>&Changelog;</entry>
-     </row>
-    </thead>
-    {INI_ENTRIES}
-   </tgroup>
-  </table>
- </para>
 
- &ini.descriptions.title;
+ <table>
+  <title>{EXT_NAME} &ConfigureOptions;</title>
+  <tgroup cols="4">
+   <thead>
+   <row>
+    <entry>&Name;</entry>
+    <entry>&Default;</entry>
+    <entry>&Changeable;</entry>
+    <entry>&Changelog;</entry>
+   </row>
+   </thead>
+   {INI_ENTRIES}
+  </tgroup>
+ </table>
 
- <para>
-  <variablelist>
-   {INI_ENTRIES_DESCRIPTION}
-  </variablelist>
- </para>
+ <variablelist>
+  &ini.descriptions.title;
+  {INI_ENTRIES_DESCRIPTION}
+ </variablelist>
 </section>
 <!-- Keep this comment at the end of the file
 Local variables:

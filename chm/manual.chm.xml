@@ -1,0 +1,7 @@
+<book xml:id="chmonly">
+ <title>&CHMEdition;</title>
+ &chmonly.aboutchm;
+ &chmonly.usingchm;
+ &chmonly.search;
+ &chmonly.integration;
+</book>
