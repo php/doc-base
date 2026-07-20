@@ -329,7 +329,7 @@ function loadEntityGroup( string $path )
 {
     $path = realpath( $path );
     $text = file_get_contents( $path );
-    $text = str_replace( "&" , "&amp;" , $text );
+    $text = str_replace( '&' , '&amp;' , $text );
 
     $dom = new DOMDocument( '1.0' , 'utf8' );
     if ( ! $dom->loadXML( $text ) )
@@ -371,6 +371,7 @@ function loadEntityGroup( string $path )
         $text = "";
         foreach( $other->childNodes as $node )
             $text .= $other->saveXML( $node );
+        $text = str_replace( '&amp;' , '&' , $text );
 
         Entities::put( $path , $name , $text , $unique , $remove );
     }
