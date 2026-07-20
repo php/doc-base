@@ -652,11 +652,40 @@ if ($ac["GENERATE"] != "no") {
 }
 checkvalue($ac["GENERATE"]);
 
-function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
+echo "Creating monolithic temp/manual.xml... ";
+$dom = new DOMDocument();
+
+if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" , true ) )
+{
+    dom_saveload( $dom ); // correct file/line/column on error messages
+    echo " done.\n";
+}
+else
+{
+    echo "failed.\n";
+    print_xml_errors();
+    xml_broken_file_check();
+    errors_are_bad(1);
+}
+
+function dom_load( DOMDocument $dom , string $filename , bool $firstLoad ) : bool
 {
     $filename = realpath( $filename );
-    $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
-    return $dom->load( $filename , $options );
+
+    // On the first load we cannot use LIBXML_NSCLEAN, because
+    // libxml drops all namespaces inside DTD entities.
+
+    $options = LIBXML_NOENT
+             | LIBXML_COMPACT
+             | LIBXML_BIGLINES
+             | LIBXML_PARSEHUGE;
+    if ( ! $firstLoad )
+        $options |= LIBXML_NSCLEAN;
+
+    $ret = $dom->load( $filename , $options );
+    if ( $ret && $firstLoad )
+        xml_trim_first( $dom );
+    return $ret;
 }
 
 function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
@@ -666,28 +695,86 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
 
     libxml_clear_errors();
     $dom->save( $filename );
-    dom_load( $dom , $filename );
+    dom_load( $dom , $filename , false );
 
     return $filename;
 }
 
-echo "Creating monolithic temp/manual.xml... ";
-$dom = new DOMDocument();
-
-if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+function xml_trim_first( DOMDocument $doc )
 {
-    dom_saveload( $dom ); // correct file/line/column on error messages
-    echo " done.\n";
-}
-else
-{
-    echo "failed.\n";
-    print_xml_errors();
-    individual_xml_broken_check();
-    errors_are_bad(1);
+    $xpath = new DOMXPath( $doc );
+    $dtdNode = null;
+    $dels = [];
+
+    // Remove DTD Document Type, as all entity references
+    // are already expanded at this point.
+
+    foreach( $doc->childNodes as $node )
+        if ( $node->nodeType == XML_DOCUMENT_TYPE_NODE )
+            $dtdNode = $node;
+    if ( $dtdNode != null )
+        $node->parentNode->removeChild( $dtdNode );
+
+    // Remove all XML comments, as they are distracting,
+    // in reverse order, outside enumerations.
+
+    $comments = $xpath->query( "//comment()" );
+    for ( $idx = $comments->length - 1 ; $idx >= 0 ; $idx-- )
+    {
+        $node = $comments[ $idx ];
+        $node->parentNode->removeChild( $node );
+    }
+
+    // See docbook/docbookwsi.php.
+
+    // These first five elements account for almost 50%
+    // of all insignificant Docbook whitespace in manual.
+    // And first twenty elements account for almost 95%
+    // of all insignificant Docbook whitespace in manual.
+
+    $trimList = [ 'refsect1'
+                , 'varlistentry'
+                , 'listitem'
+                , 'row'
+                , 'methodsynopsis'
+                , 'refentry'
+                , 'fieldsynopsis'
+                , 'variablelist'
+                , 'example'
+                , 'simplelist'
+                , 'refnamediv'
+                , 'tbody'
+                , 'reference'
+                , 'classsynopsis'
+                , 'section'
+                , 'tgroup'
+                , 'thead'
+                , 'itemizedlist'
+                , 'note'
+                , 'sect2' ];
+
+    xml_trim_docbook_wsi( $doc->documentElement , $trimList );
 }
 
-function individual_xml_broken_check()
+function xml_trim_docbook_wsi( DOMNode $parent , array $trimList )
+{
+    $nodeList = $parent->childNodes;
+    for ( $idx = $nodeList->length - 1 ; $idx >= 0 ; $idx-- )
+    {
+        $node = $nodeList[ $idx ];
+        $type = $node->nodeType;
+
+        if ( $type == 1 ) // XML_ELEMENT_NODE
+            xml_trim_docbook_wsi( $node , $trimList );
+
+        if ( $type == 3 ) // XML_TEXT_NODE
+            if ( in_array( $parent->nodeName , $trimList ) )
+                if ( trim( $node->nodeValue ) == '' )
+                    $parent->removeChild( $node );
+    }
+}
+
+function xml_broken_file_check()
 {
     $cmd = array();
     $cmd[] = $GLOBALS['ac']['PHP'];
