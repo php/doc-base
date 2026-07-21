@@ -190,6 +190,22 @@ function find_file($file_array) // {{{
     return '';
 } // }}}
 
+function print_dom_errors()
+{
+    $errors = libxml_get_errors();
+    foreach( $errors as $error )
+    {
+        $file = $error->file;
+        $line = $error->line;
+        $clmn = $error->column;
+        $prefix = $error->level === LIBXML_ERR_FATAL ? "FATAL" : "error";
+        $message = rtrim( $error->message );
+
+        if ( $file != '' )
+            print "[$prefix $file {$line}:{$clmn}] {$message}\n";
+    }
+}
+
 function print_xml_errors()
 {
     global $ac;
@@ -690,15 +706,7 @@ function dom_load( DOMDocument $dom , string $filename , bool $firstLoad ) : boo
 {
     $filename = realpath( $filename );
     $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
-    $ret = $dom->load( $filename , $options );
-
-    if ( $ret && $firstLoad )
-    {
-        print_xml_errors();
-        dom_saveload( $dom ); // correct file/line/column on error messages
-    }
-
-    return $ret;
+    return $dom->load( $filename , $options );
 }
 
 function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
@@ -719,6 +727,8 @@ $dom = new DOMDocument();
 if ( dom_load( $dom , __DIR__ . '/../en/manual.xml' , true ) )
 {
     echo " done.\n";
+    print_dom_errors();
+    dom_saveload( $dom ); // correct file/line/column on error messages
 }
 else
 {
