@@ -570,18 +570,20 @@ function git_status()
 
 // DTD entity layer before first XML loading
 
-dtd_conf_entities();
 dtd_file_entities();
 dtd_text_entities();
+dtd_conf_entities();
 
 function dtd_conf_entities()
 {
     function dtd_pe_body( string $filename = '' )
     {
-        if ( $filename == '' )
-            return "''";
-        $filename = realpain( $filename );
-        return "SYSTEM '$filename'";
+        if ( file_exists( $filename ) )
+        {
+            $filename = realpain( $filename );
+            return "SYSTEM '$filename'";
+        }
+        return "''";
     }
 
     global $ac;
