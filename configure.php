@@ -576,13 +576,13 @@ function dtd_conf_entities()
     // $ent1 = dtd_pe_body( __DIR__ . '/temp/text-entities.ent' );
     // $ent2 = dtd_pe_body( __DIR__ . '/temp/file-entities.ent' );
 
-    $baseEnt1 = dtd_pe_body( __DIR__ . '/temp/entities.ent' );
-    $baseEnt2 = dtd_pe_body( __DIR__ . '/entities/global.ent' );
-    $baseEnt3 = dtd_pe_body( __DIR__ . '/temp/file-entities.ent' );
+    $baseEnt1 = dtd_pe_body( __DIR__ . '/entities/global.ent' );
+    $baseEnt2 = dtd_pe_body( __DIR__ . '/temp/file-entities.ent' );
+    $baseEnt3 = dtd_pe_body( __DIR__ . '/temp/entities.ent' );
 
     $langOne1 = dtd_pe_body( __DIR__ . '/../en/language-defs.ent' );
     $langOne2 = dtd_pe_body( __DIR__ . '/../en/language-snippets.ent' );
-    $langOne3 = dtd_pe_body( __DIR__ . "/../en/extensions.ent" );
+    $langOne3 = dtd_pe_body( __DIR__ . '/../en/extensions.ent' );
 
     if ( $lang == 'en ' )
     {
@@ -592,9 +592,9 @@ function dtd_conf_entities()
     }
     else
     {
-        $langTwo1 = dtd_pe_body( __DIR__ . '/../$lang/language-defs.ent' );
-        $langTwo2 = dtd_pe_body( __DIR__ . '/../$lang/language-snippets.ent' );
-        $langTwo3 = dtd_pe_body( __DIR__ . '/../$lang/extensions.ent' );
+        $langTwo1 = dtd_pe_body( __DIR__ . "/../$lang/language-defs.ent" );
+        $langTwo2 = dtd_pe_body( __DIR__ . "/../$lang/language-snippets.ent" );
+        $langTwo3 = dtd_pe_body( __DIR__ . "/../$lang/extensions.ent" );
     }
 
     if ( $ac['CHMENABLED'] == 'yes' )
@@ -606,9 +606,9 @@ function dtd_conf_entities()
     $conf[] = "<!ENTITY LANG '$lang'>";
     $conf[] = "<!ENTITY manual.chmonly           $chmpath>";
 
-    $conf[] = "<!ENTITY % text-entities          $baseEnt1>";
-    $conf[] = "<!ENTITY % base-entities          $baseEnt2>";
-    $conf[] = "<!ENTITY % file-entities          $baseEnt3>";
+    $conf[] = "<!ENTITY % base-entities          $baseEnt1>";
+    $conf[] = "<!ENTITY % file-entities          $baseEnt2>";
+    $conf[] = "<!ENTITY % text-entities          $baseEnt3>";
 
     $conf[] = "<!ENTITY % language-defs          $langOne1>";
     $conf[] = "<!ENTITY % language-snippets      $langOne2>";
@@ -617,8 +617,6 @@ function dtd_conf_entities()
     $conf[] = "<!ENTITY % translation-defs       $langTwo1>";
     $conf[] = "<!ENTITY % translation-snippets   $langTwo2>";
     $conf[] = "<!ENTITY % translation-extensions $langTwo3>";
-
-
 
     file_put_contents( __DIR__ . "/../conf.ent" , implode( "\n" , $conf ) );
 }
@@ -695,7 +693,10 @@ function dom_load( DOMDocument $dom , string $filename , bool $firstLoad ) : boo
     $ret = $dom->load( $filename , $options );
 
     if ( $ret && $firstLoad )
+    {
+        print_xml_errors();
         dom_saveload( $dom ); // correct file/line/column on error messages
+    }
 
     return $ret;
 }
