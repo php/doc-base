@@ -43,7 +43,6 @@ echo "configure.php on PHP " . phpversion() . ", libxml " . LIBXML_DOTTED_VERSIO
 // xinclude_residua()           done
 // xml_partial_output
 // xml_validate()               done
-// phd_acronym()                done
 // phd_sources()                done
 // phd_version()                done
 // php_history()                done
@@ -1073,7 +1072,6 @@ CAT;
 
 // All PhD stuff, after XML validation.
 
-phd_acronym();
 php_history();
 phd_sources();
 phd_version();
@@ -1084,10 +1082,6 @@ exit(0); // Finished successfully.
 
 // TODO: Should this moved to github/php/phd?
 // Any input/state can be serialized into doc-base/temp/phd-conf.json.
-
-function phd_acronym()
-{
-}
 
 function php_history()
 {
