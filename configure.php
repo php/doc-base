@@ -290,7 +290,6 @@ $acd = array( // {{{
     'OUTPUT_FILENAME' => $srcdir . '/.manual.xml',
     'GENERATE' => 'no',
     'STDERR_TO_STDOUT' => 'no',
-    'INPUT_FILENAME'   => 'manual.xml',
     'TRANSLATION_ONLY_INCL_BEGIN' => '',
     'TRANSLATION_ONLY_INCL_END' => '',
     'XPOINTER_REPORTING' => 'yes',
@@ -530,6 +529,8 @@ function git_clean()
 function git_status()
 {
     global $ac;
+    if ( $ac['quiet'] == 'yes' )
+        return;
 
     $repos = array();
     $repos['doc-base']  = $ac['basedir'];
@@ -559,32 +560,67 @@ dtd_text_entities();
 
 function dtd_conf_entities()
 {
+    function dtd_pe_body( string $filename = '' )
+    {
+        if ( $filename == '' )
+            return "''";
+        $filename = realpain( $filename );
+        return "SYSTEM '$filename'";
+    }
+
     global $ac;
     $lang = $ac["LANG"];
-    $conf = [];
 
-    $conf[] = "<!ENTITY LANG '$lang'>";
+    // When all is converted to XML Entities,
+    // all this can be reduced to:
+    // $ent1 = dtd_pe_body( __DIR__ . '/temp/text-entities.ent' );
+    // $ent2 = dtd_pe_body( __DIR__ . '/temp/file-entities.ent' );
 
-    if ( $lang != 'en' )
+    $baseEnt1 = dtd_pe_body( __DIR__ . '/temp/entities.ent' );
+    $baseEnt2 = dtd_pe_body( __DIR__ . '/entities/global.ent' );
+    $baseEnt3 = dtd_pe_body( __DIR__ . '/temp/file-entities.ent' );
+
+    $langOne1 = dtd_pe_body( __DIR__ . '/../en/language-defs.ent' );
+    $langOne2 = dtd_pe_body( __DIR__ . '/../en/language-snippets.ent' );
+    $langOne3 = dtd_pe_body( __DIR__ . "/../en/extensions.ent" );
+
+    if ( $lang == 'en ' )
     {
-        $trans1 = realpain( __DIR__ . "/../$lang/language-defs.ent" );
-        $trans2 = realpain( __DIR__ . "/../$lang/language-snippets.ent" );
-        $trans3 = realpain( __DIR__ . "/../$lang/extensions.ent" );
-
-        $conf[] = "<!ENTITY % translation-defs       SYSTEM '$trans1'>";
-        $conf[] = "<!ENTITY % translation-snippets   SYSTEM '$trans2'>";
-        $conf[] = "<!ENTITY % translation-extensions SYSTEM '$trans3'>";
+        $langTwo1 = dtd_pe_body();
+        $langTwo2 = dtd_pe_body();
+        $langTwo3 = dtd_pe_body();
+    }
+    else
+    {
+        $langTwo1 = dtd_pe_body( __DIR__ . '/../$lang/language-defs.ent' );
+        $langTwo2 = dtd_pe_body( __DIR__ . '/../$lang/language-snippets.ent' );
+        $langTwo3 = dtd_pe_body( __DIR__ . '/../$lang/extensions.ent' );
     }
 
     if ( $ac['CHMENABLED'] == 'yes' )
-    {
-        $chmpath = realpain( __DIR__ . "/chm/manual.chm.xml" );
-        $conf[] = "<!ENTITY manual.chmonly SYSTEM '$chmpath'>";
-    }
+        $chmpath = dtd_pe_body( __DIR__ . "/chm/manual.chm.xml" );
     else
-        $conf[] = "<!ENTITY manual.chmonly ''>";
+        $chmpath = dtd_pe_body();
 
-    file_put_contents( __DIR__ . "/temp/manual.inc" , implode( "\n" , $conf ) );
+    $conf = [];
+    $conf[] = "<!ENTITY LANG '$lang'>";
+    $conf[] = "<!ENTITY manual.chmonly           $chmpath>";
+
+    $conf[] = "<!ENTITY % text-entities          $baseEnt1>";
+    $conf[] = "<!ENTITY % base-entities          $baseEnt2>";
+    $conf[] = "<!ENTITY % file-entities          $baseEnt3>";
+
+    $conf[] = "<!ENTITY % language-defs          $langOne1>";
+    $conf[] = "<!ENTITY % language-snippets      $langOne2>";
+    $conf[] = "<!ENTITY % language-extensions    $langOne3>";
+
+    $conf[] = "<!ENTITY % translation-defs       $langTwo1>";
+    $conf[] = "<!ENTITY % translation-snippets   $langTwo2>";
+    $conf[] = "<!ENTITY % translation-extensions $langTwo3>";
+
+
+
+    file_put_contents( __DIR__ . "/../conf.ent" , implode( "\n" , $conf ) );
 }
 
 function dtd_file_entities()
@@ -652,11 +688,16 @@ if ($ac["GENERATE"] != "no") {
 }
 checkvalue($ac["GENERATE"]);
 
-function dom_load( DOMDocument $dom , string $filename , string $baseURI = "" ) : bool
+function dom_load( DOMDocument $dom , string $filename , bool $firstLoad ) : bool
 {
     $filename = realpath( $filename );
     $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
-    return $dom->load( $filename , $options );
+    $ret = $dom->load( $filename , $options );
+
+    if ( $ret && $firstLoad )
+        dom_saveload( $dom ); // correct file/line/column on error messages
+
+    return $ret;
 }
 
 function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
@@ -666,7 +707,7 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
 
     libxml_clear_errors();
     $dom->save( $filename );
-    dom_load( $dom , $filename );
+    dom_load( $dom , $filename , false );
 
     return $filename;
 }
@@ -674,9 +715,8 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
 echo "Creating monolithic temp/manual.xml... ";
 $dom = new DOMDocument();
 
-if ( dom_load( $dom , "{$ac['srcdir']}/{$ac["INPUT_FILENAME"]}" ) )
+if ( dom_load( $dom , __DIR__ . '/../en/manual.xml' , true ) )
 {
-    dom_saveload( $dom ); // correct file/line/column on error messages
     echo " done.\n";
 }
 else
