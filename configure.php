@@ -636,7 +636,9 @@ function dtd_conf_entities()
     $conf[] = "<!ENTITY % translation-snippets   $langTwo2>";
     $conf[] = "<!ENTITY % translation-extensions $langTwo3>";
 
-    file_put_contents( __DIR__ . "/../conf.ent" , implode( "\n" , $conf ) );
+    $outdir = __DIR__ . '/../en/temp';
+    realpain( $outdir , mkdir: true );
+    file_put_contents( "{$outdir}/conf.dtd" , implode( "\n" , $conf ) );
 }
 
 function dtd_file_entities()
