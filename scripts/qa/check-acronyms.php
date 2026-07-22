@@ -27,16 +27,27 @@ define('M_GLOBAL',   2);  // display brief informations about every acronyms
 define('M_VERBOSE',  3);  // display complete informations about every acronyms
 
 if ($_SERVER['argc'] == 2 &&
-      in_array($_SERVER['argv'][1], array('--help', '-help', '-h', '-?')) 
-      || 
-      $_SERVER['argc'] < 2) {
+      in_array($_SERVER['argv'][1], array('--help', '-help', '-h', '-?'))
+      ||
+      $_SERVER['argc'] < 3) {
 
     echo "Display acronyms statistics\n\n";
-    echo "Usage:      {$_SERVER['argv'][0]} [-v] <reference path>\n";
-    echo "Usage:      {$_SERVER['argv'][0]} -i <acronym> [acronym...]\n";
+    echo "Usage:      {$_SERVER['argv'][0]} <acronyms file> [-v] <reference path>\n";
+    echo "Usage:      {$_SERVER['argv'][0]} <acronyms file> -i <acronym> [acronym...]\n";
     echo "            --help, -help, -h, -?      - to get this help\n";
     echo "            -v                         - verbose\n";
-    
+    echo "\n";
+    echo "The acronyms file usually is doc-en/entities/entities.acronyms.ent\n";
+
+    exit(1);
+
+}
+
+$acronyms_file = $_SERVER['argv'][1];
+
+if (!is_file($acronyms_file)) {
+
+    echo "ERROR: Acronyms file not found: $acronyms_file\n";
     exit(1);
 
 }
@@ -44,26 +55,26 @@ if ($_SERVER['argc'] == 2 &&
 $requested_acronyms = array();
 
 // select mode
-if ($_SERVER['argv'][1] !== '-i') {
+if ($_SERVER['argv'][2] !== '-i') {
 
-    if ($_SERVER['argv'][1] === '-v' && isset($_SERVER['argv'][2])) {
-    
+    if ($_SERVER['argv'][2] === '-v' && isset($_SERVER['argv'][3])) {
+
         $mode       = M_VERBOSE;
-        $start_path = $_SERVER['argv'][2];
-        
+        $start_path = $_SERVER['argv'][3];
+
     } else {
-    
+
         $mode       = M_GLOBAL;
-        $start_path = $_SERVER['argv'][1];
-        
+        $start_path = $_SERVER['argv'][2];
+
     }
 
-} else if (isset($_SERVER['argv'][2])) {
+} else if (isset($_SERVER['argv'][3])) {
 
     $mode       = M_SPECIFIC;
-    $start_path = 'en/';
+    $start_path = dirname(dirname($acronyms_file));
 
-    $requested_acronyms = array_slice($_SERVER['argv'], 2);
+    $requested_acronyms = array_slice($_SERVER['argv'], 3);
 
 } else {
 
@@ -88,24 +99,26 @@ filesWalk($start_path, $options);
 
 
 // complete with information about definition
-$content = file_get_contents('entities/acronyms.xml');
+$content = file_get_contents($acronyms_file);
 
-if (preg_match_all('#<term>(.+?)</term>\s+<listitem>\s+<simpara>(.+?)</simpara#', $content, $matches)) {
+if (preg_match_all('#<entity name="acronym\.expansion\.([^"]+)">(.*?)</entity>#s', $content, $matches)) {
 
     foreach($matches[1] as $id => $acronym) {
-    
+
+        $description = trim(preg_replace('#\s+#', ' ', $matches[2][$id]));
+
         if (!isset($acronyms_infos[$acronym])) {
             $acronyms_infos[$acronym] = array('defined'     => true,
-                                              'description' => $matches[2][$id],
+                                              'description' => $description,
                                               'locations'   => array());
-                                          
+
         } else {
             $acronyms_infos[$acronym]['defined']     = true;
-            $acronyms_infos[$acronym]['description'] = $matches[2][$id];
+            $acronyms_infos[$acronym]['description'] = $description;
         }
-        
+
     }
-    
+
 }
 
 
@@ -144,7 +157,7 @@ if ($mode == M_GLOBAL || $mode == M_VERBOSE) {
     $total_uNd     = $total_used-$total_UNNd;
     
     echo "Found $total_occs occurrences of $total_used acronyms in $start_path\n";
-    echo " $total_defined acronyms are defined in acronyms.ent\n";
+    echo " $total_defined acronyms are defined in " . basename($acronyms_file) . "\n";
     echo " $total_uNd (".round(100*$total_uNd/$total_used)."%) acronyms used are defined\n";
 
     if ($total_UNNd) {
