@@ -37,7 +37,7 @@ if ($_SERVER['argc'] == 2 &&
     echo "            --help, -help, -h, -?      - to get this help\n";
     echo "            -v                         - verbose\n";
     echo "\n";
-    echo "The acronyms file usually is doc-en/entities/acronyms.ent\n";
+    echo "The acronyms file usually is doc-en/entities/entities.acronyms.ent\n";
 
     exit(1);
 
@@ -101,7 +101,7 @@ filesWalk($start_path, $options);
 // complete with information about definition
 $content = file_get_contents($acronyms_file);
 
-if (preg_match_all('#<entity name="acronym\.([^"]+)">(.*?)</entity>#s', $content, $matches)) {
+if (preg_match_all('#<entity name="acronym\.expansion\.([^"]+)">(.*?)</entity>#s', $content, $matches)) {
 
     foreach($matches[1] as $id => $acronym) {
 
