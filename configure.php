@@ -840,7 +840,7 @@ function xinclude_residual_fixup( DOMDocument $dom )
                 $fixup = "<varlistentry><term></term><listitem><simpara>$alert</simpara></listitem></varlistentry>";
                 break;
             case "classsynopsis":
-                $fixup = "<classsynopsisinfo role=\"comment\">$alert</classsynopsisinfo>";
+                $fixup = "<classsynopsisinfo role='comment'>$alert</classsynopsisinfo>";
                 break;
             default:
                 echo "  (Unknown parent of failed XInclude: $parent)\n";
