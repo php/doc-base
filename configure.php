@@ -1002,9 +1002,14 @@ function xml_validate( $dom )
 
     $jing = $GLOBALS['ac']['JING'];
 
-    if ( $jing === 'auto' )
+    if ( $jing !== 'no' )
     {
         exec( "java -version 2>&1" , $out , $ret );
+        if ( $ret !== 0 && $jing === 'yes' )
+        {
+            errbox( "--with-jing=yes was given, but no working java executable was found." );
+            errors_are_bad( 1 );
+        }
         $jing = $ret === 0 ? 'yes' : 'no';
     }
 
@@ -1022,7 +1027,7 @@ function xml_validate_jing()
     echo "Validating temp/manual.xml (jing)... ";
 
     $schema = RNG_SCHEMA_FILE;
-    $cmdJing = "java -Djdk.xml.totalEntitySizeLimit=300000 -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath}";
+    $cmdJing = "java -Djdk.xml.totalEntitySizeLimit=300000 -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath} 2>&1";
     exec( $cmdJing , $out , $ret );
 
     if ( $ret === 0 )
