@@ -42,10 +42,15 @@ USAGE;
     exit;
 }
 
-$lang = $argv[1];
-$revc = new RevcheckRun( 'en' , $argv[1] );
-$data = $revc->revData;
+$lang = rtrim( $argv[1] , "/" );
+if ( $lang == 'en' )
+{
+    print "{$argv[0]} cannot run on doc-en.\n";
+    exit( 1 );
+}
 
+$revc = new RevcheckRun( 'en' , $lang );
+$data = $revc->revData;
 print_html_all( $data );
 
 // Output
