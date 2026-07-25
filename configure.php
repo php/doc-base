@@ -408,7 +408,7 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
             break;
 
         case 'history-file':
-            $ac['SOURCES_FILE'] = $v;
+            $ac['HISTORY_FILE'] = $v;
             break;
 
         case 'libxml-check':
@@ -1163,13 +1163,41 @@ phd_acronym();
 php_history();
 phd_sources();
 phd_version();
+phd_conf_json();
 
-exit(0); // Finished successfully.
+exit( 0 );
 
+function phd_conf_json()
+{
+    // State used by other phd_*() functions, serialized to allow these
+    // to be moved out of configure.php into php/phd (genphdfiles.php).
 
+    global $ac;
 
-// TODO: Should this moved to github/php/phd?
-// Any input/state can be serialized into doc-base/temp/phd-conf.json.
+    $conf = array(
+        'rootdir'           => $ac['rootdir'],
+        'srcdir'            => $ac['srcdir'],
+        'lang'              => $ac['LANG'],
+        'enDir'             => $ac['EN_DIR'],
+        'langDir'           => $ac['LANGDIR'],
+        'generate'          => $ac['GENERATE'],
+        'xpointerReporting' => $ac['XPOINTER_REPORTING'] === 'yes',
+        'stderrToStdout'    => $ac['STDERR_TO_STDOUT'] === 'yes',
+        'outputs'           => array(
+            'version' => $ac['VERSION_FILES'] === 'yes',
+            'sources' => $ac['SOURCES_FILE'] === 'yes',
+            'history' => $ac['HISTORY_FILE'] === 'yes',
+        ),
+    );
+
+    $path = __DIR__ . '/temp/phd-conf.json';
+    file_put_contents($path, json_encode($conf, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
+}
+
+// TODO: These functions are to be erased, after moved to php/phd.
+// Then, files version.xml, sources.xml and fileModHistory.php can be
+// removed from .gitignore.
+// Depends on https://github.com/php/phd/pull/261 .
 
 function phd_acronym()
 {
