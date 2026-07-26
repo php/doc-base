@@ -595,7 +595,7 @@ function dtd_conf_entities()
     else
         $conf[] = "<!ENTITY manual.chmonly ''>";
 
-    file_put_contents( __DIR__ . "/temp/manual.inc" , implode( "\n" , $conf ) );
+    file_put_contents( __DIR__ . "/temp/manual.ent" , implode( "\n" , $conf ) );
 }
 
 function dtd_file_entities()
