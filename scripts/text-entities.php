@@ -225,47 +225,48 @@ class Entities
 
         foreach( Entities::$merged as $name => $null )
         {
-            $replaces = Entities::$nameCount[$name] - 1;
+            $count = Entities::$nameCount[$name];
+            $singleLang = Entities::$countLanguages == 1;
             $translation = Entities::$countLanguages > 1;
             $entityUnique = in_array( $name , Entities::$unique );
             $entityRemove  = in_array( $name , Entities::$remove );
             $entityNormal = ! ( $entityUnique || $entityRemove );
 
-            if ( $entityUnique && $replaces != 0 )
+            if ( $entityUnique && $count != 1 )
             {
                 Entities::$countOtherFailures++;
                 if ( $debug )
-                    print " Unique entity, redefined $replaces times: $name\n";
+                    print " Unique entity, defined $count times: $name\n";
             }
 
-            if ( $entityRemove && $replaces != 0 )
+            if ( $entityRemove && $count != 1 )
             {
                 Entities::$countOtherFailures++;
                 if ( $debug )
-                    print " Remove entity, redefined $replaces times: $name\n";
+                    print " Remove entity, defined $count times: $name\n";
+            }
+
+            if ( $entityNormal && $count != 1 && $singleLang )
+            {
+                Entities::$countOtherFailures++;
+                if ( $debug )
+                    print " Normal entity, defined $count times: $name\n";
             }
 
             if ( $entityNormal && $translation )
             {
-                if ( $replaces == 0 )
+                if ( $count == 1 )
                 {
                     Entities::$countTransFailures++;
                     if ( $debug )
-                        print " Not translated:                   $name\n";
+                        print " Not translated:                 $name\n";
                 }
-                if ( $replaces > 1 )
+                if ( $count > 2 )
                 {
                     Entities::$countOtherFailures++;
                     if ( $debug )
-                        print " Multiple redefined/translated:    $name\n";
+                        print " Multiple redefined/translated:  $name\n";
                 }
-            }
-
-            if ( $entityNormal && ! $translation && $replaces != 0 )
-            {
-                Entities::$countOtherFailures++;
-                if ( $debug )
-                    print " Multiple redefined/translated:    $name\n";
             }
         }
     }
