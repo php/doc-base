@@ -716,17 +716,42 @@ function individual_xml_broken_check()
     }
 }
 
-echo "Expanding XIncludes... ";
+xinclude_no_fallback( $dom );
 
+echo "Expanding XIncludes... ";
 $total  = xinclude_run_byid( $dom );
 $total += xinclude_run_xpointer( $dom );
-
 if ( $total == 0 )
     echo "failed.\n";
 else
     echo "done: $total tags replaced.\n";
 
 xinclude_residual_fixup( $dom );
+
+function xinclude_no_fallback( DOMDocument $dom )
+{
+    // Check if there is reachable <xi:fallback>s.
+    // Not permited in doc-en, warning on translations.
+
+    $xpath = new DOMXPath( $dom );
+    $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
+
+    $xifallbacks = $xpath->query( "//xi:fallback" );
+
+    if ( $xifallbacks->length > 0 )
+    {
+        if ( $GLOBALS['ac']['LANG'] == 'en' )
+        {
+            print "\n<xi:fallback> cause silent errors in all languages.\n";
+            print "Not allowed on doc-en.\n";
+            errors_are_bad( 1 );
+        }
+        else
+        {
+            print "Translation contains <xi:fallback>. Manual parts will be missing.\n";
+        }
+    }
+}
 
 function xinclude_run_byid( DOMDocument $dom )
 {
@@ -737,8 +762,9 @@ function xinclude_run_byid( DOMDocument $dom )
     $xpath = new DOMXPath( $dom );
     $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
 
-    // Resolve xpointers via a precomputed map; on duplicate xml:ids, first wins.
+    // Collect IDs in one go. On duplicate xml:ids, first wins.
     // Avoids quadratic tree walks (~ 90% performance gain).
+
     $byId = [];
     foreach( $xpath->query( "//*[@xml:id]" ) as $node ) {
         $byId[$node->getAttribute("xml:id")] ??= $node;
@@ -818,7 +844,7 @@ function xinclude_residual_fixup( DOMDocument $dom )
     $fixups = 0;
     $hardfail = false;
 
-    dom_saveload( $dom , __DIR__ . "/temp/manual.err" );
+    dom_saveload( $dom , __DIR__ . "/temp/debug.xi" );
     $nodes = xinclude_residual_list( $dom );
 
     foreach( $nodes as $node )
@@ -826,13 +852,15 @@ function xinclude_residual_fixup( DOMDocument $dom )
         $fixup = null;
         $parent = $node->parentNode->nodeName;
         $target = $node->getAttribute("xpointer");
-        $alert = "[[[Failed XInclude '$target']]]";
+        $alert = "[[[Failed XInclude<!-- $target -->']]]";
 
         if ( $fixups === 0 )
-            echo "\nFailed XIncludes, manual parts will be missing. Unresolved xpointers:\n";
+            echo "\nFailed XIncludes, manual parts will be missing. Failed xpointer:\n";
 
         echo "- {$target}\n";
         $fixups++;
+
+        // Empty elements are bad in PhD, so tofu �. See https://github.com/php/phd/issues/181
 
         switch( $parent )
         {
@@ -842,13 +870,13 @@ function xinclude_residual_fixup( DOMDocument $dom )
                 $fixup = "";
                 break;
             case "refsect1":
-                $fixup = "<title>_</title><simpara>$alert</simpara>"; // https://github.com/php/phd/issues/181
+                $fixup = "<title>�</title><simpara>$alert</simpara>";
                 break;
             case "tbody":
                 $fixup = "<row><entry>$alert</entry></row>";
                 break;
             case "variablelist":
-                $fixup = "<varlistentry><term></term><listitem><simpara>$alert</simpara></listitem></varlistentry>";
+                $fixup = "<varlistentry><term>�</term><listitem><simpara>$alert</simpara></listitem></varlistentry>";
                 break;
             case "classsynopsis":
                 $fixup = "<classsynopsisinfo role='comment'>$alert</classsynopsisinfo>";
@@ -874,7 +902,7 @@ function xinclude_residual_fixup( DOMDocument $dom )
     unset( $nodes );
 
     if ( $fixups > 0 )
-        echo "Dumped file: temp/manual.err. Inspect residual xi:include tags in this file.\n\n";
+        echo "Dumped file: temp/debug.xi. Inspect residual xi:include tags in this file.\n\n";
 
     if ( $hardfail )
     {

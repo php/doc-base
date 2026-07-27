@@ -167,6 +167,17 @@ function testFile( string $filename , bool $checkDnt , bool $fragmentDir = false
         echo "\n";
         return;
     }
+
+    $xpath = new DOMXPath( $doc );
+    $xpath->registerNamespace( "xi" , "http://www.w3.org/2001/XInclude" );
+    $list = $xpath->query( "//xi:fallback" );
+    if ( $list->length > 0 )
+    {
+        echo "File contains functional <xi:fallback>.\n";
+        echo "  Issue: Manual parts will be missing.\n";
+        echo "  Path:  $filename\n";
+        echo "\n";
+    }
 }
 
 function testDir( string $dir , bool $checkDnt )
