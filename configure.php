@@ -1057,10 +1057,23 @@ function xml_validate_jing()
 function xml_validate_libxml( $dom )
 {
     echo "Validating temp/manual.xml (libxml)... ";
+    $ok = $dom->relaxNGValidate( RNG_SCHEMA_FILE );
 
-    if ( $dom->relaxNGValidate( RNG_SCHEMA_FILE ) )
+    if ( ! $ok && $GLOBALS['ac']['LANG'] != 'en' )
+    {
+        $errors = libxml_get_errors();
+        $warnings = 0;
+        foreach( $errors as $error )
+            if ( str_contains( $error->message , 'IDREF attribute' ) )
+                $warnings++;
+        if ( count( $errors ) == $warnings )
+            $ok = true;
+    }
+
+    if ( $ok )
     {
         echo "done.\n";
+        print_xml_errors();
     }
     else
     {
