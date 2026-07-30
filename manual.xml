@@ -2,7 +2,7 @@
 <!DOCTYPE PHPDOC [
 
 <!-- Parameter entities used to configure manual.xml -->
-<!ENTITY % configure         SYSTEM "./temp/manual.inc">
+<!ENTITY % configure         SYSTEM "./temp/manual.ent">
 %configure;
 
 <!-- Entities collected by entities.php -->

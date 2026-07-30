@@ -85,6 +85,8 @@ Package-specific:
   --with-php=PATH                Path to php CLI executable [detect]
   --with-lang=LANG               Language to build [{$acd['LANG']}]
   --with-partial=my-xml-id       Root ID to build (e.g. <book xml:id="MY-ID">) [{$acd['PARTIAL']}]
+  --with-jing=auto|yes|no        Validate with Jing (requires Java) instead of
+                                 libxml [{$acd['JING']}]
   --disable-broken-file-listing  Do not ignore translated files in
                                  broken-files.txt
   --disable-xpointer-reporting   Do not show XInclude/XPointer failures. Only effective
@@ -309,6 +311,7 @@ $acd = array( // {{{
     'TRANSLATION_ONLY_INCL_BEGIN' => '',
     'TRANSLATION_ONLY_INCL_END' => '',
     'XPOINTER_REPORTING' => 'yes',
+    'JING' => 'auto',
 ); // }}}
 
 $ac = $acd;
@@ -438,6 +441,14 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
 
         case 'xpointer-reporting':
             $ac['XPOINTER_REPORTING'] = $v;
+            break;
+
+        case 'jing':
+            if (!in_array($v, ['auto', 'yes', 'no'], true)) {
+                errbox("Invalid value for --with-jing: $v (expected auto, yes or no)");
+                errors_are_bad(1);
+            }
+            $ac['JING'] = $v;
             break;
 
         case '':
@@ -894,6 +905,9 @@ function xinclude_residual_fixup( DOMDocument $dom )
             case "variablelist":
                 $fixup = "<varlistentry><term></term><listitem><simpara>$alert</simpara></listitem></varlistentry>";
                 break;
+            case "classsynopsis":
+                $fixup = "<classsynopsisinfo role='comment'>$alert</classsynopsisinfo>";
+                break;
             default:
                 echo "  (Unknown parent of failed XInclude: $parent)\n";
                 $hardfail = true;
@@ -1044,11 +1058,20 @@ function xml_validate( $dom )
 
     // Jing is faster, but depends on Java.
 
-    $out = null;
-    $ret = null;
-    exec( "java -version 2>&1" , $out , $ret );
+    $jing = $GLOBALS['ac']['JING'];
 
-    if ( $ret == 0 )
+    if ( $jing !== 'no' )
+    {
+        exec( "java -version 2>&1" , $out , $ret );
+        if ( $ret !== 0 && $jing === 'yes' )
+        {
+            errbox( "--with-jing=yes was given, but no working java executable was found." );
+            errors_are_bad( 1 );
+        }
+        $jing = $ret === 0 ? 'yes' : 'no';
+    }
+
+    if ( $jing === 'yes' )
         xml_validate_jing();
     else
         xml_validate_libxml( $dom );
@@ -1061,16 +1084,11 @@ function xml_validate_jing()
 
     echo "Validating temp/manual.xml (jing)... ";
 
-    $out = null;
-    $ret = null;
     $schema = RNG_SCHEMA_FILE;
-    $cmdJing = "java -Djdk.xml.totalEntitySizeLimit=300000 -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath}";
+    $cmdJing = "java -Djdk.xml.totalEntitySizeLimit=300000 -jar {$srcdir}/docbook/jing.jar {$schema} {$idempath} 2>&1";
     exec( $cmdJing , $out , $ret );
 
-    if ( ! is_array( $out ) )
-        $out = [];
-
-    if ( $ret == 0 )
+    if ( $ret === 0 )
     {
         echo "done.\n";
         return;
@@ -1094,10 +1112,23 @@ function xml_validate_jing()
 function xml_validate_libxml( $dom )
 {
     echo "Validating temp/manual.xml (libxml)... ";
+    $ok = $dom->relaxNGValidate( RNG_SCHEMA_FILE );
 
-    if ( $dom->relaxNGValidate( RNG_SCHEMA_FILE ) )
+    if ( ! $ok && $GLOBALS['ac']['LANG'] != 'en' )
+    {
+        $errors = libxml_get_errors();
+        $warnings = 0;
+        foreach( $errors as $error )
+            if ( str_contains( $error->message , 'IDREF attribute' ) )
+                $warnings++;
+        if ( count( $errors ) == $warnings )
+            $ok = true;
+    }
+
+    if ( $ok )
     {
         echo "done.\n";
+        print_xml_errors();
     }
     else
     {
