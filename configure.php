@@ -860,7 +860,8 @@ function xinclude_residual_fixup( DOMDocument $dom )
         echo "- {$target}\n";
         $fixups++;
 
-        // Empty elements are bad in PhD, so tofu �. See https://github.com/php/phd/issues/181
+        // Empty elements are bad in PhD, so filling with $alert.
+        // See https://github.com/php/phd/issues/181
 
         switch( $parent )
         {
@@ -870,13 +871,13 @@ function xinclude_residual_fixup( DOMDocument $dom )
                 $fixup = "";
                 break;
             case "refsect1":
-                $fixup = "<title>�</title><simpara>$alert</simpara>";
+                $fixup = "<title>$alert</title><simpara>$alert</simpara>";
                 break;
             case "tbody":
                 $fixup = "<row><entry>$alert</entry></row>";
                 break;
             case "variablelist":
-                $fixup = "<varlistentry><term>�</term><listitem><simpara>$alert</simpara></listitem></varlistentry>";
+                $fixup = "<varlistentry><term>$alert</term><listitem><simpara>$alert</simpara></listitem></varlistentry>";
                 break;
             case "classsynopsis":
                 $fixup = "<classsynopsisinfo role='comment'>$alert</classsynopsisinfo>";
