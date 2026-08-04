@@ -62,17 +62,26 @@ ob_implicit_flush();
 
 // Usage
 
-$lang = "";
-$langs = [ "en" ];
+$langs = [];
 $langBase = realpain( __DIR__ . "/../.." );
 $chmonly = false;
 
 array_shift( $argv );
 foreach( $argv as $arg )
 {
-    $lang = rtrim( $arg , "\\/" );
-    $langs[] = $lang;
+    if ( $arg == '--chmonly' )
+    {
+        $chmonly = true;
+        continue;
+    }
+    $langs[] = rtrim( $arg , "\\/" );
 }
+
+// Languages are passed base first, translation second.
+// Without arguments, default to the base manual tree.
+
+if ( count( $langs ) == 0 )
+    $langs = [ "en" ];
 
 // Generation
 
