@@ -64,16 +64,10 @@ ob_implicit_flush();
 
 $langs = [];
 $langBase = realpain( __DIR__ . "/../.." );
-$chmonly = false;
 
 array_shift( $argv );
 foreach( $argv as $arg )
 {
-    if ( $arg == '--chmonly' )
-    {
-        $chmonly = true;
-        continue;
-    }
     $langs[] = rtrim( $arg , "\\/" );
 }
 
