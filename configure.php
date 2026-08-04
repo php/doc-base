@@ -652,7 +652,13 @@ function dtd_conf_entities()
         $chmpath = dtd_pe_body();
 
     $conf = [];
-    $conf[] = "<!ENTITY LANG '$lang'>";
+
+    // Standalone trees are not named after a language, so they must
+    // declare xml:lang themselves. Not defining &LANG; makes any
+    // accidental use of it fail.
+    if ( $ac['STANDALONE'] != 'yes' )
+        $conf[] = "<!ENTITY LANG '$lang'>";
+
     $conf[] = "<!ENTITY manual.chmonly           $chmpath>";
 
     $conf[] = "<!ENTITY % base-entities          $baseEnt1>";
