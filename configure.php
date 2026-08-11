@@ -729,9 +729,8 @@ function dom_load( DOMDocument $dom , string $filename , bool $firstLoad ) : boo
     $filename = realpath( $filename );
     $options = LIBXML_NOENT | LIBXML_COMPACT | LIBXML_BIGLINES | LIBXML_PARSEHUGE;
     $ret = $dom->load( $filename , $options );
-
-    $dom->documentElement->setAttribute( 'xml:lang' , $GLOBALS['ac']["LANG"] );
-
+    if ( $ret )
+        $dom->documentElement->setAttribute( 'xml:lang' , $GLOBALS['ac']["LANG"] );
     return $ret;
 }
 
