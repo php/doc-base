@@ -194,22 +194,6 @@ function find_file($file_array) // {{{
     return '';
 } // }}}
 
-function print_dom_errors()
-{
-    $errors = libxml_get_errors();
-    foreach( $errors as $error )
-    {
-        $file = $error->file;
-        $line = $error->line;
-        $clmn = $error->column;
-        $prefix = $error->level === LIBXML_ERR_FATAL ? "FATAL" : "error";
-        $message = rtrim( $error->message );
-
-        if ( $file != '' )
-            print "[$prefix $file {$line}:{$clmn}] {$message}\n";
-    }
-}
-
 function print_xml_errors()
 {
     global $ac;
@@ -221,7 +205,7 @@ function print_xml_errors()
     $filePrefix = "file:///";
     $tempPrefix = realpath( __DIR__ . "/temp" ) . "/";
     $rootPrefix = realpath( __DIR__ . "/.." ) . "/";
-    $firstBreak = false;
+    $firstBreak = "\n";
 
     foreach( $errors as $error )
     {
@@ -236,11 +220,8 @@ function print_xml_errors()
         if ( str_starts_with( $mssg , 'XPointer evaluation failed:' ) && ! $report )
             continue; // Translations can omit these, to focus on fatal errors
 
-        if ( ! $firstBreak )
-        {
-            print "\n";
-            $firstBreak = true;
-        }
+        print $firstBreak;
+        $firstBreak = "";
 
         if ( str_starts_with( $file , $filePrefix ) )
             $file = substr( $file , strlen( $filePrefix ) );
@@ -250,7 +231,6 @@ function print_xml_errors()
             $file = substr( $file , strlen( $rootPrefix ) );
 
         $prefix = $error->level === LIBXML_ERR_FATAL ? "FATAL" : "error";
-
         print "[$prefix $file {$line}:{$clmn}] {$mssg}\n";
     }
 }
@@ -737,6 +717,7 @@ if ( dom_load( $dom , __DIR__ . '/../en/manual.xml' , true ) )
 {
     dom_saveload( $dom ); // correct file/line/column on error messages
     echo " done.\n";
+    print_xml_errors();
 }
 else
 {
@@ -761,16 +742,12 @@ function dom_load( DOMDocument $dom , string $filename , bool $firstLoad ) : boo
         $options |= LIBXML_NSCLEAN;
 
     $ret = $dom->load( $filename , $options );
-  
+
     if ( $ret )
         $dom->documentElement->setAttribute( 'xml:lang' , $GLOBALS['ac']["LANG"] );
-        
     if ( $ret && $firstLoad )
-    {
-        print_xml_errors();
-        xml_trim_first( $dom );
-    }
-  
+        xml_trim( $dom );
+
     return $ret;
 }
 
@@ -786,18 +763,19 @@ function dom_saveload( DOMDocument $dom , string $filename = "" ) : string
     return $filename;
 }
 
-function xml_trim_first( DOMDocument $doc )
+function xml_trim( DOMDocument $doc )
 {
     $xpath = new DOMXPath( $doc );
     $dtdNode = null;
     $dels = [];
 
-    // Save and remove DTD Document Type, as all entity
+    // Save and remove DTD Document Type node, after all entity
     // references are already expanded at this point.
 
     foreach( $doc->childNodes as $node )
         if ( $node->nodeType == XML_DOCUMENT_TYPE_NODE )
             $dtdNode = $node;
+
     if ( $dtdNode != null )
     {
         $contents = $doc->saveXML( $dtdNode );
@@ -833,7 +811,7 @@ function xml_broken_files_check()
     }
 }
 
-xinclude_no_fallback( $dom );
+xinclude_remove_fallback( $dom );
 
 echo "Expanding XIncludes... ";
 $total  = xinclude_run_byid( $dom );
@@ -845,7 +823,7 @@ else
 
 xinclude_residual_fixup( $dom );
 
-function xinclude_no_fallback( DOMDocument $dom )
+function xinclude_remove_fallback( DOMDocument $dom )
 {
     // Check if there is reachable <xi:fallback>s.
     // Not permited in doc-en, warning on translations.
@@ -883,9 +861,8 @@ function xinclude_run_byid( DOMDocument $dom )
     // Avoids quadratic tree walks (~ 90% performance gain).
 
     $byId = [];
-    foreach( $xpath->query( "//*[@xml:id]" ) as $node ) {
+    foreach( $xpath->query( "//*[@xml:id]" ) as $node )
         $byId[$node->getAttribute("xml:id")] ??= $node;
-    }
 
     for( $run = 0 ; $run < 10 ; $run++ )
     {
