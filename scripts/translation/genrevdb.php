@@ -93,18 +93,25 @@ function generate( SQLite3 $db , string $lang )
                 , $file->hashLast
                 , $file->hashDiff
                 , $file->hashRvtg
+                , $file->xmlError
             );
 
+        // Same total as scripts/revcheck.php: files that must not be
+        // translated are listed, but never counted against a translation.
+
         $filesTotal = 0;
-        foreach( $data->fileSummary as $count )
-            $filesTotal += $count;
+        foreach( $data->fileSummary as $status => $count )
+            if ( $status != RevcheckStatus::DoNotTranslate->value )
+                $filesTotal += $count;
         $labels = $data->getSummaryLabels();
         foreach( $data->fileSummary as $status => $count )
             db_insert( $db , "summary", $data->lang
                 , $status
                 , $labels[ $status ]
                 , $count
-                , number_format( $count / $filesTotal * 100 , 2 ) . "%"
+                , $status == RevcheckStatus::DoNotTranslate->value || $filesTotal == 0
+                    ? "n/a"
+                    : number_format( $count / $filesTotal * 100 , 2 ) . "%"
             );
 
         $db->exec( 'COMMIT TRANSACTION' );
@@ -204,6 +211,7 @@ CREATE TABLE files (
     hashLast TEXT,
     hashDiff TEXT,
     hashRvtg TEXT,
+    xmlError TEXT,
     UNIQUE ( lang , path , name ) );
 SQL;
 

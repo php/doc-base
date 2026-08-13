@@ -29,6 +29,7 @@ class RevcheckFileItem
 
     public RevcheckStatus  $status; // target only
     public RevtagInfo|null $revtag; // target only
+    public string $xmlError = "";   // set on target by RevtagParser, copied to source by RevcheckRun
 
     private array $hashList;        // source only
     private bool  $hashStop;        // source only

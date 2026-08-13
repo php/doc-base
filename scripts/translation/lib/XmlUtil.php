@@ -21,6 +21,9 @@ require_once __DIR__ . '/all.php';
 
 class XmlUtil
 {
+    /** Real errors of the last loadText(), undefined entities already filtered out. */
+    public static array $lastErrors = [];
+
     public static function extractEntities( $filename )
     {
         $was = libxml_use_internal_errors( true );
@@ -74,7 +77,13 @@ class XmlUtil
         $doc->resolveExternals   = false;
         $doc->substituteEntities = false;
 
-        $doc->loadXML( $contents );
+        // An empty file is a ValueError, not a parse error, and would abort
+        // the whole run. Feed a blank instead, so libxml reports its own
+        // "Document is empty" and the file is listed as broken, like any other.
+
+        $doc->loadXML( $contents == "" ? " " : $contents );
+
+        XmlUtil::$lastErrors = XmlErrorFilter::filter( libxml_get_errors() );
 
         libxml_clear_errors();
         libxml_use_internal_errors( $was );

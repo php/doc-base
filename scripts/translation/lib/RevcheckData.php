@@ -25,6 +25,8 @@ enum RevcheckStatus : string
     case RevTagProblem = 'RevTagProblem';
     case NotInEnTree   = 'NotInEnTree';
     case Untranslated  = 'Untranslated';
+    case DoNotTranslate = 'DoNotTranslate';
+    case XmlBroken      = 'XmlBroken';
 }
 
 class RevcheckData
@@ -68,6 +70,8 @@ class RevcheckData
         $ret[ RevcheckStatus::RevTagProblem->value ] = "Revision tag missing/problem";
         $ret[ RevcheckStatus::NotInEnTree->value   ] = "Not in EN tree";
         $ret[ RevcheckStatus::Untranslated->value  ] = "Available for translation";
+        $ret[ RevcheckStatus::DoNotTranslate->value ] = "Marked do not translate";
+        $ret[ RevcheckStatus::XmlBroken->value      ] = "Broken XML files";
         return $ret;
     }
 }
@@ -100,4 +104,5 @@ class RevcheckDataFile
     public string $hashLast;      // The most recent commit hash, skipped or not
     public string $hashDiff;      // The most recent, non [skip-revcheck] commit hash
     public string $hashRvtg = ""; // Revtag hash, if any
+    public string $xmlError = ""; // First real XML error, if any
 }

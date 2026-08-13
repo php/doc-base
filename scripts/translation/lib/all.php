@@ -35,4 +35,5 @@ require_once __DIR__ . '/RevcheckFileList.php';
 require_once __DIR__ . '/RevcheckIgnore.php';
 require_once __DIR__ . '/RevcheckRun.php';
 require_once __DIR__ . '/RevtagParser.php';
+require_once __DIR__ . '/XmlErrorFilter.php';
 require_once __DIR__ . '/XmlUtil.php';

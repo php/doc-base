@@ -22,6 +22,8 @@ the test is applied in all .xml files in directory and sub directories.
 This tool also cares for directories marked with .xmlfragmentdir, so
 theses files are tested in relaxed semantics for XML Fragments.       */
 
+require_once __DIR__ . '/translation/lib/XmlErrorFilter.php';
+
 ini_set( 'display_errors' , 1 );
 ini_set( 'display_startup_errors' , 1 );
 error_reporting( E_ALL );
@@ -69,32 +71,6 @@ function print_usage_exit( $cmd )
     exit;
 }
 
-function setup( string & $prefix , string & $suffix , string & $extra )
-{
-    // Undefined entities generate TWO different error messages on libxml
-    // - "Entity '?' not defined" (for entity inside elements)
-    // - "Extra content at the end of the document" (entity outside elements)
-
-    $inside = "<x>&ZZZ;</x>";
-    $outside = "<x/>&ZZZ;";
-
-    $doc = new DOMDocument();
-    $doc->recover            = true;
-    $doc->resolveExternals   = false;
-    $doc->substituteEntities = false;
-    libxml_use_internal_errors( true );
-
-    $doc->loadXML( $inside );
-    $message = trim( libxml_get_errors()[0]->message );
-    $message = str_replace( "ZZZ" , "\f" , $message );
-    [ $prefix , $suffix ] = explode( "\f" , $message );
-    libxml_clear_errors();
-
-    $doc->loadXML( $outside );
-    $extra = trim( libxml_get_errors()[0]->message );
-    libxml_clear_errors();
-}
-
 function testFile( string $filename , bool $checkDnt , bool $fragmentDir = false )
 {
     $contents = file_get_contents( $filename );
@@ -125,12 +101,7 @@ function testFile( string $filename , bool $checkDnt , bool $fragmentDir = false
         echo "  Issue: Manual build may fail.\n";
         echo "  Path:  $filename\n";
         echo "\n";
-        autofix_dos2unix( $filename );
     }
-
-    static $prefix = "", $suffix = "", $extra = "";
-    if ( $extra == "" )
-        setup( $prefix , $suffix , $extra );
 
     $doc = new DOMDocument();
     $doc->recover            = true;
@@ -150,11 +121,11 @@ function testFile( string $filename , bool $checkDnt , bool $fragmentDir = false
         $message = trim( $error->message );
         $hintFragDir = false;
 
-        if ( str_starts_with( $message , $prefix ) && str_ends_with( $message , $suffix ) )
+        if ( XmlErrorFilter::isUndefinedEntity( $message ) )
             continue;
-        //if ( $message == $extra ) // Disabled as unnecessary. Also, this indicates that some
-        //    continue;             // some entity reference is used at an unusual position.
-        if ( $message == $extra )
+        // Extra content is not skipped, as it indicates that some entity
+        // reference is used at an unusual position.
+        if ( XmlErrorFilter::isExtraContent( $message ) )
             $hintFragDir = true;
 
         $lin = $error->line;

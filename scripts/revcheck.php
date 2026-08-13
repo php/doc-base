@@ -63,6 +63,8 @@ function print_html_all( RevcheckData $data )
     print_html_notinen( $data );
     print_html_revtag( $data );
     print_html_untranslated( $data );
+    print_html_donottranslate( $data );
+    print_html_xmlbroken( $data );
     print_html_footer();
 }
 
@@ -113,6 +115,8 @@ function print_html_menu( string $href )
 | <a href="#notinen">Not in EN tree</a>
 | <a href="#revtag">Missing or invalid revtag</a>
 | <a href="#untranslated">Untranslated files</a>
+| <a href="#donottranslate">Do not translate</a>
+| <a href="#xmlbroken">Broken XML</a>
 </p><p/>
 HTML;
 }
@@ -178,24 +182,24 @@ HTML;
 </tr>
 HTML;
 
+    // Files that must not be translated are listed, but kept out of the
+    // totals: counting them would lower the completion rate of every
+    // translation, for files no translation is expected to ever have.
+
     $filesTotal = 0;
-    foreach ( $data->fileSummary as $count )
-        $filesTotal += $count;
+    foreach ( $data->fileSummary as $status => $count )
+        if ( $status != RevcheckStatus::DoNotTranslate->value )
+            $filesTotal += $count;
+
+    $labels = $data->getSummaryLabels();
 
     foreach( RevcheckStatus::cases() as $key )
     {
-        $label = "";
+        $label = $labels[ $key->value ] ?? "";
         $count = $data->fileSummary[ $key->value ];
-        $perc = number_format( $count / $filesTotal * 100 , 2 ) . "%";
-        switch( $key )
-        {
-            case RevcheckStatus::TranslatedOk:  $label = "Up to date files"; break;
-            case RevcheckStatus::TranslatedOld: $label = "Outdated files"; break;
-            case RevcheckStatus::TranslatedWip: $label = "Work in progress"; break;
-            case RevcheckStatus::RevTagProblem: $label = "Revision tag missing/problem"; break;
-            case RevcheckStatus::NotInEnTree:   $label = "Not in EN tree"; break;
-            case RevcheckStatus::Untranslated:  $label = "Available for translation"; break;
-        }
+        $perc = $key == RevcheckStatus::DoNotTranslate || $filesTotal == 0
+              ? "n/a"
+              : number_format( $count / $filesTotal * 100 , 2 ) . "%";
 
         print <<<HTML
 <tr>
@@ -421,6 +425,95 @@ HTML;
  <tr class="bgorange">
   <td class="c"><a href="$href">$name</a></td>
   <td class="c">$hash</td>
+  <td class="c">$size</td>
+ </tr>
+HTML;
+    }
+    print "</table>\n\n";
+}
+
+function print_html_donottranslate( RevcheckData $data )
+{
+    print_html_menu("donottranslate");
+    if ( $data->fileSummary[ RevcheckStatus::DoNotTranslate->value ] == 0 )
+    {
+        echo "<p>No source file is marked do not translate.</p>\n\n";
+        return;
+    }
+
+    print <<<HTML
+<table class="c">
+ <tr>
+  <th>Files marked do not translate</th>
+  <th>kb</th>
+ </tr>
+HTML;
+
+    $path = null;
+    foreach ( $data->fileDetail as $file )
+    {
+        if ( $file->status != RevcheckStatus::DoNotTranslate )
+            continue;
+
+        if ( $path !== $file->path )
+        {
+            $path = $file->path;
+            $header = $path == '' ? '/' : $path;
+            print " <tr><th colspan='2'>$header</th></tr>";
+        }
+
+        $name = $file->name;
+        $size = round( $file->size / 1024 );
+
+        print <<<HTML
+ <tr class="bggray">
+  <td class="c">$name</td>
+  <td class="c">$size</td>
+ </tr>
+HTML;
+    }
+    print "</table>\n\n";
+}
+
+function print_html_xmlbroken( RevcheckData $data )
+{
+    print_html_menu("xmlbroken");
+    if ( $data->fileSummary[ RevcheckStatus::XmlBroken->value ] == 0 )
+    {
+        echo "<p>Good, all translated files are valid XML.</p>\n\n";
+        return;
+    }
+
+    print <<<HTML
+<table class="c">
+ <tr>
+  <th>Broken XML files</th>
+  <th>Error</th>
+  <th>kb</th>
+ </tr>
+HTML;
+
+    $path = null;
+    foreach ( $data->fileDetail as $file )
+    {
+        if ( $file->status != RevcheckStatus::XmlBroken )
+            continue;
+
+        if ( $path !== $file->path )
+        {
+            $path = $file->path;
+            $header = $path == '' ? '/' : $path;
+            print " <tr><th colspan='3'>$header</th></tr>";
+        }
+
+        $name = $file->name;
+        $size = round( $file->size / 1024 );
+        $error = htmlspecialchars( $file->xmlError );
+
+        print <<<HTML
+ <tr class="bgorange">
+  <td class="c">$name</td>
+  <td>$error</td>
   <td class="c">$size</td>
  </tr>
 HTML;

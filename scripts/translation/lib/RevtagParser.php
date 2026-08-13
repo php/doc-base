@@ -33,7 +33,29 @@ class RevtagParser
     static function parseDir( string $lang , RevcheckFileList $list )
     {
         foreach( $list->iterator() as $entry )
+        {
             $entry->revtag = RevtagParser::parseFile( $lang . '/' . $entry->file );
+
+            // Files are parsed here anyway, so reuse the errors already
+            // collected by XmlUtil, instead of loading everything again.
+            //
+            // Everything is XML in principle. The exception is the entity
+            // files still written as DTD fragments, that never parse as
+            // standalone XML: they are not .xml and hold entity
+            // declarations. Only those few are read back to be told apart,
+            // while still hot in the OS cache.
+
+            if ( str_ends_with( $entry->file , '.xml' ) == false )
+            {
+                $contents = file_get_contents( $lang . '/' . $entry->file );
+                if ( str_contains( $contents , '<!ENTITY' ) )
+                    continue;
+            }
+
+            $error = XmlUtil::$lastErrors[0] ?? null;
+            if ( $error != null )
+                $entry->xmlError = trim( $error->message ) . " [{$error->line},{$error->column}]";
+        }
     }
 
     public static function parseFile( string $filename ): RevtagInfo|null

@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+
+This file is now being ignored, after third-party manual split.
+Yet, it is mentioned by name in configure.php, on PhD related
+code paths.
+
+After these code paths are updated or moved into PhD, this can
+be deleted.
+
+Keep these comments outside SGML comment tags, as to make this
+file invalid for XML loading.
+
+
+
 <!DOCTYPE PHPDOC [
 
 <!-- Parameter entities used to configure manual.xml -->
