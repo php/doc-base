@@ -26,8 +26,8 @@ XML files from a directory. The historical naming schema is:
 
 The files are created at:
 
-- doc-base/temp/file-entites.ent
-- doc-base/temp/file-entites/dir.dir.ent
+- doc-base/temp/file-entites.dtd
+- doc-base/temp/file-entites/dir.dir.dtd
 
 The file entity for directory listings is kept as an separate files,
 instead of a monolithic one, to avoid these libxml errors, in some
@@ -53,27 +53,15 @@ const BACKPORT_MIXED_REPLACE = true;
 const ENTITY_NAME_REPLACE = true;
 const LIBXML_LIMITS_HACK = true;
 
-// Setup
-
-ini_set( 'display_errors' , 1 );
-ini_set( 'display_startup_errors' , 1 );
-error_reporting( E_ALL );
-set_time_limit( 0 );
-ob_implicit_flush();
-
-// Usage
+// LangDirs are informed in overwriting order:
+// Unique/fallback first, optional translation second.
 
 $langs = [];
 $langBase = realpain( __DIR__ . "/../.." );
 
 array_shift( $argv );
 foreach( $argv as $arg )
-{
     $langs[] = rtrim( $arg , "\\/" );
-}
-
-// Languages are passed base first, translation second.
-// Without arguments, default to the base manual tree.
 
 if ( count( $langs ) == 0 )
     $langs = [ "en" ];
@@ -96,11 +84,6 @@ $total = count( $entities );
 print "done: $total entities.\n";
 
 exit( 0 );
-
-// old scheme
-//  file en
-//  list en
-//  file? lang
 
 class Entity
 {
@@ -184,14 +167,6 @@ function check_case_conflict( array $allFIles )
 
 function generate_entities( array $allFiles , array & $entities )
 {
-    // Ugly, but necessary
-    // TODO move this file from doc-bese to doc-en, with a do-not-translate PI
-
-    $name = 'global.function-index';
-    $file = realpain( __DIR__ . "/../funcindex.xml" );
-    $text = "<!ENTITY $name SYSTEM '$file'>";
-    pushEntity( $entities , $name , $text );
-
     // Inclusion of a single file is easy. The entity name is the
     // relative path without the .xml extension (sadly), and the text
     // is complete DTD entity with a SYSTEM pointing to the real path
@@ -206,18 +181,18 @@ function generate_entities( array $allFiles , array & $entities )
 
     // Inclusion of reference/ directories is a little more involved.
     // The entity name is calculated from the relative path, but with
-    // an 'entities' component added in penultimae position. The
-    // contents are concatened DTD entities references, as above.
+    // an 'entities' component added in the penultimate position. The
+    // contents are concatenated DTD entities references, as above.
 
-    // LIBXML_LIMITS_HACK - Unfortunatlly, we nedd to put these entities
-    // that expand in another DTD entities as separate files, to bypass
+    // LIBXML_LIMITS_HACK - Unfortunately, we need to put these entities
+    // that expand in other DTD entities as separate files, to bypass
     // some hardcoded limits of libxml2. This is slow, more so on HDDs.
 
-    // BACKPORT_MIXED_REPLACE - Anoying enought, the previous script
+    // BACKPORT_MIXED_REPLACE - Annoying enough, the previous script
     // normalized the entity name, but not the file name of the extra file
-    // file. So indirect file entities ends having a surprising convention:
+    // file. So indirect file entities end up having a surprising convention:
     //
-    // <!ENTITY name-dir SYSTEM 'name_dir.ent'>
+    // <!ENTITY name-dir SYSTEM 'name_dir.dtd'>
     //
     // Mind the distinction between _ and - above. In the future, let's
     // remove this, to make debugging easier.
@@ -232,7 +207,7 @@ function generate_entities( array $allFiles , array & $entities )
         if ( ! str_starts_with ( $path , 'reference' ) )
             continue;
 
-        // Entity name
+        // DirEnt name
         //
         // Discard the file part, 'entities' in the
         // second-to-last position.
@@ -247,18 +222,18 @@ function generate_entities( array $allFiles , array & $entities )
         $entName = implode( '.' , $parts );
         $entName = str_replace( '_' , '-' , $entName ); // BACKPORT_MIXED_REPLACE
 
-        // Entity fila
+        // DirEnt file
         //
-        // dir/dir/dir/file.xml -> dir.dir.dir.ent
+        // dir/dir/dir/file.xml -> dir.dir.dir.dtd
 
         $parts = explode( '/' , $path );
         array_pop( $parts );
-        array_push( $parts , 'ent');
+        array_push( $parts , 'dtd');
         $entFile = implode( '.' , $parts );
 
         $groupFilename[ $entName ] = $entFile;
 
-        // Contents
+        // DirEnt item
 
         $name = pathToEntityName( $path );
         $entRef = "&{$name};";
@@ -290,7 +265,7 @@ function pathToEntityName( string $name , string $removeSuffix = "" ) : string
     $name = trim( $name , '.' );
     return $name;
 
-    // ENTITY_NAME_REPLACE, or a TODO to a far future
+    // ENTITY_NAME_REPLACE, or a TODO to a far future:
     // - Replace all name replaced entities from doc en
     // - Add the removed entities on doc-en/entities/remove.ent
     // - Remove all codepaths related to ENTITY_NAME_REPLACE constant
@@ -310,10 +285,10 @@ function pushEntity( array & $entities , string $name , string $text , string $f
 
 function writeEntities( array $entities )
 {
-    // Output a single temp/file-entities.ent file for single file inclusion.
+    // Output a single temp/file-entities.dtd file for single file inclusion.
 
-    // Output separate files for file list inclusions, at
-    //   temp/file-entities/dir.dir.dir.ent
+    // Output separate files for file DirEnt inclusions, at
+    //   temp/file-entities/dir.dir.dir.dtd
     // LIBXML_LIMITS_HACK
 
     ksort( $entities );
@@ -369,11 +344,11 @@ function writeEntities( array $entities )
 
 function writeEntityIndirectSlow( $singleFile , string $extraFile , string $name , string $text )
 {
-    // The entity will point to to a new, individual filename
+    // The entity will point to to a new, separate filename
 
     fputs( $singleFile , "<!ENTITY $name SYSTEM '$extraFile'>\n" );
 
-    // And the new individual file will hold the final text
+    // And the new individual file will hold the final file listing
 
     file_put_contents( $extraFile , $text );
 }

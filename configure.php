@@ -1287,7 +1287,6 @@ function phd_sources()
     $source_map = array();
     $base_dir = "{$ac['rootdir']}/{$ac['LANG_BASE_DIR']}";
     $source_langs = array(
-        array('base', $ac['srcdir'], array('manual.xml', 'funcindex.xml')),
         array($ac['LANG_BASE_DIR'], $base_dir, find_xml_files($base_dir)),
     );
     if (!is_single_language()) {
