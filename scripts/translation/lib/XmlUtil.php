@@ -21,7 +21,7 @@ require_once __DIR__ . '/all.php';
 
 class XmlUtil
 {
-    /** Real errors of the last loadText(), undefined entities already filtered out. */
+    // Errors of the last loadText(), undefined entities already filtered out.
     public static array $lastErrors = [];
 
     public static function extractEntities( $filename )
