@@ -24,10 +24,6 @@ theses files are tested in relaxed semantics for XML Fragments.       */
 
 require_once __DIR__ . '/translation/lib/XmlErrorFilter.php';
 
-ini_set( 'display_errors' , 1 );
-ini_set( 'display_startup_errors' , 1 );
-error_reporting( E_ALL );
-
 if ( count( $argv ) < 2 )
     print_usage_exit( $argv[0] );
 array_shift( $argv );
@@ -49,16 +45,15 @@ if ( count( $paths) == 0 )
 
 foreach( $paths as $path )
 {
-    $dnt = true;
-    if ( $path == 'en' || str_ends_with( $path , '/en' ) )
-        $dnt = false;
-
     if ( file_exists( $path ) )
     {
+        $checkDnt = ! file_exists( "$path/manual.xml" );
+
         if ( is_file( $path ) )
-            testFile( $path , $dnt );
+            testFile( $path , $checkDnt );
         if ( is_dir( $path ) )
-            testDir( $path , $dnt );
+            testDir( $path , $checkDnt );
+
         continue;
     }
     echo "Path does not exist: $path\n";
