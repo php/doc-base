@@ -42,7 +42,7 @@ function print_usage()
 {
     print <<<USAGE
 usage: [--clone] [--undo] [--pull] [--mark] [--quiet]
-       [--list-cvs] [--list-ssv] [--rev] [--all]
+       [--list-csv] [--list-ssv] [--rev] [--all]
        [lang] [lang] ...
 
 Options that operates on local repositories:
