@@ -264,9 +264,10 @@ class RevcheckRun
         if ( ! file_exists( $tmpDir ) )
             mkdir( $tmpDir );
 
-        // Full revdata in JSON
+        // Full revcheck data in JSON
 
-        $json = json_encode( $this->revData , JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+        $conf = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT;
+        $json = json_encode( $this->revData , $conf );
         file_put_contents( "{$tmpDir}/revcheck.json" , $json );
 
         // TranslatedOk simple list
