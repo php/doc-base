@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Fallback docbook-cs configuration for translations that do not ship their
+  own docbookcs.xml. @LANG@ is replaced with the target language.
+-->
+<docbookcs xmlns="https://php.github.io/docbook-cs/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="https://php.github.io/docbook-cs/config
+                               https://php.github.io/docbook-cs/config.xsd">
+
+ <project>
+  <directory alias="doc-@LANG@">@LANG@</directory>
+  <directory>doc-base</directory>
+ </project>
+
+ <sniffs>
+  <sniff class="DocbookCS\Sniff\SimparaSniff" />
+  <sniff class="DocbookCS\Sniff\ExceptionNameSniff" />
+  <sniff class="DocbookCS\Sniff\AttributeOrderSniff" />
+  <sniff class="DocbookCS\Sniff\MixedIndentationSniff" />
+  <sniff class="DocbookCS\Sniff\TrailingWhitespaceSniff" />
+ </sniffs>
+
+ <paths>
+  <path>.</path>
+ </paths>
+
+ <entities>
+  <file>extensions.ent</file>
+  <file>language-defs.ent</file>
+  <file>language-snippets.ent</file>
+  <directory>entities/</directory>
+  <directory>../doc-base/entities/</directory>
+  <file>../doc-base/temp/manual.ent</file>
+  <file>../doc-base/temp/entities.ent</file>
+  <file>../doc-base/temp/file-entities.ent</file>
+  <directory>../doc-base/temp/file-entities</directory>
+ </entities>
+
+ <exclude>
+  <pattern>output/*</pattern>
+ </exclude>
+
+</docbookcs>
