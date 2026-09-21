@@ -581,7 +581,7 @@ function git_status()
         $branch = trim( shell_exec( "git -C $path rev-parse --abbrev-ref HEAD" ));
         $branch = $branch == "master" ? "" : " (branch $branch)";
         $output .= str_pad( "$name:" , 10 );
-        $output .= rtrim( shell_exec( "git -C $path rev-parse HEAD" ) ?? "" . $branch ) . "\n";
+        $output .= rtrim( shell_exec( "git -C $path rev-parse HEAD" ) ?? "" ) . $branch . "\n";
         $output .= rtrim( shell_exec( "git -C $path status -s") ?? "" ) . "\n";
     }
     while( str_contains( $output , "\n\n" ) )
