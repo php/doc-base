@@ -16,18 +16,18 @@
      <entry>&Changelog;</entry>
     </row>
    </thead>
-   <tbody>
+   <tbody><!-- Sort by alphabet. -->
     <row>
-     <entry>theini_option</entry>
-     <entry>itsvalue</entry>
-     <entry>its INI_* value</entry>
-     <entry>version changes information</entry>
-    </row>
-    <row>
-     <entry>anotherini_option</entry>
+     <entry><link linkend="ini.extname.anotherini-option">anotherini_option</link></entry>
      <entry>itsvalue</entry>
      <entry>its INI_* value</entry>
      <entry></entry>
+    </row>
+    <row>
+     <entry><link linkend="ini.extname.theini-option">theini_option</link></entry>
+     <entry>itsvalue</entry>
+     <entry>its INI_* value</entry>
+     <entry>version changes information</entry>
     </row>
    </tbody>
   </tgroup>
