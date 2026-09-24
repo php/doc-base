@@ -256,9 +256,64 @@ class RevcheckRun
         }
     }
 
-    private function saveRevcheckData()
+    public function saveRevcheckData()
     {
-        $json = json_encode( $this->revData , JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
-        file_put_contents( __DIR__ . "/../../../.revcheck.json" , $json );
+        // doc-base/temp
+
+        $tmpDir = __DIR__ . '/../../../temp';
+        if ( ! file_exists( $tmpDir ) )
+            mkdir( $tmpDir );
+
+        // Full revcheck data in JSON
+
+        $conf = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT;
+        $json = json_encode( $this->revData , $conf );
+        file_put_contents( "{$tmpDir}/revcheck.json" , $json );
+
+        // TranslatedOk simple list
+
+        $fp = fopen( "{$tmpDir}/files-ok.txt" , 'w' );
+        $oldy1 = 0;
+        $oldy2 = 0;
+
+        foreach ( $this->revData->fileDetail as $item )
+        {
+            if ( $item->status == RevcheckStatus::TranslatedOk )
+            {
+                $path = $item->path;
+                $name = $item->name;
+
+                if ( $path == '.' )
+                    $line = "{$name}\n";
+                else
+                    $line = "{$path}/{$name}\n";
+
+                fwrite( $fp , $line );
+            }
+
+            if ( $item->status == RevcheckStatus::TranslatedOld )
+            {
+                if ( $item->days > 365 )
+                    $oldy1++;
+                if ( $item->days > 730 )
+                    $oldy2++;
+            }
+        }
+        fclose( $fp );
+
+        // Files outdated more than N years, count
+
+        $filey1 = "{$tmpDir}/files-outdated-1y.txt";
+        $filey2 = "{$tmpDir}/files-outdated-2y.txt";
+
+        if ( file_exists( $filey1 ) )
+            unlink( $filey1 );
+        if ( file_exists( $filey2 ) )
+            unlink( $filey2 );
+
+        if ( $oldy1 > 0 )
+            file_put_contents( $filey1 , $oldy1 );
+        if ( $oldy2 > 0 )
+            file_put_contents( $filey2 , $oldy2 );
     }
 }
