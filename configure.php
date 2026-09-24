@@ -713,7 +713,7 @@ checkvalue($ac["GENERATE"]);
 echo "Creating monolithic temp/manual.xml... ";
 $dom = new DOMDocument();
 
-if ( dom_load( $dom , __DIR__ . "/../{$ac['LANG_BASE_DIR']}/manual.xml" , true ) )
+if ( dom_load( $dom , "{$ac['ROOTDIR']}/{$ac['LANG_BASE_DIR']}/manual.xml" , true ) )
 {
     dom_saveload( $dom ); // correct file/line/column on error messages
     echo " done.\n";
