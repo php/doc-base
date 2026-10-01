@@ -253,7 +253,7 @@ $basedir = $srcdir;
 $rootdir = dirname($basedir);
 
 /**
- * When checking out this repository on GitHub Actions, the workspace  directory is "/home/runner/work/doc-base/doc-base".
+ * When checking out this repository on GitHub Actions, the workspace directory is "/home/runner/work/doc-base/doc-base".
  *
  * To avoid applying dirname() here, we check if we are running on GitHub Actions.
  *
@@ -910,7 +910,7 @@ function xinclude_run_byid( DOMDocument $dom )
 function xinclude_run_xpointer( DOMDocument $dom ) : int
 {
     // The return of xinclude() cannot be used for counting or stoping, as it
-    // sometimes return zero/negative in cases of partial executions
+    // sometimes returns zero/negative in cases of partial executions
 
     $total = 0;
     for( $run = 0 ; $run < 10 ; $run++ )
