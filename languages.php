@@ -45,9 +45,9 @@ usage: [--clone] [--undo] [--pull] [--mark] [--quiet]
        [--list-csv] [--list-ssv] [--rev] [--all]
        [lang] [lang] ...
 
-Options that operates on local repositories:
+Options that operate on local repositories:
 
-   --clone      Clone a sibling language repo, if not exists
+   --clone      Clone a sibling language repo, if it does not exist
    --undo       Restore and clean up repositories to a pristine state
    --pull       Executes git pull
    --mark       Creates/deletes marking files
@@ -236,7 +236,7 @@ function gitUndo( Lang $lang )
 
     if ( ! file_exists( $lang->path ) )
     {
-        echo "undo  {$lang->code}: path does not exists, skipping.\n";
+        echo "undo  {$lang->code}: path does not exist, skipping.\n";
         return;
     }
     else
@@ -259,7 +259,7 @@ function gitPull( Lang $lang )
 
     if ( ! file_exists( $lang->path ) )
     {
-        echo "pull  {$lang->code}: path does not exists, skipping.\n";
+        echo "pull  {$lang->code}: path does not exist, skipping.\n";
         return;
     }
     else
