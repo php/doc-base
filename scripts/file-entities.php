@@ -57,7 +57,7 @@ const LIBXML_LIMITS_HACK = true;
 // Unique/fallback first, optional translation second.
 
 $langs = [];
-$langBase = realpain( __DIR__ . "/../.." );
+$langBase = getenv( "ROOTDIR" ) ?: realpain( __DIR__ . "/../.." );
 
 array_shift( $argv );
 foreach( $argv as $arg )
