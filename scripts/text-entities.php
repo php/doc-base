@@ -98,6 +98,7 @@ annotated with translate="remove".
 
 Entities::truncateOutputFile();
 
+$root = getenv( "ROOTDIR" ) ?: __DIR__ . "/../..";
 $langs = [];
 $debug = false;
 $argv0 = array_shift( $argv );
@@ -118,8 +119,8 @@ if ( $debug )
 
 foreach( $langs as $lang )
 {
-    $entDir = __DIR__ . "/../../$lang/entities";
-    $refDir = __DIR__ . "/../../$lang/reference";
+    $entDir = "$root/$lang/entities";
+    $refDir = "$root/$lang/reference";
 
     loadDirEntities( $entDir , $lang );
     loadDirRecurse( $refDir );
