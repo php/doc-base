@@ -8,6 +8,8 @@ All parts of the process live in the following GitHub repositories:
    these are the repositories where all the information on documentation pages live
    and this is where changes to the wording and/or structure
    of the documentation's content can be made
+- [**doc-extensions**](#doc-extensions): the documentation of the third-party extensions,
+   in English only
 - [**doc-base**](#doc-base): validates and pre-processes the language files
 - [**PhD**](#phd): renders pages into .php files which include information on the files
    and function calls to include the documentation page headers and footers
@@ -23,6 +25,16 @@ of the [php.net's documentation pages](https://www.php.net/docs.php) are made.
 
 Please refer to the [contribution guidlines](contributing.md) on how to
 contribute to the documentation.
+
+## doc-extensions
+
+[doc-extensions](https://github.com/php/doc-extensions) contains the documentation of the
+third-party extensions, which are maintained outside the [php-src](https://github.com/php/php-src)
+repository (typically distributed via PECL or PIE). It is rendered as its own manual
+at [php.net/manual/extensions/](https://www.php.net/manual/extensions/).
+
+Only the English documentation is maintained there: the translations of these extensions
+were not carried over from the language repositories.
 
 ## doc-base
 

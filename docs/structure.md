@@ -30,7 +30,7 @@ A procedural extension (like calendar) also has:
 - *reference.xml* - container for the functions, rarely contains any info
 - *functions/* - folder with one XML file per function that the extension declares
 
-And OO extensions (such as imagick) contain:
+And OO extensions (such as dom) contain:
 - *classname.xml* - container for the methods defined by the class, contains also basic info about it
 - *classname/* - folder with one XML file per method that the class declares
 

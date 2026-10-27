@@ -6,6 +6,9 @@ You will also have to follow other steps from the [editing manual sources](editi
 Translating documentation into other languages might look like a complicated
 process, but in fact, it's rather simple.
 
+The documentation of third-party extensions lives in
+[doc-extensions](https://github.com/php/doc-extensions) and is not translated.
+
 Because any files that are not yet translated are automatically included
 from the English version of the manual when the HTML and other versions
 of the translated manual are built, only files that are translated should
