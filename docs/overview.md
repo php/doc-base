@@ -1,6 +1,6 @@
 # Overview of the build system
 
-The PHP documentation is built from XML files and render into PHP files
+The PHP documentation is built from XML files and rendered into PHP files
 that are available on the [php.net/manual](https://php.net/manual/en) pages.
 All parts of the process live in the following GitHub repositories:
 
@@ -21,13 +21,13 @@ These repositories contain PHP's documentation in their respective languages
 and these are where changes to the content/structure
 of the [php.net's documentation pages](https://www.php.net/docs.php) are made.
 
-Please refer to the [contribution guidlines](contributing.md) on how to
+Please refer to the [contribution guidelines](contributing.md) on how to
 contribute to the documentation.
 
 ## doc-base
 
 [doc-base](https://github.com/php/doc-base) validates and combines the documentations' XML files.
-It includes a skeleton/main table of contents of the PHP documentation (index.php)
+It includes a skeleton/main table of contents of the PHP documentation (`index.php`)
 and the `configure.php` script which processes the documentation:
 - pulls version info file from repo files
 - starting from the skeleton/main table of contents file, it iterates over all files in the language repository and includes all elements with the appropriate IDs
