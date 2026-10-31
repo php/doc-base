@@ -68,9 +68,14 @@ After that, continue with other commonly used extensions.
 
 - Use pull requests, and let a team member review each one before it is merged.
 - Prefer small, regular commits over large ones.
-- Translation tools can help with a first draft, but a person must review
-  every file. Large machine-translated imports are not accepted: a wrong 
-  translation is worse than a missing one, which falls back to the English text.
+
+### No LLM translations
+
+Do not submit translations made with an LLM or another machine translation
+tool. Readers can already do this themselves in their browser, so it adds
+nothing to the manual. Fixing generated text also takes more effort than
+translating from scratch, and its mistakes are easy to miss. Such
+translations will not be accepted.
 
 ## 7. Becoming an official translation
 
