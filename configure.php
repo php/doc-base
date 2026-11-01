@@ -265,7 +265,7 @@ if (getenv('GITHUB_ACTIONS') !== 'true' && basename($rootdir) === 'doc-base') {
 
 // Settings {{{
 $cygwin_php_bat = "{$srcdir}/../phpdoc-tools/php.bat";
-$php_bin_names = array('php', 'php5', 'cli/php', 'php.exe', 'php5.exe', 'php-cli.exe', 'php-cgi.exe');
+$php_bin_names = array('php', 'cli/php', 'php.exe', 'php-cli.exe', 'php-cgi.exe');
 // }}}
 
 $acd = array( // {{{
