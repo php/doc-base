@@ -613,6 +613,7 @@ function dtd_conf_entities()
     // $contents .= dtd_pe_load( "text-entities" , __DIR__ . '/temp/text-entities.dtd' );
     // $contents .= dtd_pe_load( "file-entities" , __DIR__ . '/temp/file-entities.dtd' );
 
+    $root = $GLOBALS['ac']['ROOTDIR'];
     $base = $GLOBALS['ac']['LANG_BASE_DIR'];
     $lang = $GLOBALS['ac']["LANG"];
 
@@ -620,13 +621,13 @@ function dtd_conf_entities()
 
     if ( ! is_single_language() )
     {
-        $contents .= dtd_pe_load( "translation-defs"       , __DIR__ . "/../$lang/language-defs.ent" );
-        $contents .= dtd_pe_load( "translation-snippets"   , __DIR__ . "/../$lang/language-snippets.ent" );
-        $contents .= dtd_pe_load( "translation-extensions" , __DIR__ . "/../$lang/extensions.ent" );
+        $contents .= dtd_pe_load( "translation-defs"       , "$root/$lang/language-defs.ent" );
+        $contents .= dtd_pe_load( "translation-snippets"   , "$root/$lang/language-snippets.ent" );
+        $contents .= dtd_pe_load( "translation-extensions" , "$root/$lang/extensions.ent" );
     }
-    $contents .= dtd_pe_load( "language-defs"       , __DIR__ . "/../$base/language-defs.ent" );
-    $contents .= dtd_pe_load( "language-snippets"   , __DIR__ . "/../$base/language-snippets.ent" );
-    $contents .= dtd_pe_load( "language-extensions" , __DIR__ . "/../$base/extensions.ent" );
+    $contents .= dtd_pe_load( "language-defs"       , "$root/$base/language-defs.ent" );
+    $contents .= dtd_pe_load( "language-snippets"   , "$root/$base/language-snippets.ent" );
+    $contents .= dtd_pe_load( "language-extensions" , "$root/$base/extensions.ent" );
 
     $contents .= dtd_pe_load( "base-entities" , __DIR__ . '/entities/global.ent' );
     $contents .= dtd_pe_load( "text-entities" , __DIR__ . '/temp/text-entities.dtd' );
@@ -637,7 +638,7 @@ function dtd_conf_entities()
     else
         $contents .= "<!ENTITY manual.chmonly ''>\n";
 
-    $langTempDir = __DIR__ . "/../$base/temp";
+    $langTempDir = "$root/$base/temp";
     realpain( $langTempDir , mkdir: true );
 
     file_put_contents(  __DIR__ . "/temp/lang" , $lang );
