@@ -21,10 +21,8 @@ instead of starting a new one.
 
 ## 2. Open an issue and announce it
 
-Open an issue in [php/doc-base](https://github.com/php/doc-base/issues/new)
-titled `New translation: {Language} ({LANG})`, where `{LANG}` is the
-two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
-code. Introduce yourself and mention your GitHub username. This issue is where
+Open an issue in [php/doc-base](https://github.com/php/doc-base/issues/new) titled `New translation: {Language} ({LANG})`,
+where `{LANG}` is the two-letter [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) code. This issue is where
 others who want to help can find you, and where you post your progress.
 
 Then write to `phpdoc@lists.php.net` with a link to the issue, so the
