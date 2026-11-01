@@ -1,6 +1,10 @@
 # Frequently Asked Questions
 
 ## I'm about to document a new PHP extension. How should I start?
+Extensions bundled with PHP are documented in doc-en. Third-party extensions
+(typically distributed via PECL or PIE) are documented in
+[doc-extensions](https://github.com/php/doc-extensions).
+
 Change your working directory to `phpdoc/doc-base/scripts/docgen/` and execute:
 ```sh
 php docgen.php -e simplexml -o outdir
