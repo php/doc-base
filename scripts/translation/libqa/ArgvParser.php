@@ -39,7 +39,7 @@ class ArgvParser
         throw new Exception( "Unused '$arg' not found." );
     }
 
-    public function consume( string $equals = null , string $prefix = null , int $position = -1 ) : string|null
+    public function consume( ?string $equals = null , ?string $prefix = null , int $position = -1 ) : string|null
     {
         $args = $this->argv;
         foreach ( $args as $pos => $arg )
