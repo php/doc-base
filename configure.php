@@ -823,6 +823,62 @@ else
 
 xinclude_residual_fixup( $dom );
 
+echo "Removing overridden inherited methods... ";
+$total = classsynopsis_remove_overridden( $dom );
+echo "done: $total methods.\n";
+
+function classsynopsis_remove_overridden( DOMDocument $dom ) : int
+{
+    // Class synopses include the methods of their parents and interfaces
+    // by XInclude, so a method the class overrides is listed twice:
+    // e.g. ReflectionFunction::__toString() and ReflectionFunctionAbstract::__toString().
+    // Keep the first one (own methods are listed before inherited ones),
+    // and remove later ones of other classes with the same name.
+    // Overloads (same class and method name) are kept.
+
+    $total = 0;
+    $xpath = new DOMXPath( $dom );
+    $xpath->registerNamespace( "db" , "http://docbook.org/ns/docbook" );
+    $members = "db:methodsynopsis|db:constructorsynopsis|db:destructorsynopsis";
+
+    foreach( $xpath->query( "//db:classsynopsis" ) as $classsynopsis )
+    {
+        $seen = [];
+        $headers = [];
+        foreach( $xpath->query( $members , $classsynopsis ) as $member )
+        {
+            $name = strtolower( trim( $xpath->evaluate( "string(db:methodname)" , $member ) ) );
+            $short = preg_replace( '/^.*::/' , '' , $name );
+            $first = $seen[ $short ] ??= $name;
+
+            if ( $first === $name )
+                continue;
+
+            $header = $xpath->query( "preceding-sibling::db:classsynopsisinfo[@role='comment'][1]" , $member )->item( 0 );
+            if ( $header !== null )
+                $headers[] = $header;
+
+            $member->parentNode->removeChild( $member );
+            $total++;
+        }
+
+        // Remove section headers like "Inherited methods" left without members.
+
+        foreach( $headers as $header )
+        {
+            if ( $header->parentNode === null )
+                continue;
+            $next = $header->nextSibling;
+            while ( $next !== null && $next->nodeType !== XML_ELEMENT_NODE )
+                $next = $next->nextSibling;
+            if ( $next === null || $next->localName === "classsynopsisinfo" )
+                $header->parentNode->removeChild( $header );
+        }
+    }
+
+    return $total;
+}
+
 function xinclude_remove_fallback( DOMDocument $dom )
 {
     // Check if there is reachable <xi:fallback>s.
