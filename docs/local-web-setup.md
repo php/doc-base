@@ -1,4 +1,4 @@
-# Setting up a local web development enviroment
+# Setting up a local web development environment
 
 ## Clone the php.net sources
 ```
