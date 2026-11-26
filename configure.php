@@ -470,6 +470,7 @@ if (!file_exists($ac['srcdir']) || !is_dir($ac['srcdir']) || !is_writable($ac['s
 $ac['SRCDIR'] = $ac['srcdir'];
 $ac['WORKDIR'] = $ac['srcdir'];
 $ac['ROOTDIR'] = $ac['rootdir'];
+putenv("ROOTDIR={$ac['ROOTDIR']}");
 $ac['BASEDIR'] = $ac['basedir'];
 checkvalue($ac['srcdir']);
 
