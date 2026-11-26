@@ -23,6 +23,8 @@ ini_set( 'display_errors' , 1 );
 ini_set( 'display_startup_errors' , 1 );
 error_reporting( E_ALL );
 
+check_min_php_version(PHP_VERSION);
+
 ob_implicit_flush();
 libxml_use_internal_errors(true);
 
@@ -496,6 +498,7 @@ if (!file_exists($ac['PHP']) || !is_executable($ac['PHP'])) {
                "Use --with-php=/path/to/php.");
 }
 $ac['PHP'] = abspath($ac['PHP']);
+check_php_executable_version($ac['PHP']);
 checkvalue($ac['PHP']);
 
 checking("for language to build");
@@ -1401,5 +1404,26 @@ function phd_version()
         echo " done.\n";
     } else {
         echo " fail!\n";
+    }
+}
+
+function check_min_php_version(string $version): void
+{
+    if (version_compare($version, '8.1.0', '<')) {
+        throw new RuntimeException('PHP version ">= 8.1.0" is required. You are running ' . $version . '.');
+    }
+}
+
+function check_php_executable_version(string $php): void
+{
+    $version = exec(escapeshellarg($php) . " -r 'echo PHP_VERSION;'");
+    if ($version === false || $version === '') {
+        checkerror('Failed to get PHP executable version.');
+    }
+
+    try {
+        check_min_php_version($version);
+    } catch (RuntimeException $exception) {
+        checkerror('PHP executable version is invalid: ' . $exception->getMessage());
     }
 }
