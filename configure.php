@@ -365,6 +365,11 @@ foreach ($_SERVER['argv'] as $k => $opt) { // {{{
             break;
 
         case 'php':
+            if ($v === 'yes' || $v === '') {
+                $v = PHP_BINARY;
+            } else if (basename($v) === $v) {
+                [$php_bin_names, $v] = [[$v], ''];
+            }
             $ac['PHP'] = $v;
             break;
 
