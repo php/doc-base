@@ -25,6 +25,9 @@ version which allows you to send a message but doesn't send you any emails
 ### For translators
 You should send your message to the appropriate `doc-{LANG}@lists.php.net` mailing list.
 
+If there is no `doc-{LANG}` list because your language has no translation yet,
+read [Starting a new translation](new-language.md).
+
 ## Informal discussion
 The mailing lists above are the primary communication forum. In particular,
 decisions and plans should be made on the list so they are recorded in the

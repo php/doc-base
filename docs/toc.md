@@ -8,6 +8,7 @@
 - [Style guidelines](style.md)
 - [Coding standard for examples](cs-for-examples.md)
 - [Translating documentation](translating.md)
+- [Starting a new translation](new-language.md)
 - [Joining the team](joining.md)
 
 ## Appendices
