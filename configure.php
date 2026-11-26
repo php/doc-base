@@ -247,6 +247,18 @@ function find_xml_files($path) // {{{
     }
 } // }}}
 
+function find_php_bin_name(): string
+{
+    return find_file([
+        'php' . PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION,
+        'php',
+        'cli/php',
+        'php.exe',
+        'php-cli.exe',
+        'php-cgi.exe',
+    ]);
+}
+
 $srcdir  = dirname(__FILE__);
 $workdir = $srcdir;
 $basedir = $srcdir;
@@ -265,7 +277,6 @@ if (getenv('GITHUB_ACTIONS') !== 'true' && basename($rootdir) === 'doc-base') {
 
 // Settings {{{
 $cygwin_php_bat = "{$srcdir}/../phpdoc-tools/php.bat";
-$php_bin_names = array('php', 'php5', 'cli/php', 'php.exe', 'php5.exe', 'php-cli.exe', 'php-cgi.exe');
 // }}}
 
 $acd = array( // {{{
@@ -483,7 +494,7 @@ checkvalue($ac['CHMENABLED']);
 
 checking("for PHP executable");
 if ($ac['PHP'] == '' || $ac['PHP'] == 'no') {
-    $ac['PHP'] = find_file($php_bin_names);
+    $ac['PHP'] = find_php_bin_name();
 } else if (file_exists($cygwin_php_bat)) {
     $ac['PHP'] = $cygwin_php_bat;
 }
